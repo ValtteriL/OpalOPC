@@ -2,13 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <AssemblyName>ConsoleReferenceClient</AssemblyName>
+    <AssemblyName>opc-ua-security-scanner</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>ConsoleReferenceClient</PackageId>
-    <Company>OPC Foundation</Company>
-    <Description>.NET Console Reference Client</Description>
-    <Copyright>Copyright © 2004-2022 OPC Foundation, Inc</Copyright>
+    <PackageId>opc-ua-security-scanner</PackageId>
     <RootNamespace>Quickstarts.ConsoleReferenceClient</RootNamespace>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <WarningsAsErrors>CS4014</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
