@@ -1,39 +1,4 @@
-/* ========================================================================
- * Copyright (c) 2005-2021 The OPC Foundation, Inc. All rights reserved.
- *
- * OPC Foundation MIT License 1.00
- * 
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- * 
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- *
- * The complete license agreement can be found here:
- * http://opcfoundation.org/License/MIT/1.00/
- * ======================================================================*/
-
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Opc.Ua;
 using Opc.Ua.Configuration;
@@ -66,8 +31,8 @@ namespace Quickstarts.ConsoleReferenceClient
             // command line options
             bool showHelp = false;
             bool autoAccept = false;
-            string username = null;
-            string userpassword = null;
+            string? username = null;
+            string? userpassword = null;
             bool logConsole = false;
             bool appLog = false;
             bool renewCertificate = false;
@@ -76,9 +41,9 @@ namespace Quickstarts.ConsoleReferenceClient
             bool fetchall = false;
             bool jsonvalues = false;
             bool verbose = false;
-            string password = null;
+            string? password = null;
             int timeout = Timeout.Infinite;
-            string logFile = null;
+            string? logFile = null;
 
             Mono.Options.OptionSet options = new Mono.Options.OptionSet {
                 usage,
@@ -202,8 +167,8 @@ namespace Quickstarts.ConsoleReferenceClient
 
                             if (browseall || fetchall || jsonvalues)
                             {
-                                NodeIdCollection variableIds = null;
-                                ReferenceDescriptionCollection referenceDescriptions = null;
+                                NodeIdCollection? variableIds = null;
+                                ReferenceDescriptionCollection? referenceDescriptions = null;
                                 if (browseall)
                                 {
                                     referenceDescriptions =
