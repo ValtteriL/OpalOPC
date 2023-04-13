@@ -145,9 +145,11 @@ namespace Quickstarts.ConsoleReferenceClient
                         AutoAccept = autoAccept
                     })
                     {
+
                         // set user identity
                         if (!String.IsNullOrEmpty(username))
                         {
+                            // identity can be configured to be anonymous, username, certificate, token
                             uaClient.UserIdentity = new UserIdentity(username, userpassword ?? string.Empty);
                         }
 
@@ -178,7 +180,7 @@ namespace Quickstarts.ConsoleReferenceClient
                                         .Select(r => ExpandedNodeId.ToNodeId(r.NodeId, uaClient.Session.NamespaceUris)));
                                 }
 
-                                IList<INode> allNodes = null;
+                                IList<INode>? allNodes = null;
                                 if (fetchall)
                                 {
                                     allNodes = samples.FetchAllNodesNodeCache(
