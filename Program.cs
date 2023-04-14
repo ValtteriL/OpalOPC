@@ -139,6 +139,35 @@ namespace Quickstarts.ConsoleReferenceClient
                         }
                     }
 
+                    // https://reference.opcfoundation.org/Core/Part4/v105/docs/
+
+                    // DISCOVER (find services, check supported modes and security policies)
+                    // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.4
+                    DiscoveryClient asd = DiscoveryClient.Create(new Uri(String.Format(Utils.DiscoveryUrls[0], "echo.koti.kontu")));
+                    EndpointDescriptionCollection edc = asd.GetEndpoints(null);
+                    foreach (EndpointDescription e in edc) {
+                        Console.WriteLine($"ENDPOINT: {e.EndpointUrl} + {e.SecurityPolicyUri} + {e.TransportProfileUri} + {e.UserIdentityTokens.First().TokenType.ToString()} + {e.SecurityMode.ToString()}");
+                    }
+
+                    // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.2
+                    // ask the server for all servers it knows about
+                    ApplicationDescriptionCollection adc = asd.FindServers(null);
+                    foreach (ApplicationDescription ad in adc) {
+                        Console.WriteLine($"SERVER: {ad.DiscoveryUrls}");
+                    }
+
+                    // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.3
+                    // ask the network servers this server knows about
+                    // only works with discoveryservers
+                    ServerOnNetworkCollection sonc = asd.FindServersOnNetwork(0, 0, null, out DateTime dt);
+                    foreach (ServerOnNetwork son in sonc) {
+                        Console.WriteLine($"SERVER ON NETWORK: {son.DiscoveryUrl}");
+                    }
+
+                    // TODO: CHECK COMMON CREDENTIALS
+                    // TODO: CHECK FOR READ/WRITE ACCESS
+
+
                     // create the UA Client object and connect to configured server.
                     using (UAClient uaClient = new UAClient(
                         application.ApplicationConfiguration, output, ClientBase.ValidateResponse) {
