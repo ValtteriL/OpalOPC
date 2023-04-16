@@ -148,6 +148,9 @@ namespace Quickstarts.ConsoleReferenceClient
                     // Endpointdescriptions contain supported security policy, security mode, and all supported user tokens 
                     // If the ApplicationType is Discovery server, it can be used to find other servers with FindServersOnNetwork and iterate through them
 
+                    // Application
+                    // - Endpoint..N
+                    // - Access privileges..M
 
                     // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.2
                     // ask the server for all servers it knows about
