@@ -141,30 +141,67 @@ namespace Quickstarts.ConsoleReferenceClient
 
                     // https://reference.opcfoundation.org/Core/Part4/v105/docs/
 
-                    // DISCOVER (find services, check supported modes and security policies)
-                    // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.4
-                    DiscoveryClient asd = DiscoveryClient.Create(new Uri(String.Format(Utils.DiscoveryUrls[0], "echo.koti.kontu")));
-                    EndpointDescriptionCollection edc = asd.GetEndpoints(null);
-                    foreach (EndpointDescription e in edc) {
-                        Console.WriteLine($"ENDPOINT: {e.EndpointUrl} + {e.SecurityPolicyUri} + {e.TransportProfileUri} + {e.UserIdentityTokens.First().TokenType.ToString()} + {e.SecurityMode.ToString()}");
-                    }
+                    // DISCOVER (find services, check supported modes, security policies, and user tokens)
+                    // https://reference.opcfoundation.org/GDS/v105/docs/4.3
+                    // 1. Use FindServers on LDS to get list of application descriptions
+                    // 2. Use GetEndpoint on each application's discoveryurls to get list of endpointdescriptions
+                    // Endpointdescriptions contain supported security policy, security mode, and all supported user tokens 
+                    // If the ApplicationType is Discovery server, it can be used to find other servers with FindServersOnNetwork and iterate through them
+
 
                     // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.2
                     // ask the server for all servers it knows about
+                    DiscoveryClient asd = DiscoveryClient.Create(new Uri("opc.tcp://echo.koti.kontu:53530"));
+
+                    Console.WriteLine("### Discovering servers");
                     ApplicationDescriptionCollection adc = asd.FindServers(null);
+
+                    Console.WriteLine($"Number of servers: {adc.Count}");
+
                     foreach (ApplicationDescription ad in adc) {
-                        Console.WriteLine($"SERVER: {ad.DiscoveryUrls}");
+                        Console.WriteLine($"{ad.ApplicationType}: {ad.ApplicationName} + {ad.ApplicationUri} + {ad.ProductUri}");
+                        foreach (string s in ad.DiscoveryUrls) {
+
+                            // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.4
+                            // ask each discoveryUrl for endpoints
+                            Console.WriteLine("### Discovering endpoints");
+
+                            Console.WriteLine($"DiscoveryUrl: {s}");
+
+                            DiscoveryClient sss = DiscoveryClient.Create(new Uri(s.Replace("echo", "echo.koti.kontu").Replace("opc.http", "http"))); // TODO: make something smarter up
+                            EndpointDescriptionCollection edcc = sss.GetEndpoints(null);
+
+                            Console.WriteLine($"Number of endpoints: {edcc.Count}");
+                            foreach (EndpointDescription e in edcc) {
+                                Console.WriteLine($"ENDPOINT: {e.EndpointUrl}");
+                                Console.WriteLine($"\tSecurity policy: {e.SecurityPolicyUri}");
+                                Console.WriteLine($"\tSecurity mode: {e.SecurityMode}");
+
+                                Console.WriteLine($"\tUser token policies:");
+                                foreach (UserTokenPolicy utp in e.UserIdentityTokens) {
+                                    Console.WriteLine($"\t\t{utp} ({utp.SecurityPolicyUri}, {utp.PolicyId})");
+                                }
+                            }
+
+                            if (ad.ApplicationType == ApplicationType.DiscoveryServer) {
+
+                                // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.3
+                                // ask the network servers this server knows about
+                                // only works with discoveryservers
+
+                                ServerOnNetworkCollection soncc = sss.FindServersOnNetwork(0, 0, null, out DateTime dtt);
+                                foreach (ServerOnNetwork son in soncc) {
+                                    Console.WriteLine($"SERVER ON NETWORK: {son.DiscoveryUrl}");
+                                    // GetEndpoints could be used to check the endpoint securities of the found servers
+                                }
+                            }
+                        }
                     }
 
-                    // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.3
-                    // ask the network servers this server knows about
-                    // only works with discoveryservers
-                    ServerOnNetworkCollection sonc = asd.FindServersOnNetwork(0, 0, null, out DateTime dt);
-                    foreach (ServerOnNetwork son in sonc) {
-                        Console.WriteLine($"SERVER ON NETWORK: {son.DiscoveryUrl}");
-                    }
+                    return;
 
-                    // TODO: CHECK COMMON CREDENTIALS
+                    // TODO: CHECK COMMON CREDENTIALS - if username-pass
+                    // TODO: CHECK self signed cert - if certificate
                     // TODO: CHECK FOR READ/WRITE ACCESS
 
 
