@@ -1,5 +1,6 @@
 using System.Globalization;
 using Microsoft.Extensions.Logging;
+using Model;
 using Opc.Ua;
 using Opc.Ua.Configuration;
 
@@ -156,35 +157,23 @@ namespace Quickstarts.ConsoleReferenceClient
                     // ask the server for all servers it knows about
                     DiscoveryClient asd = DiscoveryClient.Create(new Uri("opc.tcp://echo.koti.kontu:53530"));
 
-                    Console.WriteLine("### Discovering servers");
+                    Console.WriteLine("### Discovering applications");
                     ApplicationDescriptionCollection adc = asd.FindServers(null);
 
-                    Console.WriteLine($"Number of servers: {adc.Count}");
-
                     foreach (ApplicationDescription ad in adc) {
-                        Console.WriteLine($"{ad.ApplicationType}: {ad.ApplicationName} + {ad.ApplicationUri} + {ad.ProductUri}");
+
+                        OpcTarget target = new OpcTarget(ad);
+
                         foreach (string s in ad.DiscoveryUrls) {
 
                             // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.4
                             // ask each discoveryUrl for endpoints
-                            Console.WriteLine("### Discovering endpoints");
-
-                            Console.WriteLine($"DiscoveryUrl: {s}");
+                            Console.WriteLine($"### Discovering endpoints for {ad.ApplicationName}:{s}");
 
                             DiscoveryClient sss = DiscoveryClient.Create(new Uri(s.Replace("echo", "echo.koti.kontu").Replace("opc.http", "http"))); // TODO: make something smarter up
-                            EndpointDescriptionCollection edcc = sss.GetEndpoints(null);
+                            EndpointDescriptionCollection edc = sss.GetEndpoints(null);
 
-                            Console.WriteLine($"Number of endpoints: {edcc.Count}");
-                            foreach (EndpointDescription e in edcc) {
-                                Console.WriteLine($"ENDPOINT: {e.EndpointUrl}");
-                                Console.WriteLine($"\tSecurity policy: {e.SecurityPolicyUri}");
-                                Console.WriteLine($"\tSecurity mode: {e.SecurityMode}");
-
-                                Console.WriteLine($"\tUser token policies:");
-                                foreach (UserTokenPolicy utp in e.UserIdentityTokens) {
-                                    Console.WriteLine($"\t\t{utp} ({utp.SecurityPolicyUri}, {utp.PolicyId})");
-                                }
-                            }
+                            target.AddServer(s, edc);
 
                             if (ad.ApplicationType == ApplicationType.DiscoveryServer) {
 
@@ -192,13 +181,15 @@ namespace Quickstarts.ConsoleReferenceClient
                                 // ask the network servers this server knows about
                                 // only works with discoveryservers
 
-                                ServerOnNetworkCollection soncc = sss.FindServersOnNetwork(0, 0, null, out DateTime dtt);
-                                foreach (ServerOnNetwork son in soncc) {
+                                ServerOnNetworkCollection sonc = sss.FindServersOnNetwork(0, 0, null, out DateTime dt);
+                                foreach (ServerOnNetwork son in sonc) {
                                     Console.WriteLine($"SERVER ON NETWORK: {son.DiscoveryUrl}");
                                     // GetEndpoints could be used to check the endpoint securities of the found servers
                                 }
                             }
                         }
+
+                        Console.WriteLine(target);
                     }
 
                     return;

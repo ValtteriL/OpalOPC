@@ -1,27 +1,87 @@
+using System.Text.Json;
+using Opc.Ua;
 namespace Model
 {
     public class OpcTarget
     {
 
-        ApplicationType Type;
-        string Name;
-        string ApplicationUri;
-        string ProductUri;
-        collection<OpcEndpoint> endpoints;
-    }
+        private ApplicationDescription _applicationDescription;
+        public ICollection<Server> TargetServers { get; }
 
-    public class OpcEndpoint
-    {
-        string SecurityPolicyUri;
-        string SecurityMode;
-        collection <UserTokenPolicy> UserTokenPolicies;
-        Collection<OpcAccessControl> AccessControlPolicies;
-    }
+        public ApplicationType Type { get; }
+        public string ApplicationName { get; }
+        public string ApplicationUri { get; }
+        public string ProductUri { get; }
 
-    public class OpcAccessControl
-    {
-        AccessControlPolicy policy;
-        <string, boolean, boolean> <-- property, read, write
+
+        public OpcTarget(ApplicationDescription ad)
+        {
+            this._applicationDescription = ad;
+
+            this.Type = ad.ApplicationType;
+            this.ApplicationName = ad.ApplicationName.ToString();
+            this.ApplicationUri = ad.ApplicationUri;
+            this.ProductUri = ad.ProductUri;
+
+            this.TargetServers = new List<Server>();
+        }
+
+        public void AddServer(string DiscoveryUrl, EndpointDescriptionCollection edc)
+        {
+            this.TargetServers.Add(new Server(DiscoveryUrl, edc));
+        }
+
+        public override string ToString()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            return JsonSerializer.Serialize(this, options);
+        }
+
+        public class Server
+        {
+            public string DiscoveryUrl { get; }
+            public ICollection<Endpoint> Endpoints { get; }
+
+            public Server(string DiscoveryUrl, EndpointDescriptionCollection edc)
+            {
+                this.DiscoveryUrl = DiscoveryUrl;
+                this.Endpoints = new List<Endpoint>();
+                foreach (EndpointDescription e in edc)
+                {
+                    this.Endpoints.Add(new Endpoint(e));
+                }
+            }
+        }
+
+        public class Endpoint
+        {
+            private EndpointDescription EndpointDescription;
+
+            public string EndpointUrl { get; }
+            public string SecurityPolicyUri { get; }
+            public MessageSecurityMode SecurityMode { get; }
+            private byte[] ServerCertificate { get; }
+            public ICollection<string> UserTokenPolicyIds { get; }
+
+
+
+
+            public Endpoint(EndpointDescription e)
+            {
+                this.EndpointDescription = e;
+
+                this.EndpointUrl = e.EndpointUrl;
+                this.SecurityPolicyUri = e.SecurityPolicyUri;
+                this.SecurityMode = e.SecurityMode;
+                this.ServerCertificate = e.ServerCertificate;
+
+                this.UserTokenPolicyIds = new List<string>();
+                foreach (UserTokenPolicy utp in e.UserIdentityTokens)
+                {
+                    this.UserTokenPolicyIds.Add(utp.PolicyId);
+                }
+            }
+        }
 
     }
 }
