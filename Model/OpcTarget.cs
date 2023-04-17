@@ -31,6 +31,21 @@ namespace Model
             this.TargetServers.Add(new Server(DiscoveryUrl, edc));
         }
 
+        public IEnumerable<Endpoint> GetEndpointsBySecurityMode(MessageSecurityMode messageSecurityMode)
+        {
+            return TargetServers.SelectMany(s => s.Endpoints.Where(e => e.SecurityMode == messageSecurityMode));
+        }
+
+        public IEnumerable<Endpoint> GetEndpointsByUserTokenType(UserTokenType userTokenType)
+        {
+            return TargetServers.SelectMany(s => s.Endpoints.Where(e => e.UserTokenTypes.Contains(userTokenType)));
+        }
+
+        public IEnumerable<Endpoint> GetEndpointsBySecurityPolicyUri(string securityPolicyUri)
+        {
+            return TargetServers.SelectMany(s => s.Endpoints.Where(e => e.SecurityPolicyUri == securityPolicyUri));
+        }
+
         public override string ToString()
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
@@ -62,6 +77,7 @@ namespace Model
             public MessageSecurityMode SecurityMode { get; }
             private byte[] ServerCertificate { get; }
             public ICollection<string> UserTokenPolicyIds { get; }
+            public ICollection<UserTokenType> UserTokenTypes { get; }
 
 
 
@@ -76,9 +92,11 @@ namespace Model
                 this.ServerCertificate = e.ServerCertificate;
 
                 this.UserTokenPolicyIds = new List<string>();
+                this.UserTokenTypes = new List<UserTokenType>();
                 foreach (UserTokenPolicy utp in e.UserIdentityTokens)
                 {
                     this.UserTokenPolicyIds.Add(utp.PolicyId);
+                    this.UserTokenTypes.Add(utp.TokenType);
                 }
             }
         }

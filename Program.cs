@@ -190,6 +190,24 @@ namespace Quickstarts.ConsoleReferenceClient
                         }
 
                         Console.WriteLine(target);
+
+                        IEnumerable<OpcTarget.Endpoint> kkk = target.GetEndpointsBySecurityMode(MessageSecurityMode.None);
+                        foreach(OpcTarget.Endpoint f in kkk)
+                        {
+                            Console.WriteLine($"SecurityMode NONE {f.EndpointUrl}");
+                        }
+
+                        IEnumerable<OpcTarget.Endpoint> rrr = target.GetEndpointsByUserTokenType(UserTokenType.Anonymous);
+                        foreach(OpcTarget.Endpoint f in rrr)
+                        {
+                            Console.WriteLine($"ANONYMOUS {f.EndpointUrl}");
+                        }
+
+                        IEnumerable<OpcTarget.Endpoint> www = target.GetEndpointsBySecurityPolicyUri(SecurityPolicies.None);
+                        foreach(OpcTarget.Endpoint f in www)
+                        {
+                            Console.WriteLine($"Securitypolicy NONE {f.EndpointUrl}");
+                        }
                     }
 
                     return;
