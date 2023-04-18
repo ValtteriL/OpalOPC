@@ -70,7 +70,7 @@ namespace Model
 
         public class Endpoint
         {
-            private EndpointDescription EndpointDescription;
+            public EndpointDescription EndpointDescription;
 
             public string EndpointUrl { get; }
             public string SecurityPolicyUri { get; }

@@ -1,4 +1,5 @@
 using System.Globalization;
+using Controller;
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
@@ -86,7 +87,8 @@ namespace Quickstarts.ConsoleReferenceClient
                 // Define the UA Client application
                 ApplicationInstance.MessageDlg = new ApplicationMessageDlg(output);
                 CertificatePasswordProvider PasswordProvider = new CertificatePasswordProvider(password);
-                ApplicationInstance application = new ApplicationInstance {
+                ApplicationInstance application = new ApplicationInstance
+                {
                     ApplicationName = applicationName,
                     ApplicationType = ApplicationType.Client,
                     ConfigSectionName = configSectionName,
@@ -140,86 +142,24 @@ namespace Quickstarts.ConsoleReferenceClient
                         }
                     }
 
-                    // https://reference.opcfoundation.org/Core/Part4/v105/docs/
+                    IEnumerable<OpcTarget> targets = DiscoveryController.DiscoverTargets(new Uri("opc.tcp://echo.koti.kontu:53530"));
+                    OpcTarget target = targets.First();
 
-                    // DISCOVER (find services, check supported modes, security policies, and user tokens)
-                    // https://reference.opcfoundation.org/GDS/v105/docs/4.3
-                    // 1. Use FindServers on LDS to get list of application descriptions
-                    // 2. Use GetEndpoint on each application's discoveryurls to get list of endpointdescriptions
-                    // Endpointdescriptions contain supported security policy, security mode, and all supported user tokens 
-                    // If the ApplicationType is Discovery server, it can be used to find other servers with FindServersOnNetwork and iterate through them
+                    // execute authentication tests
+                    target = AccessTestController.TestAuth(target);
 
-                    // Application
-                    // - Endpoint..N
-                    // - Access privileges..M
+                    // execute access control tests
+                    target = AccessTestController.TestAccessControl(target);
 
-                    // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.2
-                    // ask the server for all servers it knows about
-                    DiscoveryClient asd = DiscoveryClient.Create(new Uri("opc.tcp://echo.koti.kontu:53530"));
-
-                    Console.WriteLine("### Discovering applications");
-                    ApplicationDescriptionCollection adc = asd.FindServers(null);
-
-                    foreach (ApplicationDescription ad in adc) {
-
-                        OpcTarget target = new OpcTarget(ad);
-
-                        foreach (string s in ad.DiscoveryUrls) {
-
-                            // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.4
-                            // ask each discoveryUrl for endpoints
-                            Console.WriteLine($"### Discovering endpoints for {ad.ApplicationName}:{s}");
-
-                            DiscoveryClient sss = DiscoveryClient.Create(new Uri(s.Replace("echo", "echo.koti.kontu").Replace("opc.http", "http"))); // TODO: make something smarter up
-                            EndpointDescriptionCollection edc = sss.GetEndpoints(null);
-
-                            target.AddServer(s, edc);
-
-                            if (ad.ApplicationType == ApplicationType.DiscoveryServer) {
-
-                                // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.3
-                                // ask the network servers this server knows about
-                                // only works with discoveryservers
-
-                                ServerOnNetworkCollection sonc = sss.FindServersOnNetwork(0, 0, null, out DateTime dt);
-                                foreach (ServerOnNetwork son in sonc) {
-                                    Console.WriteLine($"SERVER ON NETWORK: {son.DiscoveryUrl}");
-                                    // GetEndpoints could be used to check the endpoint securities of the found servers
-                                }
-                            }
-                        }
-
-                        Console.WriteLine(target);
-
-                        IEnumerable<OpcTarget.Endpoint> kkk = target.GetEndpointsBySecurityMode(MessageSecurityMode.None);
-                        foreach(OpcTarget.Endpoint f in kkk)
-                        {
-                            Console.WriteLine($"SecurityMode NONE {f.EndpointUrl}");
-                        }
-
-                        IEnumerable<OpcTarget.Endpoint> rrr = target.GetEndpointsByUserTokenType(UserTokenType.Anonymous);
-                        foreach(OpcTarget.Endpoint f in rrr)
-                        {
-                            Console.WriteLine($"ANONYMOUS {f.EndpointUrl}");
-                        }
-
-                        IEnumerable<OpcTarget.Endpoint> www = target.GetEndpointsBySecurityPolicyUri(SecurityPolicies.None);
-                        foreach(OpcTarget.Endpoint f in www)
-                        {
-                            Console.WriteLine($"Securitypolicy NONE {f.EndpointUrl}");
-                        }
-                    }
+                    // TODO: report
+                    Console.WriteLine(target);
 
                     return;
 
-                    // TODO: CHECK COMMON CREDENTIALS - if username-pass
-                    // TODO: CHECK self signed cert - if certificate
-                    // TODO: CHECK FOR READ/WRITE ACCESS
-
-
                     // create the UA Client object and connect to configured server.
                     using (UAClient uaClient = new UAClient(
-                        application.ApplicationConfiguration, output, ClientBase.ValidateResponse) {
+                        application.ApplicationConfiguration, output, ClientBase.ValidateResponse)
+                    {
                         AutoAccept = autoAccept
                     })
                     {
