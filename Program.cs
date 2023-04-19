@@ -142,12 +142,12 @@ namespace Quickstarts.ConsoleReferenceClient
                         }
                     }
 
-                    IEnumerable<OpcTarget> targets = DiscoveryController.DiscoverTargets(new Uri("opc.tcp://echo.koti.kontu:53530"));
-                    IEnumerable<OpcTarget> testedTargets = new List<OpcTarget>();
+                    ICollection<OpcTarget> targets = DiscoveryController.DiscoverTargets(new Uri("opc.tcp://echo.koti.kontu:53530"));
+                    ICollection<OpcTarget> testedTargets = new List<OpcTarget>();
 
                     foreach(OpcTarget target in targets)
                     {
-                        testedTargets = testedTargets.Append(SecurityTestController.TestOpcTargetSecurity(target));
+                        testedTargets.Add(SecurityTestController.TestOpcTargetSecurity(target));
                     }
 
                     ReportController.GenerateReport(testedTargets);

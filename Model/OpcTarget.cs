@@ -80,8 +80,6 @@ namespace Model
             public ICollection<UserTokenType> UserTokenTypes { get; }
 
 
-
-
             public Endpoint(EndpointDescription e)
             {
                 this.EndpointDescription = e;

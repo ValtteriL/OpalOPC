@@ -7,9 +7,9 @@ namespace Controller
     {
 
         // Given discoveryUri, discover all applications
-        public static IEnumerable<OpcTarget> DiscoverTargets(Uri discoveryUri)
+        public static ICollection<OpcTarget> DiscoverTargets(Uri discoveryUri)
         {
-            IEnumerable<OpcTarget> targets = new List<OpcTarget>();
+            ICollection<OpcTarget> targets = new List<OpcTarget>();
 
             // https://reference.opcfoundation.org/Core/Part4/v105/docs/
 
@@ -64,7 +64,7 @@ namespace Controller
                     }
                 }
 
-                targets = targets.Append(target);
+                targets.Add(target);
             }
 
             return targets;
