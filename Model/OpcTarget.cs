@@ -76,9 +76,10 @@ namespace Model
             public string SecurityPolicyUri { get; }
             public MessageSecurityMode SecurityMode { get; }
             private byte[] ServerCertificate { get; }
-            public ICollection<string> UserTokenPolicyIds { get; }
-            public ICollection<UserTokenType> UserTokenTypes { get; }
+            public ICollection<string> UserTokenPolicyIds { get; } = new List<string>();
+            public ICollection<UserTokenType> UserTokenTypes { get; } = new List<UserTokenType>();
 
+            public ICollection<Issue> Issues { get; set; } = new List<Issue>();
 
             public Endpoint(EndpointDescription e)
             {
@@ -89,8 +90,6 @@ namespace Model
                 this.SecurityMode = e.SecurityMode;
                 this.ServerCertificate = e.ServerCertificate;
 
-                this.UserTokenPolicyIds = new List<string>();
-                this.UserTokenTypes = new List<UserTokenType>();
                 foreach (UserTokenPolicy utp in e.UserIdentityTokens)
                 {
                     this.UserTokenPolicyIds.Add(utp.PolicyId);

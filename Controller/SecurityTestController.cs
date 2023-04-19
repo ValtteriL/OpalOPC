@@ -22,11 +22,11 @@ namespace Controller
 
             foreach (OpcTarget.Endpoint endpoint in NoneSecurityModeEndpoints)
             {
-                Console.WriteLine($"SECURITY MODE NONE: {endpoint.EndpointUrl}");
+                endpoint.Issues.Add(new Issue("SECURITY MODE NONE"));
             }
             foreach (OpcTarget.Endpoint endpoint in invalidSecurityModeEndpoints)
             {
-                Console.WriteLine($"SECURITY MODE INVALID: {endpoint.EndpointUrl}");
+                endpoint.Issues.Add(new Issue("SECURITY MODE INVALID"));
             }
 
             // Basic256 and Basic128Rsa15 are deprecated - https://profiles.opcfoundation.org/profilefolder/474
@@ -35,11 +35,11 @@ namespace Controller
 
             foreach (OpcTarget.Endpoint endpoint in Basic128Rsa15Endpoints)
             {
-                Console.WriteLine($"Basic 128 endpoint: {endpoint.EndpointUrl}");
+                endpoint.Issues.Add(new Issue("BASIC 128"));
             }
             foreach (OpcTarget.Endpoint endpoint in Basic256Endpoints)
             {
-                Console.WriteLine($"Basic 256 endpoint: {endpoint.EndpointUrl}");
+                endpoint.Issues.Add(new Issue("BASIC 256"));
             }
 
             return opcTarget;
@@ -55,7 +55,7 @@ namespace Controller
             IEnumerable<OpcTarget.Endpoint> anonymousEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.Anonymous);
             foreach (OpcTarget.Endpoint endpoint in anonymousEndpoints)
             {
-                Console.WriteLine($"ANONYMOUS {endpoint.EndpointUrl}");
+                endpoint.Issues.Add(new Issue("ANONYMOUS"));
             }
 
             // TODO: CHECK COMMON CREDENTIALS - if username-pass

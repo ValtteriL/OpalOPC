@@ -148,6 +148,7 @@ namespace Quickstarts.ConsoleReferenceClient
                     foreach(OpcTarget target in targets)
                     {
                         testedTargets.Add(SecurityTestController.TestOpcTargetSecurity(target));
+                        Console.WriteLine(target);
                     }
 
                     ReportController.GenerateReport(testedTargets);
