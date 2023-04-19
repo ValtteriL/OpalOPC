@@ -145,11 +145,8 @@ namespace Quickstarts.ConsoleReferenceClient
                     IEnumerable<OpcTarget> targets = DiscoveryController.DiscoverTargets(new Uri("opc.tcp://echo.koti.kontu:53530"));
                     OpcTarget target = targets.First();
 
-                    // execute authentication tests
-                    target = AccessTestController.TestAuth(target);
-
-                    // execute access control tests
-                    target = AccessTestController.TestAccessControl(target);
+                    // execute security tests
+                    target = SecurityTestController.TestOpcTargetSecurity(target);
 
                     // TODO: report
                     Console.WriteLine(target);
