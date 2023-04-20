@@ -247,6 +247,7 @@ namespace Quickstarts.ConsoleReferenceClient
             catch (Exception ex)
             {
                 output.WriteLine(ex.Message);
+                throw ex;
             }
         }
     }

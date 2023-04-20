@@ -30,8 +30,8 @@ namespace Controller
             }
 
             // Basic256 and Basic128Rsa15 are deprecated - https://profiles.opcfoundation.org/profilefolder/474
-            IEnumerable<OpcTarget.Endpoint> Basic128Rsa15Endpoints = opcTarget.GetEndpointsBySecurityPolicyUri("http://opcfoundation.org/UA/SecurityPolicy#Basic128Rsa15");
-            IEnumerable<OpcTarget.Endpoint> Basic256Endpoints = opcTarget.GetEndpointsBySecurityPolicyUri("http://opcfoundation.org/UA/SecurityPolicy#Basic256");
+            IEnumerable<OpcTarget.Endpoint> Basic128Rsa15Endpoints = opcTarget.GetEndpointsBySecurityPolicyUri(SecurityPolicies.Basic128Rsa15);
+            IEnumerable<OpcTarget.Endpoint> Basic256Endpoints = opcTarget.GetEndpointsBySecurityPolicyUri(SecurityPolicies.Basic256);
 
             foreach (OpcTarget.Endpoint endpoint in Basic128Rsa15Endpoints)
             {
@@ -58,20 +58,28 @@ namespace Controller
                 endpoint.Issues.Add(new Issue("ANONYMOUS"));
             }
 
-            // TODO: CHECK COMMON CREDENTIALS - if username-pass
             // brute username - pass
             IEnumerable<OpcTarget.Endpoint> usernameEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.UserName);
-            foreach (OpcTarget.Endpoint endpoint in usernameEndpoints)
+            IEnumerable<OpcTarget.Endpoint> usernameEndpointsNone = usernameEndpoints.Where(e => e.SecurityPolicyUri == SecurityPolicies.None);
+            foreach (OpcTarget.Endpoint endpoint in usernameEndpointsNone)
             {
-                Console.WriteLine($"USERNAME {endpoint.EndpointUrl}");
+                foreach ((string username, string password) in CommonCredentials())
+                {
+                    if (IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password)).Result)
+                    {
+                        endpoint.Issues.Add(new Issue($"COMMON CREDS ({username}:{password}) {endpoint.EndpointUrl}"));
+                    }
+                }
             }
 
-            // TODO: CHECK self signed cert - if certificate
             // "self-signed certificates should not be trusted automatically" - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
-            // try authentication with self-signed certificate
-            IEnumerable<OpcTarget.Endpoint> certificateEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.Certificate);
-            foreach (OpcTarget.Endpoint endpoint in certificateEndpoints)
+            // brute username - pass when client cert is required
+            // if no error because of the cert -> server accepts self-signed client certs -> vulnerable
+            IEnumerable<OpcTarget.Endpoint> usernameEndpointsCertificate = usernameEndpoints.Where(e => e.SecurityPolicyUri != SecurityPolicies.None);
+            foreach (OpcTarget.Endpoint endpoint in usernameEndpointsCertificate)
             {
+                // TODO: must use self-signed cert here (in the securityconfiguration when connecting)
+                // may try client cert with any other auth methods as well - is it used in anonymous login?
                 Console.WriteLine($"CERTIFICATE {endpoint.EndpointUrl}");
             }
 
@@ -85,19 +93,26 @@ namespace Controller
             return opcTarget;
         }
 
-        private static bool IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity)
+        private async static Task<bool> IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity)
         {
-            var session = Util.ConnectionUtil.StartSession(endpointDescription, userIdentity).Result;
-            bool result = false;
-            if (session.Connected)
+            try
             {
-                result = true;
+                var session = await Util.ConnectionUtil.StartSession(endpointDescription, userIdentity);
+                bool result = false;
+                if (session.Connected)
+                {
+                    result = true;
+                }
+
+                session.Close();
+                session.Dispose();
+
+                return result;
             }
-
-            session.Close();
-            session.Dispose();
-
-            return result;
+            catch (Opc.Ua.ServiceResultException)
+            {
+                return false;
+            }
         }
 
         private static List<(string username, string password)> CommonCredentials()
