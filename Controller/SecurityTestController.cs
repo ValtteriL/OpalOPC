@@ -23,11 +23,11 @@ namespace Controller
 
             foreach (OpcTarget.Endpoint endpoint in NoneSecurityModeEndpoints)
             {
-                endpoint.Issues.Add(new Issue("SECURITY MODE NONE"));
+                endpoint.Issues.Add(Issues.SecurityModeNone);
             }
             foreach (OpcTarget.Endpoint endpoint in invalidSecurityModeEndpoints)
             {
-                endpoint.Issues.Add(new Issue("SECURITY MODE INVALID"));
+                endpoint.Issues.Add(Issues.SecurityModeInvalid);
             }
 
             // Basic256 and Basic128Rsa15 are deprecated - https://profiles.opcfoundation.org/profilefolder/474
@@ -36,11 +36,11 @@ namespace Controller
 
             foreach (OpcTarget.Endpoint endpoint in Basic128Rsa15Endpoints)
             {
-                endpoint.Issues.Add(new Issue("BASIC 128"));
+                endpoint.Issues.Add(Issues.SecurityPolicyBasic128);
             }
             foreach (OpcTarget.Endpoint endpoint in Basic256Endpoints)
             {
-                endpoint.Issues.Add(new Issue("BASIC 256"));
+                endpoint.Issues.Add(Issues.SecurityPolicyBasic256);
             }
 
             // If securitypolicy is none, application authentication is disabled (clients do not use certificate)
@@ -49,7 +49,7 @@ namespace Controller
             IEnumerable<OpcTarget.Endpoint> NoneEndpoints = opcTarget.GetEndpointsBySecurityPolicyUri(SecurityPolicies.None);
             foreach (OpcTarget.Endpoint endpoint in NoneEndpoints)
             {
-                endpoint.Issues.Add(new Issue("Security policy NONE"));
+                endpoint.Issues.Add(Issues.SecurityPolicyNone);
             }
 
             return opcTarget;
@@ -65,7 +65,7 @@ namespace Controller
             IEnumerable<OpcTarget.Endpoint> anonymousEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.Anonymous);
             foreach (OpcTarget.Endpoint endpoint in anonymousEndpoints)
             {
-                endpoint.Issues.Add(new Issue("ANONYMOUS"));
+                endpoint.Issues.Add(Issues.AnonymousAuthentication);
             }
 
             // "self-signed certificates should not be trusted automatically"
@@ -77,7 +77,7 @@ namespace Controller
             {
                 if (SelfSignedCertAccepted(endpoint.EndpointDescription).Result)
                 {
-                    endpoint.Issues.Add(new Issue("Self signed certificate accepted"));
+                    endpoint.Issues.Add(Issues.SelfSignedCertificateAccepted);
                 }
             }
 
@@ -87,14 +87,14 @@ namespace Controller
             // brute username - pass
             IEnumerable<OpcTarget.Endpoint> bruteEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.UserName)
                 .Where(e => e.SecurityPolicyUri == SecurityPolicies.None
-                    || e.Issues.Contains(new Issue("Self signed certificate accepted")));
+                    || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
             foreach (OpcTarget.Endpoint endpoint in bruteEndpoints)
             {
                 foreach ((string username, string password) in CommonCredentials())
                 {
                     if (IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password)).Result)
                     {
-                        endpoint.Issues.Add(new Issue($"COMMON CREDS ({username}:{password}) {endpoint.EndpointUrl}"));
+                        endpoint.Issues.Add(Issues.CommonCredentials);
                     }
                 }
             }
