@@ -42,6 +42,15 @@ namespace Controller
                 endpoint.Issues.Add(new Issue("BASIC 256"));
             }
 
+            // If securitypolicy is none, application authentication is disabled (clients do not use certificate)
+            // https://opcfoundation.org/forum/opc-certification-and-interoperability-testing/allowing-anonymous-user-access-a-security-breach-in-opc-ua-conversation/
+            // https://opcfoundation.org/forum/opc-ua-implementation-stacks-tools-and-samples/rationale-for-server-authenticating-client-certificates/
+            IEnumerable<OpcTarget.Endpoint> NoneEndpoints = opcTarget.GetEndpointsBySecurityPolicyUri(SecurityPolicies.None);
+            foreach (OpcTarget.Endpoint endpoint in NoneEndpoints)
+            {
+                endpoint.Issues.Add(new Issue("Security policy NONE"));
+            }
+
             return opcTarget;
         }
 
