@@ -16,7 +16,8 @@ namespace Controller
         private static OpcTarget TestTransportSecurity(OpcTarget opcTarget)
         {
 
-            // "The SecurityMode should be ′Sign′ or ′SignAndEncrypt′." - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
+            // "The SecurityMode should be ′Sign′ or ′SignAndEncrypt′."
+            //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
             IEnumerable<OpcTarget.Endpoint> NoneSecurityModeEndpoints = opcTarget.GetEndpointsBySecurityMode(MessageSecurityMode.None);
             IEnumerable<OpcTarget.Endpoint> invalidSecurityModeEndpoints = opcTarget.GetEndpointsBySecurityMode(MessageSecurityMode.Invalid);
 
@@ -58,8 +59,8 @@ namespace Controller
         // populate opcTarget with auth test results
         private static OpcTarget TestAuth(OpcTarget opcTarget)
         {
-            // TODO: CHECK ANONYMOUS AUTH
-            // "′anonymous′ should be used only for accessing non-critical UA server resources" - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
+            // "′anonymous′ should be used only for accessing non-critical UA server resources"
+            //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
             // try anonymous authentication
             IEnumerable<OpcTarget.Endpoint> anonymousEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.Anonymous);
             foreach (OpcTarget.Endpoint endpoint in anonymousEndpoints)
@@ -67,10 +68,27 @@ namespace Controller
                 endpoint.Issues.Add(new Issue("ANONYMOUS"));
             }
 
+            // "self-signed certificates should not be trusted automatically"
+            //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
+            // check if self-signed certificates are accepsted
+            foreach (OpcTarget.Endpoint endpoint in opcTarget.TargetServers
+                .SelectMany(s => s.Endpoints)
+                .Where(e => e.SecurityPolicyUri != SecurityPolicies.None))
+            {
+                if (SelfSignedCertAccepted(endpoint.EndpointDescription).Result)
+                {
+                    endpoint.Issues.Add(new Issue("Self signed certificate accepted"));
+                }
+            }
+
+            // The following checks only make sense if application authentication is disabled
+            //      OR if the server accepts self-signed certificates
+
             // brute username - pass
-            IEnumerable<OpcTarget.Endpoint> usernameEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.UserName);
-            IEnumerable<OpcTarget.Endpoint> usernameEndpointsNone = usernameEndpoints.Where(e => e.SecurityPolicyUri == SecurityPolicies.None);
-            foreach (OpcTarget.Endpoint endpoint in usernameEndpointsNone)
+            IEnumerable<OpcTarget.Endpoint> bruteEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.UserName)
+                .Where(e => e.SecurityPolicyUri == SecurityPolicies.None
+                    || e.Issues.Contains(new Issue("Self signed certificate accepted")));
+            foreach (OpcTarget.Endpoint endpoint in bruteEndpoints)
             {
                 foreach ((string username, string password) in CommonCredentials())
                 {
@@ -81,17 +99,6 @@ namespace Controller
                 }
             }
 
-            // "self-signed certificates should not be trusted automatically" - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
-            // brute username - pass when client cert is required
-            // if no error because of the cert -> server accepts self-signed client certs -> vulnerable
-            IEnumerable<OpcTarget.Endpoint> usernameEndpointsCertificate = usernameEndpoints.Where(e => e.SecurityPolicyUri != SecurityPolicies.None);
-            foreach (OpcTarget.Endpoint endpoint in usernameEndpointsCertificate)
-            {
-                // TODO: must use self-signed cert here (in the securityconfiguration when connecting)
-                // may try client cert with any other auth methods as well - is it used in anonymous login?
-                Console.WriteLine($"CERTIFICATE {endpoint.EndpointUrl}");
-            }
-
             return opcTarget;
         }
 
@@ -100,6 +107,21 @@ namespace Controller
         {
             // TODO: CHECK FOR READ/WRITE ACCESS for all users that are able to authenticate
             return opcTarget;
+        }
+
+        private async static Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription)
+        {
+            try
+            {
+                var session = await Util.ConnectionUtil.StartSession(endpointDescription, new UserIdentity());
+                session.Close();
+                session.Dispose();
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+            return true;
         }
 
         private async static Task<bool> IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity)
