@@ -22,7 +22,13 @@ namespace Util
             applicationConfiguration.SecurityConfiguration = new SecurityConfiguration();
 
             // Use self-signed certificate to connect
-            applicationConfiguration.SecurityConfiguration.ApplicationCertificate = new CertificateIdentifier(CertificateBuilder.Create(Subject).CreateForRSA());
+            applicationConfiguration.SecurityConfiguration.ApplicationCertificate = new CertificateIdentifier(
+                CertificateBuilder
+                    .Create(Subject)
+                    .AddExtension(
+                        new X509SubjectAltNameExtension("urn:opcfoundation.org:mypc",
+                        new string[] { "mypc", "mypc.opcfoundation.org", "192.168.1.100" }))
+                    .CreateForRSA());
 
             // accept any server certificates
             applicationConfiguration.CertificateValidator = new CertificateValidator();

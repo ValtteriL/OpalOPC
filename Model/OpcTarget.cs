@@ -83,6 +83,7 @@ namespace Model
 
             public Endpoint(EndpointDescription e)
             {
+                e.EndpointUrl = e.EndpointUrl.Replace("opc.http", "http"); // TODO: do something smarter...
                 this.EndpointDescription = e;
 
                 this.EndpointUrl = e.EndpointUrl;
