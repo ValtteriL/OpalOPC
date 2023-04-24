@@ -119,9 +119,14 @@ namespace Controller
                 session.Close();
                 session.Dispose();
             }
-            catch (Opc.Ua.ServiceResultException)
+            catch (Opc.Ua.ServiceResultException e)
             {
-                return false;
+                if (e.Message.Contains("Bad_SecurityChecksFailed") || e.Message.Contains("BadSecureChannelClosed"))
+                {
+                    return false;
+                }
+                Console.WriteLine($"UNKNOWN EXCEPTION: {endpointDescription.EndpointUrl}");
+                throw;
             }
             return true;
         }
