@@ -56,6 +56,12 @@ namespace Controller
             return opcTarget;
         }
 
+        // populate opcTarget with TLS test results
+        private static OpcTarget TestTLS(OpcTarget opcTarget)
+        {
+            // TODO
+            return opcTarget;
+        }
 
         // populate opcTarget with auth test results
         private static OpcTarget TestAuth(OpcTarget opcTarget)
