@@ -86,7 +86,7 @@ namespace Controller
 
             // brute username - pass
             IEnumerable<OpcTarget.Endpoint> bruteEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.UserName)
-                .Where(e => e.SecurityPolicyUri == SecurityPolicies.None
+                .Where(e => e.Issues.Contains(Issues.SecurityModeNone)
                     || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
             foreach (OpcTarget.Endpoint endpoint in bruteEndpoints)
             {
@@ -117,9 +117,9 @@ namespace Controller
                 session.Close();
                 session.Dispose();
             }
-            catch (System.Exception)
+            catch (Opc.Ua.ServiceResultException)
             {
-                throw;
+                return false;
             }
             return true;
         }

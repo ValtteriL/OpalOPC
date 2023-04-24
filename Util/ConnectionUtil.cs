@@ -1,9 +1,13 @@
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using Opc.Ua;
+using Opc.Ua.Security.Certificates;
 
 namespace Util
 {
     public static class ConnectionUtil
     {
+        private const string Subject = "CN=Test Cert Subject, C=US, S=Arizona, O=OPC Foundation";
 
         // Authenticate with OPC UA server and start a session
         public async static Task<Opc.Ua.Client.Session> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity)
@@ -15,9 +19,8 @@ namespace Util
             m_configuration.ClientConfiguration = new ClientConfiguration();
             m_configuration.SecurityConfiguration = new SecurityConfiguration();
 
-            // TODO: use self-signed certificate here
-            Console.WriteLine($"Using certificate {endpointDescription.ServerCertificate}");
-            m_configuration.SecurityConfiguration.ApplicationCertificate = new CertificateIdentifier(endpointDescription.ServerCertificate);
+            // Use self-signed certificate to connect
+            m_configuration.SecurityConfiguration.ApplicationCertificate = new CertificateIdentifier(CertificateBuilder.Create(Subject).CreateForRSA());
 
             // accept any server certificates
             m_configuration.CertificateValidator = new CertificateValidator();
@@ -43,6 +46,5 @@ namespace Util
             }
             return session;
         }
-
     }
 }
