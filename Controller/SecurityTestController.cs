@@ -1,5 +1,6 @@
 using Model;
 using Opc.Ua;
+using Util;
 
 namespace Controller
 {
@@ -113,7 +114,8 @@ namespace Controller
         {
             try
             {
-                var session = await Util.ConnectionUtil.StartSession(endpointDescription, new UserIdentity());
+                ConnectionUtil util = new ConnectionUtil();
+                var session = await util.StartSession(endpointDescription, new UserIdentity());
                 session.Close();
                 session.Dispose();
             }
@@ -128,7 +130,8 @@ namespace Controller
         {
             try
             {
-                var session = await Util.ConnectionUtil.StartSession(endpointDescription, userIdentity);
+                ConnectionUtil util = new ConnectionUtil();
+                var session = await util.StartSession(endpointDescription, userIdentity);
                 bool result = false;
                 if (session.Connected)
                 {

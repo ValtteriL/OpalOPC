@@ -5,36 +5,43 @@ using Opc.Ua.Security.Certificates;
 
 namespace Util
 {
-    public static class ConnectionUtil
+    public class ConnectionUtil
     {
         private const string Subject = "CN=Test Cert Subject, C=US, S=Arizona, O=OPC Foundation";
 
-        // Authenticate with OPC UA server and start a session
-        public async static Task<Opc.Ua.Client.Session> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity)
+        private ApplicationConfiguration applicationConfiguration;
+        private EndpointConfiguration endpointConfiguration;
+
+        public ConnectionUtil()
         {
-            ApplicationConfiguration m_configuration = new ApplicationConfiguration();
-            m_configuration.ApplicationName = "";
-            m_configuration.ApplicationUri = "";
-            m_configuration.ApplicationType = ApplicationType.Server;
-            m_configuration.ClientConfiguration = new ClientConfiguration();
-            m_configuration.SecurityConfiguration = new SecurityConfiguration();
+            applicationConfiguration = new ApplicationConfiguration();
+            applicationConfiguration.ApplicationName = "";
+            applicationConfiguration.ApplicationUri = "";
+            applicationConfiguration.ApplicationType = ApplicationType.Server;
+            applicationConfiguration.ClientConfiguration = new ClientConfiguration();
+            applicationConfiguration.SecurityConfiguration = new SecurityConfiguration();
 
             // Use self-signed certificate to connect
-            m_configuration.SecurityConfiguration.ApplicationCertificate = new CertificateIdentifier(CertificateBuilder.Create(Subject).CreateForRSA());
+            applicationConfiguration.SecurityConfiguration.ApplicationCertificate = new CertificateIdentifier(CertificateBuilder.Create(Subject).CreateForRSA());
 
             // accept any server certificates
-            m_configuration.CertificateValidator = new CertificateValidator();
-            m_configuration.CertificateValidator.AutoAcceptUntrustedCertificates = true;
+            applicationConfiguration.CertificateValidator = new CertificateValidator();
+            applicationConfiguration.CertificateValidator.AutoAcceptUntrustedCertificates = true;
 
-            EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(m_configuration);
+            endpointConfiguration = EndpointConfiguration.Create(applicationConfiguration);
+        }
+
+        // Authenticate with OPC UA server and start a session
+        public async Task<Opc.Ua.Client.Session> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity)
+        {
             ConfiguredEndpoint endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
 
             var session = await Opc.Ua.Client.Session.Create(
-                m_configuration,
+                this.applicationConfiguration,
                 endpoint,
                 false,
                 false,
-                m_configuration.ApplicationName,
+                this.applicationConfiguration.ApplicationName,
                 30 * 1000,
                 userIdentity,
                 null
