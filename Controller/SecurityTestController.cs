@@ -72,15 +72,16 @@ namespace Controller
             // "self-signed certificates should not be trusted automatically"
             //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
             // check if self-signed certificates are accepsted
-            foreach (OpcTarget.Endpoint endpoint in opcTarget.TargetServers
+            Parallel.ForEach(opcTarget.TargetServers
                 .SelectMany(s => s.Endpoints)
-                .Where(e => e.SecurityPolicyUri != SecurityPolicies.None))
-            {
-                if (SelfSignedCertAccepted(endpoint.EndpointDescription).Result)
+                .Where(e => e.SecurityPolicyUri != SecurityPolicies.None), endpoint =>
                 {
-                    endpoint.Issues.Add(Issues.SelfSignedCertificateAccepted);
-                }
-            }
+                    if (SelfSignedCertAccepted(endpoint.EndpointDescription).Result)
+                    {
+                        endpoint.Issues.Add(Issues.SelfSignedCertificateAccepted);
+                    }
+                });
+
 
             // The following checks only make sense if application authentication is disabled
             //      OR if the server accepts self-signed certificates
@@ -89,7 +90,8 @@ namespace Controller
             IEnumerable<OpcTarget.Endpoint> bruteEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.UserName)
                 .Where(e => e.Issues.Contains(Issues.SecurityModeNone)
                     || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
-            foreach (OpcTarget.Endpoint endpoint in bruteEndpoints)
+
+            Parallel.ForEach(bruteEndpoints, endpoint =>
             {
                 foreach ((string username, string password) in CommonCredentials())
                 {
@@ -98,7 +100,7 @@ namespace Controller
                         endpoint.Issues.Add(Issues.CommonCredentials);
                     }
                 }
-            }
+            });
 
             return opcTarget;
         }
