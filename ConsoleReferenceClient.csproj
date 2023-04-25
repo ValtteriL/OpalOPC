@@ -5,7 +5,7 @@
     <AssemblyName>opc-ua-security-scanner</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>opc-ua-security-scanner</PackageId>
-    <RootNamespace>Quickstarts.ConsoleReferenceClient</RootNamespace>
+    <RootNamespace>OpcUaSecurityScanner</RootNamespace>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -26,12 +26,6 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Quickstarts.ReferenceClient.Config.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
