@@ -113,6 +113,30 @@ namespace Controller
         private static OpcTarget TestAccessControl(OpcTarget opcTarget)
         {
             // TODO: CHECK FOR READ/WRITE ACCESS for all users that are able to authenticate
+            // https://reference.opcfoundation.org/Core/Part4/v105/docs/
+
+
+            ConnectionUtil util = new ConnectionUtil();
+            var session = util.StartSession(opcTarget.TargetServers.First().Endpoints.First().EndpointDescription, new UserIdentity()).Result;
+
+            BrowseDescription nodeToBrowse = new BrowseDescription();
+
+            nodeToBrowse.NodeId = Objects.RootFolder;
+            nodeToBrowse.BrowseDirection = BrowseDirection.Forward;
+            nodeToBrowse.ReferenceTypeId = null; // this decides which nodetypes are followed. If null, all are followed
+            nodeToBrowse.IncludeSubtypes = true;
+            nodeToBrowse.NodeClassMask = 0; // this decides the nodeclasses that will be followed. 0 = all (bitmask)
+            nodeToBrowse.ResultMask = (uint)(int)BrowseResultMask.All; // which fields in referencedescription will be returned (bitmask)
+
+            BrowseDescriptionCollection nodesToBrowse = new BrowseDescriptionCollection();
+            nodesToBrowse.Add(nodeToBrowse);
+
+            // browse https://reference.opcfoundation.org/Core/Part4/v105/docs/5.8.2
+            ResponseHeader responseHeader = session.Browse(null, null, 0, nodesToBrowse, out BrowseResultCollection results, out DiagnosticInfoCollection diagnosticInfos);
+
+
+            // TODO: READ/WRITE: https://reference.opcfoundation.org/Core/Part4/v105/docs/5.10
+
             return opcTarget;
         }
 
