@@ -54,10 +54,6 @@ namespace Util
                 null
             ).ConfigureAwait(false);
 
-            if (!session.Connected)
-            {
-                return null;
-            }
             return session;
         }
     }
