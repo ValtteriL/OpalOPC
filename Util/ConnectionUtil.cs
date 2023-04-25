@@ -1,6 +1,5 @@
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using Opc.Ua;
+using Opc.Ua.Client;
 using Opc.Ua.Security.Certificates;
 
 namespace Util
@@ -38,11 +37,13 @@ namespace Util
         }
 
         // Authenticate with OPC UA server and start a session
-        public async Task<Opc.Ua.Client.Session> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity)
+        public async Task<ISession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity)
         {
             ConfiguredEndpoint endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
 
-            var session = await Opc.Ua.Client.Session.Create(
+            ISessionFactory sessionFactory = new DefaultSessionFactory();
+
+            var session = await sessionFactory.CreateAsync(
                 this.applicationConfiguration,
                 endpoint,
                 false,

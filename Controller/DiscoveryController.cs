@@ -31,6 +31,9 @@ namespace Controller
             Console.WriteLine("### Discovering applications");
             ApplicationDescriptionCollection adc = asd.FindServers(null);
 
+            //asd.FindServers(null, "opc.tcp://echo", null, null, out ApplicationDescriptionCollection adc);
+            //asd.FindServers(null, "https://echo", null, null, out ApplicationDescriptionCollection adc);
+
             foreach (ApplicationDescription ad in adc)
             {
 
@@ -43,7 +46,8 @@ namespace Controller
                     // ask each discoveryUrl for endpoints
                     Console.WriteLine($"### Discovering endpoints for {ad.ApplicationName}:{s}");
 
-                    DiscoveryClient sss = DiscoveryClient.Create(new Uri(s.Replace("echo", "echo.koti.kontu").Replace("opc.http", "http"))); // TODO: make something smarter up
+                    DiscoveryClient sss = DiscoveryClient.Create(new Uri(s.Replace("opc.http", "http"))); // TODO: make something smarter up
+                    //DiscoveryClient sss = DiscoveryClient.Create(new Uri(s)); // TODO: make something smarter up
                     EndpointDescriptionCollection edc = sss.GetEndpoints(null);
 
                     target.AddServer(s, edc);

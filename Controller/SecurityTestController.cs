@@ -122,6 +122,7 @@ namespace Controller
         {
             try
             {
+                Console.WriteLine($"Trying {endpointDescription.EndpointUrl}...");
                 ConnectionUtil util = new ConnectionUtil();
                 var session = await util.StartSession(endpointDescription, new UserIdentity());
                 session.Close();
