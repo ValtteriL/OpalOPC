@@ -77,10 +77,8 @@ namespace Controller
 
             // "self-signed certificates should not be trusted automatically"
             //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
-            // check if self-signed certificates are accepsted
-            Parallel.ForEach(opcTarget.TargetServers
-                .SelectMany(s => s.Endpoints)
-                .Where(e => e.SecurityPolicyUri != SecurityPolicies.None), endpoint =>
+            // check if self-signed certificates are accepted
+            Parallel.ForEach(opcTarget.GetEndpointsBySecurityPolicyUriNot(SecurityPolicies.None), endpoint =>
                 {
                     if (SelfSignedCertAccepted(endpoint.EndpointDescription).Result)
                     {
@@ -88,16 +86,8 @@ namespace Controller
                     }
                 });
 
-
-            // The following checks only make sense if application authentication is disabled
-            //      OR if the server accepts self-signed certificates
-
             // brute username - pass
-            IEnumerable<OpcTarget.Endpoint> bruteEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.UserName)
-                .Where(e => e.Issues.Contains(Issues.SecurityModeNone)
-                    || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
-
-            Parallel.ForEach(bruteEndpoints, endpoint =>
+            Parallel.ForEach(GetBruteableEndpoints(opcTarget), endpoint =>
             {
                 foreach ((string username, string password) in CommonCredentials())
                 {
@@ -109,6 +99,14 @@ namespace Controller
             });
 
             return opcTarget;
+        }
+
+        // Get bruteable endpoints = application authentication is disabled OR self-signed certificates accepted
+        private static IEnumerable<OpcTarget.Endpoint> GetBruteableEndpoints(OpcTarget opcTarget)
+        {
+            return opcTarget.GetEndpointsByUserTokenType(UserTokenType.UserName)
+                .Where(e => e.Issues.Contains(Issues.SecurityModeNone)
+                    || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
         }
 
         // populate opcTarget with access control results

@@ -46,6 +46,11 @@ namespace Model
             return TargetServers.SelectMany(s => s.Endpoints.Where(e => e.SecurityPolicyUri == securityPolicyUri));
         }
 
+        public IEnumerable<Endpoint> GetEndpointsBySecurityPolicyUriNot(string securityPolicyUri)
+        {
+            return TargetServers.SelectMany(s => s.Endpoints.Where(e => e.SecurityPolicyUri != securityPolicyUri));
+        }
+
         public override string ToString()
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
