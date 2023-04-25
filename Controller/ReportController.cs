@@ -9,6 +9,7 @@ namespace Controller
         // Given discoveryUri, discover all applications
         public static void GenerateReport(IEnumerable<OpcTarget> targets)
         {
+            Console.WriteLine(targets);
         }
     }
 }

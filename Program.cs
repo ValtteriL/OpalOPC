@@ -17,16 +17,15 @@ namespace OpcUaSecurityScanner
                 Utils.GetAssemblyTimestamp().ToString("G", CultureInfo.InvariantCulture),
                 Utils.GetAssemblySoftwareVersion());
 
-            ICollection<OpcTarget> targets = DiscoveryController.DiscoverTargets(new Uri("opc.tcp://echo.koti.kontu:53530"));
+            ICollection<OpcTarget> targets = DiscoveryController.DiscoverTargets(new Uri("opc.tcp://echo:53530"));
             ICollection<OpcTarget> testedTargets = new List<OpcTarget>();
 
             foreach (OpcTarget target in targets)
             {
                 testedTargets.Add(SecurityTestController.TestOpcTargetSecurity(target));
-                Console.WriteLine(target);
             }
 
-            ReportController.GenerateReport(testedTargets);
+            //ReportController.GenerateReport(testedTargets);
         }
     }
 }

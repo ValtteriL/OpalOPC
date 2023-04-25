@@ -17,6 +17,8 @@ namespace Controller
         private static OpcTarget TestTransportSecurity(OpcTarget opcTarget)
         {
 
+            Console.WriteLine("### Testing transport security");
+
             // "The SecurityMode should be ′Sign′ or ′SignAndEncrypt′."
             //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
             IEnumerable<Endpoint> NoneSecurityModeEndpoints = opcTarget.GetEndpointsBySecurityMode(MessageSecurityMode.None);
@@ -66,6 +68,8 @@ namespace Controller
         // populate opcTarget with auth test results
         private static OpcTarget TestAuth(OpcTarget opcTarget)
         {
+            Console.WriteLine("### Testing authentication");
+
             // "′anonymous′ should be used only for accessing non-critical UA server resources"
             //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
             // try anonymous authentication
@@ -115,29 +119,48 @@ namespace Controller
             // TODO: CHECK FOR READ/WRITE ACCESS for all users that are able to authenticate
             // https://reference.opcfoundation.org/Core/Part4/v105/docs/
 
+            Console.WriteLine("### Testing access control");
 
             ConnectionUtil util = new ConnectionUtil();
-            var session = util.StartSession(opcTarget.TargetServers.First().Endpoints.First().EndpointDescription, new UserIdentity()).Result;
+            Endpoint endpoint = opcTarget.TargetServers.SelectMany(s => s.Endpoints).Where(e => e.SecurityMode == MessageSecurityMode.None && e.SecurityPolicyUri == SecurityPolicies.None).First();
+            var session = util.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
 
             BrowseDescription nodeToBrowse = new BrowseDescription();
 
-            nodeToBrowse.NodeId = Objects.RootFolder;
+            nodeToBrowse.NodeId = Objects.RootFolder; // "The rootfolder contains different folders, one of these is the Objects folder, and others, like Types or Views."
             nodeToBrowse.BrowseDirection = BrowseDirection.Forward;
             nodeToBrowse.ReferenceTypeId = null; // this decides which nodetypes are followed. If null, all are followed
             nodeToBrowse.IncludeSubtypes = true;
-            nodeToBrowse.NodeClassMask = 0; // this decides the nodeclasses that will be followed. 0 = all (bitmask)
+            nodeToBrowse.NodeClassMask = (uint)NodeClass.Unspecified; // this decides the nodeclasses that will be followed. 0 = all (bitmask)
             nodeToBrowse.ResultMask = (uint)(int)BrowseResultMask.All; // which fields in referencedescription will be returned (bitmask)
 
             BrowseDescriptionCollection nodesToBrowse = new BrowseDescriptionCollection();
             nodesToBrowse.Add(nodeToBrowse);
 
             // browse https://reference.opcfoundation.org/Core/Part4/v105/docs/5.8.2
-            ResponseHeader responseHeader = session.Browse(null, null, 0, nodesToBrowse, out BrowseResultCollection results, out DiagnosticInfoCollection diagnosticInfos);
-
+            //BrowseRecursively(session, Objects.RootFolder);
+            BrowseRecursively(session, Objects.ObjectsFolder);
 
             // TODO: READ/WRITE: https://reference.opcfoundation.org/Core/Part4/v105/docs/5.10
+            // TODO: maybe better to
+            // 1. check if RBAC is in use: https://reference.opcfoundation.org/Core/Part5/v104/docs/F
+            // 2. if so, check which role the user has | if not, determine that all nodes can be accessed
+            // 3. check which nodes the user can access
 
             return opcTarget;
+        }
+
+        private static void BrowseRecursively(Opc.Ua.Client.ISession session, NodeId nodeId)
+        {
+            ReferenceDescriptionCollection nextRefs;
+            byte[] nextCp;
+            session.Browse(null, null, nodeId, 0, BrowseDirection.Forward, ReferenceTypeIds.HierarchicalReferences, true, (uint)NodeClass.Unspecified, out nextCp, out nextRefs);
+
+            foreach (ReferenceDescription description in nextRefs)
+            {
+                Console.WriteLine($"Node: DisplayName = {description.DisplayName}, BrowseName = {description.BrowseName}, NodeClass = {description.NodeClass}");
+                BrowseRecursively(session, ExpandedNodeId.ToNodeId(description.NodeId, session.NamespaceUris));
+            }
         }
 
         private async static Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription)
