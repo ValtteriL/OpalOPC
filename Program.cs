@@ -2,6 +2,7 @@ using System.Globalization;
 using Controller;
 using Model;
 using Opc.Ua;
+using View;
 
 namespace OpcUaSecurityScanner
 {
@@ -9,6 +10,8 @@ namespace OpcUaSecurityScanner
     {
         public static async Task Main(string[] args)
         {
+            Reporter reporter = new Reporter();
+
             TextWriter output = Console.Out;
             output.WriteLine("OPC UA Console Reference Client");
 
@@ -25,7 +28,7 @@ namespace OpcUaSecurityScanner
                 testedTargets.Add(SecurityTestController.TestOpcTargetSecurity(target));
             }
 
-            ReportController.GenerateReport(testedTargets);
+            ReportController.GenerateReport(reporter, testedTargets);
         }
     }
 }

@@ -1,5 +1,6 @@
 using Model;
 using Opc.Ua;
+using View;
 
 namespace Controller
 {
@@ -7,12 +8,22 @@ namespace Controller
     {
 
         // Given discoveryUri, discover all applications
-        public static void GenerateReport(IEnumerable<OpcTarget> targets)
+        public static void GenerateReport(IReporter reporter, IEnumerable<OpcTarget> targets)
         {
-            foreach(OpcTarget t in targets)
+            // TODO: merge opctarget endpoints and convert the collection into report
+            foreach(OpcTarget target in targets)
             {
-                Console.WriteLine(t);
+                MergeEndpoints(target);
             }
+
+            reporter.printPdfReport()
         }
+
+        private static OpcTarget MergeEndpoints(OpcTarget target)
+        {
+            // TODO
+            return target;
+        }
+
     }
 }
