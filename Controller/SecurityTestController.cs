@@ -10,7 +10,7 @@ namespace Controller
         // Run all security tests and return result-populated opcTarget
         public static OpcTarget TestOpcTargetSecurity(OpcTarget opcTarget)
         {
-            return TestAccessControl(TestAuth(TestTransportSecurity(opcTarget)));
+            return TestTLS(TestAuditingRBAC(TestAuth(TestTransportSecurity(opcTarget))));
         }
 
         // populate opcTarget with transport test results
@@ -62,6 +62,7 @@ namespace Controller
         private static OpcTarget TestTLS(OpcTarget opcTarget)
         {
             // TODO
+            Console.WriteLine("### Testing TLS");
             return opcTarget;
         }
 
@@ -76,6 +77,7 @@ namespace Controller
             IEnumerable<Endpoint> anonymousEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.Anonymous);
             foreach (Endpoint endpoint in anonymousEndpoints)
             {
+                // TODO: record the working credentials and the associated role somehow!
                 endpoint.Issues.Add(Issues.AnonymousAuthentication);
             }
 
@@ -97,7 +99,21 @@ namespace Controller
                 {
                     if (IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password)).Result)
                     {
+                        // TODO: record the working credentials and the associated role somehow!
                         endpoint.Issues.Add(Issues.CommonCredentials);
+
+                        // get roles
+                        // TODO: check the roles granted for all working credentials
+                        NodeIdCollection roleIds = session.Identity.GrantedRoleIds;
+                        foreach (NodeId id in roleIds)
+                        {
+                            Console.WriteLine($"ROLE = SOMETHING!");
+
+                            if (id == ObjectIds.WellKnownRole_Anonymous)
+                            {
+                                Console.WriteLine($"ROLE = ANONYMOUS!");
+                            }
+                        }
                     }
                 }
             });
@@ -114,60 +130,45 @@ namespace Controller
         }
 
         // populate opcTarget with access control results
-        private static OpcTarget TestAccessControl(OpcTarget opcTarget)
+        private static OpcTarget TestAuditingRBAC(OpcTarget opcTarget)
         {
-            // TODO: CHECK FOR READ/WRITE ACCESS for all users that are able to authenticate
-            // https://reference.opcfoundation.org/Core/Part4/v105/docs/
-
             Console.WriteLine("### Testing access control");
 
-            ConnectionUtil util = new ConnectionUtil();
+            // TODO: take all endpoints where login is possible (anonymous, common creds) - but only login with single method
             Endpoint endpoint = opcTarget.TargetServers.SelectMany(s => s.Endpoints).Where(e => e.SecurityMode == MessageSecurityMode.None && e.SecurityPolicyUri == SecurityPolicies.None).First();
+
+            ConnectionUtil util = new ConnectionUtil();
             var session = util.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
 
-            BrowseDescription nodeToBrowse = new BrowseDescription();
+            // check if auditing enabled
+            DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
+            if (!(bool)auditingValue.GetValue<System.Boolean>(false))
+            {
+                endpoint.Issues.Add(Issues.AuditingDisabled);
+            }
 
-            nodeToBrowse.NodeId = Objects.RootFolder; // "The rootfolder contains different folders, one of these is the Objects folder, and others, like Types or Views."
-            nodeToBrowse.BrowseDirection = BrowseDirection.Forward;
-            nodeToBrowse.ReferenceTypeId = null; // this decides which nodetypes are followed. If null, all are followed
-            nodeToBrowse.IncludeSubtypes = true;
-            nodeToBrowse.NodeClassMask = (uint)NodeClass.Unspecified; // this decides the nodeclasses that will be followed. 0 = all (bitmask)
-            nodeToBrowse.ResultMask = (uint)(int)BrowseResultMask.All; // which fields in referencedescription will be returned (bitmask)
-
-            BrowseDescriptionCollection nodesToBrowse = new BrowseDescriptionCollection();
-            nodesToBrowse.Add(nodeToBrowse);
-
-            // browse https://reference.opcfoundation.org/Core/Part4/v105/docs/5.8.2
-            //BrowseRecursively(session, Objects.RootFolder);
-            BrowseRecursively(session, Objects.ObjectsFolder);
-
-            // TODO: READ/WRITE: https://reference.opcfoundation.org/Core/Part4/v105/docs/5.10
-            // TODO: maybe better to
-            // 1. check if RBAC is in use: https://reference.opcfoundation.org/Core/Part5/v104/docs/F
-            // 2. if so, check which role the user has | if not, determine that all nodes can be accessed
-            // 3. check which nodes the user can access
+            // check if rbac supported (if its advertised in profiles or not)
+            DataValue serverProfileArrayValue = session.ReadValue(Util.WellKnownNodes.Server_ServerCapabilities_ServerProfileArray);
+            string[] serverProfileArray = (string[])serverProfileArrayValue.GetValue<string[]>(new string[0]);
+            if (!serverProfileArray.Intersect(RBAC_Profiles).Any())
+            {
+                endpoint.Issues.Add(Issues.NotRBACCapable);
+            }
 
             return opcTarget;
         }
 
-        private static void BrowseRecursively(Opc.Ua.Client.ISession session, NodeId nodeId)
-        {
-            ReferenceDescriptionCollection nextRefs;
-            byte[] nextCp;
-            session.Browse(null, null, nodeId, 0, BrowseDirection.Forward, ReferenceTypeIds.HierarchicalReferences, true, (uint)NodeClass.Unspecified, out nextCp, out nextRefs);
-
-            foreach (ReferenceDescription description in nextRefs)
-            {
-                Console.WriteLine($"Node: DisplayName = {description.DisplayName}, BrowseName = {description.BrowseName}, NodeClass = {description.NodeClass}");
-                BrowseRecursively(session, ExpandedNodeId.ToNodeId(description.NodeId, session.NamespaceUris));
-            }
-        }
+        private static ICollection<string> RBAC_Profiles = new List<string> {
+                Util.WellKnownProfiles.Security_User_Access_Control_Full,
+                Util.WellKnownProfileURIs.Security_User_Access_Control_Full,
+                Util.WellKnownProfiles.UAFX_Controller_Server_Profile,
+                Util.WellKnownProfileURIs.UAFX_Controller_Server_Profile
+            };
 
         private async static Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription)
         {
             try
             {
-                Console.WriteLine($"Trying {endpointDescription.EndpointUrl}...");
                 ConnectionUtil util = new ConnectionUtil();
                 var session = await util.StartSession(endpointDescription, new UserIdentity());
                 session.Close();
@@ -185,16 +186,19 @@ namespace Controller
             return true;
         }
 
-        private async static Task<bool> IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity)
+        private static bool IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity, out NodeIdCollection roleIds)
         {
+            roleIds = new NodeIdCollection();
+
             try
             {
                 ConnectionUtil util = new ConnectionUtil();
-                var session = await util.StartSession(endpointDescription, userIdentity);
+                var session = util.StartSession(endpointDescription, userIdentity).Result;
                 bool result = false;
                 if (session.Connected)
                 {
                     result = true;
+                    roleIds = session.Identity.GrantedRoleIds;
                 }
 
                 session.Close();

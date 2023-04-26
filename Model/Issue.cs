@@ -20,6 +20,8 @@ namespace Model
         public static Issue SecurityPolicyNone = new Issue("SECURITY POLICY NONE");
         public static Issue SelfSignedCertificateAccepted = new Issue("SELF SIGNED CERTIFICATE ACCEPTED");
         public static Issue CommonCredentials = new Issue("COMMON CREDENTIALS");
+        public static Issue NotRBACCapable = new Issue("NOT CAPABLE OF RBAC");
+        public static Issue AuditingDisabled = new Issue("AUDITING IS DISABLED");
 
     }
 }
