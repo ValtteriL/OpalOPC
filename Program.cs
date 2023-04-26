@@ -25,7 +25,7 @@ namespace OpcUaSecurityScanner
                 testedTargets.Add(SecurityTestController.TestOpcTargetSecurity(target));
             }
 
-            //ReportController.GenerateReport(testedTargets);
+            ReportController.GenerateReport(testedTargets);
         }
     }
 }

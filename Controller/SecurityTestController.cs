@@ -77,7 +77,6 @@ namespace Controller
             IEnumerable<Endpoint> anonymousEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.Anonymous);
             foreach (Endpoint endpoint in anonymousEndpoints)
             {
-                // TODO: record the working credentials and the associated role somehow!
                 endpoint.Issues.Add(Issues.AnonymousAuthentication);
             }
 
@@ -97,23 +96,9 @@ namespace Controller
             {
                 foreach ((string username, string password) in Util.Credentials.CommonCredentials)
                 {
-                    if (IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password)).Result)
+                    if (IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password), out NodeIdCollection roleIds))
                     {
-                        // TODO: record the working credentials and the associated role somehow!
-                        endpoint.Issues.Add(Issues.CommonCredentials);
-
-                        // get roles
-                        // TODO: check the roles granted for all working credentials
-                        NodeIdCollection roleIds = session.Identity.GrantedRoleIds;
-                        foreach (NodeId id in roleIds)
-                        {
-                            Console.WriteLine($"ROLE = SOMETHING!");
-
-                            if (id == ObjectIds.WellKnownRole_Anonymous)
-                            {
-                                Console.WriteLine($"ROLE = ANONYMOUS!");
-                            }
-                        }
+                        endpoint.Issues.Add(Issues.CommonCredentials(username, password, roleIds));
                     }
                 }
             });
@@ -121,10 +106,19 @@ namespace Controller
             return opcTarget;
         }
 
-        // Get bruteable endpoints = application authentication is disabled OR self-signed certificates accepted
+        // Get bruteable endpoints = username + application authentication is disabled OR self-signed certificates accepted
         private static IEnumerable<Endpoint> GetBruteableEndpoints(OpcTarget opcTarget)
         {
             return opcTarget.GetEndpointsByUserTokenType(UserTokenType.UserName)
+                .Where(e => e.Issues.Contains(Issues.SecurityModeNone)
+                    || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
+        }
+
+        // Get endpoints that can be logged into = anonymous or username + application authentication is disabled OR self-signed certificates accepted
+        private static IEnumerable<Endpoint> GetLoginSuccessfulEndpoints(OpcTarget opcTarget)
+        {
+            return opcTarget.GetEndpointsByUserTokenType(UserTokenType.UserName)
+                .Concat(opcTarget.GetEndpointsByUserTokenType(UserTokenType.Anonymous))
                 .Where(e => e.Issues.Contains(Issues.SecurityModeNone)
                     || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
         }
@@ -134,26 +128,42 @@ namespace Controller
         {
             Console.WriteLine("### Testing access control");
 
-            // TODO: take all endpoints where login is possible (anonymous, common creds) - but only login with single method
-            Endpoint endpoint = opcTarget.TargetServers.SelectMany(s => s.Endpoints).Where(e => e.SecurityMode == MessageSecurityMode.None && e.SecurityPolicyUri == SecurityPolicies.None).First();
+            // take all endpoints where login is possible
+            IEnumerable<Endpoint> targetEndpoints = GetLoginSuccessfulEndpoints(opcTarget);
 
-            ConnectionUtil util = new ConnectionUtil();
-            var session = util.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
-
-            // check if auditing enabled
-            DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
-            if (!(bool)auditingValue.GetValue<System.Boolean>(false))
+            Parallel.ForEach(targetEndpoints, endpoint =>
             {
-                endpoint.Issues.Add(Issues.AuditingDisabled);
-            }
+                UserIdentity identity;
 
-            // check if rbac supported (if its advertised in profiles or not)
-            DataValue serverProfileArrayValue = session.ReadValue(Util.WellKnownNodes.Server_ServerCapabilities_ServerProfileArray);
-            string[] serverProfileArray = (string[])serverProfileArrayValue.GetValue<string[]>(new string[0]);
-            if (!serverProfileArray.Intersect(RBAC_Profiles).Any())
-            {
-                endpoint.Issues.Add(Issues.NotRBACCapable);
-            }
+                // use anonymous if available, otherwise first valid credential
+                if (endpoint.UserTokenTypes.Contains(UserTokenType.Anonymous))
+                {
+                    identity = new UserIdentity();
+                }
+                else
+                {
+                    CommonCredentialsIssue credsIssue = (CommonCredentialsIssue) endpoint.Issues.First(i => i.GetType() == typeof(CommonCredentialsIssue));
+                    identity = new UserIdentity(username: credsIssue.username, password: credsIssue.password);
+                }
+
+                ConnectionUtil util = new ConnectionUtil();
+                var session = util.StartSession(endpoint.EndpointDescription, identity).Result;
+
+                // check if auditing enabled
+                DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
+                if (!(bool)auditingValue.GetValue<System.Boolean>(false))
+                {
+                    endpoint.Issues.Add(Issues.AuditingDisabled);
+                }
+
+                // check if rbac supported (if its advertised in profiles or not)
+                DataValue serverProfileArrayValue = session.ReadValue(Util.WellKnownNodes.Server_ServerCapabilities_ServerProfileArray);
+                string[] serverProfileArray = (string[])serverProfileArrayValue.GetValue<string[]>(new string[0]);
+                if (!serverProfileArray.Intersect(RBAC_Profiles).Any())
+                {
+                    endpoint.Issues.Add(Issues.NotRBACCapable);
+                }
+            });
 
             return opcTarget;
         }
@@ -206,7 +216,7 @@ namespace Controller
 
                 return result;
             }
-            catch (Opc.Ua.ServiceResultException)
+            catch (Exception)
             {
                 return false;
             }
