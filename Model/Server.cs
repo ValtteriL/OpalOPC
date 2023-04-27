@@ -17,5 +17,21 @@ namespace Model
             }
         }
 
+        public void MergeEndpoints()
+        {
+            foreach (Endpoint endpoint in Endpoints)
+            {
+                // TODO: create a new object for every unique EndpointUrl and collect there:
+                // - SecurityPolicyUris
+                // - SecurityModes
+                // - UserTokenPolicyIds
+                // - UserTokenTypes
+                // - ServerCertificate
+                // - EndpointUrl
+
+                // lsit of ^^ shall be visible in the JSON instead of targetServers
+            }
+        }
+
     }
 }

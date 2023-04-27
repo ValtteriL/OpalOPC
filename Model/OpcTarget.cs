@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Opc.Ua;
 namespace Model
 {
@@ -71,8 +70,10 @@ namespace Model
         // Merge endpoints with identical URI, add up their findings
         public void MergeEndpoints()
         {
-            // TODO
-            return;
+            foreach (Server server in TargetServers)
+            {
+                server.MergeEndpoints();
+            }
         }
     }
 }
