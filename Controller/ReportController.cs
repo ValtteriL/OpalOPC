@@ -7,22 +7,16 @@ namespace Controller
     public static class ReportController
     {
 
-        // Given discoveryUri, discover all applications
-        public static void GenerateReport(IReporter reporter, IEnumerable<OpcTarget> targets)
+        // Reporter and targets, generate report
+        public static void GenerateReport(IReporter reporter, ICollection<OpcTarget> targets)
         {
             // TODO: merge opctarget endpoints and convert the collection into report
             foreach(OpcTarget target in targets)
             {
-                MergeEndpoints(target);
+                target.MergeEndpoints();
             }
 
-            reporter.printPdfReport()
-        }
-
-        private static OpcTarget MergeEndpoints(OpcTarget target)
-        {
-            // TODO
-            return target;
+            reporter.printPdfReport(targets, "");
         }
 
     }

@@ -51,10 +51,28 @@ namespace Model
             return TargetServers.SelectMany(s => s.Endpoints.Where(e => e.SecurityPolicyUri != securityPolicyUri));
         }
 
-        public override string ToString()
+        // Get bruteable endpoints = username + application authentication is disabled OR self-signed certificates accepted
+        public IEnumerable<Endpoint> GetBruteableEndpoints()
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            return JsonSerializer.Serialize(this, options);
+            return this.GetEndpointsByUserTokenType(UserTokenType.UserName)
+                .Where(e => e.Issues.Contains(Issues.SecurityModeNone)
+                    || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
+        }
+
+        // Get endpoints that can be logged into = anonymous or username + application authentication is disabled OR self-signed certificates accepted
+        public IEnumerable<Endpoint> GetLoginSuccessfulEndpoints()
+        {
+            return this.GetEndpointsByUserTokenType(UserTokenType.UserName)
+                .Concat(this.GetEndpointsByUserTokenType(UserTokenType.Anonymous))
+                .Where(e => e.Issues.Contains(Issues.SecurityModeNone)
+                    || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
+        }
+
+        // Merge endpoints with identical URI, add up their findings
+        public void MergeEndpoints()
+        {
+            // TODO
+            return;
         }
     }
 }

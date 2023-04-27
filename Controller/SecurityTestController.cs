@@ -7,10 +7,17 @@ namespace Controller
 
     public static class SecurityTestController
     {
+
+
         // Run all security tests and return result-populated opcTarget
-        public static OpcTarget TestOpcTargetSecurity(OpcTarget opcTarget)
+        public static ICollection<OpcTarget> TestOpcTargetSecurity(ICollection<OpcTarget> opcTargets)
         {
-            return TestTLS(TestAuditingRBAC(TestAuth(TestTransportSecurity(opcTarget))));
+            foreach (OpcTarget target in opcTargets)
+            {
+                TestTLS(TestAuditingRBAC(TestAuth(TestTransportSecurity(target))));
+            }
+
+            return opcTargets;
         }
 
         // populate opcTarget with transport test results
@@ -92,7 +99,7 @@ namespace Controller
                 });
 
             // brute username - pass
-            Parallel.ForEach(GetBruteableEndpoints(opcTarget), endpoint =>
+            Parallel.ForEach(opcTarget.GetBruteableEndpoints(), endpoint =>
             {
                 foreach ((string username, string password) in Util.Credentials.CommonCredentials)
                 {
@@ -106,30 +113,13 @@ namespace Controller
             return opcTarget;
         }
 
-        // Get bruteable endpoints = username + application authentication is disabled OR self-signed certificates accepted
-        private static IEnumerable<Endpoint> GetBruteableEndpoints(OpcTarget opcTarget)
-        {
-            return opcTarget.GetEndpointsByUserTokenType(UserTokenType.UserName)
-                .Where(e => e.Issues.Contains(Issues.SecurityModeNone)
-                    || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
-        }
-
-        // Get endpoints that can be logged into = anonymous or username + application authentication is disabled OR self-signed certificates accepted
-        private static IEnumerable<Endpoint> GetLoginSuccessfulEndpoints(OpcTarget opcTarget)
-        {
-            return opcTarget.GetEndpointsByUserTokenType(UserTokenType.UserName)
-                .Concat(opcTarget.GetEndpointsByUserTokenType(UserTokenType.Anonymous))
-                .Where(e => e.Issues.Contains(Issues.SecurityModeNone)
-                    || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
-        }
-
         // populate opcTarget with access control results
         private static OpcTarget TestAuditingRBAC(OpcTarget opcTarget)
         {
             Console.WriteLine("### Testing access control");
 
             // take all endpoints where login is possible
-            IEnumerable<Endpoint> targetEndpoints = GetLoginSuccessfulEndpoints(opcTarget);
+            IEnumerable<Endpoint> targetEndpoints = opcTarget.GetLoginSuccessfulEndpoints();
 
             Parallel.ForEach(targetEndpoints, endpoint =>
             {

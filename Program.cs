@@ -10,23 +10,13 @@ namespace OpcUaSecurityScanner
     {
         public static async Task Main(string[] args)
         {
-            Reporter reporter = new Reporter();
+            IReporter reporter = new Reporter();
 
-            TextWriter output = Console.Out;
-            output.WriteLine("OPC UA Console Reference Client");
-
-            output.WriteLine("OPC UA library: {0} @ {1} -- {2}",
-                Utils.GetAssemblyBuildNumber(),
-                Utils.GetAssemblyTimestamp().ToString("G", CultureInfo.InvariantCulture),
-                Utils.GetAssemblySoftwareVersion());
+            reporter.printBanner();
+            reporter.printLibraryVersion();
 
             ICollection<OpcTarget> targets = DiscoveryController.DiscoverTargets(new Uri("opc.tcp://echo:53530"));
-            ICollection<OpcTarget> testedTargets = new List<OpcTarget>();
-
-            foreach (OpcTarget target in targets)
-            {
-                testedTargets.Add(SecurityTestController.TestOpcTargetSecurity(target));
-            }
+            ICollection<OpcTarget> testedTargets = SecurityTestController.TestOpcTargetSecurity(targets);
 
             ReportController.GenerateReport(reporter, testedTargets);
         }
