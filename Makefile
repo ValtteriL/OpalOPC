@@ -5,3 +5,7 @@ run:
 .PHONY: build
 build:
 	@dotnet build
+
+.PHONY: server
+server:
+	@php -S localhost:8000
