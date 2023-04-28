@@ -1,16 +1,22 @@
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 using Opc.Ua;
 namespace Model
 {
     public class Server
     {
 
-        public string DiscoveryUrl { get; }
+        public string DiscoveryUrl { get; set; }
 
         [JsonIgnore]
         public ICollection<Endpoint> SeparatedEndpoints { get; } = new List<Endpoint>();
-        public ICollection<EndpointSummary> Endpoints { get; private set; } = new List<EndpointSummary>();
+
+        [XmlArrayItem("Endpoint")]
+        public List<EndpointSummary> Endpoints { get; private set; } = new List<EndpointSummary>();
+
+        // parameterless constructor for XML serializer
+        internal Server()
+        {}
 
         public Server(string DiscoveryUrl, EndpointDescriptionCollection edc)
         {
@@ -37,7 +43,7 @@ namespace Model
                 endpointDictionary.Add(endpoint.EndpointUrl, new EndpointSummary(endpoint));
             }
 
-            this.Endpoints = endpointDictionary.Values;
+            this.Endpoints = endpointDictionary.Values.ToList();
         }
 
     }

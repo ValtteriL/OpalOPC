@@ -5,13 +5,17 @@ namespace Model
     {
 
         private ApplicationDescription _applicationDescription;
-        public ICollection<Server> Servers { get; }
+        public List<Server> Servers { get; set; }
 
-        public ApplicationType Type { get; }
-        public string ApplicationName { get; }
-        public string ApplicationUri { get; }
-        public string ProductUri { get; }
+        public ApplicationType Type { get; set; }
+        public string ApplicationName { get; set; }
+        public string ApplicationUri { get; set; }
+        public string ProductUri { get; set; }
 
+
+        // parameterless constructor for XML serializer
+        internal OpcTarget()
+        {}
 
         public OpcTarget(ApplicationDescription ad)
         {

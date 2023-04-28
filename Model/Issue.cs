@@ -4,7 +4,11 @@ namespace Model
 {
     public class Issue
     {
-        public string Description { get; }
+        public string Description { get; set; }
+
+        // parameterless constructor for XML serializer
+        internal Issue()
+        {}
 
         public Issue(string description)
         {

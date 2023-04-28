@@ -1,5 +1,4 @@
 using Model;
-using Opc.Ua;
 using View;
 
 namespace Controller
@@ -16,7 +15,9 @@ namespace Controller
                 target.MergeEndpoints();
             }
 
-            reporter.printPdfReport(targets, "");
+            reporter.printJSONReport(targets, "");
+
+            reporter.printXMLReport(targets, "");
         }
 
     }
