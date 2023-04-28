@@ -5,7 +5,7 @@ namespace Model
     {
 
         private ApplicationDescription _applicationDescription;
-        public ICollection<Server> TargetServers { get; }
+        public ICollection<Server> Servers { get; }
 
         public ApplicationType Type { get; }
         public string ApplicationName { get; }
@@ -22,32 +22,32 @@ namespace Model
             this.ApplicationUri = ad.ApplicationUri;
             this.ProductUri = ad.ProductUri;
 
-            this.TargetServers = new List<Server>();
+            this.Servers = new List<Server>();
         }
 
         public void AddServer(string DiscoveryUrl, EndpointDescriptionCollection edc)
         {
-            this.TargetServers.Add(new Server(DiscoveryUrl, edc));
+            this.Servers.Add(new Server(DiscoveryUrl, edc));
         }
 
         public IEnumerable<Endpoint> GetEndpointsBySecurityMode(MessageSecurityMode messageSecurityMode)
         {
-            return TargetServers.SelectMany(s => s.SeparatedEndpoints.Where(e => e.SecurityMode == messageSecurityMode));
+            return Servers.SelectMany(s => s.SeparatedEndpoints.Where(e => e.SecurityMode == messageSecurityMode));
         }
 
         public IEnumerable<Endpoint> GetEndpointsByUserTokenType(UserTokenType userTokenType)
         {
-            return TargetServers.SelectMany(s => s.SeparatedEndpoints.Where(e => e.UserTokenTypes.Contains(userTokenType)));
+            return Servers.SelectMany(s => s.SeparatedEndpoints.Where(e => e.UserTokenTypes.Contains(userTokenType)));
         }
 
         public IEnumerable<Endpoint> GetEndpointsBySecurityPolicyUri(string securityPolicyUri)
         {
-            return TargetServers.SelectMany(s => s.SeparatedEndpoints.Where(e => e.SecurityPolicyUri == securityPolicyUri));
+            return Servers.SelectMany(s => s.SeparatedEndpoints.Where(e => e.SecurityPolicyUri == securityPolicyUri));
         }
 
         public IEnumerable<Endpoint> GetEndpointsBySecurityPolicyUriNot(string securityPolicyUri)
         {
-            return TargetServers.SelectMany(s => s.SeparatedEndpoints.Where(e => e.SecurityPolicyUri != securityPolicyUri));
+            return Servers.SelectMany(s => s.SeparatedEndpoints.Where(e => e.SecurityPolicyUri != securityPolicyUri));
         }
 
         // Get bruteable endpoints = username + application authentication is disabled OR self-signed certificates accepted
@@ -70,7 +70,7 @@ namespace Model
         // Merge endpoints with identical URI, add up their findings
         public void MergeEndpoints()
         {
-            foreach (Server server in TargetServers)
+            foreach (Server server in Servers)
             {
                 server.MergeEndpoints();
             }
