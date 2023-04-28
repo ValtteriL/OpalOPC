@@ -15,8 +15,8 @@ namespace OpcUaSecurityScanner
             reporter.printBanner();
             reporter.printLibraryVersion();
 
-            ICollection<OpcTarget> targets = DiscoveryController.DiscoverTargets(new Uri("opc.tcp://echo:53530"));
-            ICollection<OpcTarget> testedTargets = SecurityTestController.TestOpcTargetSecurity(targets);
+            ICollection<Target> targets = DiscoveryController.DiscoverTargets(new Uri("opc.tcp://echo:53530"));
+            ICollection<Target> testedTargets = SecurityTestController.TestTargetSecurity(targets);
 
             ReportController.GenerateReport(reporter, testedTargets);
         }

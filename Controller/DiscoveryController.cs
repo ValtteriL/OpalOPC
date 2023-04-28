@@ -7,9 +7,9 @@ namespace Controller
     {
 
         // Given discoveryUri, discover all applications
-        public static ICollection<OpcTarget> DiscoverTargets(Uri discoveryUri)
+        public static ICollection<Target> DiscoverTargets(Uri discoveryUri)
         {
-            ICollection<OpcTarget> targets = new List<OpcTarget>();
+            ICollection<Target> targets = new List<Target>();
 
             // https://reference.opcfoundation.org/Core/Part4/v105/docs/
 
@@ -37,7 +37,7 @@ namespace Controller
             foreach (ApplicationDescription ad in adc)
             {
 
-                OpcTarget target = new OpcTarget(ad);
+                Target target = new Target(ad);
 
                 foreach (string s in ad.DiscoveryUrls)
                 {

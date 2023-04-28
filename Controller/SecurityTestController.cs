@@ -10,9 +10,9 @@ namespace Controller
 
 
         // Run all security tests and return result-populated opcTarget
-        public static ICollection<OpcTarget> TestOpcTargetSecurity(ICollection<OpcTarget> opcTargets)
+        public static ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets)
         {
-            foreach (OpcTarget target in opcTargets)
+            foreach (Target target in opcTargets)
             {
                 TestTLS(TestAuditingRBAC(TestAuth(TestTransportSecurity(target))));
             }
@@ -21,7 +21,7 @@ namespace Controller
         }
 
         // populate opcTarget with transport test results
-        private static OpcTarget TestTransportSecurity(OpcTarget opcTarget)
+        private static Target TestTransportSecurity(Target opcTarget)
         {
 
             Console.WriteLine("### Testing transport security");
@@ -66,7 +66,7 @@ namespace Controller
         }
 
         // populate opcTarget with TLS test results
-        private static OpcTarget TestTLS(OpcTarget opcTarget)
+        private static Target TestTLS(Target opcTarget)
         {
             // TODO
             Console.WriteLine("### Testing TLS");
@@ -74,7 +74,7 @@ namespace Controller
         }
 
         // populate opcTarget with auth test results
-        private static OpcTarget TestAuth(OpcTarget opcTarget)
+        private static Target TestAuth(Target opcTarget)
         {
             Console.WriteLine("### Testing authentication");
 
@@ -114,7 +114,7 @@ namespace Controller
         }
 
         // populate opcTarget with access control results
-        private static OpcTarget TestAuditingRBAC(OpcTarget opcTarget)
+        private static Target TestAuditingRBAC(Target opcTarget)
         {
             Console.WriteLine("### Testing access control");
 

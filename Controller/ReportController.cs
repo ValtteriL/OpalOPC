@@ -7,17 +7,18 @@ namespace Controller
     {
 
         // Reporter and targets, generate report
-        public static void GenerateReport(IReporter reporter, ICollection<OpcTarget> targets)
+        public static void GenerateReport(IReporter reporter, ICollection<Target> targets)
         {
             // Merge opctarget endpoints
-            foreach(OpcTarget target in targets)
+            foreach(Target target in targets)
             {
                 target.MergeEndpoints();
             }
 
-            reporter.printJSONReport(targets, "");
+            Report report = new Report(targets);
 
-            reporter.printXMLReport(targets, "");
+            reporter.printJSONReport(report, "");
+            reporter.printXMLReport(report, "");
         }
 
     }

@@ -1,7 +1,7 @@
 using Opc.Ua;
 namespace Model
 {
-    public class OpcTarget
+    public class Target
     {
 
         private ApplicationDescription _applicationDescription;
@@ -14,10 +14,10 @@ namespace Model
 
 
         // parameterless constructor for XML serializer
-        internal OpcTarget()
+        internal Target()
         {}
 
-        public OpcTarget(ApplicationDescription ad)
+        public Target(ApplicationDescription ad)
         {
             this._applicationDescription = ad;
 

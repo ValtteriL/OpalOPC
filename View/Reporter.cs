@@ -8,24 +8,24 @@ namespace View
 {
     public interface IReporter
     {
-        public void printJSONReport(ICollection<OpcTarget> targets, string filename);
-        public void printXMLReport(ICollection<OpcTarget> targets, string filename);
+        public void printJSONReport(Report report, string filename);
+        public void printXMLReport(Report report, string filename);
         public void printBanner();
         public void printLibraryVersion();
     }
 
     public class Reporter : IReporter
     {
-        public void printXMLReport(ICollection<OpcTarget> targets, string filename)
+        public void printXMLReport(Report report, string filename)
         {
-            XmlSerializer serializer = new XmlSerializer(targets.GetType(), new XmlRootAttribute("AAAAA"));
-            serializer.Serialize(Console.Out, targets);
+            XmlSerializer serializer = new XmlSerializer(report.GetType());
+            serializer.Serialize(Console.Out, report);
         }
 
-        public void printJSONReport(ICollection<OpcTarget> targets, string filename)
+        public void printJSONReport(Report report, string filename)
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
-            Console.WriteLine(JsonSerializer.Serialize(targets, options));
+            Console.WriteLine(JsonSerializer.Serialize(report, options));
         }
 
         public void printBanner()
