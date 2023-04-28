@@ -32,22 +32,22 @@ namespace Model
 
         public IEnumerable<Endpoint> GetEndpointsBySecurityMode(MessageSecurityMode messageSecurityMode)
         {
-            return TargetServers.SelectMany(s => s.Endpoints.Where(e => e.SecurityMode == messageSecurityMode));
+            return TargetServers.SelectMany(s => s.SeparatedEndpoints.Where(e => e.SecurityMode == messageSecurityMode));
         }
 
         public IEnumerable<Endpoint> GetEndpointsByUserTokenType(UserTokenType userTokenType)
         {
-            return TargetServers.SelectMany(s => s.Endpoints.Where(e => e.UserTokenTypes.Contains(userTokenType)));
+            return TargetServers.SelectMany(s => s.SeparatedEndpoints.Where(e => e.UserTokenTypes.Contains(userTokenType)));
         }
 
         public IEnumerable<Endpoint> GetEndpointsBySecurityPolicyUri(string securityPolicyUri)
         {
-            return TargetServers.SelectMany(s => s.Endpoints.Where(e => e.SecurityPolicyUri == securityPolicyUri));
+            return TargetServers.SelectMany(s => s.SeparatedEndpoints.Where(e => e.SecurityPolicyUri == securityPolicyUri));
         }
 
         public IEnumerable<Endpoint> GetEndpointsBySecurityPolicyUriNot(string securityPolicyUri)
         {
-            return TargetServers.SelectMany(s => s.Endpoints.Where(e => e.SecurityPolicyUri != securityPolicyUri));
+            return TargetServers.SelectMany(s => s.SeparatedEndpoints.Where(e => e.SecurityPolicyUri != securityPolicyUri));
         }
 
         // Get bruteable endpoints = username + application authentication is disabled OR self-signed certificates accepted

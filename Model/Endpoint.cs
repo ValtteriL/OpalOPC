@@ -10,7 +10,7 @@ namespace Model
         public string EndpointUrl { get; }
         public string SecurityPolicyUri { get; }
         public MessageSecurityMode SecurityMode { get; }
-        private byte[] ServerCertificate { get; }
+        public byte[] ServerCertificate { get; }
         public ICollection<string> UserTokenPolicyIds { get; } = new List<string>();
         public ICollection<UserTokenType> UserTokenTypes { get; } = new List<UserTokenType>();
 

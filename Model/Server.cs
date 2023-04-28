@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Opc.Ua;
 namespace Model
 {
@@ -5,32 +7,37 @@ namespace Model
     {
 
         public string DiscoveryUrl { get; }
-        public ICollection<Endpoint> Endpoints { get; }
+
+        [JsonIgnore]
+        public ICollection<Endpoint> SeparatedEndpoints { get; } = new List<Endpoint>();
+        public ICollection<EndpointSummary> Endpoints { get; private set; } = new List<EndpointSummary>();
 
         public Server(string DiscoveryUrl, EndpointDescriptionCollection edc)
         {
             this.DiscoveryUrl = DiscoveryUrl;
-            this.Endpoints = new List<Endpoint>();
             foreach (EndpointDescription e in edc)
             {
-                this.Endpoints.Add(new Endpoint(e));
+                this.SeparatedEndpoints.Add(new Endpoint(e));
             }
         }
 
+        // Merge SeparatedEndpoints into Endpointsummaries by endpointUrls
         public void MergeEndpoints()
         {
-            foreach (Endpoint endpoint in Endpoints)
-            {
-                // TODO: create a new object for every unique EndpointUrl and collect there:
-                // - SecurityPolicyUris
-                // - SecurityModes
-                // - UserTokenPolicyIds
-                // - UserTokenTypes
-                // - ServerCertificate
-                // - EndpointUrl
+            Dictionary<string, EndpointSummary> endpointDictionary = new Dictionary<string, EndpointSummary>();
 
-                // lsit of ^^ shall be visible in the JSON instead of targetServers
+            foreach (Endpoint endpoint in SeparatedEndpoints)
+            {
+                if(endpointDictionary.ContainsKey(endpoint.EndpointUrl))
+                {
+                    endpointDictionary[endpoint.EndpointUrl].MergeEndpoint(endpoint);
+                    continue;
+                }
+
+                endpointDictionary.Add(endpoint.EndpointUrl, new EndpointSummary(endpoint));
             }
+
+            this.Endpoints = endpointDictionary.Values;
         }
 
     }

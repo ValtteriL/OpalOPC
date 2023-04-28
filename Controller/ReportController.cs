@@ -10,7 +10,7 @@ namespace Controller
         // Reporter and targets, generate report
         public static void GenerateReport(IReporter reporter, ICollection<OpcTarget> targets)
         {
-            // TODO: merge opctarget endpoints and convert the collection into report
+            // Merge opctarget endpoints
             foreach(OpcTarget target in targets)
             {
                 target.MergeEndpoints();
