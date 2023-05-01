@@ -6,7 +6,7 @@ namespace OpcUaSecurityScanner
 {
     public static class Program
     {
-        public static async Task Main(string[] args)
+        public static int Main(string[] args)
         {
             IReporter reporter = new Reporter();
 
@@ -18,6 +18,8 @@ namespace OpcUaSecurityScanner
             ICollection<Target> testedTargets = SecurityTestController.TestTargetSecurity(targets);
 
             ReportController.GenerateReport(reporter, testedTargets);
+
+            return 0;
         }
     }
 }

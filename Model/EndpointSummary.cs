@@ -5,8 +5,8 @@ namespace Model
 {
     public class EndpointSummary
     {
-        public string EndpointUrl { get; set; }
-        public byte[] ServerCertificate { get; set; }
+        public string? EndpointUrl { get; set; }
+        public byte[]? ServerCertificate { get; set; }
         [XmlArrayItem("SecurityPolicyUri")]
         public HashSet<string> SecurityPolicyUris { get; private set; } = new HashSet<string>();
         public HashSet<MessageSecurityMode> MessageSecurityModes { get; private set; } = new HashSet<MessageSecurityMode>();

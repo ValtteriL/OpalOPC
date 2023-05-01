@@ -6,7 +6,7 @@ namespace Model
     public class Server
     {
 
-        public string DiscoveryUrl { get; set; }
+        public string? DiscoveryUrl { get; set; }
 
         [JsonIgnore]
         public ICollection<Endpoint> SeparatedEndpoints { get; } = new List<Endpoint>();
