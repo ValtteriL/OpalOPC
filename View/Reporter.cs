@@ -30,7 +30,7 @@ namespace View
 
         public void printBanner()
         {
-            Console.WriteLine("OPC UA Console Reference Client");
+            Console.WriteLine("Opal OPC 1.00 ( https://opalopc.app )");
         }
 
         public void printLibraryVersion()

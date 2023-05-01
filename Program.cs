@@ -1,7 +1,5 @@
-using System.Globalization;
 using Controller;
 using Model;
-using Opc.Ua;
 using View;
 
 namespace OpcUaSecurityScanner
@@ -13,12 +11,10 @@ namespace OpcUaSecurityScanner
             IReporter reporter = new Reporter();
 
             reporter.printBanner();
-            reporter.printLibraryVersion();
 
+            Options options = new Argparser(args).parseArgs();
 
-            // TODO: parse args
-
-            ICollection<Target> targets = DiscoveryController.DiscoverTargets(new Uri("opc.tcp://echo:53530"));
+            ICollection<Target> targets = DiscoveryController.DiscoverTargets(options.targets);
             ICollection<Target> testedTargets = SecurityTestController.TestTargetSecurity(targets);
 
             ReportController.GenerateReport(reporter, testedTargets);

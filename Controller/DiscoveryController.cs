@@ -6,8 +6,19 @@ namespace Controller
     public static class DiscoveryController
     {
 
+        public static ICollection<Target> DiscoverTargets(ICollection<Uri> discoveryUris)
+        {
+            ICollection<Target> targets = new List<Target>();
+            foreach(Uri uri in discoveryUris)
+            {
+                targets = targets.Concat(DiscoverTargets(uri)).ToList();
+            }
+
+            return targets;
+        }
+
         // Given discoveryUri, discover all applications
-        public static ICollection<Target> DiscoverTargets(Uri discoveryUri)
+        private static ICollection<Target> DiscoverTargets(Uri discoveryUri)
         {
             ICollection<Target> targets = new List<Target>();
 
