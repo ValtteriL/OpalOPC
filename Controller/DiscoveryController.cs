@@ -3,10 +3,10 @@ using Opc.Ua;
 
 namespace Controller
 {
-    public static class DiscoveryController
+    public class DiscoveryController
     {
 
-        public static ICollection<Target> DiscoverTargets(ICollection<Uri> discoveryUris)
+        public ICollection<Target> DiscoverTargets(ICollection<Uri> discoveryUris)
         {
             ICollection<Target> targets = new List<Target>();
             foreach(Uri uri in discoveryUris)
@@ -18,7 +18,7 @@ namespace Controller
         }
 
         // Given discoveryUri, discover all applications
-        private static ICollection<Target> DiscoverTargets(Uri discoveryUri)
+        private ICollection<Target> DiscoverTargets(Uri discoveryUri)
         {
             ICollection<Target> targets = new List<Target>();
 

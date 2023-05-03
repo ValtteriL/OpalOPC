@@ -8,10 +8,7 @@ namespace View
 {
     public interface IReporter
     {
-        public void printJSONReport(Report report, string filename);
-        public void printXMLReport(Report report, string filename);
-        public void printBanner();
-        public void printLibraryVersion();
+        public void printXMLReport(Report report);
     }
 
     public class Reporter : IReporter
@@ -23,29 +20,10 @@ namespace View
             this.outputStream = outputStream;
         }
 
-        public void printXMLReport(Report report, string filename)
+        public void printXMLReport(Report report)
         {
             XmlSerializer serializer = new XmlSerializer(report.GetType());
             serializer.Serialize(outputStream, report);
-        }
-
-        public void printJSONReport(Report report, string filename)
-        {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            Console.WriteLine(JsonSerializer.Serialize(report, options));
-        }
-
-        public void printBanner()
-        {
-            Console.WriteLine("Opal OPC 1.00 ( https://opalopc.app )");
-        }
-
-        public void printLibraryVersion()
-        {
-            Console.WriteLine("OPC UA library: "
-            + $"{Utils.GetAssemblyBuildNumber()} @ "
-            + $"{Utils.GetAssemblyTimestamp().ToString("G", CultureInfo.InvariantCulture)} -- "
-            + $"{Utils.GetAssemblySoftwareVersion()}");
         }
     }
 }

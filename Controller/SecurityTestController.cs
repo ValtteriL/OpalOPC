@@ -5,12 +5,12 @@ using Util;
 namespace Controller
 {
 
-    public static class SecurityTestController
+    public class SecurityTestController
     {
 
 
         // Run all security tests and return result-populated opcTarget
-        public static ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets)
+        public ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets)
         {
             foreach (Target target in opcTargets)
             {
@@ -21,7 +21,7 @@ namespace Controller
         }
 
         // populate opcTarget with transport test results
-        private static Target TestTransportSecurity(Target opcTarget)
+        private Target TestTransportSecurity(Target opcTarget)
         {
 
             Console.WriteLine("### Testing transport security");
@@ -66,7 +66,7 @@ namespace Controller
         }
 
         // populate opcTarget with TLS test results
-        private static Target TestTLS(Target opcTarget)
+        private Target TestTLS(Target opcTarget)
         {
             // TODO
             Console.WriteLine("### Testing TLS");
@@ -74,7 +74,7 @@ namespace Controller
         }
 
         // populate opcTarget with auth test results
-        private static Target TestAuth(Target opcTarget)
+        private Target TestAuth(Target opcTarget)
         {
             Console.WriteLine("### Testing authentication");
 
@@ -114,7 +114,7 @@ namespace Controller
         }
 
         // populate opcTarget with access control results
-        private static Target TestAuditingRBAC(Target opcTarget)
+        private Target TestAuditingRBAC(Target opcTarget)
         {
             Console.WriteLine("### Testing access control");
 
@@ -158,14 +158,14 @@ namespace Controller
             return opcTarget;
         }
 
-        private static ICollection<string> RBAC_Profiles = new List<string> {
+        private ICollection<string> RBAC_Profiles = new List<string> {
                 Util.WellKnownProfiles.Security_User_Access_Control_Full,
                 Util.WellKnownProfileURIs.Security_User_Access_Control_Full,
                 Util.WellKnownProfiles.UAFX_Controller_Server_Profile,
                 Util.WellKnownProfileURIs.UAFX_Controller_Server_Profile
             };
 
-        private async static Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription)
+        private async Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription)
         {
             try
             {
@@ -186,7 +186,7 @@ namespace Controller
             return true;
         }
 
-        private static bool IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity, out NodeIdCollection roleIds)
+        private bool IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity, out NodeIdCollection roleIds)
         {
             roleIds = new NodeIdCollection();
 

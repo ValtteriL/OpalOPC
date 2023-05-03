@@ -9,17 +9,20 @@ namespace OpcUaSecurityScanner
         public static int Main(string[] args)
         {
             IBannerPrinter bannerPrinter = new BannerPrinter();
-
             bannerPrinter.printBanner();
 
             Options options = new Argparser(args).parseArgs();
 
             IReporter reporter = new Reporter(options.xmlOutputStream!);
 
-            ICollection<Target> targets = DiscoveryController.DiscoverTargets(options.targets);
-            ICollection<Target> testedTargets = SecurityTestController.TestTargetSecurity(targets);
+            DiscoveryController discoveryController = new DiscoveryController();
+            ICollection<Target> targets = discoveryController.DiscoverTargets(options.targets);
 
-            ReportController.GenerateReport(reporter, testedTargets);
+            SecurityTestController securityTestController = new SecurityTestController();
+            ICollection<Target> testedTargets = securityTestController.TestTargetSecurity(targets);
+
+            ReportController reportController = new ReportController(reporter);
+            reportController.GenerateReport(testedTargets);
 
             return 0;
         }

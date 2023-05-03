@@ -3,11 +3,18 @@ using View;
 
 namespace Controller
 {
-    public static class ReportController
+    public class ReportController
     {
 
+        private IReporter reporter;
+
+        public ReportController(IReporter reporter)
+        {
+            this.reporter = reporter;
+        }
+
         // Reporter and targets, generate report
-        public static void GenerateReport(IReporter reporter, ICollection<Target> targets)
+        public void GenerateReport(ICollection<Target> targets)
         {
             // Merge opctarget endpoints
             foreach(Target target in targets)
@@ -17,8 +24,7 @@ namespace Controller
 
             Report report = new Report(targets);
 
-            reporter.printJSONReport(report, "");
-            reporter.printXMLReport(report, "");
+            reporter.printXMLReport(report);
         }
 
     }
