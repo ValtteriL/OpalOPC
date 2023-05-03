@@ -14,13 +14,29 @@ namespace View
         {
             optionSet = new OptionSet {
                 { "i|input-file=", "input targets from list of discovery uris", il => options = readTargetFile(il) },
-                { "o|output=", "output XML report filename", ox => options.xmlOutputFile = ox },
+                { "o|output=", "output XML report filename", ox => options = setOutputFile(ox) },
                 { "v", "verbose output", v => options.verbose = v != null },
                 { "d", "debug output", d => options.debug = d != null },
                 { "h|help", "show this message and exit", h => options.shouldShowHelp = h != null },
             };
 
             this.args = args;
+        }
+
+        private Options setOutputFile(string path)
+        {
+            if (path == "-")
+            {
+                // stdout
+                options.xmlOutputStream = Console.OpenStandardOutput();
+            }
+            else
+            {
+                // the path
+                options.xmlOutputStream = File.OpenWrite(path);
+            }
+
+            return options;
         }
 
         private Options readTargetFile(string path)
@@ -65,6 +81,8 @@ namespace View
             optionSet.WriteOptionDescriptions(Console.Out);
         }
 
+        private string defaultReportName = $"opalopc-report-{DateTime.Now.ToString("yyyyMMddHHmmssffff")}.xml";
+
         public Options parseArgs()
         {
             try
@@ -72,6 +90,10 @@ namespace View
                 // parse the command line
                 List<string> extra = optionSet.Parse(args);
                 extra.ForEach(e => appendTarget(e));
+                if (options.xmlOutputStream == null)
+                {
+                    options.xmlOutputStream = File.OpenWrite(defaultReportName);
+                }
             }
             catch (OptionException e)
             {

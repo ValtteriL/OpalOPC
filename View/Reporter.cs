@@ -16,10 +16,17 @@ namespace View
 
     public class Reporter : IReporter
     {
+        private Stream outputStream;
+
+        public Reporter(Stream outputStream)
+        {
+            this.outputStream = outputStream;
+        }
+
         public void printXMLReport(Report report, string filename)
         {
             XmlSerializer serializer = new XmlSerializer(report.GetType());
-            serializer.Serialize(Console.Out, report);
+            serializer.Serialize(outputStream, report);
         }
 
         public void printJSONReport(Report report, string filename)

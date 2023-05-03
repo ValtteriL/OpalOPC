@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Targets>
+    <Target>
+      <Servers>
+        <Server>
+          <DiscoveryUrl>opc.tcp://echo:53530/OPCUA/SimulationServer</DiscoveryUrl>
+          <Endpoints>
+            <Endpoint>
+              <EndpointUrl>opc.tcp://echo:53530/OPCUA/SimulationServer</EndpointUrl>
+              <ServerCertificate>MIIDwzCCAqugAwIBAgIGAYdHKr19MA0GCSqGSIb3DQEBCwUAMEsxHjAcBgNVBAMMFVNpbXVsYXRpb25TZXJ2ZXJAZWNobzETMBEGA1UECgwKUHJvc3lzIE9QQzEUMBIGCgmSJomT8ixkARkWBGVjaG8wHhcNMjMwNDAzMTE0OTU2WhcNMzMwMzMxMTI0OTU2WjBLMR4wHAYDVQQDDBVTaW11bGF0aW9uU2VydmVyQGVjaG8xEzARBgNVBAoMClByb3N5cyBPUEMxFDASBgoJkiaJk/IsZAEZFgRlY2hvMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuH25jVIdpLjoyxTo8tYk9+ednAr0qC5SUlo7gCTO+2kWbLoEUGrZJTeOLhhPVC8jEFk+6uxjymrEvzqrPqoihb6ZKH/xjbqbJOrlhIxIrEcG3VxHman/01szj2IYVIJIc3cCQEsmQB16RQzq9/8fXMX+bIbifzx8xRZytl3Ai3n1bA+KJDTDMALb+fzpJ5LqG7ZDUpsV7cDo4r7vs/yL/G8fESWxr17ykfvmlI1QURmiPByaQaxTf+H1ulOGkUQ2wSqAgqtbIHKB1rzj1oFxw1tF7ufpoeXd1VWxEFCkfgrDzwHS+H37V+jeZ4XAFC+Z/1fNgjVyADruLnuwDZ2TMwIDAQABo4GsMIGpMB8GA1UdIwQYMBaAFIpoUFCWmfOVJewDTGkjWPrJmYgsMB0GA1UdDgQWBBSKaFBQlpnzlSXsA0xpI1j6yZmILDAJBgNVHRMEAjAAMAsGA1UdDwQEAwIC9DAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwMAYDVR0RBCkwJ4YfdXJuOmVjaG86T1BDVUE6U2ltdWxhdGlvblNlcnZlcoIEZWNobzANBgkqhkiG9w0BAQsFAAOCAQEABteXY1M4FsxQ+vGaqX3bUpjS8/GA3NIdWA7mBn5M5M5oCqPWpx/LwiMONnpwW2TmnH2kA6JY3vtwvBulXTa01ZqdjRAMX2w2lcaw26BjFbzWYpe328UwQMRsSSbsPS/keSOWSwmIFVwQpe9F0+kApRa1/02kgC6/53ltAylBzN2Hz7ks/U5GyZc0eDO4jc/jnCJAoaJDbnlFVNcyNMaky5ybtTWBDhyGfyA2nF3pK58BGLBQEqjtFG/j7O8FQ77YJTbGKbZ2WEWbbiWBpdzozcBoAJsinb3jy8ppA37/qdKNh7eMOWJrn4GuefINLECXq8o+MFAv8YBRt9Jld9XdQQ==</ServerCertificate>
+              <SecurityPolicyUris>
+                <SecurityPolicyUri>http://opcfoundation.org/UA/SecurityPolicy#Aes256_Sha256_RsaPss</SecurityPolicyUri>
+                <SecurityPolicyUri>http://opcfoundation.org/UA/SecurityPolicy#Basic256</SecurityPolicyUri>
+                <SecurityPolicyUri>http://opcfoundation.org/UA/SecurityPolicy#Basic128Rsa15</SecurityPolicyUri>
+                <SecurityPolicyUri>http://opcfoundation.org/UA/SecurityPolicy#Aes128_Sha256_RsaOaep</SecurityPolicyUri>
+                <SecurityPolicyUri>http://opcfoundation.org/UA/SecurityPolicy#Basic256Sha256</SecurityPolicyUri>
+                <SecurityPolicyUri>http://opcfoundation.org/UA/SecurityPolicy#None</SecurityPolicyUri>
+              </SecurityPolicyUris>
+              <MessageSecurityModes>
+                <MessageSecurityMode>SignAndEncrypt</MessageSecurityMode>
+                <MessageSecurityMode>Sign</MessageSecurityMode>
+                <MessageSecurityMode>None</MessageSecurityMode>
+              </MessageSecurityModes>
+              <UserTokenPolicyIds>
+                <UserTokenPolicy>username_basic256</UserTokenPolicy>
+                <UserTokenPolicy>username_basic128</UserTokenPolicy>
+                <UserTokenPolicy>anonymous</UserTokenPolicy>
+                <UserTokenPolicy>certificate_basic256</UserTokenPolicy>
+                <UserTokenPolicy>certificate_basic128</UserTokenPolicy>
+              </UserTokenPolicyIds>
+              <UserTokenTypes>
+                <UserTokenType>UserName</UserTokenType>
+                <UserTokenType>Anonymous</UserTokenType>
+                <UserTokenType>Certificate</UserTokenType>
+              </UserTokenTypes>
+              <Issues>
+                <Issue>
+                  <Description>ANONYMOUS AUTHENTICATION</Description>
+                </Issue>
+                <Issue>
+                  <Description>SECURITY POLICY BASIC 256</Description>
+                </Issue>
+                <Issue>
+                  <Description>SECURITY POLICY BASIC 128</Description>
+                </Issue>
+                <Issue>
+                  <Description>SECURITY MODE NONE</Description>
+                </Issue>
+                <Issue>
+                  <Description>SECURITY POLICY NONE</Description>
+                </Issue>
+                <Issue>
+                  <Description>AUDITING IS DISABLED</Description>
+                </Issue>
+                <Issue>
+                  <Description>NOT CAPABLE OF RBAC</Description>
+                </Issue>
+              </Issues>
+            </Endpoint>
+          </Endpoints>
+        </Server>
+      </Servers>
+      <Type>Server</Type>
+      <ApplicationName>SimulationServer@echo</ApplicationName>
+      <ApplicationUri>urn:echo:OPCUA:SimulationServer</ApplicationUri>
+      <ProductUri>urn:prosysopc.com:OPCUA:SimulationServer</ProductUri>
+    </Target>
+  </Targets>
+  <Timestamp>2023-05-03T21:30:40.9702337+03:00</Timestamp>
+</Report>
