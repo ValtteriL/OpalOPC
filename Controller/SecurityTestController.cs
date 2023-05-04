@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
 using Util;
@@ -8,12 +9,22 @@ namespace Controller
     public class SecurityTestController
     {
 
+        ILogger _logger;
+
+        public SecurityTestController(ILogger logger)
+        {
+            _logger = logger;
+        }
+
 
         // Run all security tests and return result-populated opcTarget
         public ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets)
         {
+            _logger.LogInformation($"Starting security tests of {opcTargets.Count} targets");
+
             foreach (Target target in opcTargets)
             {
+                _logger.LogDebug($"Testing {target.ApplicationName} ({target.ProductUri})");
                 TestTLS(TestAuditingRBAC(TestAuth(TestTransportSecurity(target))));
             }
 
@@ -24,7 +35,7 @@ namespace Controller
         private Target TestTransportSecurity(Target opcTarget)
         {
 
-            Console.WriteLine("### Testing transport security");
+            _logger.LogTrace($"Testing transport security");
 
             // "The SecurityMode should be ′Sign′ or ′SignAndEncrypt′."
             //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
@@ -33,10 +44,12 @@ namespace Controller
 
             foreach (Endpoint endpoint in NoneSecurityModeEndpoints)
             {
+                _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} has security mode None");
                 endpoint.Issues.Add(Issues.SecurityModeNone);
             }
             foreach (Endpoint endpoint in invalidSecurityModeEndpoints)
             {
+                _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} has invalid security mode");
                 endpoint.Issues.Add(Issues.SecurityModeInvalid);
             }
 
@@ -46,10 +59,12 @@ namespace Controller
 
             foreach (Endpoint endpoint in Basic128Rsa15Endpoints)
             {
+                _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} uses Basic128Rsa15");
                 endpoint.Issues.Add(Issues.SecurityPolicyBasic128);
             }
             foreach (Endpoint endpoint in Basic256Endpoints)
             {
+                _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} uses Basic256");
                 endpoint.Issues.Add(Issues.SecurityPolicyBasic256);
             }
 
@@ -59,6 +74,7 @@ namespace Controller
             IEnumerable<Endpoint> NoneEndpoints = opcTarget.GetEndpointsBySecurityPolicyUri(SecurityPolicies.None);
             foreach (Endpoint endpoint in NoneEndpoints)
             {
+                _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} has security policy None");
                 endpoint.Issues.Add(Issues.SecurityPolicyNone);
             }
 
@@ -69,14 +85,14 @@ namespace Controller
         private Target TestTLS(Target opcTarget)
         {
             // TODO
-            Console.WriteLine("### Testing TLS");
+            _logger.LogTrace($"Testing TLS");
             return opcTarget;
         }
 
         // populate opcTarget with auth test results
         private Target TestAuth(Target opcTarget)
         {
-            Console.WriteLine("### Testing authentication");
+            _logger.LogTrace($"Testing authentication");
 
             // "′anonymous′ should be used only for accessing non-critical UA server resources"
             //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
@@ -84,6 +100,7 @@ namespace Controller
             IEnumerable<Endpoint> anonymousEndpoints = opcTarget.GetEndpointsByUserTokenType(UserTokenType.Anonymous);
             foreach (Endpoint endpoint in anonymousEndpoints)
             {
+                _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} allows anonymous authentication");
                 endpoint.Issues.Add(Issues.AnonymousAuthentication);
             }
 
@@ -94,6 +111,7 @@ namespace Controller
                 {
                     if (SelfSignedCertAccepted(endpoint.EndpointDescription).Result)
                     {
+                        _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} accepts self-signed client certificates");
                         endpoint.Issues.Add(Issues.SelfSignedCertificateAccepted);
                     }
                 });
@@ -105,6 +123,7 @@ namespace Controller
                 {
                     if (IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password), out NodeIdCollection roleIds))
                     {
+                        _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
                         endpoint.Issues.Add(Issues.CommonCredentials(username, password, roleIds));
                     }
                 }
@@ -116,7 +135,7 @@ namespace Controller
         // populate opcTarget with access control results
         private Target TestAuditingRBAC(Target opcTarget)
         {
-            Console.WriteLine("### Testing access control");
+            _logger.LogTrace($"Testing access control");
 
             // take all endpoints where login is possible
             IEnumerable<Endpoint> targetEndpoints = opcTarget.GetLoginSuccessfulEndpoints();
@@ -143,6 +162,7 @@ namespace Controller
                 DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
                 if (!(bool)auditingValue.GetValue<System.Boolean>(false))
                 {
+                    _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} has auditing disabled");
                     endpoint.Issues.Add(Issues.AuditingDisabled);
                 }
 
@@ -151,6 +171,7 @@ namespace Controller
                 string[] serverProfileArray = (string[])serverProfileArrayValue.GetValue<string[]>(new string[0]);
                 if (!serverProfileArray.Intersect(RBAC_Profiles).Any())
                 {
+                    _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} is not capable of RBAC");
                     endpoint.Issues.Add(Issues.NotRBACCapable);
                 }
             });

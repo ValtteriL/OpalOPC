@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Model;
 using Mono.Options;
 
@@ -15,8 +16,8 @@ namespace View
             optionSet = new OptionSet {
                 { "i|input-file=", "input targets from list of discovery uris", il => options = readTargetFile(il) },
                 { "o|output=", "output XML report filename", ox => options = setOutputFile(ox) },
-                { "v", "verbose output", v => options.verbose = v != null },
-                { "d", "debug output", d => options.debug = d != null },
+                { "v", "verbose output", v => options.logLevel = (v != null) && options.logLevel == LogLevel.Trace ? LogLevel.Trace : LogLevel.Debug },
+                { "d", "debug output", d => options.logLevel = d != null ? LogLevel.Trace : options.logLevel },
                 { "h|help", "show this message and exit", h => options.shouldShowHelp = h != null },
             };
 

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
 
@@ -5,9 +6,17 @@ namespace Controller
 {
     public class DiscoveryController
     {
+        ILogger _logger;
+
+        public DiscoveryController(ILogger logger)
+        {
+            _logger = logger;
+        }
 
         public ICollection<Target> DiscoverTargets(ICollection<Uri> discoveryUris)
         {
+            _logger.LogInformation($"Starting Discovery with {discoveryUris.Count} URIs");
+
             ICollection<Target> targets = new List<Target>();
             foreach(Uri uri in discoveryUris)
             {
@@ -20,6 +29,8 @@ namespace Controller
         // Given discoveryUri, discover all applications
         private ICollection<Target> DiscoverTargets(Uri discoveryUri)
         {
+            _logger.LogDebug($"Discovering applications in {discoveryUri}");
+
             ICollection<Target> targets = new List<Target>();
 
             // https://reference.opcfoundation.org/Core/Part4/v105/docs/
@@ -38,12 +49,9 @@ namespace Controller
             // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.2
             // ask the server for all servers it knows about
             DiscoveryClient asd = DiscoveryClient.Create(discoveryUri);
-
-            Console.WriteLine("### Discovering applications");
             ApplicationDescriptionCollection adc = asd.FindServers(null);
 
-            //asd.FindServers(null, "opc.tcp://echo", null, null, out ApplicationDescriptionCollection adc);
-            //asd.FindServers(null, "https://echo", null, null, out ApplicationDescriptionCollection adc);
+            _logger.LogDebug($"Discovered {adc.Count} applications");
 
             foreach (ApplicationDescription ad in adc)
             {
@@ -55,15 +63,18 @@ namespace Controller
 
                     // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.4
                     // ask each discoveryUrl for endpoints
-                    Console.WriteLine($"### Discovering endpoints for {ad.ApplicationName}:{s}");
+                    _logger.LogDebug($"Discovering endpoints for {ad.ApplicationName} ({ad.ProductUri})");
 
                     DiscoveryClient sss = DiscoveryClient.Create(new Uri(s));
                     EndpointDescriptionCollection edc = sss.GetEndpoints(null);
+
+                    _logger.LogDebug($"Discovered {edc.Count} endpoints");
 
                     target.AddServer(s, edc);
 
                     if (ad.ApplicationType == ApplicationType.DiscoveryServer)
                     {
+                        _logger.LogCritical("Application is a discoveryserver");
 
                         // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.3
                         // ask the network servers this server knows about
@@ -72,7 +83,7 @@ namespace Controller
                         ServerOnNetworkCollection sonc = sss.FindServersOnNetwork(0, 0, null, out DateTime dt);
                         foreach (ServerOnNetwork son in sonc)
                         {
-                            Console.WriteLine($"SERVER ON NETWORK: {son.DiscoveryUrl}");
+                            _logger.LogCritical($"SERVER ON NETWORK");
                             // GetEndpoints could be used to check the endpoint securities of the found servers
                         }
                     }

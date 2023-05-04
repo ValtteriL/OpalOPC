@@ -12,29 +12,26 @@ namespace OpcUaSecurityScanner
             IBannerPrinter bannerPrinter = new BannerPrinter();
             bannerPrinter.printBanner();
 
+            Options options = new Argparser(args).parseArgs();
+
             using var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
-                    .AddFilter("Microsoft", LogLevel.Warning)
-                    .AddFilter("System", LogLevel.Warning)
-                    .AddFilter("LoggingConsoleApp.Program", LogLevel.Debug)
+                    .SetMinimumLevel(options.logLevel)
                     .AddConsole();
             });
 
             ILogger logger = loggerFactory.CreateLogger<Program>();
-            logger.LogInformation("Example log message");
-
-            Options options = new Argparser(args).parseArgs();
 
             IReporter reporter = new Reporter(options.xmlOutputStream!);
 
-            DiscoveryController discoveryController = new DiscoveryController();
+            DiscoveryController discoveryController = new DiscoveryController(logger);
             ICollection<Target> targets = discoveryController.DiscoverTargets(options.targets);
 
-            SecurityTestController securityTestController = new SecurityTestController();
+            SecurityTestController securityTestController = new SecurityTestController(logger);
             ICollection<Target> testedTargets = securityTestController.TestTargetSecurity(targets);
 
-            ReportController reportController = new ReportController(reporter);
+            ReportController reportController = new ReportController(logger, reporter);
             reportController.GenerateReport(testedTargets);
 
             return 0;

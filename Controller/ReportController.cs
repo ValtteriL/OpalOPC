@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Model;
 using View;
 
@@ -6,16 +7,20 @@ namespace Controller
     public class ReportController
     {
 
-        private IReporter reporter;
+        ILogger _logger;
+        IReporter _reporter;
 
-        public ReportController(IReporter reporter)
+        public ReportController(ILogger logger, IReporter reporter)
         {
-            this.reporter = reporter;
+            _reporter = reporter;
+            _logger = logger;
         }
 
         // Reporter and targets, generate report
         public void GenerateReport(ICollection<Target> targets)
         {
+            _logger.LogInformation("Generating report");
+
             // Merge opctarget endpoints
             foreach(Target target in targets)
             {
@@ -24,7 +29,7 @@ namespace Controller
 
             Report report = new Report(targets);
 
-            reporter.printXMLReport(report);
+            _reporter.printXMLReport(report);
         }
 
     }
