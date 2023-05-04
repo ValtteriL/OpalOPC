@@ -34,6 +34,11 @@ namespace OpcUaSecurityScanner
             ReportController reportController = new ReportController(logger, reporter);
             reportController.GenerateReport(testedTargets);
 
+            if (options.xmlOutputReportName != null)
+            {
+                logger.LogInformation($"Report saved to {options.xmlOutputReportName}");
+            }
+
             return 0;
         }
     }

@@ -6,6 +6,7 @@ namespace Model
     {
         public List<Uri> targets = new List<Uri>();
         public Stream? xmlOutputStream;
+        public string? xmlOutputReportName;
         public LogLevel logLevel = LogLevel.Information;
         public bool shouldShowHelp;
     }

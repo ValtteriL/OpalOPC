@@ -34,6 +34,7 @@ namespace View
             else
             {
                 // the path
+                options.xmlOutputReportName = path;
                 options.xmlOutputStream = File.OpenWrite(path);
             }
 
@@ -93,6 +94,7 @@ namespace View
                 extra.ForEach(e => appendTarget(e));
                 if (options.xmlOutputStream == null)
                 {
+                    options.xmlOutputReportName = defaultReportName;
                     options.xmlOutputStream = File.OpenWrite(defaultReportName);
                 }
             }
