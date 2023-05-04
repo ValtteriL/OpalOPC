@@ -1,8 +1,6 @@
-using System.Globalization;
-using System.Text.Json;
+using System.Xml;
 using System.Xml.Serialization;
 using Model;
-using Opc.Ua;
 
 namespace View
 {
@@ -23,7 +21,13 @@ namespace View
         public void printXMLReport(Report report)
         {
             XmlSerializer serializer = new XmlSerializer(report.GetType());
-            serializer.Serialize(outputStream, report);
+
+            XmlWriterSettings settings = new XmlWriterSettings { Indent = true };
+            using (XmlWriter w = XmlWriter.Create(outputStream, settings))
+            {
+                w.WriteProcessingInstruction("xml-stylesheet", $"type=\"text/xsl\" href=\"{Util.XmlResources.StylesheetLocation}\"");
+                serializer.Serialize(w, report);
+            }
         }
     }
 }
