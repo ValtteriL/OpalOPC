@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <AssemblyName>opalopc</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <OutputType>Exe</OutputType>
     <PackageId>opalopc</PackageId>
     <TargetFramework>net7.0</TargetFramework>

@@ -13,7 +13,7 @@ namespace View
     {
         public void printBanner()
         {
-            Console.WriteLine("Opal OPC 1.00 ( https://opalopc.app )");
+            Console.WriteLine($"Opal OPC {Util.VersionUtil.AppAssemblyVersion} ( https://opalopc.app )");
         }
 
         public void printLibraryVersion()
