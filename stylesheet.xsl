@@ -11,7 +11,7 @@
       <h1>Opal OPC Report</h1>
       <h2><xsl:value-of select="Report/Timestamp" /></h2>
       <h3>Opal OPC Version: <xsl:value-of select="Report/Version" /></h3>
-      <h3>Command: opalopc -v XXXXX</h3>
+      <h3>Command: <xsl:value-of select="Report/Command" /></h3>
 
 
       <xsl:for-each select="Report/Targets">
