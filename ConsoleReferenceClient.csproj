@@ -2,10 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <AssemblyName>opc-ua-security-scanner</AssemblyName>
+    <AssemblyName>opalopc</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>opc-ua-security-scanner</PackageId>
-    <RootNamespace>OpcUaSecurityScanner</RootNamespace>
+    <PackageId>opalopc</PackageId>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

@@ -3,43 +3,46 @@ using Microsoft.Extensions.Logging;
 using Model;
 using View;
 
-namespace OpcUaSecurityScanner
+
+class OpalOPC
 {
-    public class Program
+    public static int Main(string[] args)
     {
-        public static int Main(string[] args)
+        IBannerPrinter bannerPrinter = new BannerPrinter();
+        bannerPrinter.printBanner();
+
+        Options options = new Argparser(args).parseArgs();
+
+        using var loggerFactory = LoggerFactory.Create(builder =>
         {
-            IBannerPrinter bannerPrinter = new BannerPrinter();
-            bannerPrinter.printBanner();
+            builder
+                .SetMinimumLevel(options.logLevel)
+                .AddSimpleConsole(options =>
+                {
+                    options.IncludeScopes = false;
+                    options.TimestampFormat = "HH:mm:ss ";
+                    options.SingleLine = true;
+                });
+        });
 
-            Options options = new Argparser(args).parseArgs();
+        ILogger logger = loggerFactory.CreateLogger<OpalOPC>();
 
-            using var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder
-                    .SetMinimumLevel(options.logLevel)
-                    .AddConsole();
-            });
+        IReporter reporter = new Reporter(options.xmlOutputStream!);
 
-            ILogger logger = loggerFactory.CreateLogger<Program>();
+        DiscoveryController discoveryController = new DiscoveryController(logger);
+        ICollection<Target> targets = discoveryController.DiscoverTargets(options.targets);
 
-            IReporter reporter = new Reporter(options.xmlOutputStream!);
+        SecurityTestController securityTestController = new SecurityTestController(logger);
+        ICollection<Target> testedTargets = securityTestController.TestTargetSecurity(targets);
 
-            DiscoveryController discoveryController = new DiscoveryController(logger);
-            ICollection<Target> targets = discoveryController.DiscoverTargets(options.targets);
+        ReportController reportController = new ReportController(logger, reporter);
+        reportController.GenerateReport(testedTargets);
 
-            SecurityTestController securityTestController = new SecurityTestController(logger);
-            ICollection<Target> testedTargets = securityTestController.TestTargetSecurity(targets);
-
-            ReportController reportController = new ReportController(logger, reporter);
-            reportController.GenerateReport(testedTargets);
-
-            if (options.xmlOutputReportName != null)
-            {
-                logger.LogInformation($"Report saved to {options.xmlOutputReportName}");
-            }
-
-            return 0;
+        if (options.xmlOutputReportName != null)
+        {
+            logger.LogInformation($"Report saved to {options.xmlOutputReportName}");
         }
+
+        return 0;
     }
 }
