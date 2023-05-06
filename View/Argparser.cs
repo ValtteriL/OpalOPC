@@ -16,8 +16,7 @@ namespace View
             optionSet = new OptionSet {
                 { "i|input-file=", "input targets from list of discovery uris", il => options = readTargetFile(il) },
                 { "o|output=", "output XML report filename", ox => options = setOutputFile(ox) },
-                { "v", "verbose output", v => options.logLevel = (v != null) && options.logLevel == LogLevel.Trace ? LogLevel.Trace : LogLevel.Debug },
-                { "d", "debug output", d => options.logLevel = d != null ? LogLevel.Trace : options.logLevel },
+                { "v", "increase verbosity (can be specified up to 2 times)", v => options.logLevel = (v == null) ? options.logLevel : options.logLevel == LogLevel.Information ? LogLevel.Debug : LogLevel.Trace },
                 { "h|help", "show this message and exit", h => options.shouldShowHelp = h != null },
             };
 
