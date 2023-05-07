@@ -8,9 +8,6 @@ class OpalOPC
 {
     public static int Main(string[] args)
     {
-        IBannerPrinter bannerPrinter = new BannerPrinter();
-        bannerPrinter.printBanner();
-
         Options options = new Argparser(args).parseArgs();
 
         using var loggerFactory = LoggerFactory.Create(builder =>
@@ -27,6 +24,14 @@ class OpalOPC
 
         ILogger logger = loggerFactory.CreateLogger<OpalOPC>();
 
+        DateTime start = DateTime.Now;
+        logger.LogInformation($"Starting OpalOPC {Util.VersionUtil.AppAssemblyVersion} ( https://opalopc.app )");
+
+        if (options.targets.Count == 0)
+        {
+            logger.LogWarning("No targets were specified, so 0 applications will be scanned.");
+        }
+
         IReporter reporter = new Reporter(options.xmlOutputStream!);
 
         DiscoveryController discoveryController = new DiscoveryController(logger);
@@ -37,6 +42,12 @@ class OpalOPC
 
         ReportController reportController = new ReportController(logger, reporter);
         reportController.GenerateReport(testedTargets);
+
+        DateTime end = DateTime.Now;
+        TimeSpan ts = (end - start);
+        logger.LogInformation($"OpalOPC done: {options.targets.Count} Discovery URLs ({reportController.report!.Targets.Count} applications found) scanned in {Math.Round(ts.TotalSeconds, 2)} seconds");
+
+        reportController.WriteReport();
 
         if (options.xmlOutputReportName != null)
         {

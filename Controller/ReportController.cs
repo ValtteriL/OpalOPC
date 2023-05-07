@@ -9,6 +9,7 @@ namespace Controller
 
         ILogger _logger;
         IReporter _reporter;
+        public Report? report { get; set; }
 
         public ReportController(ILogger logger, IReporter reporter)
         {
@@ -19,7 +20,7 @@ namespace Controller
         // Reporter and targets, generate report
         public void GenerateReport(ICollection<Target> targets)
         {
-            _logger.LogInformation("Generating report");
+            _logger.LogDebug("Generating report");
 
             // Merge opctarget endpoints
             foreach(Target target in targets)
@@ -27,9 +28,12 @@ namespace Controller
                 target.MergeEndpoints();
             }
 
-            Report report = new Report(targets);
+            report = new Report(targets);
+        }
 
-            _reporter.printXMLReport(report);
+        public void WriteReport()
+        {
+            _reporter.printXMLReport(report!);
         }
 
     }

@@ -78,6 +78,7 @@ namespace View
 
         private void printHelp()
         {
+            Console.WriteLine($"Opal OPC {Util.VersionUtil.AppAssemblyVersion} ( https://opalopc.app )");
             Console.WriteLine($"Usage: {programName} [Options] [Target ...]");
             optionSet.WriteOptionDescriptions(Console.Out);
         }

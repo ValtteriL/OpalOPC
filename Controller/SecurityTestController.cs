@@ -20,7 +20,7 @@ namespace Controller
         // Run all security tests and return result-populated opcTarget
         public ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets)
         {
-            _logger.LogInformation($"Starting security tests of {opcTargets.Count} targets");
+            _logger.LogDebug($"Starting security tests of {opcTargets.Count} targets");
 
             foreach (Target target in opcTargets)
             {

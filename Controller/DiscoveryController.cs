@@ -15,7 +15,7 @@ namespace Controller
 
         public ICollection<Target> DiscoverTargets(ICollection<Uri> discoveryUris)
         {
-            _logger.LogInformation($"Starting Discovery with {discoveryUris.Count} URIs");
+            _logger.LogDebug($"Starting Discovery with {discoveryUris.Count} URIs");
 
             ICollection<Target> targets = new List<Target>();
             foreach(Uri uri in discoveryUris)
