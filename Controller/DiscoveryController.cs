@@ -91,7 +91,7 @@ namespace Controller
                     {
                         if (e.Message.Contains("BadNotConnected"))
                         {
-                            _logger.LogWarning($"Cannot connect discovery URI {s}");
+                            _logger.LogWarning($"Cannot connect to discovery URI {s}");
                             continue;
                         }
                         throw;
