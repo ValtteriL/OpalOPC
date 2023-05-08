@@ -64,6 +64,7 @@ namespace Controller
                     // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.4
                     // ask each discoveryUrl for endpoints
                     _logger.LogDebug($"Discovering endpoints for {ad.ApplicationName} ({ad.ProductUri})");
+                    _logger.LogTrace($"Using DiscoveryUrl {s}");
 
                     DiscoveryClient sss = DiscoveryClient.Create(new Uri(s));
                     EndpointDescriptionCollection edc = sss.GetEndpoints(null);
