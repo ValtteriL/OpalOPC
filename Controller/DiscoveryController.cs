@@ -49,7 +49,21 @@ namespace Controller
             // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.2
             // ask the server for all servers it knows about
             DiscoveryClient asd = DiscoveryClient.Create(discoveryUri);
-            ApplicationDescriptionCollection adc = asd.FindServers(null);
+            ApplicationDescriptionCollection adc;
+
+            try
+            {
+                adc = asd.FindServers(null);
+            }
+            catch (Opc.Ua.ServiceResultException e)
+            {
+                if (e.Message.Contains("BadRequestTimeout"))
+                {
+                    _logger.LogWarning($"Timeout connecting to discovery URI {discoveryUri}");
+                    return targets;
+                }
+                throw;
+            }
 
             _logger.LogDebug($"Discovered {adc.Count} applications");
 
