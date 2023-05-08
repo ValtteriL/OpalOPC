@@ -48,8 +48,8 @@
             <div>
               <h2><xsl:value-of select="Target/ApplicationName" /> (<xsl:value-of select="Target/ApplicationUri" />)
               </h2>
-              <h3>Type: <xsl:value-of select="Target/Type" /></h3>
-              <h3>Product Uri: <xsl:value-of select="Target/ProductUri" /></h3>
+              <p>Type: <xsl:value-of select="Target/Type" /></p>
+              <p>Product Uri: <xsl:value-of select="Target/ProductUri" /></p>
               <div>
                 <h3>Servers</h3>
                 <xsl:for-each select="Target/Servers">
