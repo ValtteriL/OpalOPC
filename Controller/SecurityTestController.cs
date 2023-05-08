@@ -197,7 +197,9 @@ namespace Controller
             }
             catch (Opc.Ua.ServiceResultException e)
             {
-                if (e.Message.Contains("Bad_SecurityChecksFailed") || e.Message.Contains("BadSecureChannelClosed"))
+                if (e.Message.Contains("Bad_SecurityChecksFailed")
+                    || e.Message.Contains("BadSecureChannelClosed")
+                    || e.Message.Contains("BadCertificateUriInvalid"))
                 {
                     return false;
                 }
