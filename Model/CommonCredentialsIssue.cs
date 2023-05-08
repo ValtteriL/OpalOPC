@@ -8,7 +8,7 @@ namespace Model
         public string password { get; }
         public NodeIdCollection roleIds { get; }
 
-        public CommonCredentialsIssue(string username, string password, NodeIdCollection roleIds, string description) : base(description)
+        public CommonCredentialsIssue(string username, string password, NodeIdCollection roleIds, string title, string description) : base(title, description)
         {
             this.username = username;
             this.password = password;

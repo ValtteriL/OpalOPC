@@ -71,7 +71,7 @@
                               <tbody>
                                 <xsl:for-each select="Endpoint/Issues/Issue">
                                   <tr>
-                                    <td><xsl:value-of select="Description" /></td>
+                                    <td><xsl:value-of select="Title" /></td>
                                     <td><xsl:value-of select="Description" /></td>
                                   </tr>
                                 </xsl:for-each>
