@@ -42,7 +42,7 @@
             Verbosity: XX
           </p>
           <p>
-            Nmap done at Sun May 7 21:10:14 2023; 1 IP address (1 host up) scanned in 103.47 seconds
+            <xsl:value-of select="Report/RunStatus" />
           </p>
         </section>
 

@@ -45,9 +45,10 @@ class OpalOPC
 
         DateTime end = DateTime.Now;
         TimeSpan ts = (end - start);
-        logger.LogInformation($"OpalOPC done: {options.targets.Count} Discovery URLs ({reportController.report!.Targets.Count} applications found) scanned in {Math.Round(ts.TotalSeconds, 2)} seconds");
+        string runStatus = $"OpalOPC done: {options.targets.Count} Discovery URLs ({reportController.report!.Targets.Count} applications found) scanned in {Math.Round(ts.TotalSeconds, 2)} seconds";
+        logger.LogInformation(runStatus);
 
-        reportController.WriteReport();
+        reportController.WriteReport(runStatus);
 
         if (options.xmlOutputReportName != null)
         {

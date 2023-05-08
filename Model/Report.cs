@@ -6,6 +6,7 @@ namespace Model
         public DateTime Timestamp { get; set; }
         public string Version { get; set; } = Util.VersionUtil.AppAssemblyVersion!.ToString();
         public string Command { get; set; } = Environment.CommandLine;
+        public string? RunStatus { get; set; }
 
         // parameterless constructor for XML serializer
         internal Report()

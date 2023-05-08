@@ -31,8 +31,9 @@ namespace Controller
             report = new Report(targets);
         }
 
-        public void WriteReport()
+        public void WriteReport(string runStatus)
         {
+            report!.RunStatus = runStatus;
             _reporter.printXMLReport(report!);
         }
 
