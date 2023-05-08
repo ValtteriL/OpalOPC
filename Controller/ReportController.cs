@@ -18,7 +18,7 @@ namespace Controller
         }
 
         // Reporter and targets, generate report
-        public void GenerateReport(ICollection<Target> targets)
+        public void GenerateReport(ICollection<Target> targets, DateTime Start, DateTime End)
         {
             _logger.LogDebug("Generating report");
 
@@ -28,7 +28,7 @@ namespace Controller
                 target.MergeEndpoints();
             }
 
-            report = new Report(targets);
+            report = new Report(targets, Start, End);
         }
 
         public void WriteReport(string runStatus)

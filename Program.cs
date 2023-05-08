@@ -41,9 +41,10 @@ class OpalOPC
         ICollection<Target> testedTargets = securityTestController.TestTargetSecurity(targets);
 
         ReportController reportController = new ReportController(logger, reporter);
-        reportController.GenerateReport(testedTargets);
 
         DateTime end = DateTime.Now;
+        reportController.GenerateReport(testedTargets, start, end);
+
         TimeSpan ts = (end - start);
         string runStatus = $"OpalOPC done: {options.targets.Count} Discovery URLs ({reportController.report!.Targets.Count} applications found) scanned in {Math.Round(ts.TotalSeconds, 2)} seconds";
         logger.LogInformation(runStatus);

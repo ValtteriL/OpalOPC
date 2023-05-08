@@ -23,7 +23,7 @@
       <main class="px-3">
         <section class="text-center">
           <h1>Opal OPC Report</h1>
-          <h2><xsl:value-of select="Report/Timestamp" /></h2>
+          <h2><xsl:value-of select="Report/StartTime" /></h2>
         </section>
 
         <section>
@@ -34,7 +34,7 @@
           <h2>Scan summary</h2>
           <p>
             OpalOPC <xsl:value-of select="Report/Version" /> was initialized at <xsl:value-of
-              select="Report/Timestamp" /> with these arguments:
+              select="Report/StartTime" /> with these arguments:
             <br></br>
             <i><xsl:value-of select="Report/Command" /></i>
           </p>
