@@ -39,9 +39,6 @@
             <i><xsl:value-of select="Report/Command" /></i>
           </p>
           <p>
-            Verbosity: XX
-          </p>
-          <p>
             <xsl:value-of select="Report/RunStatus" />
           </p>
         </section>
