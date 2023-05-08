@@ -1,5 +1,8 @@
+using System.Xml.Serialization;
+
 namespace Model
 {
+    [XmlInclude(typeof(CommonCredentialsIssue))]
     public class Report
     {
         public List<Target> Targets { get; private set; } = new List<Target>();
