@@ -18,7 +18,7 @@ namespace Controller
             _logger.LogDebug($"Starting Discovery with {discoveryUris.Count} URIs");
 
             ICollection<Target> targets = new List<Target>();
-            foreach(Uri uri in discoveryUris)
+            foreach (Uri uri in discoveryUris)
             {
                 targets = targets.Concat(DiscoverTargets(uri)).ToList();
             }
@@ -81,7 +81,21 @@ namespace Controller
                     _logger.LogTrace($"Using DiscoveryUrl {s}");
 
                     DiscoveryClient sss = DiscoveryClient.Create(new Uri(s));
-                    EndpointDescriptionCollection edc = sss.GetEndpoints(null);
+                    EndpointDescriptionCollection edc;
+
+                    try
+                    {
+                        edc = sss.GetEndpoints(null);
+                    }
+                    catch (Opc.Ua.ServiceResultException e)
+                    {
+                        if (e.Message.Contains("BadNotConnected"))
+                        {
+                            _logger.LogWarning($"Cannot connect discovery URI {s}");
+                            continue;
+                        }
+                        throw;
+                    }
 
                     _logger.LogDebug($"Discovered {edc.Count} endpoints");
 
