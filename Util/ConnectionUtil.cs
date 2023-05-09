@@ -6,7 +6,7 @@ namespace Util
 {
     public class ConnectionUtil
     {
-        private const string Subject = "CN=Test Cert Subject, C=US, S=Arizona, O=OPC Foundation";
+        private const string Subject = "CN=Test Cert Subject, C=FI, S=Uusimaa, O=Molemmat Oy";
 
         private ApplicationConfiguration applicationConfiguration;
         private EndpointConfiguration endpointConfiguration;
@@ -14,8 +14,8 @@ namespace Util
         public ConnectionUtil()
         {
             applicationConfiguration = new ApplicationConfiguration();
-            applicationConfiguration.ApplicationName = "";
-            applicationConfiguration.ApplicationUri = "";
+            applicationConfiguration.ApplicationName = "OpalOPC@host";
+            applicationConfiguration.ApplicationUri = "urn:host:OPCUA:OpalOPC";
             applicationConfiguration.ApplicationType = ApplicationType.Server;
             applicationConfiguration.ClientConfiguration = new ClientConfiguration();
             applicationConfiguration.SecurityConfiguration = new SecurityConfiguration();
@@ -25,8 +25,8 @@ namespace Util
                 CertificateBuilder
                     .Create(Subject)
                     .AddExtension(
-                        new X509SubjectAltNameExtension("urn:opcfoundation.org:mypc",
-                        new string[] { "mypc", "mypc.opcfoundation.org", "192.168.1.100" }))
+                        new X509SubjectAltNameExtension("urn:opalopc.app:host",
+                        new string[] { "host", "host.opalopc.app", "192.168.1.100" }))
                     .CreateForRSA());
 
             // accept any server certificates
