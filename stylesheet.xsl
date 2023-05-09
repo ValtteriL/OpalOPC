@@ -44,22 +44,22 @@
         </section>
 
         <section>
-          <xsl:for-each select="Report/Targets">
+          <xsl:for-each select="Report/Targets/Target">
             <div>
-              <h2><xsl:value-of select="Target/ApplicationName" /> (<xsl:value-of select="Target/ApplicationUri" />)
+              <h2><xsl:value-of select="ApplicationName" /> (<xsl:value-of select="ApplicationUri" />)
               </h2>
-              <p>Type: <xsl:value-of select="Target/Type" /></p>
-              <p>Product Uri: <xsl:value-of select="Target/ProductUri" /></p>
+              <p>Type: <xsl:value-of select="Type" /></p>
+              <p>Product Uri: <xsl:value-of select="ProductUri" /></p>
               <div>
                 <h3>Servers</h3>
-                <xsl:for-each select="Target/Servers">
+                <xsl:for-each select="Servers/Server">
                   <div>
-                    <h3><xsl:value-of select="Server/DiscoveryUrl" /></h3>
+                    <h3><xsl:value-of select="DiscoveryUrl" /></h3>
                     <div>
                       <h4>Endpoints</h4>
-                      <xsl:for-each select="Server/Endpoints">
+                      <xsl:for-each select="Endpoints/Endpoint">
                         <div>
-                          <h5><xsl:value-of select="Endpoint/EndpointUrl" /></h5>
+                          <h5><xsl:value-of select="EndpointUrl" /></h5>
                           <div>
                             <table class="table text-bg-dark">
                               <thead>
@@ -69,7 +69,7 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <xsl:for-each select="Endpoint/Issues/Issue">
+                                <xsl:for-each select="Issues/Issue">
                                   <tr>
                                     <td><xsl:value-of select="Title" /></td>
                                     <td><xsl:value-of select="Description" /></td>
@@ -87,25 +87,25 @@
                             <div class="text-bg-dark card card-body">
                                 <p>Security policy Uris</p>
                                 <ul>
-                                  <xsl:for-each select="Endpoint/SecurityPolicyUris/SecurityPolicyUri">
+                                  <xsl:for-each select="SecurityPolicyUris/SecurityPolicyUri">
                                     <li><xsl:value-of select="." /></li>
                                   </xsl:for-each>
                                 </ul>
                                 <p>Message security Modes</p>
                                 <ul>
-                                  <xsl:for-each select="Endpoint/MessageSecurityModes/MessageSecurityMode">
+                                  <xsl:for-each select="MessageSecurityModes/MessageSecurityMode">
                                     <li><xsl:value-of select="." /></li>
                                   </xsl:for-each>
                                 </ul>
                                 <p>User Token Policies</p>
                                 <ul>
-                                  <xsl:for-each select="Endpoint/UserTokenPolicyIds/UserTokenPolicy">
+                                  <xsl:for-each select="UserTokenPolicyIds/UserTokenPolicy">
                                     <li><xsl:value-of select="." /></li>
                                   </xsl:for-each>
                                 </ul>
                                 <p>User Token Types</p>
                                 <ul>
-                                  <xsl:for-each select="Endpoint/UserTokenTypes/UserTokenType">
+                                  <xsl:for-each select="UserTokenTypes/UserTokenType">
                                     <li><xsl:value-of select="." /></li>
                                   </xsl:for-each>
                                 </ul>
