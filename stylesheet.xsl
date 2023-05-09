@@ -20,7 +20,7 @@
     </head>
 
     <body class="d-flex h-100 text-bg-dark">
-      <main class="px-3">
+      <main class="container">
         <section class="text-center">
           <h1>Opal OPC Report</h1>
           <h2><xsl:value-of select="Report/StartTime" /></h2>

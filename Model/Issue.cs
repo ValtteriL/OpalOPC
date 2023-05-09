@@ -20,35 +20,26 @@ namespace Model
 
     public static class Issues
     {
-        public static Issue SecurityModeNone = new Issue("SECURITY MODE NONE", @"Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.");
-        public static Issue SecurityModeInvalid = new Issue("SECURITY MODE INVALID", @"Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.");
-        public static Issue SecurityPolicyBasic128 = new Issue("SECURITY POLICY BASIC 128", @"Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.");
-        public static Issue SecurityPolicyBasic256 = new Issue("SECURITY POLICY BASIC 256", @"Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.");
-        public static Issue SecurityPolicyNone = new Issue("SECURITY POLICY NONE", @"Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.");
-        public static Issue SelfSignedCertificateAccepted = new Issue("SELF SIGNED CERTIFICATE ACCEPTED", @"Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.");
-        public static Issue NotRBACCapable = new Issue("NOT CAPABLE OF RBAC", @"Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.");
-        public static Issue AuditingDisabled = new Issue("AUDITING IS DISABLED", @"Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.");
-        public static Issue AnonymousAuthentication = new Issue("ANONYMOUS AUTHENTICATION", @"Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-         It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.");
+        public static Issue SecurityModeNone = new Issue("Security mode None", @"The application allows connections without any transport security. Without transport security all data is sent
+         in plaintext. This means that an attacker with access to the traffic can read and modify its contents at will.");
+        public static Issue SecurityModeInvalid = new Issue("Security mode Invalid", @"The application reports support for invalid security mode.");
+        public static Issue SecurityPolicyBasic128 = new Issue("Security policy Basic 128", @"The application allows Basic 128 based client authentication. Basic 128 has been deprecated
+         and it is not recommended to use it.");
+        public static Issue SecurityPolicyBasic256 = new Issue("Security policy Basic 256", @"The application allows Basic 256 based client authentication. Basic 256 has been deprecated
+         and it is not recommended to use it.");
+        public static Issue SecurityPolicyNone = new Issue("Security policy NONE", @"The application supports connections without client authentication. This makes it
+         possible to use unauthorized client applications to access the resources.");
+        public static Issue SelfSignedCertificateAccepted = new Issue("Self signed client certificate accepted", @"The application trusts self-signed client certificates. This makes it
+         possible to use unauthorized client applications to access the resources.");
+        public static Issue NotRBACCapable = new Issue("RBAC not supported", @"The application is not capable of Role Basec Access Control (RBAC). This means that all authenticated users
+         have the same level of access.");
+        public static Issue AuditingDisabled = new Issue("Auditing is disabled", @"Auditing is disabled on the application. This means no audit trail is being generated. Without the trail,
+         tracking of activities and abnormal behavior on the application may not be possible.");
+        public static Issue AnonymousAuthentication = new Issue("Anonymous authentication", @"Anonymous authenticaton was successful. Anyone can access the application and it is not possible
+         to trace actions back to users. It should only be available for accessing non-critical UA application resources.");
         public static CommonCredentialsIssue CommonCredentials(string username, string password, NodeIdCollection roleIds)
-            => new CommonCredentialsIssue(username, password, roleIds, "COMMON CREDENTIALS", @"Authentication with credentials {0}:{1} was successful. {2}");
+            => new CommonCredentialsIssue(username, password, roleIds, "Common credentials", @"The application uses well-known credentials. These are easy for attackers to guess.
+         Details: Authentication with credentials {0}:{1} was successful. {2}");
 
     }
 }
