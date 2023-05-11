@@ -103,6 +103,13 @@ namespace Controller
 
                     if (ad.ApplicationType == ApplicationType.DiscoveryServer)
                     {
+                        // TODO: NOTE this is not for GDS, only for LDS
+                        // For GDS, must use GlobalDiscoveryServerClient and Query the registered applications
+                        // Calling FindServersOnNetwork() on LDS will cause the LDS to do multicast probe for other LDS's
+                        // and return their discoveryuris
+                        // Thus this is useful for finding applications on local network
+                        // https://reference.opcfoundation.org/GDS/v105/docs/4.3.4
+
                         _logger.LogCritical("Application is a discoveryserver");
 
                         // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.3
