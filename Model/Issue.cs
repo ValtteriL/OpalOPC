@@ -31,7 +31,7 @@ namespace Model
          possible to use unauthorized client applications to access the resources.");
         public static Issue SelfSignedCertificateAccepted = new Issue("Self signed client certificate accepted", @"The application trusts self-signed client certificates. This makes it
          possible to use unauthorized client applications to access the resources.");
-        public static Issue NotRBACCapable = new Issue("RBAC not supported", @"The application is not capable of Role Basec Access Control (RBAC). This means that all authenticated users
+        public static Issue NotRBACCapable = new Issue("RBAC not supported", @"The application is not capable of Role Based Access Control (RBAC). This means that all authenticated users
          have the same level of access.");
         public static Issue AuditingDisabled = new Issue("Auditing is disabled", @"Auditing is disabled on the application. This means no audit trail is being generated. Without the trail,
          tracking of activities and abnormal behavior on the application may not be possible.");

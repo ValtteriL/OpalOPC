@@ -19,7 +19,7 @@
       </meta>
     </head>
 
-    <body class="d-flex h-100 text-bg-dark">
+    <body class="d-flex h-100">
       <main class="container">
         <section class="text-center">
           <h1>Opal OPC Report</h1>
@@ -28,6 +28,16 @@
 
         <section>
           <h2>Navigation</h2>
+          <xsl:for-each select="Report/Targets/Target">
+            <div>
+              <xsl:element name="a">
+                <xsl:attribute name="href">
+                  #<xsl:value-of select='ApplicationName' />
+                </xsl:attribute>
+                <xsl:value-of select='ApplicationName' />
+              </xsl:element>
+            </div>
+          </xsl:for-each>
         </section>
 
         <section>
@@ -44,74 +54,50 @@
         </section>
 
         <section>
+          <h2>Results</h2>
           <xsl:for-each select="Report/Targets/Target">
             <div>
-              <h2><xsl:value-of select="ApplicationName" /> (<xsl:value-of select="ApplicationUri" />)
-              </h2>
-              <p>Type: <xsl:value-of select="Type" /></p>
-              <p>Product Uri: <xsl:value-of select="ProductUri" /></p>
+              <xsl:element name="h3">
+                <xsl:attribute name="id">
+                  <xsl:value-of select='ApplicationName' />
+                </xsl:attribute>
+                <xsl:value-of select='ApplicationName' />
+                <span class="mx-2 badge bg-secondary"><xsl:value-of select="Type" /></span>
+              </xsl:element>
+              <p>Application Uri: <xsl:value-of select="ApplicationUri" />
+                <br></br>
+              Product Uri: <xsl:value-of select="ProductUri" /></p>
               <div>
-                <h3>Servers</h3>
+                <h4>Servers</h4>
                 <xsl:for-each select="Servers/Server">
                   <div>
-                    <h3><xsl:value-of select="DiscoveryUrl" /></h3>
+                    <h5><xsl:value-of select="DiscoveryUrl" /></h5>
                     <div>
-                      <h4>Endpoints</h4>
                       <xsl:for-each select="Endpoints/Endpoint">
+                        <xsl:variable name="EndpointUrl"><xsl:value-of select="EndpointUrl" /></xsl:variable>
                         <div>
-                          <h5><xsl:value-of select="EndpointUrl" /></h5>
                           <div>
-                            <table class="table text-bg-dark">
-                              <thead>
+                            <table class="table table-hover">
+                              <thead class="table-bordered table-light">
                                 <tr>
+                                  <th>Endpoint</th>
                                   <th>Issue</th>
                                   <th>Description</th>
                                 </tr>
                               </thead>
                               <tbody>
+                                <xsl:for-each select="Endpoints/Endpoint"></xsl:for-each>
                                 <xsl:for-each select="Issues/Issue">
                                   <tr>
-                                    <td><xsl:value-of select="Title" /></td>
+                                    <td><xsl:copy-of select="$EndpointUrl" /></td>
+                                    <td class="table-danger"><xsl:value-of select="Title" /></td>
                                     <td><xsl:value-of select="Description" /></td>
                                   </tr>
                                 </xsl:for-each>
                               </tbody>
                             </table>
                           </div>
-                          <p>
-                            <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                              Endpoint details (click to expand)
-                            </a>
-                          </p>
-                          <div class="collapse" id="collapseExample">
-                            <div class="text-bg-dark card card-body">
-                                <p>Security policy Uris</p>
-                                <ul>
-                                  <xsl:for-each select="SecurityPolicyUris/SecurityPolicyUri">
-                                    <li><xsl:value-of select="." /></li>
-                                  </xsl:for-each>
-                                </ul>
-                                <p>Message security Modes</p>
-                                <ul>
-                                  <xsl:for-each select="MessageSecurityModes/MessageSecurityMode">
-                                    <li><xsl:value-of select="." /></li>
-                                  </xsl:for-each>
-                                </ul>
-                                <p>User Token Policies</p>
-                                <ul>
-                                  <xsl:for-each select="UserTokenPolicyIds/UserTokenPolicy">
-                                    <li><xsl:value-of select="." /></li>
-                                  </xsl:for-each>
-                                </ul>
-                                <p>User Token Types</p>
-                                <ul>
-                                  <xsl:for-each select="UserTokenTypes/UserTokenType">
-                                    <li><xsl:value-of select="." /></li>
-                                  </xsl:for-each>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
+                        </div>
                       </xsl:for-each>
                     </div>
                   </div>
@@ -120,6 +106,9 @@
             </div>
           </xsl:for-each>
         </section>
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+          <p class="col-md-4 mb-0 text-muted">opalopc.com</p>
+        </footer>
       </main>
     </body>
 
