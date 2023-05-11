@@ -25,8 +25,8 @@ namespace Util
                 CertificateBuilder
                     .Create(Subject)
                     .AddExtension(
-                        new X509SubjectAltNameExtension("urn:opalopc.app:host",
-                        new string[] { "host", "host.opalopc.app", "192.168.1.100" }))
+                        new X509SubjectAltNameExtension("urn:opalopc.com:host",
+                        new string[] { "host", "host.opalopc.com", "192.168.1.100" }))
                     .CreateForRSA());
 
             // accept any server certificates
