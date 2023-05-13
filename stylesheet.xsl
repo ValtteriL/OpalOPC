@@ -108,6 +108,7 @@
         </section>
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
           <p class="col-md-4 mb-0 text-muted">opalopc.com</p>
+          <p>Missing features? Facing a bug? <a target="_blank" href="https://forms.gle/FWFuAmZs3H32jeNi6">Give us feedback!</a></p>
         </footer>
       </main>
     </body>
