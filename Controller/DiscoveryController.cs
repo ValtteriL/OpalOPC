@@ -94,6 +94,7 @@ namespace Controller
                             string msg = $"Cannot connect to discovery URI {s}";
                             _logger.LogWarning(msg);
                             target.AddError(msg);
+                            target.AddServer(s, new EndpointDescriptionCollection());
                             continue;
                         }
                         throw;
