@@ -28,20 +28,6 @@
         </section>
 
         <section>
-          <h2>Navigation</h2>
-          <xsl:for-each select="Report/Targets/Target">
-            <div>
-              <xsl:element name="a">
-                <xsl:attribute name="href">
-                  #<xsl:value-of select='ApplicationName' />
-                </xsl:attribute>
-                <xsl:value-of select='ApplicationName' />
-              </xsl:element>
-            </div>
-          </xsl:for-each>
-        </section>
-
-        <section>
           <h2>Scan summary</h2>
           <p>
             OpalOPC <xsl:value-of select="Report/Version" /> was initialized at <xsl:value-of
@@ -52,6 +38,35 @@
           <p>
             <xsl:value-of select="Report/RunStatus" />
           </p>
+        </section>
+
+        <section>
+          <h2>Targets summary</h2>
+          <table class="table table-hover">
+            <thead class="table-bordered table-light">
+              <tr>
+                <th>Application</th>
+                <th>Servers</th>
+                <th>Issues</th>
+              </tr>
+            </thead>
+            <tbody>
+              <xsl:for-each select="Report/Targets/Target">
+                <tr>
+                  <td>
+                    <xsl:element name="a">
+                      <xsl:attribute name="href">
+                        #<xsl:value-of select='ApplicationName' />
+                      </xsl:attribute>
+                      <xsl:value-of select='ApplicationName' />
+                    </xsl:element>
+                  </td>
+                  <td><xsl:value-of select='count(Servers/Server)' /></td>
+                  <td><xsl:value-of select='count(Servers/Server/Endpoints/Endpoint/Issues/Issue)' /></td>
+                </tr>
+              </xsl:for-each>
+            </tbody>
+          </table>
         </section>
 
         <section>
@@ -67,7 +82,8 @@
               </xsl:element>
               <p>Application Uri: <xsl:value-of select="ApplicationUri" />
                 <br></br>
-              Product Uri: <xsl:value-of select="ProductUri" /></p>
+                Product Uri: <xsl:value-of select="ProductUri" />
+              </p>
               <div>
                 <h4>Servers</h4>
                 <xsl:for-each select="Servers/Server">
@@ -87,7 +103,6 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <xsl:for-each select="Endpoints/Endpoint"></xsl:for-each>
                                 <xsl:for-each select="Issues/Issue">
                                   <tr>
                                     <td><xsl:copy-of select="$EndpointUrl" /></td>
@@ -109,7 +124,8 @@
         </section>
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
           <p class="col-md-4 mb-0 text-muted">opalopc.com</p>
-          <p>Missing features? Facing a bug? <a target="_blank" href="https://forms.gle/FWFuAmZs3H32jeNi6">Give us feedback!</a></p>
+          <p>Missing features? Facing a bug? <a target="_blank" href="https://forms.gle/FWFuAmZs3H32jeNi6">Give us
+              feedback!</a></p>
         </footer>
       </main>
     </body>
