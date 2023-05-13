@@ -53,7 +53,7 @@ class OpalOPC
 
         if (options.xmlOutputReportName != null)
         {
-            logger.LogInformation($"Report saved to {options.xmlOutputReportName}");
+            logger.LogInformation($"Report saved to {options.xmlOutputReportName} (Use browser to view it)");
         }
 
         return 0;
