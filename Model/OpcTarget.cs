@@ -6,6 +6,7 @@ namespace Model
 
         private ApplicationDescription? _applicationDescription;
         public List<Server> Servers { get; set; } = new List<Server>();
+        public List<Error> Errors { get; set; } = new List<Error>();
 
         public ApplicationType? Type { get; set; }
         public string? ApplicationName { get; set; }
@@ -32,6 +33,11 @@ namespace Model
         public void AddServer(string DiscoveryUrl, EndpointDescriptionCollection edc)
         {
             this.Servers.Add(new Server(DiscoveryUrl, edc));
+        }
+
+        public void AddError(string message)
+        {
+            this.Errors.Add(new Error(message));
         }
 
         public IEnumerable<Endpoint> GetEndpointsBySecurityMode(MessageSecurityMode messageSecurityMode)

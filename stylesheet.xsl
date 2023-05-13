@@ -42,13 +42,15 @@
         </section>
 
         <section>
-          <h2>Targets summary</h2>
+          <h2>Application summary</h2>
           <table class="table table-hover">
             <thead class="table-bordered table-light">
               <tr>
                 <th>Application</th>
-                <th>Servers</th>
+                <th>Type</th>
+                <th>DiscoveryURIs</th>
                 <th>Issues</th>
+                <th>Errors</th>
               </tr>
             </thead>
             <tbody>
@@ -62,8 +64,10 @@
                       <xsl:value-of select='ApplicationName' />
                     </xsl:element>
                   </td>
+                  <td><xsl:value-of select="Type" /></td>
                   <td><xsl:value-of select='count(Servers/Server)' /></td>
                   <td><xsl:value-of select='count(Servers/Server/Endpoints/Endpoint/Issues/Issue)' /></td>
+                  <td><xsl:value-of select='count(Errors/Error)' /></td>
                 </tr>
               </xsl:for-each>
             </tbody>
@@ -85,20 +89,27 @@
                 <br></br>
                 Product Uri: <xsl:value-of select="ProductUri" />
               </p>
+              <xsl:if test="count(Errors/Error) &gt; 0">
+                <div class="text-danger">
+                  <h4>Errors</h4>
+                  <ul>
+                    <xsl:for-each select="Errors/Error">
+                      <li><xsl:value-of select="Message" /></li>
+                    </xsl:for-each>
+                  </ul>
+                </div>
+              </xsl:if>
               <div>
-                <h4>Servers</h4>
                 <xsl:for-each select="Servers/Server">
                   <div>
                     <h5><xsl:value-of select="DiscoveryUrl" /></h5>
                     <div>
                       <xsl:for-each select="Endpoints/Endpoint">
-                        <xsl:variable name="EndpointUrl"><xsl:value-of select="EndpointUrl" /></xsl:variable>
                         <div>
                           <div>
                             <table class="table table-hover">
                               <thead class="table-bordered table-light">
                                 <tr>
-                                  <th>Endpoint</th>
                                   <th>Issue</th>
                                   <th>Description</th>
                                 </tr>
@@ -106,7 +117,6 @@
                               <tbody>
                                 <xsl:for-each select="Issues/Issue">
                                   <tr>
-                                    <td><xsl:copy-of select="$EndpointUrl" /></td>
                                     <td class="table-danger"><xsl:value-of select="Title" /></td>
                                     <td><xsl:value-of select="Description" /></td>
                                   </tr>
