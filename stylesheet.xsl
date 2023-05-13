@@ -22,6 +22,7 @@
     <body class="d-flex h-100">
       <main class="container">
         <section class="text-center">
+          <img src="opalopc-logo.png" class="img-fluid" alt="OpalOPC logo"></img>
           <h1>Opal OPC Report</h1>
           <h2><xsl:value-of select="Report/StartTime" /></h2>
         </section>
