@@ -33,6 +33,14 @@ namespace Controller
 
             ICollection<Target> targets = new List<Target>();
 
+            if (discoveryUri.ToString().Contains("https://"))
+            {
+                string msg = $"Https is not supported: {discoveryUri}";
+                _logger.LogError(msg);
+                return targets;
+            }
+
+
             // https://reference.opcfoundation.org/Core/Part4/v105/docs/
 
             // DISCOVER (find services, check supported modes, security policies, and user tokens)
@@ -59,7 +67,7 @@ namespace Controller
             {
                 if (e.Message.Contains("BadRequestTimeout"))
                 {
-                    _logger.LogWarning($"Timeout connecting to discovery URI {discoveryUri}");
+                    _logger.LogError($"Timeout connecting to discovery URI {discoveryUri}");
                     return targets;
                 }
                 throw;
@@ -79,6 +87,15 @@ namespace Controller
                     // ask each discoveryUrl for endpoints
                     _logger.LogDebug($"Discovering endpoints for {ad.ApplicationName} ({ad.ProductUri})");
                     _logger.LogTrace($"Using DiscoveryUrl {s}");
+
+                    if (s.Contains("https://"))
+                    {
+                        string msg = $"Https is not supported: {s}";
+                        _logger.LogError(msg);
+                        target.AddError(msg);
+                        target.AddServer(s, new EndpointDescriptionCollection());
+                        continue;
+                    }
 
                     DiscoveryClient sss = DiscoveryClient.Create(new Uri(s));
                     EndpointDescriptionCollection edc;
