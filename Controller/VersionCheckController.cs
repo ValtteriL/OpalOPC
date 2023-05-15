@@ -9,7 +9,7 @@ namespace Controller
     {
 
         ILogger _logger;
-        private Uri versionUri = new Uri("https://opalopc.com/VERSION");
+        private Uri versionUri = new Uri("https://opalopc.com/VERSION.txt");
 
         public VersionCheckController(ILogger logger)
         {
@@ -36,7 +36,7 @@ namespace Controller
                     return;
                 }
 
-                string latestVersion = response.Content.ReadAsStringAsync().Result;
+                string latestVersion = response.Content.ReadAsStringAsync().Result.TrimEnd();
 
                 if (latestVersion != Util.VersionUtil.AppAssemblyVersion!.ToString())
                 {
