@@ -24,6 +24,9 @@ class OpalOPC
 
         ILogger logger = loggerFactory.CreateLogger<OpalOPC>();
 
+        VersionCheckController versionCheckController = new VersionCheckController(logger);
+        versionCheckController.CheckVersion();
+
         DateTime start = DateTime.Now;
         logger.LogInformation($"Starting OpalOPC {Util.VersionUtil.AppAssemblyVersion} ( https://opalopc.com )");
 
