@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using Model;
 using View;
@@ -20,10 +21,18 @@ namespace Controller
         // if no network connection - just generate trace message
         public void CheckVersion()
         {
+            string thisVersion = Util.VersionUtil.AppAssemblyVersion!.ToString();
+
+            ProductInfoHeaderValue productValue = new ProductInfoHeaderValue("OpalOPC", thisVersion);
+            ProductInfoHeaderValue commentValue = new ProductInfoHeaderValue("(+https://opalopc.com)");
+
+
             using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
             {
                 HttpResponseMessage response;
                 client.Timeout = System.TimeSpan.FromSeconds(2.5);
+                client.DefaultRequestHeaders.UserAgent.Add(productValue);
+                client.DefaultRequestHeaders.UserAgent.Add(commentValue);
 
                 try
                 {
@@ -38,9 +47,9 @@ namespace Controller
 
                 string latestVersion = response.Content.ReadAsStringAsync().Result.TrimEnd();
 
-                if (latestVersion != Util.VersionUtil.AppAssemblyVersion!.ToString())
+                if (latestVersion != thisVersion)
                 {
-                    _logger.LogWarning($"Using outdated OpalOPC version {Util.VersionUtil.AppAssemblyVersion} (the latest is {latestVersion})");
+                    _logger.LogWarning($"Using outdated OpalOPC version {thisVersion} (the latest is {latestVersion})");
                     return;
                 }
 
