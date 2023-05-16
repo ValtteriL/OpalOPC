@@ -25,7 +25,7 @@ namespace Controller
             foreach (Target target in opcTargets)
             {
                 _logger.LogDebug($"Testing {target.ApplicationName} ({target.ProductUri})");
-                TestTLS(TestAuditingRBAC(TestAuth(TestTransportSecurity(target))));
+                TestAuditingRBAC(TestAuth(TestTransportSecurity(target)));
             }
 
             return opcTargets;
@@ -78,14 +78,6 @@ namespace Controller
                 endpoint.Issues.Add(Issues.SecurityPolicyNone);
             }
 
-            return opcTarget;
-        }
-
-        // populate opcTarget with TLS test results
-        private Target TestTLS(Target opcTarget)
-        {
-            // TODO
-            _logger.LogTrace($"Testing TLS");
             return opcTarget;
         }
 
