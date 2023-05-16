@@ -8,7 +8,7 @@ namespace Plugin
     public class RBACNotSupportedPlugin : Plugin
     {
         // check if auditing disabled
-        private static PluginId _pluginId = PluginId.AuditingDisabled;
+        private static PluginId _pluginId = PluginId.RBACNotSupported;
         private static string _category = PluginCategories.Authorization;
         private static string _issueTitle = "RBAC not supported";
 
