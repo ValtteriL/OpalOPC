@@ -21,7 +21,7 @@ namespace Plugin
 
         public override Target Run(Target target)
         {
-            _logger.LogTrace($"Testing {target.ApplicationName} for Self Signed Certificate acceptance");
+            _logger.LogTrace($"Testing if {target.ApplicationName} accepts self signed certificate");
 
             Parallel.ForEach(target.GetEndpointsBySecurityPolicyUriNot(SecurityPolicies.None), endpoint =>
                 {
