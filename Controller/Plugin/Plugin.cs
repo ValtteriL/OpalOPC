@@ -7,6 +7,7 @@ namespace Plugin
     {
         PluginId Id { get; }
         string Category { get; }
+        double Severity { get; }
         public Target Run(Target target);
     }
 
@@ -19,7 +20,13 @@ namespace Plugin
             get => _pluginId;
         }
 
-        private string _category = "Dummy";
+        double _severity = 0;
+        public double Severity
+        {
+            get => _severity;
+        }
+
+        private string _category = PluginCategories.Dummy;
         public string Category
         {
             get => _category;

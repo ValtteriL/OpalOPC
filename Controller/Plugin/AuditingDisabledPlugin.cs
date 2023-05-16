@@ -11,6 +11,9 @@ namespace Plugin
         private PluginId _pluginId = PluginId.AuditingDisabled;
         private string _category = PluginCategories.Accounting;
 
+        // Medium
+        private double _severity = 5;
+
         public AuditingDisabledPlugin(ILogger logger) : base(logger) {}
 
         public override Target Run(Target target)

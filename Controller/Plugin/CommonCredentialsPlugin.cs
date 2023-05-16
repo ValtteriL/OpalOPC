@@ -10,6 +10,9 @@ namespace Plugin
         private PluginId _pluginId = PluginId.CommonCredentials;
         private string _category = PluginCategories.Authentication;
 
+        // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L
+        private double _severity = 7.3;
+
         public CommonCredentialsPlugin(ILogger logger) : base(logger) { }
 
         public override Target Run(Target target)

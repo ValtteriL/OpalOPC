@@ -12,6 +12,9 @@ namespace Plugin
         private PluginId _pluginId = PluginId.SecurityPolicyNone;
         private string _category = PluginCategories.TransportSecurity;
 
+        // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N
+        private double _severity = 5.4;
+
         public SecurityPolicyNonePlugin(ILogger logger) : base(logger) {}
 
         public override Target Run(Target target)

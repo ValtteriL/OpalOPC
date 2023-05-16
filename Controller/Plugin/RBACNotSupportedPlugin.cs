@@ -11,6 +11,9 @@ namespace Plugin
         private PluginId _pluginId = PluginId.AuditingDisabled;
         private string _category = PluginCategories.Authorization;
 
+        // Info
+        private double _severity = 0;
+
         public RBACNotSupportedPlugin(ILogger logger) : base(logger) { }
 
         public override Target Run(Target target)
