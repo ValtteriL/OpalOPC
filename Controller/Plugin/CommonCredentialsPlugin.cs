@@ -7,13 +7,14 @@ namespace Plugin
 {
     public class CommonCredentialsPlugin : Plugin
     {
-        private PluginId _pluginId = PluginId.CommonCredentials;
-        private string _category = PluginCategories.Authentication;
+        private static PluginId _pluginId = PluginId.CommonCredentials;
+        private static string _category = PluginCategories.Authentication;
+        private static string _issueTitle = "Common credentials in use";
 
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L
-        private double _severity = 7.3;
+        private static double _severity = 7.3;
 
-        public CommonCredentialsPlugin(ILogger logger) : base(logger) { }
+        public CommonCredentialsPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
         public override Target Run(Target target)
         {
@@ -26,7 +27,8 @@ namespace Plugin
                     if (IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password), out NodeIdCollection roleIds))
                     {
                         _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
-                        endpoint.Issues.Add(Issues.CommonCredentials(username, password, roleIds));
+                        _issueTitle = $"Common credentials in use ({username}:{password})";
+                        endpoint.Issues.Add(new CommonCredentialsIssue((int)_pluginId, _issueTitle, _severity, username, password));
                     }
                 }
             });

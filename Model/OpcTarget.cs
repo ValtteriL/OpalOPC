@@ -1,4 +1,6 @@
 using Opc.Ua;
+using Plugin;
+
 namespace Model
 {
     public class Target
@@ -64,8 +66,8 @@ namespace Model
         public IEnumerable<Endpoint> GetBruteableEndpoints()
         {
             return this.GetEndpointsByUserTokenType(UserTokenType.UserName)
-                .Where(e => e.Issues.Contains(Issues.SecurityModeNone)
-                    || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
+                .Where(e => e.Issues.Any(i => i.PluginId == (int)PluginId.SecurityModeNone)
+                    || e.Issues.Any(i => i.PluginId == (int)PluginId.SelfSignedCertificate));
         }
 
         // Get endpoints that can be logged into = anonymous or username + application authentication is disabled OR self-signed certificates accepted
@@ -73,8 +75,8 @@ namespace Model
         {
             return this.GetEndpointsByUserTokenType(UserTokenType.UserName)
                 .Concat(this.GetEndpointsByUserTokenType(UserTokenType.Anonymous))
-                .Where(e => e.Issues.Contains(Issues.SecurityModeNone)
-                    || e.Issues.Contains(Issues.SelfSignedCertificateAccepted));
+                .Where(e => e.Issues.Any(i => i.PluginId == (int)PluginId.SecurityModeNone)
+                    || e.Issues.Any(i => i.PluginId == (int)PluginId.SelfSignedCertificate));
         }
 
         // Merge endpoints with identical URI, add up their findings

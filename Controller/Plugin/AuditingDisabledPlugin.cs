@@ -8,13 +8,14 @@ namespace Plugin
     public class AuditingDisabledPlugin : Plugin
     {
         // check if auditing disabled
-        private PluginId _pluginId = PluginId.AuditingDisabled;
-        private string _category = PluginCategories.Accounting;
+        private static PluginId _pluginId = PluginId.AuditingDisabled;
+        private static string _category = PluginCategories.Accounting;
+        private static string _issueTitle = "Auditing disabled";
 
         // Medium
-        private double _severity = 5;
+        private static double _severity = 5;
 
-        public AuditingDisabledPlugin(ILogger logger) : base(logger) {}
+        public AuditingDisabledPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
 
         public override Target Run(Target target)
         {
@@ -46,7 +47,7 @@ namespace Plugin
                 if (!(bool)auditingValue.GetValue<System.Boolean>(false))
                 {
                     _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} has auditing disabled");
-                    endpoint.Issues.Add(Issues.AuditingDisabled);
+                    endpoint.Issues.Add(CreateIssue());
                 }
             });
 

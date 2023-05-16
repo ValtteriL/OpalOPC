@@ -8,13 +8,14 @@ namespace Plugin
     public class RBACNotSupportedPlugin : Plugin
     {
         // check if auditing disabled
-        private PluginId _pluginId = PluginId.AuditingDisabled;
-        private string _category = PluginCategories.Authorization;
+        private static PluginId _pluginId = PluginId.AuditingDisabled;
+        private static string _category = PluginCategories.Authorization;
+        private static string _issueTitle = "RBAC not supported";
 
         // Info
-        private double _severity = 0;
+        private static double _severity = 0;
 
-        public RBACNotSupportedPlugin(ILogger logger) : base(logger) { }
+        public RBACNotSupportedPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
         public override Target Run(Target target)
         {
@@ -47,7 +48,7 @@ namespace Plugin
                 if (!serverProfileArray.Intersect(RBAC_Profiles).Any())
                 {
                     _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} is not capable of RBAC");
-                    endpoint.Issues.Add(Issues.NotRBACCapable);
+                    endpoint.Issues.Add(CreateIssue());
                 }
             });
 
