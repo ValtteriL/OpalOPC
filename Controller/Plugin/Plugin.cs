@@ -15,14 +15,14 @@ namespace Plugin
         private PluginId _pluginId;
         private double _severity;
         private string _category;
-        private string _issueTitle;
+        private string _name;
 
-        public Plugin(ILogger logger, PluginId pluginId, string category, string IssueTitle, double severity)
+        public Plugin(ILogger logger, PluginId pluginId, string category, string name, double severity)
         {
             _logger = logger;
             _pluginId = pluginId;
             _category = category;
-            _issueTitle = IssueTitle;
+            _name = name;
             _severity = severity;
         }
 
@@ -30,7 +30,7 @@ namespace Plugin
 
         public Issue CreateIssue()
         {
-            return new Issue((int)_pluginId, _issueTitle, _severity);
+            return new Issue((int)_pluginId, _name, _severity);
         }
     }
 }

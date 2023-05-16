@@ -11,7 +11,7 @@ namespace Model
         internal CommonCredentialsIssue()
         { }
 
-        public CommonCredentialsIssue(int pluginId, string title, double severity, string username, string password) : base(pluginId, title, severity)
+        public CommonCredentialsIssue(int pluginId, string name, double severity, string username, string password) : base(pluginId, name, severity)
         {
             this.username = username;
             this.password = password;
