@@ -34,7 +34,7 @@ namespace Model
 
             this.UserTokenPolicyIds = this.UserTokenPolicyIds.Union(endpoint.UserTokenPolicyIds).ToHashSet();
             this.UserTokenTypes = this.UserTokenTypes.Union(endpoint.UserTokenTypes).ToHashSet();
-            this.Issues = this.Issues.Union(endpoint.Issues).ToHashSet();
+            this.Issues = this.Issues.Union(endpoint.Issues).DistinctBy(i => i.Title).ToHashSet();
 
             return this;
         }
