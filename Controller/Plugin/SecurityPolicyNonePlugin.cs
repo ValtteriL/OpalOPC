@@ -9,10 +9,14 @@ namespace Plugin
         // If securitypolicy is none, application authentication is disabled (clients do not use certificate)
         // https://opcfoundation.org/forum/opc-certification-and-interoperability-testing/allowing-anonymous-user-access-a-security-breach-in-opc-ua-conversation/
         // https://opcfoundation.org/forum/opc-ua-implementation-stacks-tools-and-samples/rationale-for-server-authenticating-client-certificates/
-        private PluginId _pluginId = PluginId.SecurityPolicyNone;
-        private string _category = PluginCategories.TransportSecurity;
+        private static PluginId _pluginId = PluginId.SecurityPolicyNone;
+        private static string _category = PluginCategories.TransportSecurity;
+        private static string _issueTitle = "Security Policy None";
 
-        public SecurityPolicyNonePlugin(ILogger logger) : base(logger) {}
+        // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N
+        private static double _severity = 5.4;
+
+        public SecurityPolicyNonePlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
 
         public override Target Run(Target target)
         {
@@ -23,7 +27,7 @@ namespace Plugin
             foreach (Endpoint endpoint in NoneEndpoints)
             {
                 _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} has security policy None");
-                endpoint.Issues.Add(Issues.SecurityPolicyNone);
+                endpoint.Issues.Add(CreateIssue());
             }
 
             return target;

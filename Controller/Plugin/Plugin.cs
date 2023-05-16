@@ -5,31 +5,32 @@ namespace Plugin
 {
     public interface IPlugin
     {
-        PluginId Id { get; }
-        string Category { get; }
         public Target Run(Target target);
+        public Issue CreateIssue();
     }
 
     public abstract class Plugin : IPlugin
     {
         public ILogger _logger;
-        PluginId _pluginId = PluginId.Dummy;
-        public PluginId Id
-        {
-            get => _pluginId;
-        }
+        private PluginId _pluginId;
+        private double _severity;
+        private string _category;
+        private string _name;
 
-        private string _category = "Dummy";
-        public string Category
-        {
-            get => _category;
-        }
-
-        public Plugin(ILogger logger)
+        public Plugin(ILogger logger, PluginId pluginId, string category, string name, double severity)
         {
             _logger = logger;
+            _pluginId = pluginId;
+            _category = category;
+            _name = name;
+            _severity = severity;
         }
 
         public abstract Target Run(Target target);
+
+        public Issue CreateIssue()
+        {
+            return new Issue((int)_pluginId, _name, _severity);
+        }
     }
 }

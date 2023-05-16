@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:output method="html" indent="yes" encoding="UTF-8" doctype-public="-//W3C//DTD HTML 4.01//EN" doctype-system="http://www.w3.org/TR/html4/strict.dtd"/>
+  <xsl:output method="html" indent="yes" encoding="UTF-8" doctype-public="-//W3C//DTD HTML 4.01//EN"
+    doctype-system="http://www.w3.org/TR/html4/strict.dtd" />
   <xsl:template match="/">
     <html lang="en">
 
@@ -110,15 +111,37 @@
                             <table class="table table-hover">
                               <thead class="table-bordered table-light">
                                 <tr>
-                                  <th>Issue</th>
-                                  <th>Description</th>
+                                  <th>Severity</th>
+                                  <th>Plugin Id</th>
+                                  <th>Name</th>
                                 </tr>
                               </thead>
                               <tbody>
                                 <xsl:for-each select="Issues/Issue">
+                                  <xsl:variable name="sev">
+                                    <xsl:choose>
+                                      <xsl:when test="Severity &gt;= 9">
+                                        <td class="table-danger">Critical (<xsl:value-of select="Severity" />)</td>
+                                      </xsl:when>
+                                      <xsl:when test="Severity &gt;= 7">
+                                        <td class="table-danger">High (<xsl:value-of select="Severity" />)</td>
+                                      </xsl:when>
+                                      <xsl:when test="Severity &gt;= 4">
+                                        <td class="table-warning">Medium (<xsl:value-of select="Severity" />)</td>
+                                      </xsl:when>
+                                      <xsl:when test="Severity &gt;= 0.1">
+                                        <td class="table-warning">Low (<xsl:value-of select="Severity" />)</td>
+                                      </xsl:when>
+                                      <xsl:when test="Severity &gt;= 0">
+                                        <td class="table-info">Info (<xsl:value-of select="Severity" />)</td>
+                                      </xsl:when>
+                                    </xsl:choose>
+                                  </xsl:variable>
+
                                   <tr>
-                                    <td class="table-danger"><xsl:value-of select="Title" /></td>
-                                    <td><xsl:value-of select="Description" /></td>
+                                    <xsl:copy-of select="$sev" />
+                                    <td><a href="#"><xsl:value-of select="PluginId" /></a></td>
+                                    <td><xsl:value-of select="Name" /></td>
                                   </tr>
                                 </xsl:for-each>
                               </tbody>
