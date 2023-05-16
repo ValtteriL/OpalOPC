@@ -13,7 +13,7 @@ namespace Plugin
         private static string _issueTitle = "Auditing disabled";
 
         // Medium
-        private static double _severity = 5;
+        private static double _severity = 5.0;
 
         public AuditingDisabledPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
 
