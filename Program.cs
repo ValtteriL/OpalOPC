@@ -1,6 +1,7 @@
 using Controller;
 using Microsoft.Extensions.Logging;
 using Model;
+using Plugin;
 using View;
 
 
@@ -40,7 +41,24 @@ class OpalOPC
         DiscoveryController discoveryController = new DiscoveryController(logger);
         ICollection<Target> targets = discoveryController.DiscoverTargets(options.targets);
 
-        SecurityTestController securityTestController = new SecurityTestController(logger);
+        // Initialize security testing plugins
+        ICollection<IPlugin> securityTestPlugins = new List<IPlugin> {
+            new SecurityModeInvalidPlugin(logger),
+            new SecurityModeNonePlugin(logger),
+
+            new SecurityPolicyBasic128Rsa15Plugin(logger),
+            new SecurityPolicyBasic256Plugin(logger),
+            new SecurityPolicyNonePlugin(logger),
+
+            new AnonymousAuthenticationPlugin(logger),
+            new SelfSignedCertificatePlugin(logger),
+
+            new CommonCredentialsPlugin(logger),
+            new RBACNotSupportedPlugin(logger),
+            new AuditingDisabledPlugin(logger),
+        };
+
+        SecurityTestController securityTestController = new SecurityTestController(logger, securityTestPlugins);
         ICollection<Target> testedTargets = securityTestController.TestTargetSecurity(targets);
 
         ReportController reportController = new ReportController(logger, reporter);
