@@ -21,6 +21,9 @@ namespace Controller
         // Run all security tests and return result-populated opcTarget
         public ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets)
         {
+            _logger.LogTrace($"Loaded {_securityTestPlugins.Count} security test plugins");
+            _logger.LogTrace($"Plugins: {String.Join(", ", _securityTestPlugins.Select(p => (int)p.pluginId))}");
+
             _logger.LogDebug($"Starting security tests of {opcTargets.Count} targets");
 
             foreach (Target target in opcTargets)

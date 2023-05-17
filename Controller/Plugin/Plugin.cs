@@ -7,12 +7,13 @@ namespace Plugin
     {
         public Target Run(Target target);
         public Issue CreateIssue();
+        public PluginId pluginId { get; }
     }
 
     public abstract class Plugin : IPlugin
     {
         public ILogger _logger;
-        private PluginId _pluginId;
+        public PluginId pluginId { get; }
         private double _severity;
         private string _category;
         private string _name;
@@ -20,7 +21,7 @@ namespace Plugin
         public Plugin(ILogger logger, PluginId pluginId, string category, string name, double severity)
         {
             _logger = logger;
-            _pluginId = pluginId;
+            this.pluginId = pluginId;
             _category = category;
             _name = name;
             _severity = severity;
@@ -30,7 +31,7 @@ namespace Plugin
 
         public Issue CreateIssue()
         {
-            return new Issue((int)_pluginId, _name, _severity);
+            return new Issue((int)pluginId, _name, _severity);
         }
     }
 }
