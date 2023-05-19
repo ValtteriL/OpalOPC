@@ -108,6 +108,12 @@ namespace View
                 Environment.Exit(Util.ExitCodes.Error);
             }
 
+            // no arguments at all - show help
+            if (args.Length == 0)
+            {
+                options.shouldShowHelp = true;
+            }
+
             if (options.shouldShowHelp)
             {
                 printHelp();
