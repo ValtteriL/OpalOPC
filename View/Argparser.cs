@@ -43,10 +43,23 @@ namespace View
 
         private Options readTargetFile(string path)
         {
-            string[] lines;
+            List<string> lines = new List<string>();
+
             try
             {
-                lines = File.ReadAllLines(path);
+                if (path == "-")
+                {
+                    // read discoveryuris from stdin
+                    string? line;
+                    while ((line = Console.ReadLine()) != null && line != "")
+                    {
+                        lines.Add(line);
+                    }
+                }
+                else
+                {
+                    lines = File.ReadAllLines(path).ToList();
+                }
             }
             catch (System.Exception e)
             {
