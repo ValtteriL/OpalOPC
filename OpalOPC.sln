@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpalOPC", "OpalOPC\OpalOPC.csproj", "{4675BA90-395B-4F51-A1D4-6C752BE71A0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpalOPC.Tests", "OpalOPC.Tests\OpalOPC.Tests.csproj", "{EBC2BA21-67CE-40B4-A505-F89F6F6F0314}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4675BA90-395B-4F51-A1D4-6C752BE71A0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4675BA90-395B-4F51-A1D4-6C752BE71A0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4675BA90-395B-4F51-A1D4-6C752BE71A0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4675BA90-395B-4F51-A1D4-6C752BE71A0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBC2BA21-67CE-40B4-A505-F89F6F6F0314}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBC2BA21-67CE-40B4-A505-F89F6F6F0314}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBC2BA21-67CE-40B4-A505-F89F6F6F0314}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBC2BA21-67CE-40B4-A505-F89F6F6F0314}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
