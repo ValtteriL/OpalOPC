@@ -129,6 +129,11 @@ namespace View
 
             if (options.shouldShowHelp)
             {
+                if (options.xmlOutputReportName != null)
+                {
+                    File.Delete(options.xmlOutputReportName);
+                }
+
                 printHelp();
                 Environment.Exit(Util.ExitCodes.Success);
             }
