@@ -31,5 +31,6 @@ test:
 publish-all:
 	@ansible-playbook \
 		--extra-vars "version=$(VERSION)" \
+		--extra-vars "passphrase_file=$(PASSPHRASE_FILE)" \
 		--inventory opalopc-www, \
 		deploy/playbooks/publish.yaml

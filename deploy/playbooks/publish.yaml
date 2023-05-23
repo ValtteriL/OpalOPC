@@ -7,32 +7,47 @@
 
   vars:
     version: 1.0.0.0
+    passphrase_file: /tmp/kkk
     path_fix: ../../
-    linux_build: "{{path_fix}}build/linux/opalopc"
-    win_build: "{{path_fix}}build/win/opalopc.exe"
-    osx_build: "{{path_fix}}build/osx/opalopc"
+    linux_build: "{{ path_fix }}build/linux/opalopc"
+    win_build: "{{ path_fix }}build/win/opalopc.exe"
+    osx_build: "{{ path_fix }}build/osx/opalopc"
     version_txt: /var/www/opalopc.com/wordpress/VERSION.txt
     release_web_path: /var/www/opalopc.com/wordpress/releases
 
   tasks:
 
-    - name: Build Linux
+    - name: Build applications
       local_action: 
         module: ansible.builtin.shell
-        cmd: "dotnet publish OpalOPC --runtime linux-x64 --self-contained --output build/linux /p:AssemblyVersion={{ version | mandatory }}"
-        chdir: "{{path_fix}}"
-    
-    - name: Build Windows
+        cmd: >
+          dotnet publish OpalOPC
+          --runtime "{{ item.runtime }}"
+          --self-contained
+          --output {{ item.output }}
+          /p:AssemblyVersion="{{ version | mandatory }}"
+        chdir: "{{ path_fix }}"
+      loop:
+        - { runtime: linux-x64, output: build/linux }
+        - { runtime: win-x64, output: build/win }
+        - { runtime: osx-x64, output: build/osx }
+
+    - name: Sign applications
       local_action:
         module: ansible.builtin.shell
-        cmd: "dotnet publish OpalOPC --runtime win-x64 --self-contained --output build/win /p:AssemblyVersion={{ version | mandatory }}"
-        chdir: "{{path_fix}}"
-    
-    - name: Build OSX
-      local_action:
-        module: ansible.builtin.shell
-        cmd: "dotnet publish OpalOPC --runtime osx-x64 --self-contained --output build/osx /p:AssemblyVersion={{ version | mandatory }}"
-        chdir: "{{path_fix}}"
+        cmd: >
+          gpg
+          --local-user C2AB7F2AF5FAFEF5A84DB87C6DBD4E9ECDF59BC5
+          --pinentry-mode loopback
+          --passphrase-file="{{ passphrase_file | mandatory }}"
+          --yes --detach-sign
+          --armor
+          "{{ item }}"
+        chdir: "{{ path_fix }}"
+      loop:
+        - build/linux/opalopc
+        - build/osx/opalopc
+        - build/win/opalopc.exe
 
     - name: Create releases directory
       become: true
@@ -53,9 +68,12 @@
         group: root
         force: false
       loop:
-        - { build: "{{ linux_build }}", directory: "{{ release_web_path }}/{{version | mandatory}}", subdir: 'linux'}
-        - { build: "{{ win_build }}", directory: "{{ release_web_path }}/{{version | mandatory}}", subdir: 'windows'}
-        - { build: "{{ osx_build }}", directory: "{{ release_web_path }}/{{version | mandatory}}", subdir: 'osx'}
+        - { build: "{{ linux_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'linux'}
+        - { build: "{{ win_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
+        - { build: "{{ osx_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'osx'}
+        - { build: "{{ linux_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'linux'}
+        - { build: "{{ win_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
+        - { build: "{{ osx_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'osx'}
 
     # move builds to latest with subdir per OS
     - name: Transfer applications to webserver
@@ -69,6 +87,9 @@
         - { build: "{{ linux_build }}", directory: "{{ release_web_path }}/latest", subdir: 'linux'}
         - { build: "{{ win_build }}", directory: "{{ release_web_path }}/latest", subdir: 'windows'}
         - { build: "{{ osx_build }}", directory: "{{ release_web_path }}/latest", subdir: 'osx'}
+        - { build: "{{ linux_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'linux'}
+        - { build: "{{ win_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'windows'}
+        - { build: "{{ osx_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'osx'}
 
     - name: Update VERSION.txt
       become: true
