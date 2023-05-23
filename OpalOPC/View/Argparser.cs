@@ -118,7 +118,7 @@ namespace View
                 Console.Write($"{programName}: ");
                 Console.WriteLine(e.Message);
                 Console.WriteLine($"Try `{programName} --help' for more information.");
-                Environment.Exit(Util.ExitCodes.Error);
+                options.exitCode = Util.ExitCodes.Error;
             }
 
             // no arguments at all - show help
@@ -131,11 +131,12 @@ namespace View
             {
                 if (options.xmlOutputReportName != null)
                 {
+                    options.xmlOutputStream!.Close();
                     File.Delete(options.xmlOutputReportName);
                 }
 
                 printHelp();
-                Environment.Exit(Util.ExitCodes.Success);
+                options.exitCode = Util.ExitCodes.Success;
             }
 
             return options;

@@ -11,6 +11,11 @@ class OpalOPC
     {
         Options options = new Argparser(args).parseArgs();
 
+        if (options.exitCode.HasValue)
+        {
+            Environment.Exit((int)options.exitCode);
+        }
+
         using var loggerFactory = LoggerFactory.Create(builder =>
         {
             builder

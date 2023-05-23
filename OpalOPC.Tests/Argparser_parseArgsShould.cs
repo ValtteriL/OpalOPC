@@ -14,6 +14,7 @@ public class Argparser_parseArgsShould
         Options options = argparser.parseArgs();
 
         Assert.True(options.targets.Count == 0);
+        Assert.True(options.exitCode == null);
     }
 
     [Theory]
@@ -27,6 +28,8 @@ public class Argparser_parseArgsShould
         Options options = argparser.parseArgs();
 
         Assert.True(options.xmlOutputReportName == filename);
+        Assert.True(options.xmlOutputStream!.CanWrite);
+        Assert.True(options.exitCode == null);
     }
 
     [Fact]
@@ -38,6 +41,7 @@ public class Argparser_parseArgsShould
         Options options = argparser.parseArgs();
 
         Assert.True(options.logLevel == Microsoft.Extensions.Logging.LogLevel.Debug);
+        Assert.True(options.exitCode == null);
     }
 
     [Fact]
@@ -49,6 +53,7 @@ public class Argparser_parseArgsShould
         Options options = argparser.parseArgs();
 
         Assert.True(options.logLevel == Microsoft.Extensions.Logging.LogLevel.Trace);
+        Assert.True(options.exitCode == null);
     }
 
     [Fact]
@@ -60,5 +65,45 @@ public class Argparser_parseArgsShould
         Options options = argparser.parseArgs();
 
         Assert.True(options.logLevel == Microsoft.Extensions.Logging.LogLevel.None);
+        Assert.True(options.exitCode == null);
+    }
+
+    [Fact]
+    public void ParseArgs_NoTargets_ResultsInHelp()
+    {
+        string[] args = { };
+        Argparser argparser = new Argparser(args);
+
+        Options options = argparser.parseArgs();
+
+        Assert.True(options.exitCode == Util.ExitCodes.Success);
+    }
+
+    [Theory]
+    [InlineData("-h")]
+    [InlineData("--help")]
+    public void ParseArgs_Help_ResultsInHelp(string flag)
+    {
+        string[] args = { flag };
+        Argparser argparser = new Argparser(args);
+
+        Options options = argparser.parseArgs();
+
+        Assert.True(options.exitCode == Util.ExitCodes.Success);
+    }
+
+    [Theory]
+    [InlineData("-i")]
+    [InlineData("--input")]
+    public void ParseArgs_InvalidInputFile_ResultsInError(string flag)
+    {
+        string filename = "ahfoihfsa";
+        string[] args = { flag, filename };
+        Argparser argparser = new Argparser(args);
+
+        Options options = argparser.parseArgs();
+
+        Assert.True(options.targets.Count == 0);
+        Assert.True(options.exitCode == Util.ExitCodes.Error);
     }
 }

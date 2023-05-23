@@ -9,5 +9,6 @@ namespace Model
         public string? xmlOutputReportName;
         public LogLevel logLevel = LogLevel.Information;
         public bool shouldShowHelp;
+        public int? exitCode;
     }
 }
