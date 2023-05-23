@@ -3,7 +3,6 @@ pipeline {
         dockerfile {
             filename 'Dockerfile.agent'
             dir 'deploy'
-            args '-v /etc/passwd:/etc/passwd:ro -v /var/lib/jenkins/.ssh:/var/lib/jenkins/.ssh:ro'
         }
     }
 
@@ -13,9 +12,15 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Test') {
+        stage('Unit tests') {
             steps {
                 sh 'make test'
+            }
+        }
+        stage('End-to-end tests') {
+            steps {
+                sh 'make run-opcuaserver.com-demo'
+                sh 'make run-opcuaserver.com-lds'
             }
         }
     }
