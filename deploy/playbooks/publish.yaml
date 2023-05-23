@@ -2,7 +2,7 @@
 
 # Build OpalOPC for all platforms with given version number, transfer builds to webserver
 
-- name: Deployment
+- name: Publish
   hosts: all
 
   vars:
@@ -12,8 +12,8 @@
     linux_build: "{{ path_fix }}build/linux/opalopc"
     win_build: "{{ path_fix }}build/win/opalopc.exe"
     osx_build: "{{ path_fix }}build/osx/opalopc"
-    version_txt: /var/www/opalopc.com/wordpress/VERSION.txt
-    release_web_path: /var/www/opalopc.com/wordpress/releases
+    version_txt: /var/www/opalopc.com/VERSION.txt
+    release_web_path: /var/www/opalopc.com/releases
 
   tasks:
 
