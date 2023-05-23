@@ -7,7 +7,6 @@
 
   vars:
     version: 1.0.0.0
-    passphrase_file: /tmp/kkk
     path_fix: ../../
     linux_build: "{{ path_fix }}build/linux/opalopc"
     win_build: "{{ path_fix }}build/win/opalopc.exe"
@@ -39,7 +38,6 @@
           gpg
           --local-user C2AB7F2AF5FAFEF5A84DB87C6DBD4E9ECDF59BC5
           --pinentry-mode loopback
-          --passphrase-file="{{ passphrase_file | mandatory }}"
           --yes --detach-sign
           --armor
           "{{ item }}"

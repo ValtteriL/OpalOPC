@@ -8,7 +8,6 @@ Build Windows, OSX and Linux binaries, sign them with GPG key, and publish on th
 
 ```
 export VERSION=<version>
-export PASSPHRASE_FILE=<path-to-file-with-gpg-passphrase>
 make publish-all
 ```
 
