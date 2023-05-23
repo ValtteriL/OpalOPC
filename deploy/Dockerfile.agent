@@ -1,6 +1,6 @@
 # Image used as the build agent by Jenkins
 
-FROM ubuntu:jammy
+FROM ubuntu:lunar
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -11,16 +11,10 @@ RUN apt-get update && apt-get install -y \
     rsync \
     software-properties-common \
     openssh-client \
-    git
-
-# install microsoft keys
-RUN wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
-    && dpkg -i packages-microsoft-prod.deb \
-    && rm packages-microsoft-prod.deb
-
-# install requirements
-RUN apt-get update && apt-get install -y \
-    dotnet-sdk-7.0
+    git \
+    dotnet-sdk-7.0 \
+    aspnetcore-runtime-7.0 \
+    dotnet-runtime-7.0
 
 # install ansible
 RUN add-apt-repository --yes --update ppa:ansible/ansible && apt-get install -y ansible

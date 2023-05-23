@@ -6,6 +6,11 @@ pipeline {
         }
     }
 
+    environment {
+        DOTNET_CLI_HOME = "/tmp/DOTNET_CLI_HOME"
+        HOME = '/tmp'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -14,7 +19,6 @@ pipeline {
         }
         stage('Unit tests') {
             steps {
-                sh 'which dotnet'
                 sh 'make test'
             }
         }
