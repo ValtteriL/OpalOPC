@@ -1,0 +1,32 @@
+pipeline {
+    agent {
+        dockerfile {
+            filename 'Dockerfile.agent'
+            dir 'deploy'
+            args '-v /etc/passwd:/etc/passwd:ro -v /var/lib/jenkins/.ssh:/var/lib/jenkins/.ssh:ro'
+        }
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'make test'
+            }
+        }
+    }
+
+    post {
+        failure {
+             mail \
+                subject: "Failed Job: ${env.JOB_NAME} build ${env.BUILD_NUMBER}", \
+                body: "Failed CI job -> <a href=\"${env.BUILD_URL}\">${env.JOB_NAME} build ${env.BUILD_NUMBER}</a>", \
+                mimeType: 'text/html', \
+                to: "valtteri@shufflingbytes.com";
+        }
+    }
+}
