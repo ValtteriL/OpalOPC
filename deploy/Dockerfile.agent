@@ -11,11 +11,10 @@ RUN apt-get update && apt-get install -y \
     rsync \
     software-properties-common \
     openssh-client \
-    git \
-    dotnet-sdk-7.0 \
-    aspnetcore-runtime-7.0 \
-    dotnet-runtime-7.0
+    git
 
 # install ansible
 RUN add-apt-repository --yes --update ppa:ansible/ansible && apt-get install -y ansible
 
+# install dotnet
+RUN apt-get -y install dotnet7

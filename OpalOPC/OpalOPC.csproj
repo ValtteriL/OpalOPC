@@ -6,7 +6,6 @@
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <OutputType>Exe</OutputType>
     <PackageId>opalopc</PackageId>
-    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PublishSingleFile>true</PublishSingleFile>
