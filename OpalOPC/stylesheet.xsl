@@ -140,7 +140,17 @@
 
                                   <tr>
                                     <xsl:copy-of select="$sev" />
-                                    <td><a href="#"><xsl:value-of select="PluginId" /></a></td>
+                                    <td>
+                                      <xsl:element name="a">
+                                        <xsl:attribute name="href">
+                                          https://opalopc.com/docs/plugin-<xsl:value-of select="PluginId" />
+                                        </xsl:attribute>
+                                        <xsl:attribute name="target">
+                                          _blank
+                                        </xsl:attribute>
+                                        <xsl:value-of select="PluginId" />
+                                      </xsl:element>
+                                    </td>
                                     <td><xsl:value-of select="Name" /></td>
                                   </tr>
                                 </xsl:for-each>
