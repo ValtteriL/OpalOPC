@@ -1,0 +1,79 @@
+---
+
+# Build OpalOPC for all platforms with given version number, transfer builds to webserver
+
+- name: Deployment
+  hosts: all
+
+  vars:
+    version: 1.0.0.0
+    path_fix: ../../
+    linux_build: "{{path_fix}}build/linux/opalopc"
+    win_build: "{{path_fix}}build/win/opalopc.exe"
+    osx_build: "{{path_fix}}build/osx/opalopc"
+    version_txt: /var/www/opalopc.com/wordpress/VERSION.txt
+    release_web_path: /var/www/opalopc.com/wordpress/releases
+
+  tasks:
+
+    - name: Build Linux
+      local_action: 
+        module: ansible.builtin.shell
+        cmd: "dotnet publish OpalOPC --runtime linux-x64 --self-contained --output build/linux /p:AssemblyVersion={{ version | mandatory }}"
+        chdir: "{{path_fix}}"
+    
+    - name: Build Windows
+      local_action:
+        module: ansible.builtin.shell
+        cmd: "dotnet publish OpalOPC --runtime win-x64 --self-contained --output build/win /p:AssemblyVersion={{ version | mandatory }}"
+        chdir: "{{path_fix}}"
+    
+    - name: Build OSX
+      local_action:
+        module: ansible.builtin.shell
+        cmd: "dotnet publish OpalOPC --runtime osx-x64 --self-contained --output build/osx /p:AssemblyVersion={{ version | mandatory }}"
+        chdir: "{{path_fix}}"
+
+    - name: Create releases directory
+      become: true
+      ansible.builtin.file:
+        path: "{{ release_web_path }}"
+        owner: root
+        group: www-data
+        state: directory
+
+    # create directory for version with subdir per OS
+    # dont replace if already exists (for safety measure)
+    - name: Transfer applications to webserver
+      become: true
+      ansible.builtin.copy:
+        src: "{{ item.build }}"
+        dest: "{{ item.directory }}/{{ item.subdir }}/"
+        owner: root
+        group: root
+        force: false
+      loop:
+        - { build: "{{ linux_build }}", directory: "{{ release_web_path }}/{{version | mandatory}}", subdir: 'linux'}
+        - { build: "{{ win_build }}", directory: "{{ release_web_path }}/{{version | mandatory}}", subdir: 'windows'}
+        - { build: "{{ osx_build }}", directory: "{{ release_web_path }}/{{version | mandatory}}", subdir: 'osx'}
+
+    # move builds to latest with subdir per OS
+    - name: Transfer applications to webserver
+      become: true
+      ansible.builtin.copy:
+        src: "{{ item.build }}"
+        dest: "{{ item.directory }}/{{ item.subdir }}/"
+        owner: root
+        group: root
+      loop:
+        - { build: "{{ linux_build }}", directory: "{{ release_web_path }}/latest", subdir: 'linux'}
+        - { build: "{{ win_build }}", directory: "{{ release_web_path }}/latest", subdir: 'windows'}
+        - { build: "{{ osx_build }}", directory: "{{ release_web_path }}/latest", subdir: 'osx'}
+
+    - name: Update VERSION.txt
+      become: true
+      ansible.builtin.copy:
+        dest: "{{ version_txt }}"
+        content: "{{ version | mandatory }}"
+        owner: root
+        group: root

@@ -29,6 +29,7 @@ test:
 
 .PHONY: publish-all
 publish-all:
-	@dotnet publish OpalOPC -r osx-x64 --self-contained -o build/osx
-	@dotnet publish OpalOPC -r linux-x64 --self-contained -o build/linux
-	@dotnet publish OpalOPC -r win-x64 --self-contained -o build/win
+	@ansible-playbook \
+		--extra-vars "version=$(VERSION)" \
+		--inventory opalopc-www, \
+		deploy/playbooks/publish.yaml
