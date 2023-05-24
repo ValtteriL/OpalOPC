@@ -9,6 +9,7 @@ class OpalOPC
 {
     public static int Main(string[] args)
     {
+
         Options options = new Argparser(args).parseArgs();
 
         if (options.exitCode.HasValue)
@@ -81,6 +82,10 @@ class OpalOPC
         {
             logger.LogInformation($"Report saved to {options.xmlOutputReportName} (Use browser to view it)");
         }
+
+#if DEBUG
+        logger.LogInformation($"Access report directly: http://localhost:8000/{options.xmlOutputReportName}");
+#endif
 
         return 0;
     }

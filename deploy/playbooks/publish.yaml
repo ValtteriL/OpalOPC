@@ -5,14 +5,22 @@
 - name: Publish
   hosts: all
 
+  vars_prompt:
+    - name: version
+      prompt: Version for this release?
+      private: false
+
   vars:
-    version: 1.0.0.0
     path_fix: ../../
     linux_build: "{{ path_fix }}build/linux/opalopc"
     win_build: "{{ path_fix }}build/win/opalopc.exe"
     osx_build: "{{ path_fix }}build/osx/opalopc"
-    version_txt: /var/www/opalopc.com/VERSION.txt
+    report_resources: "{{ path_fix }}OpalOPC/report-resources"
+    version_txt_web_path: /var/www/opalopc.com/VERSION.txt
     release_web_path: /var/www/opalopc.com/releases
+    report_resources_web_path: "/var/www/opalopc.com/report-resources/{{ version | mandatory }}"
+    debug_report_resource_path_regex: 'http:\/\/localhost:8000\/OpalOPC\/report-resources'
+    final_report_resource_path: "https://opalopc.com/report-resources/{{ version | mandatory }}"
 
   tasks:
 
@@ -89,10 +97,26 @@
         - { build: "{{ win_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'windows'}
         - { build: "{{ osx_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'osx'}
 
+    - name: Transfer report resources to webserver
+      become: true
+      ansible.builtin.copy:
+        src: "{{ report_resources }}/"
+        dest: "{{ report_resources_web_path }}/"
+        owner: root
+        group: root
+        force: false
+
+    - name: Translate debug report resource references to production
+      become: true
+      ansible.builtin.replace:
+        path: "/var/www/opalopc.com/report-resources/{{ version | mandatory }}/stylesheet.xsl"
+        regexp: "{{ debug_report_resource_path_regex }}"
+        replace: "{{ final_report_resource_path }}"
+
     - name: Update VERSION.txt
       become: true
       ansible.builtin.copy:
-        dest: "{{ version_txt }}"
+        dest: "{{ version_txt_web_path }}"
         content: "{{ version | mandatory }}"
         owner: root
         group: root

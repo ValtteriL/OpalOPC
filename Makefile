@@ -29,8 +29,7 @@ test:
 
 .PHONY: publish-all
 publish-all:
+	@export DOTNET_CLI_ENABLE_PUBLISH_RELEASE_FOR_SOLUTIONS=1
 	@ansible-playbook \
-		--extra-vars "version=$(VERSION)" \
-		--extra-vars "passphrase_file=$(PASSPHRASE_FILE)" \
 		--inventory opalopc-www, \
 		deploy/playbooks/publish.yaml

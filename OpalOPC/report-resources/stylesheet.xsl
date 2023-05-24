@@ -24,7 +24,7 @@
     <body class="d-flex h-100">
       <main class="container">
         <section class="text-center">
-          <img src="opalopc-logo.png" class="img-fluid" alt="OpalOPC logo"></img>
+          <img src="http://localhost:8000/OpalOPC/report-resources/opalopc-logo.png" class="img-fluid" alt="OpalOPC logo"></img>
           <h1>OpalOPC Report</h1>
           <h2><xsl:value-of select="Report/StartTime" /></h2>
         </section>
@@ -168,7 +168,7 @@
         </section>
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
           <p class="col-md-4 mb-0 text-muted">opalopc.com</p>
-          <p>Missing features? Facing a bug? <a target="_blank" href="https://forms.gle/FWFuAmZs3H32jeNi6">Give us
+          <p>Missing features? Facing a bug? <a target="_blank" href="https://opalopc.com/contact-us/">Give us
               feedback!</a></p>
         </footer>
       </main>
