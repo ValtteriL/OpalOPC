@@ -7,6 +7,7 @@ namespace Model
     {
 
         public string? DiscoveryUrl { get; set; }
+        public List<Error> Errors { get; set; } = new List<Error>();
 
         [JsonIgnore]
         public ICollection<Endpoint> SeparatedEndpoints { get; } = new List<Endpoint>();
@@ -25,6 +26,11 @@ namespace Model
             {
                 this.SeparatedEndpoints.Add(new Endpoint(e));
             }
+        }
+
+        public void AddError(Error error)
+        {
+            this.Errors.Add(error);
         }
 
         // Merge SeparatedEndpoints into Endpointsummaries by endpointUrls

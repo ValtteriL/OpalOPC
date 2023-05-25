@@ -68,7 +68,7 @@
                   <td><xsl:value-of select="Type" /></td>
                   <td><xsl:value-of select='count(Servers/Server)' /></td>
                   <td><xsl:value-of select='count(Servers/Server/Endpoints/Endpoint/Issues/Issue)' /></td>
-                  <td><xsl:value-of select='count(Errors/Error)' /></td>
+                  <td><xsl:value-of select='count(Servers/Server/Errors/Error)' /></td>
                 </tr>
               </xsl:for-each>
             </tbody>
@@ -89,21 +89,23 @@
               <p>Application Uri: <xsl:value-of select="ApplicationUri" />
                 <br></br>
                 Product Uri: <xsl:value-of select="ProductUri" />
+                <br></br>
+                Errors: <xsl:value-of select="count(Servers/Server/Errors/Error)" />
               </p>
-              <xsl:if test="count(Errors/Error) &gt; 0">
-                <div class="text-danger">
-                  <h4>Errors</h4>
-                  <ul>
-                    <xsl:for-each select="Errors/Error">
-                      <li><xsl:value-of select="Message" /></li>
-                    </xsl:for-each>
-                  </ul>
-                </div>
-              </xsl:if>
               <div>
                 <xsl:for-each select="Servers/Server">
                   <div>
                     <h5><xsl:value-of select="DiscoveryUrl" /></h5>
+                    <xsl:if test="count(Errors/Error) &gt; 0">
+                      <div class="text-danger">
+                        <h6>Errors</h6>
+                        <ul>
+                          <xsl:for-each select="Errors/Error">
+                            <li><xsl:value-of select="Message" /></li>
+                          </xsl:for-each>
+                        </ul>
+                      </div>
+                    </xsl:if>
                     <div>
                       <xsl:for-each select="Endpoints/Endpoint">
                         <div>

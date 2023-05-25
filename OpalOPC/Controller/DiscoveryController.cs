@@ -92,8 +92,11 @@ namespace Controller
                     {
                         string msg = $"Https is not supported: {s}";
                         _logger.LogError(msg);
-                        target.AddError(msg);
-                        target.AddServer(s, new EndpointDescriptionCollection());
+
+                        Server server = new Server(s, new EndpointDescriptionCollection());
+                        server.AddError(new Error(msg));
+
+                        target.AddServer(server);
                         continue;
                     }
 
@@ -110,8 +113,11 @@ namespace Controller
                         {
                             string msg = $"Cannot connect to discovery URI {s}";
                             _logger.LogWarning(msg);
-                            target.AddError(msg);
-                            target.AddServer(s, new EndpointDescriptionCollection());
+
+                            Server server = new Server(s, new EndpointDescriptionCollection());
+                            server.AddError(new Error(msg));
+
+                            target.AddServer(server);
                             continue;
                         }
                         throw;
@@ -119,7 +125,7 @@ namespace Controller
 
                     _logger.LogDebug($"Discovered {edc.Count} endpoints");
 
-                    target.AddServer(s, edc);
+                    target.AddServer(new Server(s, edc));
                 }
 
                 targets.Add(target);

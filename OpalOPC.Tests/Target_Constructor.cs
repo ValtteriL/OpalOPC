@@ -37,7 +37,6 @@ public class Target_Constructor
         Target target = new Target(description);
 
         Assert.True(target.Servers != null);
-        Assert.True(target.Errors != null);
         Assert.True(target.ApplicationName == applicationName);
         Assert.True(target.Type == Opc.Ua.ApplicationType.Server);
         Assert.True(target.ApplicationUri == applicationUri);

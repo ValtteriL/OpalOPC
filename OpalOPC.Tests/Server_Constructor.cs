@@ -28,5 +28,7 @@ public class Server_Constructor
             Assert.Contains(new Endpoint(ed), server.SeparatedEndpoints);
         }
         Assert.True(server.Endpoints != null);
+        Assert.True(server.Errors != null);
+        Assert.True(server.Errors.Count == 0);
     }
 }
