@@ -314,8 +314,14 @@
                                       name="class"> text-star </xsl:attribute>
                                       <xsl:attribute
                                       name="rowspan">
-                                      <xsl:value-of
-                                        select='count(Endpoints/Endpoint/Issues/Issue)+count(Errors/Error)+1' />
+                                      <xsl:if
+                                        test="count(Errors/Error) = 0 and count(Endpoints/Endpoint/Issues/Issue) = 0">
+    2</xsl:if>
+                                      <xsl:if
+                                        test="count(Errors/Error) != 0 or count(Endpoints/Endpoint/Issues/Issue) != 0">
+                                        <xsl:value-of
+                                          select='count(Endpoints/Endpoint/Issues/Issue)+count(Errors/Error)+1' />
+                                      </xsl:if>
                                     </xsl:attribute>
                                       <xsl:value-of
                                       select="DiscoveryUrl" />
@@ -359,22 +365,26 @@
 
                                 <xsl:for-each
                                   select="Errors/Error">
-                                  <td class="text-start" colspan="3">
-                                    <ul class="error">
-                                      <li>
-                                        <xsl:value-of select="Message" />
-                                      </li>
-                                    </ul>
-                                  </td>
+                                  <tr>
+                                    <td class="text-start" colspan="3">
+                                      <ul class="error">
+                                        <li>
+                                          <xsl:value-of select="Message" />
+                                        </li>
+                                      </ul>
+                                    </td>
+                                  </tr>
                                 </xsl:for-each>
 
                                 <xsl:if
                                   test="count(Errors/Error) = 0 and count(Endpoints/Endpoint/Issues/Issue) = 0">
-                                  <td class="text-start" colspan="3">
-                                    <div class="no-issue-found">
-                                      <p>No issues found.</p>
-                                    </div>
-                                  </td>
+                                  <tr>
+                                    <td class="text-start" colspan="3">
+                                      <div class="no-issue-found">
+                                        <p>No issues found.</p>
+                                      </div>
+                                    </td>
+                                  </tr>
                                 </xsl:if>
 
 
