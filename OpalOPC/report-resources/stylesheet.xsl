@@ -330,6 +330,97 @@
 
                                 <xsl:for-each
                                   select="Endpoints/Endpoint/Issues/Issue">
+
+                                  <xsl:variable name="sev">
+                                    <xsl:choose>
+                                      <xsl:when test="Severity &gt;= 9">
+                                        <td>
+                                          <div class="row">
+                                            <div class="col pe-0 text-start">Critical (<xsl:value-of
+                                                select="Severity" />)</div>
+                                            <div class="col">
+                                              <div class="results critical">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                      </xsl:when>
+                                      <xsl:when test="Severity &gt;= 7">
+                                        <td>
+                                          <div class="row">
+                                            <div class="col pe-0 text-start">Hight (<xsl:value-of
+                                                select="Severity" />)</div>
+                                            <div class="col">
+                                              <div class="results high">
+                                                <span class="active"></span>
+                                                <span class="active"></span>
+                                                <span class="active"></span>
+                                                <span class="active"></span>
+                                                <span></span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                      </xsl:when>
+                                      <xsl:when test="Severity &gt;= 4">
+                                        <td>
+                                          <div class="row">
+                                            <div class="col pe-0 text-start">Medium (<xsl:value-of
+                                                select="Severity" />)</div>
+                                            <div class="col">
+                                              <div class="results medium">
+                                                <span class="active"></span>
+                                                <span class="active"></span>
+                                                <span class="active"></span>
+                                                <span class="active"></span>
+                                                <span></span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                      </xsl:when>
+                                      <xsl:when test="Severity &gt;= 0.1">
+                                        <td>
+                                          <div class="row">
+                                            <div class="col pe-0 text-start">Low (<xsl:value-of
+                                                select="Severity" />)</div>
+                                            <div class="col">
+                                              <div class="results low">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                      </xsl:when>
+                                      <xsl:when test="Severity &gt;= 0">
+                                        <td>
+                                          <div class="row">
+                                            <div class="col pe-0 text-start">Info (<xsl:value-of
+                                                select="Severity" />)</div>
+                                            <div class="col">
+                                              <div class="results info">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                      </xsl:when>
+                                    </xsl:choose>
+                                  </xsl:variable>
+
                                   <tr>
                                     <td class="text-start">
                                       <xsl:value-of select="Name" />
@@ -345,21 +436,7 @@
                                           select="PluginId" />
                                       </xsl:element>
                                     </td>
-                                    <td>
-                                      <div class="row">
-                                        <div class="col pe-0 text-start">Medium (6,5)</div>
-                                        <div class="col">
-                                          <div class="results medium">
-                                            <span class="active"></span>
-                                            <span class="active"></span>
-                                            <span class="active"></span>
-                                            <span class="active"></span>
-                                            <span></span>
-                                          </div>
-                                        </div>
-
-                                      </div>
-                                    </td>
+                                    <xsl:copy-of select="$sev" />
                                   </tr>
                                 </xsl:for-each>
 
@@ -459,7 +536,6 @@
                                       <span></span>
                                     </div>
                                   </div>
-
                                 </div>
                               </td>
                             </tr>
@@ -481,7 +557,6 @@
                                       <span></span>
                                     </div>
                                   </div>
-
                                 </div>
                               </td>
                             </tr>
@@ -592,7 +667,6 @@
                                       <span></span>
                                     </div>
                                   </div>
-
                                 </div>
                               </td>
                             </tr>
