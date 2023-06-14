@@ -107,7 +107,12 @@
                     <xsl:for-each select="Report/Targets/Target">
                       <tr>
                         <td>
-                          <a href="#">01</a>
+                          <xsl:element name="a">
+                            <xsl:attribute name="href">#<xsl:value-of select="position()" />
+                            </xsl:attribute>
+                            <xsl:value-of
+                              select="position()" />
+                          </xsl:element>
                         </td>
                         <td>
                           <xsl:value-of select='ApplicationName' />
@@ -256,10 +261,15 @@
               <div class="opal-summary-table opal-summary-detail">
 
                 <xsl:for-each select="Report/Targets/Target">
-                  <table class="table mb-4">
+                  <xsl:element name="table">
+                    <xsl:attribute name="id"><xsl:value-of select="position()" />
+                    </xsl:attribute>
+                    <xsl:attribute name="class">table mb-4</xsl:attribute>
                     <tbody>
                       <tr>
-                        <td class="col-numbering bg-01 border-0">01</td>
+                        <td class="col-numbering bg-01 border-0">
+                          <xsl:value-of select="position()" />
+                        </td>
                         <td class="bg-results p-5 border-0">
                           <table class="table table-striped mb-5">
                             <tbody>
@@ -473,7 +483,7 @@
                       </tr>
 
                     </tbody>
-                  </table>
+                  </xsl:element>
                 </xsl:for-each>
 
               </div>
