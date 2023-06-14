@@ -503,7 +503,7 @@
                 <div class="col">
                   <div class="paragraph">
                     <p>
-                      <a href="#">Opalopc.com</a>
+                      <a target="_blank" href="https://opalopc.com">opalopc.com</a>
                     </p>
                   </div>
                 </div>
