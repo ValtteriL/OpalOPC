@@ -31,5 +31,5 @@ test:
 publish-all:
 	@export DOTNET_CLI_ENABLE_PUBLISH_RELEASE_FOR_SOLUTIONS=1
 	@ansible-playbook \
-		--inventory opalopc-www, \
+		--inventory ron, \
 		deploy/playbooks/publish.yaml
