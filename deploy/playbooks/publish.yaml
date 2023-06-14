@@ -65,7 +65,7 @@
 
     # create directory for version with subdir per OS
     # dont replace if already exists (for safety measure)
-    - name: Transfer applications to webserver
+    - name: Transfer applications to webserver (version subdir)
       become: true
       ansible.builtin.copy:
         src: "{{ item.build }}"
@@ -82,7 +82,7 @@
         - { build: "{{ osx_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'osx'}
 
     # move builds to latest with subdir per OS
-    - name: Transfer applications to webserver
+    - name: Transfer applications to webserver (latest subdir)
       become: true
       ansible.builtin.copy:
         src: "{{ item.build }}"
