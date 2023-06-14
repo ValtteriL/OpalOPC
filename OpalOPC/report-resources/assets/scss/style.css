@@ -277,6 +277,10 @@ header .headings h1 span {
 .opal-summary .opal-summary-table table td:not(:last-child) {
   border-right: var(--border);
 }
+.opal-summary .opal-summary-table table .discovery tr:first-child td:first-child {
+  border-right: 0;
+  border-bottom: solid 1px #899197 !important;
+}
 .opal-summary .opal-summary-table table > thead > tr:not(:last-child) > th,
 .opal-summary .opal-summary-table table > thead > tr:not(:last-child) > td,
 .opal-summary .opal-summary-table table > tbody > tr:not(:last-child) > th,
