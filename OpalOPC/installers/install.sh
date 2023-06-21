@@ -70,7 +70,7 @@ if is_command gpg ; then
     wget --quiet --output-document "${OPALOPC_SIGNATURE_PATH}" "${OPALOPC_SIGNATURE_URI}"
 
     # if fails, very bad!
-    if ! gpg --quiet --verify "${OPALOPC_SIGNATURE_PATH}"; then
+    if ! gpg --quiet --batch --verify "${OPALOPC_SIGNATURE_PATH}" "${OPALOPC_EXECUTABLE_PATH}"; then
         echo "CRITICAL: Signature is not valid!!! Contact us immediately"
         exit 1
     fi
@@ -82,6 +82,6 @@ fi
 chmod +x "${OPALOPC_EXECUTABLE_PATH}"
 
 # Add to path
-ln -s "${OPALOPC_EXECUTABLE_PATH}" "${OPALOPC_USR_LOCAL_BIN_SYMLINK_PATH}"
+ln --symbolic --force "${OPALOPC_EXECUTABLE_PATH}" "${OPALOPC_USR_LOCAL_BIN_SYMLINK_PATH}"
 
 echo "Installation complete! Type opalopc to get started"
