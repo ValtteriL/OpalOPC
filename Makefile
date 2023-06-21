@@ -15,6 +15,10 @@ run-opcuaserver.com-lds:
 run-opcuaserver.com-weather:
 	@dotnet run --runtime linux-x64 --project OpalOPC --  opc.tcp://opcuaserver.com:48484 -vv
 
+.PHONY: run-linux-mac-installer
+run-linux-mac-installer:
+	@sudo bash OpalOPC/installers/install.sh
+
 .PHONY: build
 build:
 	@dotnet build
