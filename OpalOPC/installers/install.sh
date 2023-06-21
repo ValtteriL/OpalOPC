@@ -64,13 +64,13 @@ wget --quiet --output-document "${OPALOPC_EXECUTABLE_PATH}" "${OPALOPC_URI}"
 
 # Check signature
 if is_command gpg ; then
-    wget -qO - "${GPG_KEY_URI}" | gpg --import -
+    wget -qO - "${GPG_KEY_URI}" | gpg --quiet --import -
 
     OPALOPC_SIGNATURE_URI="${OPALOPC_URI}.asc"
     wget --quiet --output-document "${OPALOPC_SIGNATURE_PATH}" "${OPALOPC_SIGNATURE_URI}"
 
     # if fails, very bad!
-    if ! gpg --verify "${OPALOPC_SIGNATURE_PATH}"; then
+    if ! gpg --quiet --verify "${OPALOPC_SIGNATURE_PATH}"; then
         echo "CRITICAL: Signature is not valid!!! Contact us immediately"
         exit 1
     fi
