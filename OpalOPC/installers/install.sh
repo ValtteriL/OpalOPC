@@ -18,12 +18,20 @@
 ### Variables
 
 INSTALL_DIR="/opt/opalopc"
+OPALOPC_EXECUTABLE_PATH="${INSTALL_DIR}/opalopc"
 PROFILE_FILE_PATH="/etc/profile.d/opalopc-path.sh"
+LINUX_LATEST_OPALOPC_URI="https://opalopc.com/releases/latest/linux/opalopc"
+MAC_LATEST_OPALOPC_URI="https://opalopc.com/releases/latest/osx/opalopc"
+OPALOPC_URI=""
+OPALOPC_SIGNATURE_URI=""
 
 ### Functions
 
 # bool function to test if the user is root or not
 is_user_root () { [ "${EUID:-$(id -u)}" -eq 0 ]; }
+
+# bool function to check if running on Linux
+is_mac () { [[ $OSTYPE == 'darwin'* ]]; }
 
 ### Program
 
@@ -34,8 +42,21 @@ if ! is_user_root; then
 fi
 
 # Create directory
+mkdir -p "${INSTALL_DIR}"
+
 # Download latest OpalOPC
+if is_mac; then
+    OPALOPC_URI="${MAC_LATEST_OPALOPC_URI}"
+else
+    OPALOPC_URI="${LINUX_LATEST_OPALOPC_URI}"
+fi
+wget --output-document "${OPALOPC_EXECUTABLE_PATH}" "${OPALOPC_URI}"
+
+
 # (Check signature)
+OPALOPC_SIGNATURE_URI="${OPALOPC_URI}.asc"
+echo "${OPALOPC_SIGNATURE_URI}"
+
 # Make executable
 # Add to path
 
