@@ -10,18 +10,18 @@ set -e # exit on any command failure
 # through /etc/profile.d/opalopc-path.sh
 # 
 # To uninstall, just:
-# - delete /opt/opalopc/
-# - delete /etc/profile.d/opalopc-path.sh
+# - delete /usr/local/opalopc/
+# - delete /usr/local/bin/opalopc
 # 
 # Run as root.
 #
 
 ### Variables
 
-INSTALL_DIR="/opt/opalopc"
+INSTALL_DIR="/usr/local/opalopc"
 OPALOPC_EXECUTABLE_PATH="${INSTALL_DIR}/opalopc"
 OPALOPC_SIGNATURE_PATH="${INSTALL_DIR}/opalopc.asc"
-PROFILE_FILE_PATH="/etc/profile.d/opalopc-path.sh"
+OPALOPC_USR_LOCAL_BIN_SYMLINK_PATH="/usr/local/bin/opalopc"
 LINUX_LATEST_OPALOPC_URI="https://opalopc.com/releases/latest/linux/opalopc"
 MAC_LATEST_OPALOPC_URI="https://opalopc.com/releases/latest/osx/opalopc"
 OPALOPC_URI=""
@@ -82,11 +82,6 @@ fi
 chmod +x "${OPALOPC_EXECUTABLE_PATH}"
 
 # Add to path
-cat > "${PROFILE_FILE_PATH}" << EOF
-export PATH="\$PATH:${INSTALL_DIR}"
-EOF
-
-# Reload bash profile
-source "${PROFILE_FILE_PATH}"
+ln -s "${OPALOPC_EXECUTABLE_PATH}" "${OPALOPC_USR_LOCAL_BIN_SYMLINK_PATH}"
 
 echo "Installation complete! Type opalopc to get started"
