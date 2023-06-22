@@ -41,6 +41,6 @@ Source: "\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\build\w
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{autoprograms}\{#MyAppName}"; Filename: "C:\Windows\System32\cmd.exe"; WorkingDir: "{app}"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "C:\Windows\System32\cmd.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
