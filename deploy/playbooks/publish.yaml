@@ -21,6 +21,8 @@
     report_resources_web_path: "/var/www/opalopc.com/report-resources/{{ version | mandatory }}"
     debug_report_resource_path_regex: 'http:\/\/localhost:8000\/OpalOPC\/report-resources'
     final_report_resource_path: "https://opalopc.com/report-resources/{{ version | mandatory }}"
+    installer_path: "{{ path_fix }}OpalOPC/installers/install.sh"
+    installer_web_path: /var/www/opalopc.com/install.sh
 
   tasks:
 
@@ -118,5 +120,13 @@
       ansible.builtin.copy:
         dest: "{{ version_txt_web_path }}"
         content: "{{ version | mandatory }}"
+        owner: root
+        group: root
+
+    - name: Deploy linux-mac installer
+      become: true
+      ansible.builtin.copy:
+        src: "{{ installer_path | mandatory }}"
+        dest: "{{ installer_web_path | mandatory }}"
         owner: root
         group: root
