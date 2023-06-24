@@ -6,6 +6,9 @@
 #define MyAppPublisher "Molemmat Oy"
 #define MyAppURL "https://opalopc.com/"
 #define MyAppExeName "opalopc.exe"
+#define MyAppIcoName "opalopc.ico"
+#define MyAppExeSigName "opalopc.exe.asc"
+; TODO: parametrize the AppVersion
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -37,10 +40,10 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\build\win\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\build\win\opalopc.exe.asc"; DestDir: "{app}"; Flags: ignoreversion
+Source: "\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\build\win\{#MyAppExeSigName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\build\win\{#MyAppIcoName}"; DestDir: "{app}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "C:\Windows\System32\cmd.exe"; WorkingDir: "{app}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "C:\Windows\System32\cmd.exe"; WorkingDir: "{app}"; Tasks: desktopicon
-
+Name: "{autoprograms}\{#MyAppName}"; Filename: "C:\Windows\System32\cmd.exe"; WorkingDir: "{app}"; IconFilename: "{app}\{#MyAppIcoName}"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "C:\Windows\System32\cmd.exe"; WorkingDir: "{app}"; IconFilename: "{app}\{#MyAppIcoName}"; Tasks: desktopicon
