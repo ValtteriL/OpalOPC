@@ -22,6 +22,7 @@
     debug_report_resource_path_regex: 'http:\/\/localhost:8000\/OpalOPC\/report-resources'
     final_report_resource_path: "https://opalopc.com/report-resources/{{ version | mandatory }}"
     installer_path: "{{ path_fix }}OpalOPC/installers/install.sh"
+    windows_installer_path: "{{ path_fix }}OpalOPC/installers/Output/OpalOPC-Installer.exe"
     installer_web_path: /var/www/opalopc.com/install.sh
 
   tasks:
@@ -57,6 +58,15 @@
         - build/osx/opalopc
         - build/win/opalopc.exe
 
+    - name: Build Windows installer
+      local_action:
+        module: ansible.builtin.shell
+        cmd: >
+          ISCC.exe
+          /DMyAppVersion={{ version | mandatory }}
+          OpalOPC/installers/windows.iss
+        chdir: "{{ path_fix }}"
+
     - name: Create releases directory
       become: true
       ansible.builtin.file:
@@ -82,6 +92,7 @@
         - { build: "{{ linux_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'linux'}
         - { build: "{{ win_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
         - { build: "{{ osx_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'osx'}
+        - { build: "{{ windows_installer_path }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
 
     # move builds to latest with subdir per OS
     - name: Transfer applications to webserver (latest subdir)
@@ -98,6 +109,7 @@
         - { build: "{{ linux_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'linux'}
         - { build: "{{ win_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'windows'}
         - { build: "{{ osx_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'osx'}
+        - { build: "{{ windows_installer_path }}", directory: "{{ release_web_path }}/latest", subdir: 'windows'}
 
     - name: Transfer report resources to webserver
       become: true
