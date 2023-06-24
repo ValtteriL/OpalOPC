@@ -8,7 +8,6 @@
 #define MyAppExeName "opalopc.exe"
 #define MyAppIcoName "opalopc.ico"
 #define MyAppExeSigName "opalopc.exe.asc"
-; TODO: parametrize the AppVersion
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
