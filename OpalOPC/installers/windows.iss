@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "OpalOPC"
-#define MyAppVersion "1.0.0.1"
+;#define MyAppVersion "1.0.0.1"
 #define MyAppPublisher "Molemmat Oy"
 #define MyAppURL "https://opalopc.com/"
 #define MyAppExeName "opalopc.exe"
@@ -27,7 +27,7 @@ LicenseFile=\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\Opal
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputBaseFilename={#MyAppName}-{#MyAppVersion}-Installer
+OutputBaseFilename={#MyAppName}-Installer
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
