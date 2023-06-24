@@ -95,21 +95,22 @@
         - { build: "{{ windows_installer_path }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
 
     # move builds to latest with subdir per OS
-    - name: Transfer applications to webserver (latest subdir)
+    - name: Copy applications to latest subdir
       become: true
       ansible.builtin.copy:
-        src: "{{ item.build }}"
-        dest: "{{ item.directory }}/{{ item.subdir }}/"
+        remote_src: true
+        src: "{{ release_web_path }}/{{ version | mandatory }}/{{ item.subdir }}/"
+        dest: "{{ release_web_path }}/latest/{{ item.subdir }}/"
         owner: root
         group: root
       loop:
-        - { build: "{{ linux_build }}", directory: "{{ release_web_path }}/latest", subdir: 'linux'}
-        - { build: "{{ win_build }}", directory: "{{ release_web_path }}/latest", subdir: 'windows'}
-        - { build: "{{ osx_build }}", directory: "{{ release_web_path }}/latest", subdir: 'osx'}
-        - { build: "{{ linux_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'linux'}
-        - { build: "{{ win_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'windows'}
-        - { build: "{{ osx_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'osx'}
-        - { build: "{{ windows_installer_path }}", directory: "{{ release_web_path }}/latest", subdir: 'windows'}
+        - { subdir: 'linux'}
+        - { subdir: 'windows'}
+        - { subdir: 'osx'}
+        - { subdir: 'linux'}
+        - { subdir: 'windows'}
+        - { subdir: 'osx'}
+        - { subdir: 'windows'}
 
     - name: Transfer report resources to webserver
       become: true
