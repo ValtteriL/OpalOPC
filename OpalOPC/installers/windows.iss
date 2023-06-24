@@ -27,7 +27,7 @@ LicenseFile=\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\Opal
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputBaseFilename=mysetup
+OutputBaseFilename={#MyAppName}-{#MyAppVersion}-Installer
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
