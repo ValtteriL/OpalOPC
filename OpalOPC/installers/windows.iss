@@ -31,6 +31,7 @@ OutputBaseFilename=mysetup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
+SetupIconFile={#MyAppIcoName}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -41,7 +42,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\build\win\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\build\win\{#MyAppExeSigName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\build\win\{#MyAppIcoName}"; DestDir: "{app}"
+Source: "\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\OpalOPC\installers\{#MyAppIcoName}"; DestDir: "{app}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
