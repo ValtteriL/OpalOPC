@@ -27,6 +27,7 @@ MAC_LATEST_OPALOPC_URI="https://opalopc.com/releases/latest/osx/opalopc"
 OPALOPC_URI=""
 OPALOPC_SIGNATURE_URI=""
 GPG_KEY_URI="https://github.com/ValtteriL.gpg"
+EULA_URI="https://opalopc.com/EULA.txt"
 
 ### Functions
 
@@ -64,19 +65,36 @@ Y88b. .d88P 888 d88P 888  888 888 Y88b. .d88P 888        Y88b  d88P
 print_banner
 echo ""
 
+# Show EULA
+echo "[1/7] End User License Agreement (EULA)"
+while true; do
+
+    wget --quiet --output-document - "${EULA_URI}" | more
+
+    printf 'Do you accept the EULA (y/n)? '
+    read answer
+
+    if [ "$answer" != "${answer#[Yy]}" ] ; then
+        break
+    elif [ "$answer" != "${answer#[Nn]}" ] ; then
+        echo "Installation aborted"
+        exit 1
+    fi
+done
+
 # Check that script is run as root
-echo "[1/6] Checking if installer run as root"
+echo "[2/7] Checking if installer run as root"
 if ! is_user_root; then
     echo "Installer must be run as root"
     exit 1
 fi
 
 # Create directory
-echo "[2/6] Creating installation directory (${INSTALL_DIR})"
+echo "[3/7] Creating installation directory (${INSTALL_DIR})"
 mkdir -p "${INSTALL_DIR}"
 
 # Download latest OpalOPC
-echo "[3/6] Downloading Opal OPC"
+echo "[4/7] Downloading Opal OPC"
 if is_mac; then
     OPALOPC_URI="${MAC_LATEST_OPALOPC_URI}"
 else
@@ -85,9 +103,9 @@ fi
 wget --quiet --output-document "${OPALOPC_EXECUTABLE_PATH}" "${OPALOPC_URI}"
 
 # Check signature
-echo "[4/6] Checking signature"
+echo "[5/7] Checking signature"
 if is_command gpg ; then
-    wget -qO - "${GPG_KEY_URI}" | gpg --quiet --import -
+    wget --quiet --output-document - "${GPG_KEY_URI}" | gpg --quiet --import -
 
     OPALOPC_SIGNATURE_URI="${OPALOPC_URI}.asc"
     wget --quiet --output-document "${OPALOPC_SIGNATURE_PATH}" "${OPALOPC_SIGNATURE_URI}"
@@ -102,11 +120,11 @@ else
 fi
 
 # Make executable
-echo "[5/6] Making Opal OPC executable"
+echo "[6/7] Making Opal OPC executable"
 chmod +x "${OPALOPC_EXECUTABLE_PATH}"
 
 # Add to path
-echo "[6/6] Adding \"opalopc\" to path"
+echo "[7/7] Adding \"opalopc\" to path"
 ln --symbolic --force "${OPALOPC_EXECUTABLE_PATH}" "${OPALOPC_USR_LOCAL_BIN_SYMLINK_PATH}"
 
 echo ""

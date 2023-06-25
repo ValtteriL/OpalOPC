@@ -24,6 +24,8 @@
     installer_path: "{{ path_fix }}OpalOPC/installers/install.sh"
     windows_installer_path: "{{ path_fix }}OpalOPC/installers/Output/OpalOPC-Installer.exe"
     installer_web_path: /var/www/opalopc.com/install.sh
+    eula_path: "{{ path_fix }}OpalOPC/EULA.txt"
+    eula_web_path: /var/www/opalopc.com/EULA.txt
 
   tasks:
 
@@ -141,5 +143,13 @@
       ansible.builtin.copy:
         src: "{{ installer_path | mandatory }}"
         dest: "{{ installer_web_path | mandatory }}"
+        owner: root
+        group: root
+
+    - name: Deploy EULA.txt
+      become: true
+      ansible.builtin.copy:
+        src: "{{ eula_path | mandatory }}"
+        dest: "{{ eula_web_path | mandatory }}"
         owner: root
         group: root
