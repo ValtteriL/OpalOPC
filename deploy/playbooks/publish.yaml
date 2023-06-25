@@ -21,6 +21,11 @@
     report_resources_web_path: "/var/www/opalopc.com/report-resources/{{ version | mandatory }}"
     debug_report_resource_path_regex: 'http:\/\/localhost:8000\/OpalOPC\/report-resources'
     final_report_resource_path: "https://opalopc.com/report-resources/{{ version | mandatory }}"
+    installer_path: "{{ path_fix }}OpalOPC/installers/install.sh"
+    windows_installer_path: "{{ path_fix }}OpalOPC/installers/Output/OpalOPC-Installer.exe"
+    installer_web_path: /var/www/opalopc.com/install.sh
+    eula_path: "{{ path_fix }}OpalOPC/EULA.txt"
+    eula_web_path: /var/www/opalopc.com/EULA.txt
 
   tasks:
 
@@ -55,6 +60,15 @@
         - build/osx/opalopc
         - build/win/opalopc.exe
 
+    - name: Build Windows installer
+      local_action:
+        module: ansible.builtin.shell
+        cmd: >
+          ISCC.exe
+          /DMyAppVersion={{ version | mandatory }}
+          OpalOPC/installers/windows.iss
+        chdir: "{{ path_fix }}"
+
     - name: Create releases directory
       become: true
       ansible.builtin.file:
@@ -80,22 +94,25 @@
         - { build: "{{ linux_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'linux'}
         - { build: "{{ win_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
         - { build: "{{ osx_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'osx'}
+        - { build: "{{ windows_installer_path }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
 
     # move builds to latest with subdir per OS
-    - name: Transfer applications to webserver (latest subdir)
+    - name: Copy applications to latest subdir
       become: true
       ansible.builtin.copy:
-        src: "{{ item.build }}"
-        dest: "{{ item.directory }}/{{ item.subdir }}/"
+        remote_src: true
+        src: "{{ release_web_path }}/{{ version | mandatory }}/{{ item.subdir }}/"
+        dest: "{{ release_web_path }}/latest/{{ item.subdir }}/"
         owner: root
         group: root
       loop:
-        - { build: "{{ linux_build }}", directory: "{{ release_web_path }}/latest", subdir: 'linux'}
-        - { build: "{{ win_build }}", directory: "{{ release_web_path }}/latest", subdir: 'windows'}
-        - { build: "{{ osx_build }}", directory: "{{ release_web_path }}/latest", subdir: 'osx'}
-        - { build: "{{ linux_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'linux'}
-        - { build: "{{ win_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'windows'}
-        - { build: "{{ osx_build }}.asc", directory: "{{ release_web_path }}/latest", subdir: 'osx'}
+        - { subdir: 'linux'}
+        - { subdir: 'windows'}
+        - { subdir: 'osx'}
+        - { subdir: 'linux'}
+        - { subdir: 'windows'}
+        - { subdir: 'osx'}
+        - { subdir: 'windows'}
 
     - name: Transfer report resources to webserver
       become: true
@@ -118,5 +135,21 @@
       ansible.builtin.copy:
         dest: "{{ version_txt_web_path }}"
         content: "{{ version | mandatory }}"
+        owner: root
+        group: root
+
+    - name: Deploy linux-mac installer
+      become: true
+      ansible.builtin.copy:
+        src: "{{ installer_path | mandatory }}"
+        dest: "{{ installer_web_path | mandatory }}"
+        owner: root
+        group: root
+
+    - name: Deploy EULA.txt
+      become: true
+      ansible.builtin.copy:
+        src: "{{ eula_path | mandatory }}"
+        dest: "{{ eula_web_path | mandatory }}"
         owner: root
         group: root
