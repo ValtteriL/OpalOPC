@@ -4,7 +4,9 @@ OPC UA security scanner
 
 ## Deploy
 
-Build Windows, OSX and Linux binaries, sign them with GPG key, and publish on the opalopc.com website
+Build Windows, OSX and Linux binaries, sign them with GPG key,
+create windows installer, and publish on the opalopc.com website
+along with linux and mac installer. Update EULA at the same time.
 
 ```
 make publish-all
@@ -26,5 +28,7 @@ make test
 make run-opcuaserver.com-demo
 make run-opcuaserver.com-lds
 make run-opcuaserver.com-weather
-```
 
+# test install.sh
+make run-linux-mac-installer
+```
