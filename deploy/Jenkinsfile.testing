@@ -24,7 +24,7 @@ pipeline {
         }
         stage('End-to-end tests') {
             steps {
-                sh 'make run-linux-mac-installer'
+                sh 'make run-linux-mac-installer-test'
                 sh 'make run-opcuaserver.com-demo'
                 sh 'make run-opcuaserver.com-lds'
             }
