@@ -17,11 +17,11 @@ run-opcuaserver.com-weather:
 
 .PHONY: run-linux-mac-installer-test
 run-linux-mac-installer-test:
-	@echo "yes" | sudo bash OpalOPC/installers/install.sh
+	@cat OpalOPC/installers/install.sh | sudo ACCEPT_EULA=1 bash
 
 .PHONY: run-linux-mac-installer
 run-linux-mac-installer:
-	@sudo bash OpalOPC/installers/install.sh
+	@cat OpalOPC/installers/install.sh | sudo bash
 
 .PHONY: build
 build:

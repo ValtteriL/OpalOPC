@@ -16,6 +16,10 @@ set -e # exit on any command failure
 # Run as root.
 #
 
+### Flags
+
+#ACCEPT_EULA=1
+
 ### Variables
 
 INSTALL_DIR="/usr/local/opalopc"
@@ -69,10 +73,14 @@ echo ""
 echo "[1/7] End User License Agreement (EULA)"
 while true; do
 
+    if ! [ -z ${ACCEPT_EULA+x} ] ; then
+        echo "EULA accepted using environment variable"
+        break
+    fi
+
     wget --quiet --output-document - "${EULA_URI}" | more
 
-    printf 'Do you accept the EULA (y/n)? '
-    read answer
+    read -p "Do you accept the EULA (y/n)? " answer </dev/tty
 
     if [ "$answer" != "${answer#[Yy]}" ] ; then
         break
@@ -100,7 +108,7 @@ if is_mac; then
 else
     OPALOPC_URI="${LINUX_LATEST_OPALOPC_URI}"
 fi
-wget --quiet --output-document "${OPALOPC_EXECUTABLE_PATH}" "${OPALOPC_URI}"
+wget --output-document "${OPALOPC_EXECUTABLE_PATH}" "${OPALOPC_URI}"
 
 # Check signature
 echo "[5/7] Checking signature"
