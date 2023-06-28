@@ -74,7 +74,7 @@
       ansible.builtin.file:
         path: "{{ release_web_path }}"
         owner: root
-        group: www-data
+        group: root
         state: directory
 
     # create directory for version with subdir per OS
