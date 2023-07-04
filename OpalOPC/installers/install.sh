@@ -72,26 +72,27 @@ echo ""
 # Show EULA
 echo "[1/7] End User License Agreement (EULA)"
 
-EULA=$(wget --quiet --output-document - "${EULA_URI}")
-
-while true; do
-
-    if ! [ -z ${ACCEPT_EULA+x} ] ; then
-        echo "EULA accepted using environment variable"
-        break
-    fi
+if ! [ -z ${ACCEPT_EULA+x} ] ; then
+    echo "EULA accepted using environment variable"
+else
+    EULA=$(wget --quiet --output-document - "${EULA_URI}")
 
     echo "${EULA}"| more
 
-    read -p "Do you accept the EULA (y/n)? " answer </dev/tty
+    while true; do
 
-    if [ "$answer" != "${answer#[Yy]}" ] ; then
-        break
-    elif [ "$answer" != "${answer#[Nn]}" ] ; then
-        echo "Installation aborted"
-        exit 1
-    fi
-done
+        read -p "Do you accept the EULA (y/n)? Enter r to reread " answer </dev/tty
+
+        if [ "$answer" != "${answer#[Yy]}" ] ; then
+            break
+        elif [ "$answer" != "${answer#[Nn]}" ] ; then
+            echo "Installation aborted"
+            exit 1
+        elif [ "$answer" != "${answer#[Rr]}" ] ; then
+            echo "${EULA}"| more
+        fi
+    done
+fi
 
 # Check that script is run as root
 echo "[2/7] Checking if installer run as root"
