@@ -71,6 +71,9 @@ echo ""
 
 # Show EULA
 echo "[1/7] End User License Agreement (EULA)"
+
+EULA=$(wget --quiet --output-document - "${EULA_URI}")
+
 while true; do
 
     if ! [ -z ${ACCEPT_EULA+x} ] ; then
@@ -78,7 +81,7 @@ while true; do
         break
     fi
 
-    wget --quiet --output-document - "${EULA_URI}" | more
+    echo "${EULA}"| more
 
     read -p "Do you accept the EULA (y/n)? " answer </dev/tty
 
