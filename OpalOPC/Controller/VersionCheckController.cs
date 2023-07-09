@@ -1,8 +1,8 @@
 using System.Net;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
-using Model;
-using View;
+using System;
+using System.Runtime.InteropServices;
 
 namespace Controller
 {
@@ -24,7 +24,7 @@ namespace Controller
             string thisVersion = Util.VersionUtil.AppAssemblyVersion!.ToString();
 
             ProductInfoHeaderValue productValue = new ProductInfoHeaderValue("OpalOPC", thisVersion);
-            ProductInfoHeaderValue commentValue = new ProductInfoHeaderValue("(+https://opalopc.com)");
+            ProductInfoHeaderValue commentValue = new ProductInfoHeaderValue($"({GetOSString()}; +https://opalopc.com)");
 
 
             using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
@@ -55,6 +55,30 @@ namespace Controller
 
                 _logger.LogTrace("Using latest version");
             }
+        }
+
+        private string GetOSString()
+        {
+            string os;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                os = "Windows";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                os = "Linux";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                os = "Macintosh";
+            }
+            else
+            {
+                os = "Unknown";
+            }
+
+            return $"{os} {RuntimeInformation.ProcessArchitecture}";
         }
     }
 }
