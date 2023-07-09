@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     rsync \
     software-properties-common \
     openssh-client \
-    git
+    git \
+    sudo
 
 # install ansible
 RUN add-apt-repository --yes --update ppa:ansible/ansible && apt-get install -y ansible
