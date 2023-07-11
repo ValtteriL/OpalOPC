@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
@@ -70,6 +71,11 @@ namespace Controller
                     _logger.LogError($"Timeout connecting to discovery URI {discoveryUri}");
                     return targets;
                 }
+                else if (e.Message.Contains("BadNotConnected"))
+                {
+                    _logger.LogError($"Error connecting to discovery URI {discoveryUri}");
+                    return targets;
+                }
                 throw;
             }
 
@@ -88,19 +94,40 @@ namespace Controller
                     _logger.LogDebug($"Discovering endpoints for {ad.ApplicationName} ({ad.ProductUri})");
                     _logger.LogTrace($"Using DiscoveryUrl {s}");
 
+                    Uri uri = Utils.ParseUri(s);
+                    if (uri == null)
+                    {
+                        _logger.LogError($"Invalid Uri: {s}, skipping");
+                        continue;
+                    }
+
+                    string ip;
+
+                    try
+                    {
+                        ip = Dns.GetHostAddresses(uri!.Host)[0].ToString();
+                    }
+                    catch (System.Exception)
+                    {
+                        _logger.LogError($"Unable to resolve hostname {uri!.Host}");
+                        throw;
+                    }
+
+                    string s_by_ip = uri.OriginalString.Replace(uri!.Host, ip);
+
                     if (s.Contains("https://"))
                     {
-                        string msg = $"Https is not supported: {s}";
+                        string msg = $"Https is not supported: {s_by_ip}";
                         _logger.LogError(msg);
 
-                        Server server = new Server(s, new EndpointDescriptionCollection());
+                        Server server = new Server(s_by_ip, new EndpointDescriptionCollection());
                         server.AddError(new Error(msg));
 
                         target.AddServer(server);
                         continue;
                     }
 
-                    DiscoveryClient sss = DiscoveryClient.Create(new Uri(s));
+                    DiscoveryClient sss = DiscoveryClient.Create(new Uri(s_by_ip));
                     EndpointDescriptionCollection edc;
 
                     try
@@ -111,10 +138,10 @@ namespace Controller
                     {
                         if (e.Message.Contains("BadNotConnected"))
                         {
-                            string msg = $"Cannot connect to discovery URI {s}";
+                            string msg = $"Cannot connect to discovery URI {s_by_ip}";
                             _logger.LogWarning(msg);
 
-                            Server server = new Server(s, new EndpointDescriptionCollection());
+                            Server server = new Server(s_by_ip, new EndpointDescriptionCollection());
                             server.AddError(new Error(msg));
 
                             target.AddServer(server);
@@ -123,9 +150,12 @@ namespace Controller
                         throw;
                     }
 
+                    // remove all that contain https scheme
+                    edc.RemoveAll(e => e.EndpointUrl.Contains("https://"));
+
                     _logger.LogDebug($"Discovered {edc.Count} endpoints");
 
-                    target.AddServer(new Server(s, edc));
+                    target.AddServer(new Server(s_by_ip, edc));
                 }
 
                 targets.Add(target);
