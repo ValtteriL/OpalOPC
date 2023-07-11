@@ -109,8 +109,14 @@ namespace Controller
                     }
                     catch (System.Exception)
                     {
-                        _logger.LogError($"Unable to resolve hostname {uri!.Host}");
-                        throw;
+                        string msg = $"Unable to resolve hostname {uri!.Host}";
+                        _logger.LogWarning(msg);
+
+                        Server server = new Server(s, new EndpointDescriptionCollection());
+                        server.AddError(new Error(msg));
+
+                        target.AddServer(server);
+                        continue;
                     }
 
                     string s_by_ip = uri.OriginalString.Replace(uri!.Host, ip);
@@ -118,7 +124,7 @@ namespace Controller
                     if (s.Contains("https://"))
                     {
                         string msg = $"Https is not supported: {s_by_ip}";
-                        _logger.LogError(msg);
+                        _logger.LogWarning(msg);
 
                         Server server = new Server(s_by_ip, new EndpointDescriptionCollection());
                         server.AddError(new Error(msg));
