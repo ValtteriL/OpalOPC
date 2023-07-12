@@ -57,7 +57,10 @@ namespace Controller
 
             // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.2
             // ask the server for all servers it knows about
-            DiscoveryClient asd = DiscoveryClient.Create(discoveryUri);
+
+            Uri discoveryUriWithIP = Utils.ParseUri(convertToIPBasedURI(discoveryUri.ToString()));
+
+            DiscoveryClient asd = DiscoveryClient.Create(discoveryUriWithIP);
             ApplicationDescriptionCollection adc;
 
             try
