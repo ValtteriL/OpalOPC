@@ -94,22 +94,19 @@ namespace Controller
                     _logger.LogDebug($"Discovering endpoints for {ad.ApplicationName} ({ad.ProductUri})");
                     _logger.LogTrace($"Using DiscoveryUrl {s}");
 
-                    Uri uri = Utils.ParseUri(s);
-                    if (uri == null)
+                    string s_by_ip;
+                    try
+                    {
+                        s_by_ip = convertToIPBasedURI(s);
+                    }
+                    catch (UriFormatException)
                     {
                         _logger.LogError($"Invalid Uri: {s}, skipping");
                         continue;
                     }
-
-                    string ip;
-
-                    try
+                    catch (Exception)
                     {
-                        ip = Dns.GetHostAddresses(uri!.Host)[0].ToString();
-                    }
-                    catch (System.Exception)
-                    {
-                        string msg = $"Unable to resolve hostname {uri!.Host}";
+                        string msg = $"Unable to resolve hostname {Utils.ParseUri(s).Host}";
                         _logger.LogWarning(msg);
 
                         Server server = new Server(s, new EndpointDescriptionCollection());
@@ -119,9 +116,7 @@ namespace Controller
                         continue;
                     }
 
-                    string s_by_ip = uri.OriginalString.Replace(uri!.Host, ip);
-
-                    if (s.Contains("https://"))
+                    if (s_by_ip.Contains("https://"))
                     {
                         string msg = $"Https is not supported: {s_by_ip}";
                         _logger.LogWarning(msg);
@@ -168,6 +163,20 @@ namespace Controller
             }
 
             return targets;
+        }
+
+        // Given uri as a string, replace the hostname with IP address
+        private string convertToIPBasedURI(String uriString)
+        {
+            Uri uri = Utils.ParseUri(uriString);
+            if (uri == null)
+            {
+                throw new UriFormatException();
+            }
+
+            string ip = Dns.GetHostAddresses(uri!.Host)[0].ToString();
+
+            return uri.OriginalString.Replace(uri!.Host, ip);
         }
     }
 }
