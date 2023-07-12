@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
@@ -56,7 +57,10 @@ namespace Controller
 
             // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.2
             // ask the server for all servers it knows about
-            DiscoveryClient asd = DiscoveryClient.Create(discoveryUri);
+
+            Uri discoveryUriWithIP = Utils.ParseUri(convertToIPBasedURI(discoveryUri.ToString()));
+
+            DiscoveryClient asd = DiscoveryClient.Create(discoveryUriWithIP);
             ApplicationDescriptionCollection adc;
 
             try
@@ -68,6 +72,11 @@ namespace Controller
                 if (e.Message.Contains("BadRequestTimeout"))
                 {
                     _logger.LogError($"Timeout connecting to discovery URI {discoveryUri}");
+                    return targets;
+                }
+                else if (e.Message.Contains("BadNotConnected"))
+                {
+                    _logger.LogError($"Error connecting to discovery URI {discoveryUri}");
                     return targets;
                 }
                 throw;
@@ -88,10 +97,20 @@ namespace Controller
                     _logger.LogDebug($"Discovering endpoints for {ad.ApplicationName} ({ad.ProductUri})");
                     _logger.LogTrace($"Using DiscoveryUrl {s}");
 
-                    if (s.Contains("https://"))
+                    string s_by_ip;
+                    try
                     {
-                        string msg = $"Https is not supported: {s}";
-                        _logger.LogError(msg);
+                        s_by_ip = convertToIPBasedURI(s);
+                    }
+                    catch (UriFormatException)
+                    {
+                        _logger.LogError($"Invalid Uri: {s}, skipping");
+                        continue;
+                    }
+                    catch (Exception)
+                    {
+                        string msg = $"Unable to resolve hostname {Utils.ParseUri(s).Host}";
+                        _logger.LogWarning(msg);
 
                         Server server = new Server(s, new EndpointDescriptionCollection());
                         server.AddError(new Error(msg));
@@ -100,7 +119,19 @@ namespace Controller
                         continue;
                     }
 
-                    DiscoveryClient sss = DiscoveryClient.Create(new Uri(s));
+                    if (s_by_ip.Contains("https://"))
+                    {
+                        string msg = $"Https is not supported: {s_by_ip}";
+                        _logger.LogWarning(msg);
+
+                        Server server = new Server(s_by_ip, new EndpointDescriptionCollection());
+                        server.AddError(new Error(msg));
+
+                        target.AddServer(server);
+                        continue;
+                    }
+
+                    DiscoveryClient sss = DiscoveryClient.Create(new Uri(s_by_ip));
                     EndpointDescriptionCollection edc;
 
                     try
@@ -111,10 +142,10 @@ namespace Controller
                     {
                         if (e.Message.Contains("BadNotConnected"))
                         {
-                            string msg = $"Cannot connect to discovery URI {s}";
+                            string msg = $"Cannot connect to discovery URI {s_by_ip}";
                             _logger.LogWarning(msg);
 
-                            Server server = new Server(s, new EndpointDescriptionCollection());
+                            Server server = new Server(s_by_ip, new EndpointDescriptionCollection());
                             server.AddError(new Error(msg));
 
                             target.AddServer(server);
@@ -123,15 +154,32 @@ namespace Controller
                         throw;
                     }
 
+                    // remove all that contain https scheme
+                    edc.RemoveAll(e => e.EndpointUrl.Contains("https://"));
+
                     _logger.LogDebug($"Discovered {edc.Count} endpoints");
 
-                    target.AddServer(new Server(s, edc));
+                    target.AddServer(new Server(s_by_ip, edc));
                 }
 
                 targets.Add(target);
             }
 
             return targets;
+        }
+
+        // Given uri as a string, replace the hostname with IP address
+        private string convertToIPBasedURI(String uriString)
+        {
+            Uri uri = Utils.ParseUri(uriString);
+            if (uri == null)
+            {
+                throw new UriFormatException();
+            }
+
+            string ip = Dns.GetHostAddresses(uri!.Host)[0].ToString();
+
+            return uri.OriginalString.Replace(uri!.Host, ip);
         }
     }
 }
