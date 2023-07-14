@@ -13,12 +13,14 @@ namespace Controller
         ILogger _logger;
         ICollection<Uri> _targets;
         Stream _reportOutputStream;
+        string _commandLine;
 
-        public ScanController(ILogger logger, ICollection<Uri> targets, Stream reportOutputStream)
+        public ScanController(ILogger logger, ICollection<Uri> targets, Stream reportOutputStream, string commandLine)
         {
             _logger = logger;
             _targets = targets;
             _reportOutputStream = reportOutputStream;
+            _commandLine = commandLine;
         }
 
         public void Scan()
@@ -59,7 +61,7 @@ namespace Controller
             ReportController reportController = new ReportController(_logger, reporter);
 
             DateTime end = DateTime.Now;
-            reportController.GenerateReport(testedTargets, start, end);
+            reportController.GenerateReport(testedTargets, start, end, _commandLine);
 
             TimeSpan ts = (end - start);
             string runStatus = $"OpalOPC done: {_targets.Count} Discovery URLs ({reportController.report!.Targets.Count} applications found) scanned in {Math.Round(ts.TotalSeconds, 2)} seconds";

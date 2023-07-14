@@ -9,7 +9,7 @@ namespace Model
         public string? StartTime { get; set; }
         public string? EndTime { get; set; }
         public string Version { get; set; } = Util.VersionUtil.AppAssemblyVersion!.ToString();
-        public string Command { get; set; } = Environment.CommandLine;
+        public string? Command { get; set; }
         public string? RunStatus { get; set; }
 
         private const string dateformat = "ddd MMMM HH:mm:ss yyyy";
@@ -18,11 +18,12 @@ namespace Model
         internal Report()
         { }
 
-        public Report(ICollection<Target> opcTargets, DateTime Start, DateTime End)
+        public Report(ICollection<Target> opcTargets, DateTime Start, DateTime End, string commandLine)
         {
             Targets = opcTargets.ToList();
             StartTime = Start.ToString(dateformat);
             EndTime = End.ToString(dateformat);
+            Command = commandLine;
         }
     }
 }
