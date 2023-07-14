@@ -5,6 +5,24 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>opalopc.ico</ApplicationIcon>
+	  <SelfContained>true</SelfContained>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="opalopc.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpalOPC\OpalOPC.csproj" />
+  </ItemGroup>
 
 </Project>
