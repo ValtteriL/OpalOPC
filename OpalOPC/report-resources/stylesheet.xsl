@@ -321,7 +321,7 @@
                                 <tr>
                                   <xsl:element name="td">
                                     <xsl:attribute
-                                      name="class"> text-star </xsl:attribute>
+                                      name="class"> text-start </xsl:attribute>
                                       <xsl:attribute
                                       name="rowspan">
                                       <xsl:if
