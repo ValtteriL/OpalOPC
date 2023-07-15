@@ -264,7 +264,8 @@
                   <xsl:element name="table">
                     <xsl:attribute name="id"><xsl:value-of select="position()" />
                     </xsl:attribute>
-                    <xsl:attribute name="class">table mb-4</xsl:attribute>
+                    <xsl:attribute
+                      name="class">table mb-4</xsl:attribute>
                     <tbody>
                       <tr>
                         <td class="col-numbering bg-01 border-0">
@@ -318,10 +319,17 @@
                             </thead>
                             <tbody>
                               <xsl:for-each select="Servers/Server">
-                                <tr>
+                                <tr class="discoveryurl">
                                   <xsl:element name="td">
-                                    <xsl:attribute
-                                      name="class"> text-start </xsl:attribute>
+                                    <xsl:if test="position() = last()">
+                                      <xsl:attribute
+                                        name="class">text-start br-rb</xsl:attribute>
+                                    </xsl:if>
+                                    <xsl:if
+                                      test="position() != last()">
+                                      <xsl:attribute
+                                        name="class">text-start br-b0</xsl:attribute>
+                                    </xsl:if>
                                       <xsl:attribute
                                       name="rowspan">
                                       <xsl:if

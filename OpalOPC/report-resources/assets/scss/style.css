@@ -277,11 +277,13 @@ header .headings h1 span {
 .opal-summary .opal-summary-table table td:not(:last-child) {
   border-right: var(--border);
 }
-/*
 .opal-summary .opal-summary-table table .discovery tr:first-child td:first-child {
   border-right: 0;
   border-bottom: solid 1px #899197 !important;
-}*/
+}
+.opal-summary .opal-summary-table table .discovery tr:first-child:not(:nth-last-child(2)) td.br-b0:first-child {
+  border-bottom: 0 !important;
+}
 .opal-summary .opal-summary-table table > thead > tr:not(:last-child) > th,
 .opal-summary .opal-summary-table table > thead > tr:not(:last-child) > td,
 .opal-summary .opal-summary-table table > tbody > tr:not(:last-child) > th,
@@ -421,4 +423,9 @@ footer .footer-text {
   margin-top: 5rem;
   padding-top: 1rem;
   border-top: solid 1px #899197;
-}/*# sourceMappingURL=style.css.map */
+}
+.br-rb{
+  border-bottom: solid 1px #899197 !important;
+  border-right: 0 !important;
+}
+/*# sourceMappingURL=style.css.map */
