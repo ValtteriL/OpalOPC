@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!ELEMENT Report (Targets,StartTime,EndTime,Version,Command,RunStatus)>
+<!ATTLIST Report xmlns:xsi CDATA #REQUIRED>
+<!ATTLIST Report xmlns:xsd CDATA #REQUIRED>
+
+<!ELEMENT Targets (Target*)>
+<!ELEMENT Target (Servers,Type,ApplicationName,ApplicationUri,ProductUri)>
+<!ELEMENT Servers (Server*)>
+<!ELEMENT Type (#PCDATA)>
+<!ELEMENT ApplicationName (#PCDATA)>
+<!ELEMENT ApplicationUri (#PCDATA)>
+<!ELEMENT ProductUri (#PCDATA)>
+
+<!ELEMENT Server (DiscoveryUrl,Errors,Endpoints)>
+<!ELEMENT Errors (Error*)>
+<!ELEMENT Error (Message)>
+<!ELEMENT Message (#PCDATA)>
+
+<!ELEMENT Endpoints (Endpoint*)>
+<!ELEMENT Endpoint (EndpointUrl,ServerCertificate,SecurityPolicyUris,MessageSecurityModes,UserTokenPolicyIds,UserTokenTypes,Issues)>
+
+<!ELEMENT EndpointUrl (#PCDATA)>
+<!ELEMENT ServerCertificate (#PCDATA)>
+<!ELEMENT SecurityPolicyUris (SecurityPolicyUri*)>
+<!ELEMENT SecurityPolicyUri (#PCDATA)>
+
+<!ELEMENT MessageSecurityModes (MessageSecurityMode*)>
+<!ELEMENT MessageSecurityMode (#PCDATA)>
+
+<!ELEMENT UserTokenPolicyIds (UserTokenPolicy*)>
+<!ELEMENT UserTokenPolicy (#PCDATA)>
+
+<!ELEMENT UserTokenTypes (UserTokenType*)>
+<!ELEMENT UserTokenType (#PCDATA)>
+
+<!ELEMENT Issues (Issue+)>
+<!ELEMENT Issue (PluginId,Name,Severity)>
+<!ATTLIST Issue xsi:type CDATA #IMPLIED>
+
+<!ELEMENT PluginId (#PCDATA)>
+<!ELEMENT Name (#PCDATA)>
+<!ELEMENT Severity (#PCDATA)>
+
+<!ELEMENT DiscoveryUrl (#PCDATA)>
+
+<!ELEMENT StartTime (#PCDATA)>
+<!ELEMENT EndTime (#PCDATA)>
+<!ELEMENT Version (#PCDATA)>
+<!ELEMENT Command (#PCDATA)>
+<!ELEMENT RunStatus (#PCDATA)>

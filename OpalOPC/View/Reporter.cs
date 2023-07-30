@@ -26,6 +26,7 @@ namespace View
             using (XmlWriter w = XmlWriter.Create(outputStream, settings))
             {
                 w.WriteProcessingInstruction("xml-stylesheet", $"type=\"text/xsl\" href=\"{Util.XmlResources.StylesheetLocation}\"");
+                w.WriteDocType("Report", null, Util.XmlResources.DtdLocation, null);
                 serializer.Serialize(w, report);
             }
         }
