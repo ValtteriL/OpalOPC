@@ -35,6 +35,7 @@
 
 <!ELEMENT Issues (Issue+)>
 <!ELEMENT Issue (PluginId,Name,Severity)>
+<!ATTLIST Issue xsi:type CDATA #IMPLIED>
 
 <!ELEMENT PluginId (#PCDATA)>
 <!ELEMENT Name (#PCDATA)>
