@@ -25,10 +25,14 @@ pipeline {
         }
         stage('End-to-end tests') {
             steps {
-                sh 'whoami'
                 sh 'make run-linux-mac-installer-test'
                 sh 'make run-opcuaserver.com-demo'
                 sh 'make run-opcuaserver.com-lds'
+            }
+        }
+        stage('Test report schema') {
+            steps {
+                sh 'xmllint --noout --valid opalopc-report-*'
             }
         }
     }

@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     openssh-client \
     git \
-    sudo
+    sudo \
+    libxml2-utils
 
 # install ansible
 RUN add-apt-repository --yes --update ppa:ansible/ansible && apt-get install -y ansible
