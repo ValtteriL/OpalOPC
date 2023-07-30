@@ -18,6 +18,11 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Cleanup') {
+            steps {
+                sh 'rm opalopc-report-*'
+            }
+        }
         stage('Unit tests') {
             steps {
                 sh 'make test'
