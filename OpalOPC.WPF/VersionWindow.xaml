@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:OpalOPC.WPF"
         mc:Ignorable="d"     
         Background="{StaticResource VersionWindowBackground_Blue_Brush}"
-        Title="VersionWindow" Height="597" Width="1004"
+        Title="About" Height="597" Width="1004"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
     

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpalOPC.WPF"
         mc:Ignorable="d"
-        Title="UpdateWindow" Height="281" Width="525"
+        Title="Update" Height="281" Width="525"
         Background="{StaticResource White_Brush}"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
