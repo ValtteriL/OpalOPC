@@ -16,6 +16,8 @@ namespace OpalOPC.WPF
         {
             InitializeComponent();
 
+            this.Title = $"OpalOPC {Util.VersionUtil.AppAssemblyVersion}";
+
             // create dummy entries for targets list
             targetsList.ItemsSource = new string[]
             {
