@@ -54,7 +54,7 @@
             <StackPanel VerticalAlignment="Center" Width="21" Height="21">
                 <Image Source="{StaticResource aboutVersionIconDrawingImage}" Width="21" Height="21"/>
             </StackPanel>
-            <TextBlock VerticalAlignment="Center" Text=" Version : 12.0.1" Foreground="{StaticResource Dark_Blue_Brush}" FontSize="{StaticResource LargeFontSize}" />
+            <TextBlock VerticalAlignment="Center" Text=" Version : 12.0.1" Foreground="{StaticResource Dark_Blue_Brush}" FontSize="{StaticResource LargeFontSize}" Name="VersionTextBlock" />
         </StackPanel>
 
         <Image Source="/Assets/LogoImage.png" Stretch="Uniform"  Margin="328,94,327.22333,0" VerticalAlignment="Top" HorizontalAlignment="Center" Width="Auto" Height="90.41" RenderOptions.BitmapScalingMode="HighQuality" />
