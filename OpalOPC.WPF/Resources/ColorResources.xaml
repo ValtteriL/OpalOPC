@@ -1,0 +1,53 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--Custom colors -->
+    <Color x:Key="Dark_Grey_Color">#7788A9</Color>
+    <Color x:Key="Text_Color">#373E50</Color>
+    <Color x:Key="White_Color">#FFFFFF</Color>
+    <Color x:Key="Light_Blue_Color">#F4F6FC</Color>
+    <Color x:Key="Dark_Blue_Color">#5351B8</Color>
+    <Color x:Key="NavBarBackground_Color">#E9EFFF</Color>
+    <Color x:Key="NavBarButtonHover_Color">#DBE4FB</Color>
+    <Color x:Key="Green_Button_Color">#57BC67</Color>
+    <Color x:Key="Red_Button_Color">#EF4343</Color>
+    <Color x:Key="Light_Blue_Button_Color">#85BEE7</Color>
+    <Color x:Key="Blue_Button_Color">#E0E2F3</Color>
+    <Color x:Key="ListItem_Background_Color">#ECEFFA</Color>
+    <Color x:Key="DeleteButton_Red_Color">#EA6060</Color>
+    <Color x:Key="NormalVerbosity_Color">#E1F0F4</Color>
+    <Color x:Key="DebugVerbosity_Color">#F7F4D9</Color>
+    <Color x:Key="TraceVerbosity_Color">#DFF2D6</Color>
+    <Color x:Key="NormalVerbosityText_Color">#67A4C6</Color>
+    <Color x:Key="DebugVerbosityText_Color">#C7BC5C</Color>
+    <Color x:Key="TraceVerbosityText_Color">#3E9656</Color>
+    <Color x:Key="VersionWindowBackground_Blue_Color">#F3F6FF</Color>
+    <Color x:Key="WaveFill_Blue_Color">#D9E5F8</Color>
+
+    
+
+    <!--Custom colors brushes-->
+    <SolidColorBrush x:Key="Dark_Grey_Brush" Color="{StaticResource Dark_Grey_Color}" />
+    <SolidColorBrush x:Key="Text_Brush" Color="{StaticResource Text_Color}" />
+    <SolidColorBrush x:Key="White_Brush" Color="{StaticResource White_Color}" />
+    <SolidColorBrush x:Key="Light_Blue_Brush" Color="{StaticResource Light_Blue_Color}" />
+    <SolidColorBrush x:Key="Dark_Blue_Brush" Color="{StaticResource Dark_Blue_Color}" />
+    <SolidColorBrush x:Key="NavBarBackground_Brush" Color="{StaticResource NavBarBackground_Color}" />
+    <SolidColorBrush x:Key="NavBarButtonHover_Brush" Color="{StaticResource NavBarButtonHover_Color}" />
+    <SolidColorBrush x:Key="Green_Button_Brush" Color="{StaticResource Green_Button_Color}" />
+    <SolidColorBrush x:Key="Red_Button_Brush" Color="{StaticResource Red_Button_Color}" />
+    <SolidColorBrush x:Key="Light_Blue_Button_Brush" Color="{StaticResource Light_Blue_Button_Color}" />
+    <SolidColorBrush x:Key="Blue_Button_Brush" Color="{StaticResource Blue_Button_Color}" />
+    <SolidColorBrush x:Key="ListItem_Background_Brush" Color="{StaticResource ListItem_Background_Color}" />
+    <SolidColorBrush x:Key="DeleteButton_Red_Brush" Color="{StaticResource DeleteButton_Red_Color}" />
+    <SolidColorBrush x:Key="NormalVerbosity_Brush" Color="{StaticResource NormalVerbosity_Color}" />
+    <SolidColorBrush x:Key="DebugVerbosity_Brush" Color="{StaticResource DebugVerbosity_Color}" />
+    <SolidColorBrush x:Key="TraceVerbosity_Brush" Color="{StaticResource TraceVerbosity_Color}" />
+    <SolidColorBrush x:Key="NormalVerbosityText_Brush" Color="{StaticResource NormalVerbosityText_Color}" />
+    <SolidColorBrush x:Key="DebugVerbosityText_Brush" Color="{StaticResource DebugVerbosityText_Color}" />
+    <SolidColorBrush x:Key="TraceVerbosityText_Brush" Color="{StaticResource TraceVerbosityText_Color}" />
+    <SolidColorBrush x:Key="VersionWindowBackground_Blue_Brush" Color="{StaticResource VersionWindowBackground_Blue_Color}" />
+    <SolidColorBrush x:Key="WaveFill_Blue_Brush" Color="{StaticResource WaveFill_Blue_Color}" />
+    
+
+</ResourceDictionary>
