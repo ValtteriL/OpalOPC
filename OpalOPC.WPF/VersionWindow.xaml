@@ -19,7 +19,7 @@
         <StackPanel Orientation="Horizontal" Margin="351.5,489,350.5,0" VerticalAlignment="Top" HorizontalAlignment="Center">
             <TextBlock Margin="30,0,30,0">
                 <TextBlock.Inlines>
-                    <Hyperlink NavigateUri="https://www.help.com"
+                    <Hyperlink NavigateUri="https://opalopc.com/docs/"
                                RequestNavigate="Browse_RequestNavigate">
                         <Run Text="Help" Foreground="{StaticResource Text_Brush}" FontSize="{StaticResource MediumFontSize}"/>
                     </Hyperlink>
@@ -28,7 +28,7 @@
 
             <TextBlock Margin="30,0,30,0">
                 <TextBlock.Inlines>
-                    <Hyperlink NavigateUri="https://www.eula.com"
+                    <Hyperlink NavigateUri="https://opalopc.com/EULA.txt"
                                RequestNavigate="Browse_RequestNavigate">
                         <Run Text="EULA" Foreground="{StaticResource Text_Brush}" FontSize="{StaticResource MediumFontSize}"/>
                     </Hyperlink>
@@ -37,7 +37,7 @@
 
             <TextBlock Margin="30,0,30,0">
                 <TextBlock.Inlines>
-                    <Hyperlink NavigateUri="https://www.privacypolicy.com"
+                    <Hyperlink NavigateUri="https://opalopc.com/privacy-policy/"
                                RequestNavigate="Browse_RequestNavigate">
                         <Run Text="Privacy Policy" Foreground="{StaticResource Text_Brush}" FontSize="{StaticResource MediumFontSize}"/>
                     </Hyperlink>

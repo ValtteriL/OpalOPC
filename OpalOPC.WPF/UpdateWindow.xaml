@@ -34,7 +34,7 @@
             <TextBlock TextAlignment="Center" Text="Updates are available. " Foreground="{StaticResource Text_Brush}" FontSize="{StaticResource SmallFontSize}"/>
             <TextBlock>
                 <TextBlock.Inlines>
-                    <Hyperlink NavigateUri="https://www.example.com" 
+                    <Hyperlink NavigateUri="https://opalopc.com/download/" 
                                RequestNavigate="UpdateHyperlink_RequestNavigate">
                         <Run Text="Update now " Foreground="{StaticResource Dark_Blue_Brush}" FontSize="{StaticResource SmallFontSize}"/>
                     </Hyperlink>
