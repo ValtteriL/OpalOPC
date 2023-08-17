@@ -1,4 +1,7 @@
-﻿using Microsoft.Win32;
+﻿using Controller;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -45,10 +48,16 @@ namespace OpalOPC.WPF
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // create new instance of window and open window as a new dialog (after waiting 1 second)
-            await Task.Delay(TimeSpan.FromSeconds(1));
-            UpdateWindow updateWindow = new UpdateWindow();
-            updateWindow.ShowDialog();
+            // Check for updates when MainWindow has loaded
+            ILogger logger = new Logger<MainWindow>(new NullLoggerFactory());
+            VersionCheckController versionCheckController = new VersionCheckController(logger);
+            await Task.Run(() => { versionCheckController.CheckVersion(); }); // run in background thread
+            if (!versionCheckController.IsUpToDate)
+            {
+                UpdateWindow updateWindow = new UpdateWindow();
+                updateWindow.ShowDialog();
+            }
+
         }
 
 

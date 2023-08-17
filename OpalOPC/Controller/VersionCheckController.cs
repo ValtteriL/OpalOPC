@@ -11,10 +11,12 @@ namespace Controller
 
         ILogger _logger;
         private Uri versionUri = new Uri("https://opalopc.com/VERSION.txt");
+        public bool IsUpToDate { get; private set; }
 
         public VersionCheckController(ILogger logger)
         {
             _logger = logger;
+            IsUpToDate = true;
         }
 
         // Check what is the latest version, if not same as the current version, warn
@@ -49,6 +51,7 @@ namespace Controller
 
                 if (latestVersion != thisVersion)
                 {
+                    IsUpToDate = false;
                     _logger.LogWarning($"Using outdated OpalOPC version {thisVersion} (the latest is {latestVersion})");
                     return;
                 }
