@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpalOPC.WPF" 
+        d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d" 
-        Title="OpalOPC" Height="800" Width="600"
+        Title="{Binding Title}" Height="800" Width="600"
         Background="{StaticResource White_Brush}"
         WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded"
@@ -34,7 +35,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate>
-                                <TextBlock>No targets available.</TextBlock>
+                                <TextBlock>No targets specified.</TextBlock>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
@@ -140,7 +141,7 @@
 
             <!--Navbar buttons-->
             <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" >
-                <Button Margin="10,0,10,10" Width="Auto" Height="62" Style="{StaticResource NavbarCustomButtonTemplateStyle}" Click="Navbar_Scan_Click">
+                <Button Margin="10,0,10,10" Width="Auto" Height="62" Style="{StaticResource NavbarCustomButtonTemplateStyle}">
                     <StackPanel Orientation="Horizontal">
                         <Path Data="F1 M 2 0 C 0.8999999761581421 0 0 0.8999999761581421 0 2 L 0 6 L 2 6 L 2 2 L 6 2 L 6 0 L 2 0 Z M 18 0 L 18 2 L 22 2 L 22 6 L 24 6 L 24 2 C 24 0.8999999761581421 23.100000023841858 0 22 0 L 18 0 Z M 9.5 13 C 8.699999988079071 13 8 12.300000011920929 8 11.5 C 8 10.699999988079071 8.699999988079071 10 9.5 10 C 10.300000011920929 10 11 10.699999988079071 11 11.5 C 11 12.300000011920929 10.300000011920929 13 9.5 13 Z M 11 15 L 12 13 L 13 15 L 11 15 Z M 14.5 13 C 13.699999988079071 13 13 12.300000011920929 13 11.5 C 13 10.699999988079071 13.699999988079071 10 14.5 10 C 15.300000011920929 10 16 10.699999988079071 16 11.5 C 16 12.300000011920929 15.300000011920929 13 14.5 13 Z M 0 18 L 0 22 C 0 23.100000023841858 0.8999999761581421 24 2 24 L 6 24 L 6 22 L 2 22 L 2 18 L 0 18 Z M 22 18 L 22 22 L 18 22 L 18 24 L 22 24 C 23.100000023841858 24 24 23.100000023841858 24 22 L 24 18 L 22 18 Z M 12 3 C 7.599999904632568 3 4 6.599999904632568 4 11 C 4 13 4.799999952316284 14.899999260902405 6 16.299999237060547 L 6 21 L 18 21 L 18 16.299999237060547 C 19.200000047683716 14.899999260902405 20 13.099999904632568 20 11 C 20 6.599999904632568 16.40000009536743 3 12 3 Z M 16 15.399999618530273 L 16 19 L 14 19 L 14 17 L 13 17 L 13 19 L 11 19 L 11 17 L 10 17 L 10 19 L 8 19 L 8 15.399999618530273 C 6.799999952316284 14.299999594688416 6 12.700000047683716 6 11 C 6 7.700000047683716 8.700000047683716 5 12 5 C 15.299999952316284 5 18 7.700000047683716 18 11 C 18 12.799999952316284 17.200000047683716 14.299999594688416 16 15.399999618530273 Z" 
                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Width="24" Height="24" Stretch="Fill"/>
@@ -156,7 +157,7 @@
                     </StackPanel>
                 </Button>
 
-                <Button Margin="10,0,10,10" Width="Auto" Height="62" Style="{StaticResource NavbarCustomButtonTemplateStyle}" Click="Navbar_Help_Click" Tag="https://www.help.com">
+                    <Button Margin="10,0,10,10" Width="Auto" Height="62" Style="{StaticResource NavbarCustomButtonTemplateStyle}" Click="Navbar_Help_Click" Tag="https://opalopc.com/docs/">
                     <StackPanel Orientation="Horizontal">
                         <Path Data="F1 M 9.949999809265137 16 C 10.299999803304672 16 10.596000298857689 15.878999128937721 10.838000297546387 15.636999130249023 C 11.080000296235085 15.394999131560326 11.200666475924663 15.099333345890045 11.199999809265137 14.75 C 11.199999809265137 14.400000005960464 11.079333633184433 14.104000464081764 10.838000297546387 13.862000465393066 C 10.59666696190834 13.620000466704369 10.300666481256485 13.499333333340473 9.949999809265137 13.5 C 9.599999815225601 13.5 9.304333060979843 13.620999917387962 9.062999725341797 13.86299991607666 C 8.82166638970375 14.104999914765358 8.700666475924663 14.400666654109955 8.699999809265137 14.75 C 8.699999809265137 15.099999994039536 8.820999726653099 15.396000489592552 9.062999725341797 15.63800048828125 C 9.304999724030495 15.880000486969948 9.600666463375092 16.000666666659527 9.949999809265137 16 Z M 9.050000190734863 12.149999618530273 L 10.899999618530273 12.149999618530273 C 10.899999618530273 11.599999606609344 10.96266695857048 11.16666704416275 11.088000297546387 10.850000381469727 C 11.213333636522293 10.533333718776703 11.567332923412323 10.100000202655792 12.149999618530273 9.550000190734863 C 12.58333295583725 9.116666853427887 12.925000190734863 8.704000264406204 13.175000190734863 8.312000274658203 C 13.425000190734863 7.920000284910202 13.550000190734862 7.44933295249939 13.550000190734863 6.899999618530273 C 13.550000190734863 5.966666281223297 13.20833295583725 5.25 12.524999618530273 4.75 C 11.841666281223297 4.25 11.033333718776703 4 10.100000381469727 4 C 9.150000393390656 4 8.378999710083008 4.25 7.786999702453613 4.75 C 7.194999694824219 5.25 6.782666862010956 5.850000202655792 6.550000190734863 6.550000190734863 L 8.199999809265137 7.199999809265137 C 8.283333145081997 6.899999797344208 8.470999538898468 6.575000375509262 8.762999534606934 6.225000381469727 C 9.0549995303154 5.875000387430191 9.500667035579681 5.699999809265138 10.100000381469727 5.699999809265137 C 10.63333374261856 5.699999809265137 11.033333510160446 5.845999538898468 11.300000190734863 6.137999534606934 C 11.56666687130928 6.429999530315399 11.699999809265135 6.750667035579681 11.699999809265137 7.100000381469727 C 11.699999809265137 7.433333724737167 11.599999621510506 7.746000111103058 11.399999618530273 8.038000106811523 C 11.199999615550041 8.330000102519989 10.949999630451202 8.600667044520378 10.649999618530273 8.850000381469727 C 9.916666269302368 9.500000357627869 9.466666862368584 9.991666465997696 9.300000190734863 10.324999809265137 C 9.133333519101143 10.658333152532578 9.050000190734863 11.266666293144226 9.050000190734863 12.149999618530273 Z M 10 20 C 8.616666674613953 20 7.316667079925537 19.737333238124847 6.100000381469727 19.211999893188477 C 4.883333683013916 18.686666548252106 3.8250001668930054 17.974334120750427 2.9250001907348633 17.075000762939453 C 2.025000214576721 16.17500078678131 1.3126667737960815 15.116666316986084 0.7880001068115234 13.899999618530273 C 0.26333343982696533 12.683332920074463 0.0006666666595265269 11.383333325386047 0 10 C 0 8.616666674613953 0.2626667618751526 7.316667079925537 0.7880001068115234 6.100000381469727 C 1.3133334517478943 4.883333683013916 2.025666832923889 3.8250001668930054 2.9250001907348633 2.9250001907348633 C 3.8250001668930054 2.025000214576721 4.883333683013916 1.3126667737960815 6.100000381469727 0.7880001068115234 C 7.316667079925537 0.26333343982696533 8.616666674613953 0.0006666666595265269 10 0 C 11.383333325386047 0 12.683332920074463 0.2626667618751526 13.899999618530273 0.7880001068115234 C 15.116666316986084 1.3133334517478943 16.17500078678131 2.025666832923889 17.075000762939453 2.9250001907348633 C 17.975000739097595 3.8250001668930054 18.6876659989357 4.883333683013916 19.21299934387207 6.100000381469727 C 19.73833268880844 7.316667079925537 20.000666666659527 8.616666674613953 20 10 C 20 11.383333325386047 19.737333238124847 12.683332920074463 19.211999893188477 13.899999618530273 C 18.686666548252106 15.116666316986084 17.974334120750427 16.17500078678131 17.075000762939453 17.075000762939453 C 16.17500078678131 17.975000739097595 15.116666316986084 18.6876659989357 13.899999618530273 19.21299934387207 C 12.683332920074463 19.73833268880844 11.383333325386047 20.000666666659527 10 20 Z M 10 18 C 12.233333349227905 18 14.124999284744263 17.22499918937683 15.674999237060547 15.674999237060547 C 17.22499918937683 14.124999284744263 18 12.233333349227905 18 10 C 18 7.766666650772095 17.22499918937683 5.874999761581421 15.674999237060547 4.324999809265137 C 14.124999284744263 2.7749998569488525 12.233333349227905 2 10 2 C 7.766666650772095 2 5.874999761581421 2.7749998569488525 4.324999809265137 4.324999809265137 C 2.7749998569488525 5.874999761581421 2 7.766666650772095 2 10 C 2 12.233333349227905 2.7749998569488525 14.124999284744263 4.324999809265137 15.674999237060547 C 5.874999761581421 17.22499918937683 7.766666650772095 18 10 18 Z"
                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Width="24" Height="24" Stretch="Fill" />
@@ -227,7 +228,7 @@
                                 </TextBox>
 
                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
-                                    <Button HorizontalAlignment="Left" Margin="0,0,0,0" Width="94" Height="43" Template="{StaticResource ImageButtonTemplate}" Click="Navbar_Scan_Click" Background="{StaticResource Dark_Blue_Brush}">
+                                    <Button HorizontalAlignment="Left" Margin="0,0,0,0" Width="94" Height="43" Template="{StaticResource ImageButtonTemplate}" Background="{StaticResource Dark_Blue_Brush}">
                                         <StackPanel Orientation="Horizontal">
                                             <Image Source="{StaticResource addButtonIconDrawingImage}" Width="18" Height="18"/>
                                             <TextBlock Text="Add" Margin="10,0,0,0" Foreground="{StaticResource White_Brush}" FontSize="{StaticResource SmallFontSize}" VerticalAlignment="Center" FontWeight="DemiBold"/>
@@ -267,7 +268,7 @@
                                 <TextBlock Grid.Row="0" Text="Targets" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="{StaticResource Text_Brush}" Style="{StaticResource LargeHeaderTextBlockStyle}" />
                                 <Line Grid.Row="1" X2="{Binding ActualWidth, ElementName=TargetsGrid}" Stroke="{StaticResource Dark_Grey_Brush}" StrokeThickness="1" Margin="0,10,0,20" HorizontalAlignment="Stretch" />
                                 <Grid Grid.Row="2" x:Name="TargetsListBoxGrid">
-                                    <ListBox ScrollViewer.VerticalScrollBarVisibility="Visible"  x:Name="targetsList" AlternationCount="2" Style="{StaticResource EmptyListStyle}" BorderThickness="0" Background="Transparent">
+                                    <ListBox ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Targets}" AlternationCount="2" Style="{StaticResource EmptyListStyle}" BorderThickness="0" Background="Transparent">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid Height="38">
@@ -336,21 +337,21 @@
                                     </StackPanel.Resources>
 
                                     <!--verbosity levels as radiobuttons-->
-                                    <RadioButton x:Name="NormalVerbosityRadioButton" Style="{StaticResource VerbosityRadioButtonStyle}" BorderBrush="Black" HorizontalAlignment="Left" Margin="0,0,0,0" Width="106" Height="80" Background="{StaticResource NormalVerbosity_Brush}" Checked="NormalVerbosityRadioButton_Checked">
+                                    <RadioButton x:Name="NormalVerbosityRadioButton" Style="{StaticResource VerbosityRadioButtonStyle}" BorderBrush="Black" HorizontalAlignment="Left" Margin="0,0,0,0" Width="106" Height="80" Background="{StaticResource NormalVerbosity_Brush}" Command="{Binding NormalVerbosityCommand}">
                                         <StackPanel Orientation="Vertical">
                                             <Image Source="{StaticResource normalDrawingImage}" Width="25" Height="25"/>
                                             <TextBlock Text="Normal" Margin="0,0,0,0" Foreground="{StaticResource NormalVerbosityText_Brush}" FontSize="{StaticResource SmallFontSize}" FontWeight="DemiBold" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </RadioButton>
 
-                                    <RadioButton x:Name="DebugVerbosityRadioButton" Style="{StaticResource VerbosityRadioButtonStyle}" BorderBrush="Black" HorizontalAlignment="Left" Margin="5,0,0,0" Width="106" Height="80" Background="{StaticResource DebugVerbosity_Brush}" Checked="DebugVerbosityRadioButton_Checked">
+                                    <RadioButton x:Name="DebugVerbosityRadioButton" Style="{StaticResource VerbosityRadioButtonStyle}" BorderBrush="Black" HorizontalAlignment="Left" Margin="5,0,0,0" Width="106" Height="80" Background="{StaticResource DebugVerbosity_Brush}" Command="{Binding VerboseVerbosityCommand}">
                                         <StackPanel Orientation="Vertical">
                                             <Image Source="{StaticResource debugDrawingImage}" Width="25" Height="25"/>
                                             <TextBlock Text="Debug" Margin="0,0,0,0" Foreground="{StaticResource DebugVerbosityText_Brush}" FontSize="{StaticResource SmallFontSize}" FontWeight="DemiBold" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </RadioButton>
 
-                                    <RadioButton x:Name="TraceVerbosityRadioButton" Style="{StaticResource VerbosityRadioButtonStyle}" BorderBrush="Black" HorizontalAlignment="Left" Margin="5,0,0,0" Width="106" Height="80" Background="{StaticResource TraceVerbosity_Brush}" Checked="TraceVerbosityRadioButton_Checked">
+                                    <RadioButton x:Name="TraceVerbosityRadioButton" Style="{StaticResource VerbosityRadioButtonStyle}" BorderBrush="Black" HorizontalAlignment="Left" Margin="5,0,0,0" Width="106" Height="80" Background="{StaticResource TraceVerbosity_Brush}" Command="{Binding TraceVerbosityCommand}">
                                         <StackPanel Orientation="Vertical">
                                             <Image Source="{StaticResource traceDrawingImage}" Width="25" Height="25"/>
                                             <TextBlock Text="Trace" Margin="0,0,0,0" Foreground="{StaticResource TraceVerbosityText_Brush}" FontSize="{StaticResource SmallFontSize}" FontWeight="DemiBold" VerticalAlignment="Center"/>
@@ -422,14 +423,14 @@
                     <!--Start Stop OpenReport Button Area-->
                     <Grid Height="50" Margin="20,0,20,0" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
                         <StackPanel Orientation="Horizontal" >
-                            <Button x:Name="StartButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="94" Height="40" Template="{StaticResource ImageButtonTemplate}" Click="StartButton_Click"  Background="{StaticResource Green_Button_Brush}">
+                            <Button x:Name="StartButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="94" Height="40" Template="{StaticResource ImageButtonTemplate}" Command="{Binding ScanCommand}" Background="{StaticResource Green_Button_Brush}">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource startButtonIconDrawingImage}" Width="15" Height="15"/>
                                     <TextBlock Text="Start" Margin="10,0,0,0" Foreground="{StaticResource White_Brush}" FontSize="{StaticResource SmallFontSize}" VerticalAlignment="Center" FontWeight="DemiBold"/>
                                 </StackPanel>
                             </Button>
 
-                            <Button x:Name="StopButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="97" Height="40" Template="{StaticResource ImageButtonTemplate}" Click="StopButton_Click"  Background="{StaticResource Red_Button_Brush}">
+                            <Button x:Name="StopButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="97" Height="40" Template="{StaticResource ImageButtonTemplate}" Command="{Binding ScanCancelCommand}" Background="{StaticResource Red_Button_Brush}">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="F1 M 0 15 L 0 0 L 15 0 L 15 15 L 0 15 Z M 2 13 L 13 13 L 13 2 L 2 2 L 2 13 Z" 
                                           Fill="{StaticResource Light_Blue_Brush}" Width="15" Height="15" Stretch="Fill"/>
@@ -437,7 +438,7 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button x:Name="OpenReportButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="236" Height="40" Template="{StaticResource ImageButtonTemplate}" Click="OpenReportButton_Click"  Background="{StaticResource Light_Blue_Button_Brush}">
+                            <Button x:Name="OpenReportButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="236" Height="40" Template="{StaticResource ImageButtonTemplate}" Command="{Binding OpenReportCommand}"  Background="{StaticResource Light_Blue_Button_Brush}">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource openReportButtonIconDrawingImage}" Width="25" Height="25"/>
                                     <TextBlock Text="Open Report" Margin="10,0,0,0" Foreground="{StaticResource White_Brush}" FontSize="{StaticResource SmallFontSize}" VerticalAlignment="Center" FontWeight="DemiBold"/>
@@ -459,10 +460,9 @@
 
                                 <Border x:Name="borderborder" Grid.Row="1" BorderBrush="{StaticResource Dark_Grey_Brush}" BorderThickness="0.5">
                                     <TextBox Height="{Binding ActualHeight, ElementName=borderborder}"
-                                             x:Name="LogTextBox"
+                                             Text="{Binding Log, Mode=OneWay}"
                                              Background="White"
                                              BorderThickness="0"
-                                             Text="{Binding Text, Mode=OneWay}"
                                              IsReadOnly="True"
                                              TextWrapping="Wrap" 
                                              VerticalScrollBarVisibility="Visible"/>
