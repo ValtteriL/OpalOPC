@@ -121,5 +121,6 @@ namespace OpalOPC.WPF
             // TODO: implement target list delete 
         }
 
+
     }
 }

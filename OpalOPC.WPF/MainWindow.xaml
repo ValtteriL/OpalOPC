@@ -197,7 +197,7 @@
                                 <Line X2="{Binding ActualWidth, ElementName=AddTargetsStackPanel}" Stroke="{StaticResource Dark_Grey_Brush}" StrokeThickness="1" Margin="0,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" />
 
                                 <!--customized textbox-->
-                                <TextBox x:Name="txtAddTargets" Padding="10" Margin="0,20,0,10" Height="50" VerticalContentAlignment="Center" Foreground="{StaticResource Dark_Grey_Brush}" FontSize="{StaticResource SmallFontSize}">
+                                <TextBox Text="{Binding TargetToAdd}" Padding="10" Margin="0,20,0,10" Height="50" VerticalContentAlignment="Center" Foreground="{StaticResource Dark_Grey_Brush}" FontSize="{StaticResource SmallFontSize}">
                                     <TextBox.Style>
                                         <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
                                             <Style.Resources>
@@ -228,7 +228,7 @@
                                 </TextBox>
 
                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
-                                    <Button HorizontalAlignment="Left" Margin="0,0,0,0" Width="94" Height="43" Template="{StaticResource ImageButtonTemplate}" Background="{StaticResource Dark_Blue_Brush}">
+                                    <Button HorizontalAlignment="Left" Margin="0,0,0,0" Width="94" Height="43" Template="{StaticResource ImageButtonTemplate}" Background="{StaticResource Dark_Blue_Brush}" Command="{Binding AddTargetCommand}">
                                         <StackPanel Orientation="Horizontal">
                                             <Image Source="{StaticResource addButtonIconDrawingImage}" Width="18" Height="18"/>
                                             <TextBlock Text="Add" Margin="10,0,0,0" Foreground="{StaticResource White_Brush}" FontSize="{StaticResource SmallFontSize}" VerticalAlignment="Center" FontWeight="DemiBold"/>
