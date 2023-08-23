@@ -265,7 +265,7 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" Text="Targets" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="{StaticResource Text_Brush}" Style="{StaticResource LargeHeaderTextBlockStyle}" />
+                                <TextBlock Grid.Row="0" Text="{Binding TargetsLabel}" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="{StaticResource Text_Brush}" Style="{StaticResource LargeHeaderTextBlockStyle}" />
                                 <Line Grid.Row="1" X2="{Binding ActualWidth, ElementName=TargetsGrid}" Stroke="{StaticResource Dark_Grey_Brush}" StrokeThickness="1" Margin="0,10,0,20" HorizontalAlignment="Stretch" />
                                 <Grid Grid.Row="2" x:Name="TargetsListBoxGrid">
                                     <ListBox ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Targets}" AlternationCount="2" Style="{StaticResource EmptyListStyle}" BorderThickness="0" Background="Transparent">
