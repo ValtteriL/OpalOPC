@@ -2,13 +2,10 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OpalOPC.WPF;
 
@@ -83,5 +80,11 @@ public partial class MainWindowViewModel : ObservableObject
     private void DeleteTarget(string target)
     {
 
+    }
+
+    public void AddTargetsFromFile(string path)
+    {
+        string[] lines = File.ReadAllLines(path);
+        Targets = Targets.Union(lines).ToArray();
     }
 }

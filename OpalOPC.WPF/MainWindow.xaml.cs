@@ -58,27 +58,17 @@ namespace OpalOPC.WPF
 
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                // also allow multiple files?
+                // Note that you can have more than one file.
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-                // handle (first) file 
                 HandleFileOpen(files[0]);
-
-
-                Button button = (Button)sender;
-                StackPanel stackPanel = (StackPanel)button.Content;
-                stackPanel.Children[0].Visibility = Visibility.Collapsed;
-                stackPanel.Children[2].Visibility = Visibility.Collapsed;
-                TextBlock fileNameTextBlock = (TextBlock)stackPanel.Children[1]; // Annahme, dass das Dateiname-TextBlock das zweite Element im StackPanel ist
-                fileNameTextBlock.Text = files[0];
-
-
             }
         }
 
-        private void HandleFileOpen(string v)
+        private void HandleFileOpen(string path)
         {
-            // TODO: handle here
+            // Handle target file
+            MainWindowViewModel viewModel = (MainWindowViewModel)this.DataContext;
+            viewModel.AddTargetsFromFile(path);
         }
 
         private void DragAndDropTargetsFileButton_Click(object sender, RoutedEventArgs e)
@@ -91,12 +81,9 @@ namespace OpalOPC.WPF
             {
                 string fileName = openFileDialog.FileName;
 
-                Button button = (Button)sender;
-                StackPanel stackPanel = (StackPanel)button.Content;
-                stackPanel.Children[0].Visibility = Visibility.Collapsed;
-                stackPanel.Children[2].Visibility = Visibility.Collapsed;
-                TextBlock fileNameTextBlock = (TextBlock)stackPanel.Children[1];
-                fileNameTextBlock.Text = System.IO.Path.GetFullPath(fileName);
+                // Handle target file
+                MainWindowViewModel viewModel = (MainWindowViewModel)this.DataContext;
+                viewModel.AddTargetsFromFile(System.IO.Path.GetFullPath(fileName));
             }
         }
 
