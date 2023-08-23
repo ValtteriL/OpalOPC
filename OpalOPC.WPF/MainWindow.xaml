@@ -378,7 +378,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <!--customized textbox-->
-                                    <TextBox Grid.Column="0" HorizontalAlignment="Stretch" x:Name="outputReportFileTextBox" Padding="10" Margin="0,0,5,0" Height="50" VerticalContentAlignment="Center" Foreground="{StaticResource Text_Brush}" FontWeight="DemiBold" FontSize="{StaticResource SmallFontSize}">
+                                    <TextBox Grid.Column="0" HorizontalAlignment="Stretch" x:Name="outputReportFileTextBox" Padding="10" Margin="0,0,5,0" Height="50" VerticalContentAlignment="Center" Foreground="{StaticResource Text_Brush}" FontWeight="DemiBold" FontSize="{StaticResource SmallFontSize}" Text="{Binding OutputFileLocation}">
                                         <TextBox.Style>
                                             <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
                                                 <Style.Resources>
@@ -401,6 +401,13 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </TextBox.Style>
+                                        <TextBox.ToolTip>
+                                            <ToolTip>
+                                                <DockPanel>
+                                                    <TextBlock>Omit filename for automatic naming.</TextBlock>
+                                                </DockPanel>
+                                            </ToolTip>
+                                        </TextBox.ToolTip>
                                         <TextBox.Resources>
                                             <Style TargetType="{x:Type Border}">
                                                 <Setter Property="CornerRadius" Value="5"/>
@@ -409,7 +416,7 @@
                                     </TextBox>
 
                                     <!-- Browse Button-->
-                                    <Button x:Name="browseOutputReportFileButton" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,7,0" Width="151" Height="50" Template="{StaticResource ImageButtonTemplate}" Click="browseOutputReportFileButton_Click" Background="{StaticResource Blue_Button_Brush}" Opacity="1">
+                                    <Button x:Name="browseOutputReportFileButton" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,7,0" Width="151" Height="50" Template="{StaticResource ImageButtonTemplate}" Click="BrowseOutputReportFileButton_Click" Background="{StaticResource Blue_Button_Brush}" Opacity="1">
                                         <StackPanel Orientation="Horizontal">
                                             <Image Source="{StaticResource browseButtonIconDrawingImage}" Width="20" Height="20"/>
                                             <TextBlock Text="Browse" Margin="10,0,0,0" Foreground="{StaticResource Dark_Blue_Brush}" FontSize="{StaticResource SmallFontSize}" FontWeight="DemiBold" VerticalAlignment="Center"/>

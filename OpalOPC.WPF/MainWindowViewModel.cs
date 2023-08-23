@@ -18,6 +18,9 @@ public partial class MainWindowViewModel : ObservableObject
     private string targetsLabel = "Targets";
 
     [ObservableProperty]
+    private string outputFileLocation = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
+
+    [ObservableProperty]
     private string targetToAdd = string.Empty;
 
     [ObservableProperty]
@@ -78,6 +81,11 @@ public partial class MainWindowViewModel : ObservableObject
     private void OpenReport()
     {
 
+    }
+
+    public void SetOutputFileLocation(string fullPath)
+    {
+        OutputFileLocation = fullPath;
     }
 
     public void DeleteTarget(string target)

@@ -50,7 +50,7 @@ namespace OpalOPC.WPF
         {
             
             Button button = (Button)sender;
-            Process.Start(new ProcessStartInfo(button.Tag.ToString()) { UseShellExecute = true });
+            Process.Start(new ProcessStartInfo(button.Tag.ToString()!) { UseShellExecute = true });
         }
 
         private void DragAndDropTargetsFileButton_Drop(object sender, DragEventArgs e)
@@ -87,7 +87,7 @@ namespace OpalOPC.WPF
             }
         }
 
-        private void browseOutputReportFileButton_Click(object sender, RoutedEventArgs e)
+        private void BrowseOutputReportFileButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "All files (*.*)|*.*";
@@ -95,10 +95,11 @@ namespace OpalOPC.WPF
 
             if (openFileDialog.ShowDialog() == true)
             {
-                string fileName = openFileDialog.FileName;
+                string path = System.IO.Path.GetFullPath(openFileDialog.FileName);
 
-                // change text of TextBox based on selected File
-                outputReportFileTextBox.Text = System.IO.Path.GetFullPath(fileName);
+                // Handle output location selection
+                MainWindowViewModel viewModel = (MainWindowViewModel)this.DataContext;
+                viewModel.SetOutputFileLocation(path);
             }
         }
 
