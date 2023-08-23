@@ -337,7 +337,7 @@
                                     </StackPanel.Resources>
 
                                     <!--verbosity levels as radiobuttons-->
-                                    <RadioButton x:Name="NormalVerbosityRadioButton" Style="{StaticResource VerbosityRadioButtonStyle}" BorderBrush="Black" HorizontalAlignment="Left" Margin="0,0,0,0" Width="106" Height="80" Background="{StaticResource NormalVerbosity_Brush}" Command="{Binding NormalVerbosityCommand}">
+                                    <RadioButton x:Name="NormalVerbosityRadioButton" Style="{StaticResource VerbosityRadioButtonStyle}" BorderBrush="Black" HorizontalAlignment="Left" Margin="0,0,0,0" Width="106" Height="80" Background="{StaticResource NormalVerbosity_Brush}" Command="{Binding NormalVerbosityCommand}" IsChecked="True">
                                         <StackPanel Orientation="Vertical">
                                             <Image Source="{StaticResource normalDrawingImage}" Width="25" Height="25"/>
                                             <TextBlock Text="Normal" Margin="0,0,0,0" Foreground="{StaticResource NormalVerbosityText_Brush}" FontSize="{StaticResource SmallFontSize}" FontWeight="DemiBold" VerticalAlignment="Center"/>
