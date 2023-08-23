@@ -76,10 +76,11 @@ public partial class MainWindowViewModel : ObservableObject
 
     }
 
-    [RelayCommand]
-    private void DeleteTarget(string target)
+    public void DeleteTarget(string target)
     {
-
+        var targetsSet = Targets.ToHashSet();
+        targetsSet.Remove(target);
+        Targets = targetsSet.ToArray();
     }
 
     public void AddTargetsFromFile(string path)

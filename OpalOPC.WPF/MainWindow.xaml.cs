@@ -105,7 +105,11 @@ namespace OpalOPC.WPF
 
         private void TargetListViewItemDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: implement target list delete 
+            Button? btn = sender as Button;
+
+            // Handle target deletion
+            MainWindowViewModel viewModel = (MainWindowViewModel)this.DataContext;
+            viewModel.DeleteTarget((string)btn!.DataContext);
         }
 
 
