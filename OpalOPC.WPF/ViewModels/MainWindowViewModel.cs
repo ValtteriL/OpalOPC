@@ -32,6 +32,8 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private LogLevel? verbosity = LogLevel.Information;
 
+    private bool scanCompletedSuccessfully = false;
+
     [RelayCommand]
     private void NormalVerbosity()
     {
@@ -77,10 +79,15 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(canOpenReport))]
     private void OpenReport()
     {
 
+    }
+
+    private bool canOpenReport()
+    {
+        return scanCompletedSuccessfully;
     }
 
     public void SetOutputFileLocation(string fullPath)
