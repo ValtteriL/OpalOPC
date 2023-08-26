@@ -46,13 +46,6 @@ namespace OpalOPC.WPF
             versionWindow.ShowDialog();
         }
 
-        private void Navbar_Help_Click(object sender, RoutedEventArgs e)
-        {
-            
-            Button button = (Button)sender;
-            Process.Start(new ProcessStartInfo(button.Tag.ToString()!) { UseShellExecute = true });
-        }
-
         private void DragAndDropTargetsFileButton_Drop(object sender, DragEventArgs e)
         {
 
