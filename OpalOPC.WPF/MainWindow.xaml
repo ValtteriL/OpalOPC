@@ -277,7 +277,7 @@
                                                         <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
 
-                                                    <TextBlock Grid.Column="0" Text="{Binding .}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" Foreground="{StaticResource Dark_Grey_Brush}" FontSize="{StaticResource MediumFontSize}"/>
+                                                    <TextBlock Grid.Column="0" Text="{Binding .}" MouseDown="TextBlock_MouseDown" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" Foreground="{StaticResource Dark_Grey_Brush}" FontSize="{StaticResource MediumFontSize}"/>
                                                     <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Background="Transparent" Foreground="Red" BorderThickness="0" Click="TargetListViewItemDeleteButton_Click" >
                                                         <Image Source="{StaticResource recycleBinIconDrawingImage}" Width="15" Height="18"/>
                                                     </Button>

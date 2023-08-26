@@ -68,6 +68,12 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
         Verbosity = LogLevel.Trace;
     }
 
+    public void SetTargetToAdd(string target)
+    {
+        TargetToAdd = target;
+    }
+
+
     [RelayCommand(IncludeCancelCommand = true)]
     private async Task Scan(CancellationToken token)
     {

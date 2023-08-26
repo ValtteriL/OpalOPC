@@ -113,6 +113,14 @@ namespace OpalOPC.WPF
             viewModel.DeleteTarget((string)btn!.DataContext);
         }
 
+        private void TextBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // populate target textbox with selected target
+            TextBlock? block = sender as TextBlock;
 
+            // Handle target deletion
+            MainWindowViewModel viewModel = (MainWindowViewModel)this.DataContext;
+            viewModel.SetTargetToAdd((string)block!.DataContext);
+        }
     }
 }
