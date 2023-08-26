@@ -7,6 +7,7 @@ using OpalOPC.WPF.Logger;
 using OpalOPC.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -147,7 +148,7 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
     [RelayCommand(CanExecute = nameof(canOpenReport))]
     private void OpenReport()
     {
-
+        Process.Start(new ProcessStartInfo(outputfile) { UseShellExecute = true });
     }
 
     private bool canOpenReport()
