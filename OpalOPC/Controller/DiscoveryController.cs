@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
@@ -58,7 +59,17 @@ namespace Controller
             // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.2
             // ask the server for all servers it knows about
 
-            Uri discoveryUriWithIP = Utils.ParseUri(convertToIPBasedURI(discoveryUri.ToString()));
+            Uri discoveryUriWithIP;
+            try
+            {
+                discoveryUriWithIP = Utils.ParseUri(convertToIPBasedURI(discoveryUri.ToString()));
+            }
+            catch (SocketException)
+            {
+                string msg = $"Unable to resolve hostname {discoveryUri.ToString()}";
+                _logger.LogError(msg);
+                return targets;
+            }
 
             DiscoveryClient asd = DiscoveryClient.Create(discoveryUriWithIP);
             ApplicationDescriptionCollection adc;
