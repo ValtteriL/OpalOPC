@@ -1,11 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Controller;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace OpalOPC.WPF;
 
@@ -30,9 +34,13 @@ public partial class MainWindowViewModel : ObservableObject
     private string? log = string.Empty;
 
     [ObservableProperty]
-    private LogLevel? verbosity = LogLevel.Information;
+    private LogLevel verbosity = LogLevel.Information;
 
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(OpenReportCommand))]
     private bool scanCompletedSuccessfully = false;
+
+    private string outputfile = string.Empty;
 
     [RelayCommand]
     private void NormalVerbosity()
@@ -55,12 +63,53 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand(IncludeCancelCommand = true)]
     private async Task Scan(CancellationToken token)
     {
-        try {
-            await Task.Delay(10_000);
+        ScanCompletedSuccessfully = false;
+        ILogger logger = new Logger<MainWindow>(new NullLoggerFactory()); // TODO: replace with proper logger (https://learn.microsoft.com/en-us/dotnet/core/extensions/custom-logging-provider)
+
+        // check version
+        VersionCheckController versionCheckController = new VersionCheckController(logger);
+        versionCheckController.CheckVersion();
+
+        // create URI list of targets
+        List<Uri> targetUris = new List<Uri>();
+        foreach (String target in Targets)
+        {
+            try
+            {
+                targetUris.Add(new Uri(target));
+            }
+            catch (System.Exception)
+            {
+                logger.LogError($"\"{target}\" is invalid target", "");
+            }
+        }
+
+        // check if output file specified
+        outputfile = OutputFileLocation;
+        if (!File.Exists(OutputFileLocation))
+        {
+            outputfile = Path.Combine(OutputFileLocation, Util.ArgUtil.defaultReportName);
+        }
+        FileStream outputStream = File.OpenWrite(outputfile);
+
+
+        ScanController scanController = new ScanController(logger, targetUris, outputStream, "TODO");
+
+        // scan
+        try
+        {
+            await Task.Run(() => {
+                scanController.Scan();
+                logger.LogInformation($"Report saved to {outputfile} (Use browser to view it)");
+                outputStream.Close();
+                // TODO: notify that report can be opened
+            }, token);
+
+            ScanCompletedSuccessfully = true;
         }
         catch(OperationCanceledException)
         {
-
+            logger.LogWarning($"Scan canceled");
         }
     }
 
@@ -73,7 +122,15 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        Targets = Targets.Append(TargetToAdd).ToHashSet().ToArray();
+        // add protocol if missing
+        const string protocol = "opc.tcp://";
+        string target = TargetToAdd;
+        if (!target.StartsWith(protocol))
+        {
+            target = protocol + target;
+        }
+
+        Targets = Targets.Append(target).ToHashSet().ToArray();
         TargetToAdd = string.Empty;
         updateTargetsLabel();
     }
@@ -87,7 +144,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private bool canOpenReport()
     {
-        return scanCompletedSuccessfully;
+        return ScanCompletedSuccessfully;
     }
 
     public void SetOutputFileLocation(string fullPath)

@@ -97,8 +97,6 @@ namespace View
             optionSet.WriteOptionDescriptions(Console.Out);
         }
 
-        private string defaultReportName = $"opalopc-report-{DateTime.Now.ToString("yyyyMMddHHmmssffff")}.xml";
-
         public Options parseArgs()
         {
             try
@@ -108,8 +106,8 @@ namespace View
                 extra.ForEach(e => appendTarget(e));
                 if (options.xmlOutputStream == null)
                 {
-                    options.xmlOutputReportName = defaultReportName;
-                    options.xmlOutputStream = File.OpenWrite(defaultReportName);
+                    options.xmlOutputReportName = Util.ArgUtil.defaultReportName;
+                    options.xmlOutputStream = File.OpenWrite(options.xmlOutputReportName);
                 }
             }
             catch (OptionException e)

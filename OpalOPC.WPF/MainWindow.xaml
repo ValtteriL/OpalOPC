@@ -433,7 +433,7 @@
                             <Button x:Name="StartButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="94" Height="40" Template="{StaticResource ImageButtonTemplate}" Command="{Binding ScanCommand}" Background="{StaticResource Green_Button_Brush}">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource startButtonIconDrawingImage}" Width="15" Height="15"/>
-                                    <TextBlock Text="Start" Margin="10,0,0,0" Foreground="{StaticResource White_Brush}" FontSize="{StaticResource SmallFontSize}" VerticalAlignment="Center" FontWeight="DemiBold"/>
+                                    <TextBlock Text="Scan" Margin="10,0,0,0" Foreground="{StaticResource White_Brush}" FontSize="{StaticResource SmallFontSize}" VerticalAlignment="Center" FontWeight="DemiBold"/>
                                 </StackPanel>
                             </Button>
 
@@ -441,7 +441,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="F1 M 0 15 L 0 0 L 15 0 L 15 15 L 0 15 Z M 2 13 L 13 13 L 13 2 L 2 2 L 2 13 Z" 
                                           Fill="{StaticResource Light_Blue_Brush}" Width="15" Height="15" Stretch="Fill"/>
-                                    <TextBlock Text="Stop" Margin="10,0,0,0" Foreground="{StaticResource White_Brush}" FontSize="{StaticResource SmallFontSize}" VerticalAlignment="Center" FontWeight="DemiBold"/>
+                                    <TextBlock Text="Cancel" Margin="10,0,0,0" Foreground="{StaticResource White_Brush}" FontSize="{StaticResource SmallFontSize}" VerticalAlignment="Center" FontWeight="DemiBold"/>
                                 </StackPanel>
                             </Button>
 
