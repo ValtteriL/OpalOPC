@@ -1,19 +1,20 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Controller;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using OpalOPC.WPF.Logger;
+using OpalOPC.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace OpalOPC.WPF;
 
-public partial class MainWindowViewModel : ObservableObject
+public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessage>
 {
     [ObservableProperty]
     private string title = $"OpalOPC {Util.VersionUtil.AppAssemblyVersion}";
@@ -42,6 +43,12 @@ public partial class MainWindowViewModel : ObservableObject
 
     private string outputfile = string.Empty;
 
+    public MainWindowViewModel()
+    {
+        // register to log messages from logger
+        WeakReferenceMessenger.Default.Register<LogMessage>(this);
+    }
+
     [RelayCommand]
     private void NormalVerbosity()
     {
@@ -63,12 +70,10 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand(IncludeCancelCommand = true)]
     private async Task Scan(CancellationToken token)
     {
-        ScanCompletedSuccessfully = false;
-        ILogger logger = new Logger<MainWindow>(new NullLoggerFactory()); // TODO: replace with proper logger (https://learn.microsoft.com/en-us/dotnet/core/extensions/custom-logging-provider)
+        Log = string.Empty;
 
-        // check version
-        VersionCheckController versionCheckController = new VersionCheckController(logger);
-        versionCheckController.CheckVersion();
+        ScanCompletedSuccessfully = false;
+        ILogger logger = new GUILogger(Verbosity);
 
         // create URI list of targets
         List<Uri> targetUris = new List<Uri>();
@@ -88,7 +93,7 @@ public partial class MainWindowViewModel : ObservableObject
         outputfile = OutputFileLocation;
         if (!File.Exists(OutputFileLocation))
         {
-            outputfile = Path.Combine(OutputFileLocation, Util.ArgUtil.defaultReportName);
+            outputfile = Path.Combine(OutputFileLocation, new Util.ArgUtil().DefaultReportName());
         }
         FileStream outputStream = File.OpenWrite(outputfile);
 
@@ -102,7 +107,6 @@ public partial class MainWindowViewModel : ObservableObject
                 scanController.Scan();
                 logger.LogInformation($"Report saved to {outputfile} (Use browser to view it)");
                 outputStream.Close();
-                // TODO: notify that report can be opened
             }, token);
 
             ScanCompletedSuccessfully = true;
@@ -110,6 +114,10 @@ public partial class MainWindowViewModel : ObservableObject
         catch(OperationCanceledException)
         {
             logger.LogWarning($"Scan canceled");
+        }
+        catch(Exception ex)
+        {
+            logger.LogCritical($"Unhandled exception: {ex}");
         }
     }
 
@@ -170,5 +178,10 @@ public partial class MainWindowViewModel : ObservableObject
     private void updateTargetsLabel()
     {
         TargetsLabel = $"Targets ({Targets.Length})";
+    }
+
+    public void Receive(LogMessage message)
+    {
+        Log = Log + message.Value + Environment.NewLine;
     }
 }
