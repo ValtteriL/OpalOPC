@@ -43,6 +43,7 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
     private bool scanCompletedSuccessfully = false;
 
     private string outputfile = string.Empty;
+    const string protocol = "opc.tcp://";
 
     public MainWindowViewModel()
     {
@@ -138,7 +139,6 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
         }
 
         // add protocol if missing
-        const string protocol = "opc.tcp://";
         string target = TargetToAdd;
         if (!target.StartsWith(protocol))
         {
@@ -177,8 +177,17 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
 
     public void AddTargetsFromFile(string path)
     {
-        string[] lines = File.ReadAllLines(path);
-        Targets = Targets.Union(lines).ToArray();
+        string[] nonEmptyLines = File.ReadAllLines(path).ToList().Where(t => t != String.Empty).ToArray();
+
+        for (int i = 0; i < nonEmptyLines.Length; i++)
+        {
+            if (!nonEmptyLines[i].StartsWith(protocol))
+            {
+                nonEmptyLines[i] = protocol + nonEmptyLines[i];
+            }
+        }
+
+        Targets = Targets.Union(nonEmptyLines).Where(t => t != String.Empty).ToArray();
         updateTargetsLabel();
     }
 
