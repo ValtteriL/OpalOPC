@@ -105,7 +105,7 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
         FileStream outputStream = File.OpenWrite(outputfile);
 
 
-        ScanController scanController = new ScanController(logger, targetUris, outputStream, "TODO", token);
+        ScanController scanController = new ScanController(logger, targetUris, outputStream, generateGUICommandInReport(), token);
 
         // scan
         try
@@ -190,5 +190,25 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
     public void Receive(LogMessage message)
     {
         Log = Log + message.Value + Environment.NewLine;
+    }
+
+    private string generateGUICommandInReport()
+    {
+        string verbosityInReport;
+        switch (Verbosity)
+        {
+            case LogLevel.Debug:
+                verbosityInReport = "Debug";
+                break;
+            case LogLevel.Trace:
+                verbosityInReport = "Trace";
+                break;
+            default:
+                verbosityInReport = "Normal";
+                break;
+        }
+
+
+        return $"Launched via GUI with following settings: (Verbosity: {verbosityInReport} | Output: {OutputFileLocation} | Targets: {String.Join(", ", Targets)})";
     }
 }
