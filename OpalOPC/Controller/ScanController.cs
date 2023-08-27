@@ -2,7 +2,9 @@ using System.Net;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Model;
+using Util;
 using Opc.Ua;
+using Opc.Ua.Bindings;
 using Plugin;
 using View;
 
@@ -14,13 +16,15 @@ namespace Controller
         ICollection<Uri> _targets;
         Stream _reportOutputStream;
         string _commandLine;
+        readonly CancellationToken? _token;
 
-        public ScanController(ILogger logger, ICollection<Uri> targets, Stream reportOutputStream, string commandLine)
+        public ScanController(ILogger logger, ICollection<Uri> targets, Stream reportOutputStream, string commandLine, CancellationToken? token = null)
         {
             _logger = logger;
             _targets = targets;
             _reportOutputStream = reportOutputStream;
             _commandLine = commandLine;
+            _token = token;
         }
 
         public void Scan()
@@ -35,8 +39,12 @@ namespace Controller
 
             IReporter reporter = new Reporter(_reportOutputStream);
 
-            DiscoveryController discoveryController = new DiscoveryController(_logger);
+            TaskUtil.CheckForCancellation(_token);
+
+            DiscoveryController discoveryController = new DiscoveryController(_logger, _token);
             ICollection<Target> targets = discoveryController.DiscoverTargets(_targets);
+
+            TaskUtil.CheckForCancellation(_token);
 
             // Initialize security testing plugins
             ICollection<IPlugin> securityTestPlugins = new List<IPlugin> {
@@ -55,8 +63,10 @@ namespace Controller
             new AuditingDisabledPlugin(_logger),
         };
 
-            SecurityTestController securityTestController = new SecurityTestController(_logger, securityTestPlugins);
+            SecurityTestController securityTestController = new SecurityTestController(_logger, securityTestPlugins, _token);
             ICollection<Target> testedTargets = securityTestController.TestTargetSecurity(targets);
+
+            TaskUtil.CheckForCancellation(_token);
 
             ReportController reportController = new ReportController(_logger, reporter);
 

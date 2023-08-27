@@ -105,7 +105,7 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
         FileStream outputStream = File.OpenWrite(outputfile);
 
 
-        ScanController scanController = new ScanController(logger, targetUris, outputStream, "TODO");
+        ScanController scanController = new ScanController(logger, targetUris, outputStream, "TODO", token);
 
         // scan
         try

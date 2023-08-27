@@ -3,16 +3,19 @@ using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
+using Util;
 
 namespace Controller
 {
     public class DiscoveryController
     {
         ILogger _logger;
+        readonly CancellationToken? _token;
 
-        public DiscoveryController(ILogger logger)
+        public DiscoveryController(ILogger logger, CancellationToken? token = null)
         {
             _logger = logger;
+            _token = token;
         }
 
         public ICollection<Target> DiscoverTargets(ICollection<Uri> discoveryUris)
@@ -22,6 +25,7 @@ namespace Controller
             ICollection<Target> targets = new List<Target>();
             foreach (Uri uri in discoveryUris)
             {
+                TaskUtil.CheckForCancellation(_token);
                 targets = targets.Concat(DiscoverTargets(uri)).ToList();
             }
 
@@ -62,7 +66,7 @@ namespace Controller
             Uri discoveryUriWithIP;
             try
             {
-                discoveryUriWithIP = Utils.ParseUri(convertToIPBasedURI(discoveryUri.ToString()));
+                discoveryUriWithIP = Utils.ParseUri(ConvertToIPBasedURI(discoveryUri.ToString()));
             }
             catch (SocketException)
             {
@@ -98,6 +102,8 @@ namespace Controller
             foreach (ApplicationDescription ad in adc)
             {
 
+                TaskUtil.CheckForCancellation(_token);
+
                 Target target = new Target(ad);
 
                 foreach (string s in ad.DiscoveryUrls)
@@ -111,7 +117,7 @@ namespace Controller
                     string s_by_ip;
                     try
                     {
-                        s_by_ip = convertToIPBasedURI(s);
+                        s_by_ip = ConvertToIPBasedURI(s);
                     }
                     catch (UriFormatException)
                     {
@@ -180,7 +186,7 @@ namespace Controller
         }
 
         // Given uri as a string, replace the hostname with IP address
-        private string convertToIPBasedURI(String uriString)
+        private static string ConvertToIPBasedURI(String uriString)
         {
             Uri uri = Utils.ParseUri(uriString);
             if (uri == null)

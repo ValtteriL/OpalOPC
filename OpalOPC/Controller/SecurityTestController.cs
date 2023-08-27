@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Plugin;
+using Util;
 
 namespace Controller
 {
@@ -10,11 +11,13 @@ namespace Controller
 
         ILogger _logger;
         ICollection<IPlugin> _securityTestPlugins;
+        readonly CancellationToken? _token;
 
-        public SecurityTestController(ILogger logger, ICollection<IPlugin> SecurityTestPlugins)
+        public SecurityTestController(ILogger logger, ICollection<IPlugin> SecurityTestPlugins, CancellationToken? token = null)
         {
             _logger = logger;
             _securityTestPlugins = SecurityTestPlugins;
+            _token = token;
         }
 
 
@@ -33,6 +36,7 @@ namespace Controller
                 // run each test plugin against this target
                 foreach (IPlugin plugin in _securityTestPlugins)
                 {
+                    TaskUtil.CheckForCancellation(_token);
                     plugin.Run(target);
                 }
             }
