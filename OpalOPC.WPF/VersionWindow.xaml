@@ -47,7 +47,7 @@
 
 
         <TextBlock TextAlignment="Center" FontSize="{StaticResource LargeFontSize}" 
-                   Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore " 
+                   Text="OpalOPC is a vulnerability scanner for OPC UA applications" 
                    TextWrapping="Wrap" Margin="145,294,146,0" VerticalAlignment="Top" HorizontalAlignment="Center" Width="713" Height="75" Foreground="{StaticResource Text_Brush}" />
         
         <StackPanel Orientation="Horizontal" Margin="410,237,425,0" VerticalAlignment="Top" HorizontalAlignment="Center">
