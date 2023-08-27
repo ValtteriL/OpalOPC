@@ -14,6 +14,14 @@
         MinWidth="1145">
 
     <Window.Resources>
+        <!-- Style for buttons to grey them out while disabled -->
+        <Style x:Key="GrayDisabledButton" TargetType="Button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value=".25"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
         <Style TargetType="{x:Type ListBoxItem}">
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -416,14 +424,14 @@
                     <!--Start Stop OpenReport Button Area-->
                     <Grid Height="50" Margin="20,0,20,0" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
                         <StackPanel Orientation="Horizontal" >
-                            <Button x:Name="StartButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="94" Height="40" Template="{StaticResource ImageButtonTemplate}" Command="{Binding ScanCommand}" Background="{StaticResource Green_Button_Brush}">
+                            <Button x:Name="StartButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="94" Height="40" Template="{StaticResource ImageButtonTemplate}" Command="{Binding ScanCommand}" Background="{StaticResource Green_Button_Brush}" Style="{StaticResource GrayDisabledButton}">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource startButtonIconDrawingImage}" Width="15" Height="15"/>
                                     <TextBlock Text="Scan" Margin="10,0,0,0" Foreground="{StaticResource White_Brush}" FontSize="{StaticResource SmallFontSize}" VerticalAlignment="Center" FontWeight="DemiBold"/>
                                 </StackPanel>
                             </Button>
 
-                            <Button x:Name="StopButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="97" Height="40" Template="{StaticResource ImageButtonTemplate}" Command="{Binding ScanCancelCommand}" Background="{StaticResource Red_Button_Brush}">
+                            <Button x:Name="StopButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="97" Height="40" Template="{StaticResource ImageButtonTemplate}" Command="{Binding ScanCancelCommand}" Background="{StaticResource Red_Button_Brush}" Style="{StaticResource GrayDisabledButton}">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="F1 M 0 15 L 0 0 L 15 0 L 15 15 L 0 15 Z M 2 13 L 13 13 L 13 2 L 2 2 L 2 13 Z" 
                                           Fill="{StaticResource Light_Blue_Brush}" Width="15" Height="15" Stretch="Fill"/>
@@ -431,7 +439,7 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button x:Name="OpenReportButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="236" Height="40" Template="{StaticResource ImageButtonTemplate}" Command="{Binding OpenReportCommand}"  Background="{StaticResource Light_Blue_Button_Brush}">
+                            <Button x:Name="OpenReportButton" HorizontalAlignment="Left" Margin="0,0,7,0" Width="236" Height="40" Template="{StaticResource ImageButtonTemplate}" Command="{Binding OpenReportCommand}"  Background="{StaticResource Light_Blue_Button_Brush}" Style="{StaticResource GrayDisabledButton}">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource openReportButtonIconDrawingImage}" Width="25" Height="25"/>
                                     <TextBlock Text="Open Report" Margin="10,0,0,0" Foreground="{StaticResource White_Brush}" FontSize="{StaticResource SmallFontSize}" VerticalAlignment="Center" FontWeight="DemiBold"/>
