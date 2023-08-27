@@ -28,7 +28,6 @@ namespace OpalOPC.WPF
 
         private void Browse_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
-            // TODO: Implement link Handling here
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
         }

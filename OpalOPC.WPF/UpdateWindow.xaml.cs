@@ -27,7 +27,6 @@ namespace OpalOPC.WPF
 
         private void UpdateHyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
-            // TODO: Implement UpdateLink Handling here (example: URL opening in browser)
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
         }
