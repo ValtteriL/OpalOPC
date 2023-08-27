@@ -32,7 +32,7 @@ public class Reporter_printXMLReportShould
         StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
         sw.AutoFlush = true;
         Reporter reporter = new Reporter(sw.BaseStream);
-        Report report = new Report(new List<Target>(), DateTime.Now, DateTime.Now);
+        Report report = new Report(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
 
         reporter.printXMLReport(report);
     }

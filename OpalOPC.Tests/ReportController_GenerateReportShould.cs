@@ -16,10 +16,11 @@ public class ReportController_generateReportShould
         sw.AutoFlush = true;
         Reporter reporter = new Reporter(sw.BaseStream);
         ReportController reportController = new ReportController(logger, reporter);
+        string commandLine = string.Empty;
 
         Assert.True(reportController.report == null);
 
-        reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now);
+        reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, commandLine);
 
         Assert.True(reportController.report != null);
     }

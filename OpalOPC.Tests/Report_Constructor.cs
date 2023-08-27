@@ -7,7 +7,7 @@ public class Report_Constructor
     [Fact]
     public void constructor_DoesNotReturnNull()
     {
-        Report report = new Report(new List<Target>(), DateTime.Now, DateTime.Now);
+        Report report = new Report(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
 
         Assert.True(report != null);
     }
@@ -18,8 +18,9 @@ public class Report_Constructor
         DateTime start = DateTime.Now;
         DateTime stop = DateTime.MaxValue;
         List<Target> targets = new List<Target>();
+        string commandLine = string.Empty;
         
-        Report report = new Report(targets, start, stop);
+        Report report = new Report(targets, start, stop, commandLine);
 
         Assert.True(report.Targets.Count == targets.Count);
         Assert.True(report.RunStatus == null);

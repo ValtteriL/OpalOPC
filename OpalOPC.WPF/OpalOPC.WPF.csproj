@@ -6,7 +6,8 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>opalopc.ico</ApplicationIcon>
-	  <SelfContained>true</SelfContained>
+	<SelfContained>true</SelfContained>
+	<EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
