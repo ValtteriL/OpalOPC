@@ -1,3 +1,4 @@
+#if BUILT_FOR_WINDOWS
 namespace Tests;
 using View;
 using Model;
@@ -136,3 +137,4 @@ public class MainWindowViewModel_Tests
     }
 
 }
+#endif

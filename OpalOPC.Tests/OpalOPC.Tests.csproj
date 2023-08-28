@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0-windows</TargetFramework>
@@ -7,7 +7,8 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+	<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);BUILT_FOR_WINDOWS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OpalOPC.WPF\OpalOPC.WPF.csproj" />
+    <ProjectReference Include="..\OpalOPC.WPF\OpalOPC.WPF.csproj" Condition="$([MSBuild]::IsOSPlatform('Windows'))"/>
     <ProjectReference Include="..\OpalOPC\OpalOPC.csproj" />
   </ItemGroup>
 
