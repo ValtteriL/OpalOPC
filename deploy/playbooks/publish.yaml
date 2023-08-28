@@ -14,6 +14,7 @@
     path_fix: ../../
     linux_build: "{{ path_fix }}build/linux/opalopc"
     win_build: "{{ path_fix }}build/win/opalopc.exe"
+    win_gui_build: "{{ path_fix }}build/win-gui/opalopc-gui.exe"
     osx_build: "{{ path_fix }}build/osx/opalopc"
     report_resources: "{{ path_fix }}OpalOPC/report-resources"
     version_txt_web_path: /var/www/opalopc.com/VERSION.txt
@@ -29,7 +30,7 @@
 
   tasks:
 
-    - name: Build applications
+    - name: Build CLI applications
       local_action: 
         module: ansible.builtin.shell
         cmd: >
@@ -43,6 +44,19 @@
         - { runtime: linux-x64, output: build/linux }
         - { runtime: win-x64, output: build/win }
         - { runtime: osx-x64, output: build/osx }
+
+    - name: Build GUI application
+      local_action:
+        module: ansible.builtin.shell
+        cmd: >
+          dotnet publish OpalOPC.WPF
+          --runtime "{{ item.runtime }}"
+          --self-contained
+          --output {{ item.output }}
+          /p:AssemblyVersion="{{ version | mandatory }}"
+        chdir: "{{ path_fix }}"
+      loop:
+        - { runtime: win-x64, output: build/win-gui }
 
     - name: Sign applications
       local_action:
@@ -59,6 +73,7 @@
         - build/linux/opalopc
         - build/osx/opalopc
         - build/win/opalopc.exe
+        - build/win-gui/opalopc-gui.exe
 
     - name: Build Windows installer
       local_action:
@@ -90,9 +105,11 @@
       loop:
         - { build: "{{ linux_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'linux'}
         - { build: "{{ win_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
+        - { build: "{{ win_gui_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
         - { build: "{{ osx_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'osx'}
         - { build: "{{ linux_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'linux'}
         - { build: "{{ win_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
+        - { build: "{{ win_gui_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
         - { build: "{{ osx_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'osx'}
         - { build: "{{ windows_installer_path }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
 
