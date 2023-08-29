@@ -83,6 +83,9 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
         ScanCompletedSuccessfully = false;
         ILogger logger = new GUILogger(Verbosity);
 
+        VersionCheckController versionCheckController = new VersionCheckController(logger);
+        versionCheckController.CheckVersion();
+
         // create URI list of targets
         List<Uri> targetUris = new List<Uri>();
         foreach (String target in Targets)

@@ -21,22 +21,6 @@ namespace OpalOPC.WPF
             InitializeComponent();
         }
 
-
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            // Check for updates when MainWindow has loaded
-            ILogger logger = new Logger<MainWindow>(new NullLoggerFactory());
-            VersionCheckController versionCheckController = new VersionCheckController(logger);
-            await Task.Run(() => { versionCheckController.CheckVersion(); }); // run in background thread
-            if (!versionCheckController.IsUpToDate)
-            {
-                UpdateWindow updateWindow = new UpdateWindow();
-                updateWindow.ShowDialog();
-            }
-
-        }
-
-
         private void Navbar_About_Click(object sender, RoutedEventArgs e)
         {
             // create new instance of window

@@ -37,13 +37,11 @@
   <ItemGroup>
     <None Remove="Assets\LogoImage.png" />
     <None Remove="Assets\LogoImageBackground.png" />
-    <None Remove="Assets\NotificationImage.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Assets\LogoImage.png" />
     <Resource Include="Assets\LogoImageBackground.png" />
-    <Resource Include="Assets\NotificationImage.png" />
   </ItemGroup>
 
   <ItemGroup>
