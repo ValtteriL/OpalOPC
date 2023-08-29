@@ -20,7 +20,7 @@ pipeline {
         }
         stage('Cleanup') {
             steps {
-                sh 'rm opalopc-report-*'
+                sh 'rm -f opalopc-report-*'
             }
         }
         stage('Unit tests') {
