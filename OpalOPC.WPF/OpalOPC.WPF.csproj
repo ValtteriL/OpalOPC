@@ -6,8 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>opalopc.ico</ApplicationIcon>
-	  <SelfContained>true</SelfContained>
-	  <EnableWindowsTargeting>true</EnableWindowsTargeting>
+	<EnableWindowsTargeting>true</EnableWindowsTargeting>
     <AssemblyName>opalopc-gui</AssemblyName>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <PackageId>opalopc-gui</PackageId>
@@ -17,9 +16,11 @@
     <WarningsAsErrors>CS4014</WarningsAsErrors>
     <PublishRelease>true</PublishRelease>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
-    <PublishSingleFile>true</PublishSingleFile>
-    <PublishReadyToRun>true</PublishReadyToRun>
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+
+	<SelfContained>true</SelfContained>
+	<PublishSingleFile>true</PublishSingleFile>
+	<IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
