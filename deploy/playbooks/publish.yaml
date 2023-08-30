@@ -58,7 +58,7 @@
       loop:
         - { runtime: win-x64, output: build/win-gui }
 
-    - name: Sign applications
+    - name: Sign *nix applications
       local_action:
         module: ansible.builtin.shell
         cmd: >
@@ -72,9 +72,8 @@
       loop:
         - build/linux/opalopc
         - build/osx/opalopc
-        - build/win/opalopc.exe
-        - build/win-gui/opalopc-gui.exe
 
+    # TODO: use advancedinstaller instead
     - name: Build Windows installer
       local_action:
         module: ansible.builtin.shell
@@ -94,7 +93,7 @@
 
     # create directory for version with subdir per OS
     # dont replace if already exists (for safety measure)
-    - name: Transfer applications to webserver (version subdir)
+    - name: Transfer *nix applications to webserver (version subdir)
       become: true
       ansible.builtin.copy:
         src: "{{ item.build }}"
@@ -104,17 +103,12 @@
         force: false
       loop:
         - { build: "{{ linux_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'linux'}
-        - { build: "{{ win_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
-        - { build: "{{ win_gui_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
         - { build: "{{ osx_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'osx'}
         - { build: "{{ linux_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'linux'}
-        - { build: "{{ win_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
-        - { build: "{{ win_gui_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
         - { build: "{{ osx_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'osx'}
-        - { build: "{{ windows_installer_path }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'windows'}
 
     # move builds to latest with subdir per OS
-    - name: Copy applications to latest subdir
+    - name: Copy *nix applications to latest subdir
       become: true
       ansible.builtin.copy:
         remote_src: true
@@ -124,12 +118,7 @@
         group: root
       loop:
         - { subdir: 'linux'}
-        - { subdir: 'windows'}
         - { subdir: 'osx'}
-        - { subdir: 'linux'}
-        - { subdir: 'windows'}
-        - { subdir: 'osx'}
-        - { subdir: 'windows'}
 
     - name: Transfer report resources to webserver
       become: true
@@ -147,14 +136,6 @@
         regexp: "{{ debug_report_resource_path_regex }}"
         replace: "{{ final_report_resource_path }}"
 
-    - name: Update VERSION.txt
-      become: true
-      ansible.builtin.copy:
-        dest: "{{ version_txt_web_path }}"
-        content: "{{ version | mandatory }}"
-        owner: root
-        group: root
-
     - name: Deploy linux-mac installer
       become: true
       ansible.builtin.copy:
@@ -163,10 +144,20 @@
         owner: root
         group: root
 
+    # TODO: prompt user to submit updated windows app to Store
+
     - name: Deploy EULA.txt
       become: true
       ansible.builtin.copy:
         src: "{{ eula_path | mandatory }}"
         dest: "{{ eula_web_path | mandatory }}"
+        owner: root
+        group: root
+
+    - name: Update VERSION.txt
+      become: true
+      ansible.builtin.copy:
+        dest: "{{ version_txt_web_path }}"
+        content: "{{ version | mandatory }}"
         owner: root
         group: root
