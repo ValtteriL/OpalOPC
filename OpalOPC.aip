@@ -14,10 +14,10 @@
     <ROW Property="AiLicenseAgreementLink" Value="https://opalopc.com/EULA.txt" Type="4"/>
     <ROW Property="IAgree" Value="No" Type="4"/>
     <ROW Property="Manufacturer" Value="Molemmat Oy"/>
-    <ROW Property="ProductCode" Value="1033:{E42FDF5C-7F89-4C2A-9431-D1E71BF33E32} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{45A835E4-634B-490B-B801-0976198B9408} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="OpalOPC"/>
-    <ROW Property="ProductVersion" Value="1.0.0" Options="32"/>
+    <ROW Property="ProductVersion" Value="1.0.0.0" Options="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{E031CE92-B1B2-4F1E-BD73-D44D0945D585}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -46,14 +46,14 @@
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="opalopcgui.exe" Component_="opalopcgui.exe" FileName="OPALOP~1.EXE|opalopc-gui.exe" Attributes="0" SourcePath="\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\build\win-gui\opalopc-gui.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="opalopc.exe" Component_="opalopc.exe" FileName="opalopc.exe" Attributes="0" SourcePath="\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\build\win\opalopc.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="opalopcgui.exe" Component_="opalopcgui.exe" FileName="OPALOP~1.EXE|opalopc-gui.exe" Attributes="0" SourcePath="build\win-gui\opalopc-gui.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="opalopc.exe" Component_="opalopc.exe" FileName="opalopc.exe" Attributes="0" SourcePath="build\win\opalopc.exe" SelfReg="false" DigSign="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" Languages="en" InstallationType="4" ExtUI="true" UseLargeSchema="true" MsiPackageType="x64"/>
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="C:\Users\valtteri\Desktop" PackageFileName="OpalOPC Setup" Languages="en" InstallationType="4" ExtUI="true" UseLargeSchema="true" MsiPackageType="x64"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
@@ -130,6 +130,9 @@
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiEnvComponent">
+    <ROW Environment="Path" Name="=-Path" Value="[~];[APPDIR]" Component_="opalopc.exe"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatCompsComponent">
     <ROW Feature_="MainFeature" Component_="APPDIR"/>
     <ROW Feature_="MainFeature" Component_="ProductInformation"/>
@@ -138,7 +141,7 @@
     <ROW Feature_="MainFeature" Component_="SHORTCUTDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
-    <ROW Name="opalopc.exe" SourcePath="\\wsl$\Debian\home\valtteri\development\opc-ua-security-scanner\OpalOPC\installers\opalopc.ico" Index="0"/>
+    <ROW Name="opalopc.exe" SourcePath="OpalOPC\installers\opalopc.ico" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
@@ -171,14 +174,13 @@
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="OpalOPC" Directory_="SHORTCUTDIR" Name="OpalOPC" Component_="opalopcgui.exe" Target="[#opalopcgui.exe]" Hotkey="0" Icon_="opalopc.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="OpalOPCCLI" Directory_="SHORTCUTDIR" Name="OPALOP~1|OpalOPC (CLI)" Component_="opalopc.exe" Target="[#opalopc.exe]" Hotkey="0" Icon_="opalopc.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="OpalOPC" Directory_="SHORTCUTDIR" Name="OpalOPC" Component_="opalopcgui.exe" Target="[#opalopcgui.exe]" Description="Shortcut to OpalOPC GUI" Hotkey="0" Icon_="opalopc.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
-    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="0.0.1" VersionMax="[|ProductVersion]" Attributes="257" ActionProperty="OLDPRODUCTS"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="0.0.1" VersionMax="[|ProductVersion]" Attributes="769" ActionProperty="OLDPRODUCTS"/>
     <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
   </COMPONENT>
 </DOCUMENT>
