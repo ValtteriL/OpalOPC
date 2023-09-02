@@ -11,20 +11,20 @@
       private: false
 
   vars:
-    linux_build: "{{ repo_root.stdout }}build/linux/opalopc"
-    win_build: "{{ repo_root.stdout }}build/win/opalopc.exe"
-    win_gui_build: "{{ repo_root.stdout }}build/win-gui/opalopc-gui.exe"
-    osx_build: "{{ repo_root.stdout }}build/osx/opalopc"
-    report_resources: "{{ repo_root.stdout }}OpalOPC/report-resources"
+    linux_build: "{{ repo_root.stdout }}/build/linux/opalopc"
+    win_build: "{{ repo_root.stdout }}/build/win/opalopc.exe"
+    win_gui_build: "{{ repo_root.stdout }}/build/win-gui/opalopc-gui.exe"
+    osx_build: "{{ repo_root.stdout }}/build/osx/opalopc"
+    report_resources: "{{ repo_root.stdout }}/OpalOPC/report-resources"
     version_txt_web_path: /var/www/opalopc.com/VERSION.txt
     release_web_path: /var/www/opalopc.com/releases
     report_resources_web_path: "/var/www/opalopc.com/report-resources/{{ version | mandatory }}"
     debug_report_resource_path_regex: 'http:\/\/localhost:8000\/OpalOPC\/report-resources'
     final_report_resource_path: "https://opalopc.com/report-resources/{{ version | mandatory }}"
-    installer_path: "{{ repo_root.stdout }}OpalOPC/installers/install.sh"
-    windows_installer_path: "{{ repo_root.stdout }}OpalOPC/installers/Output/OpalOPC-Installer.exe"
+    installer_path: "{{ repo_root.stdout }}/OpalOPC/installers/install.sh"
+    windows_installer_path: "{{ repo_root.stdout }}/OpalOPC/installers/Output/OpalOPC-Installer.exe"
     installer_web_path: /var/www/opalopc.com/install.sh
-    eula_path: "{{ repo_root.stdout }}OpalOPC/EULA.txt"
+    eula_path: "{{ repo_root.stdout }}/OpalOPC/EULA.txt"
     eula_web_path: /var/www/opalopc.com/EULA.txt
     windows_temp_build_folder: /mnt/c/Users/valtteri/AppData/Local/Temp/opalopc-gui-build
 
@@ -108,15 +108,35 @@
         - build/linux/opalopc
         - build/osx/opalopc
 
-    # TODO: use advancedinstaller instead
     - name: Build Windows installer
-      local_action:
-        module: ansible.builtin.shell
-        cmd: >
-          ISCC.exe
-          /DMyAppVersion={{ version | mandatory }}
-          OpalOPC/installers/windows.iss
-        chdir: "{{ repo_root.stdout }}"
+      block:
+        - name: Set Version
+          local_action:
+            module: ansible.builtin.shell
+            cmd: >
+              powershell.exe
+              AdvancedInstaller.com
+              /edit
+              OpalOPC.aip
+              /SetVersion "{{ version | mandatory }}"
+            chdir: "{{ repo_root.stdout }}"
+
+        - name: Build installer
+          local_action:
+            module: ansible.builtin.shell
+            cmd: >
+              powershell.exe
+              AdvancedInstaller.com
+              /build
+              OpalOPC.aip
+            chdir: "{{ repo_root.stdout }}"
+
+        - name: Undo changes to installer file (aip)
+          local_action:
+            module: ansible.builtin.shell
+            cmd: >
+              git checkout -- OpalOPC.aip
+            chdir: "{{ repo_root.stdout }}"
 
     - name: Create releases directory
       become: true
@@ -179,7 +199,9 @@
         owner: root
         group: root
 
-    # TODO: prompt user to submit updated windows app to Store
+    - name: A helpful reminder to submit updated Windows installer to Microsoft Store
+      ansible.builtin.pause:
+        prompt: "Make sure to submit Windows installer to Microsoft Store (OpalOPC Setup.msi on desktop)"
 
     - name: Deploy EULA.txt
       become: true
