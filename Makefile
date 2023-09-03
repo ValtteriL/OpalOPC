@@ -33,7 +33,7 @@ server:
 
 .PHONY: test
 test:
-	@dotnet test
+	@cd OpalOPC.Tests && dotnet test
 
 .PHONY: publish-all
 publish-all:
