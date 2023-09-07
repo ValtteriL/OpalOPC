@@ -30,6 +30,18 @@
 
   tasks:
 
+    - name: Tag repository with version
+      local_action:
+        module: ansible.builtin.shell
+        cmd: >
+          if [ ! $(git tag -l "{{ version | mandatory }}") ]; then
+            git tag "{{ version | mandatory }}"
+            git push origin "{{ version | mandatory }}"
+          else
+            echo "Tag with this version already exists"
+            exit 1
+          fi
+
     - name: Get repo root path
       local_action:
         module: ansible.builtin.shell
