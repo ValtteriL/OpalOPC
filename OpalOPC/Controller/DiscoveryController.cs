@@ -87,14 +87,17 @@ namespace Controller
                 if (e.Message.Contains("BadRequestTimeout"))
                 {
                     _logger.LogError($"Timeout connecting to discovery URI {discoveryUri}");
-                    return targets;
                 }
-                else if (e.Message.Contains("BadNotConnected"))
+                else if (e.Message.Contains("BadNotConnected") || e.Message.Contains("BadSecureChannelClosed"))
                 {
                     _logger.LogError($"Error connecting to discovery URI {discoveryUri}");
-                    return targets;
                 }
-                throw;
+                else
+                {
+                    _logger.LogError($"Unknown exception connecting to discovery URI: {e}");
+                }
+
+                return targets;
             }
 
             _logger.LogDebug($"Discovered {adc.Count} applications");
@@ -157,18 +160,23 @@ namespace Controller
                     }
                     catch (Opc.Ua.ServiceResultException e)
                     {
+                        string msg = string.Empty;
+
                         if (e.Message.Contains("BadNotConnected"))
                         {
-                            string msg = $"Cannot connect to discovery URI {s_by_ip}";
-                            _logger.LogWarning(msg);
-
-                            Server server = new Server(s_by_ip, new EndpointDescriptionCollection());
-                            server.AddError(new Error(msg));
-
-                            target.AddServer(server);
-                            continue;
+                            msg = $"Cannot connect to discovery URI {s_by_ip}";
                         }
-                        throw;
+                        else
+                        {
+                            msg = $"Unknown exception connecting to discovery URI {s_by_ip}: {e}";
+                        }
+                        _logger.LogWarning(msg);
+
+                        Server server = new Server(s_by_ip, new EndpointDescriptionCollection());
+                        server.AddError(new Error(msg));
+                        target.AddServer(server);
+
+                        continue;
                     }
 
                     // remove all that contain https scheme
