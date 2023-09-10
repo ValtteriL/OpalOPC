@@ -87,14 +87,17 @@ namespace Controller
                 if (e.Message.Contains("BadRequestTimeout"))
                 {
                     _logger.LogError($"Timeout connecting to discovery URI {discoveryUri}");
-                    return targets;
                 }
-                else if (e.Message.Contains("BadNotConnected"))
+                else if (e.Message.Contains("BadNotConnected") || e.Message.Contains("BadSecureChannelClosed"))
                 {
                     _logger.LogError($"Error connecting to discovery URI {discoveryUri}");
-                    return targets;
                 }
-                throw;
+                else
+                {
+                    _logger.LogError($"Unknown exception connecting to discovery URI: {e}");
+                }
+
+                return targets;
             }
 
             _logger.LogDebug($"Discovered {adc.Count} applications");
