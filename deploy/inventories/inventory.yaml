@@ -1,0 +1,6 @@
+all:
+  hosts:
+    ron:
+      ansible_host: 135.181.144.51
+      ansible_user: root
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'

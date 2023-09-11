@@ -23,6 +23,18 @@ pipeline {
     }
 
     post {
+        success {
+            script {
+                def metricreport = readFile \
+                    file: daily-metrics.txt;
+            }
+
+            mail \
+                subject: "Daily OpalOPC metrics", \
+                body: metricreport, \
+                mimeType: 'text/html', \
+                to: "valtteri@shufflingbytes.com";
+        }
         failure {
              mail \
                 subject: "Failed Job: ${env.JOB_NAME} build ${env.BUILD_NUMBER}", \
