@@ -65,3 +65,11 @@ publish-all:
 	@ansible-playbook \
 		--inventory ron, \
 		deploy/playbooks/publish.yaml
+
+
+# Metrics
+.PHONY: daily-metrics
+daily-metrics:
+	@ansible-playbook \
+		--inventory 127.0.0.1, \
+		deploy/playbooks/dailymetrics.yaml

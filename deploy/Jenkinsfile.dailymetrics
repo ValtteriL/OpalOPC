@@ -1,0 +1,34 @@
+// Job run daily to get metrics and email them to valtteri
+
+pipeline {
+    agent {
+        dockerfile {
+            filename 'Dockerfile.agent'
+            dir 'deploy'
+            args '-u 0:0' // Force container to run as root
+        }
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Get daily metrics') {
+            steps {
+                sh 'make daily-metrics'
+            }
+        }
+    }
+
+    post {
+        failure {
+             mail \
+                subject: "Failed Job: ${env.JOB_NAME} build ${env.BUILD_NUMBER}", \
+                body: "Failed CI job -> <a href=\"${env.BUILD_URL}\">${env.JOB_NAME} build ${env.BUILD_NUMBER}</a>", \
+                mimeType: 'text/html', \
+                to: "valtteri@shufflingbytes.com";
+        }
+    }
+}

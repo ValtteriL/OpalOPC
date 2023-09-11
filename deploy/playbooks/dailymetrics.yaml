@@ -1,0 +1,13 @@
+---
+
+# Get daily metrics
+# runs, runs per platform, installations, ratings, reviews
+
+- name: Daily metrics
+  hosts: all
+
+  tasks:
+
+    - name: Ping
+      local_action:
+        module: ansible.builtin.ping
