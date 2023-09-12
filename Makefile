@@ -72,4 +72,6 @@ publish-all:
 daily-metrics:
 	@ansible-playbook \
 		--inventory deploy/inventories/inventory.yaml \
+		--vault-password-file deploy/vault_password \
+		-e @deploy/playbooks/vault/dailymetrics-vault.yml \
 		deploy/playbooks/dailymetrics.yaml

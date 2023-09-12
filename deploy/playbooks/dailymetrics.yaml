@@ -8,6 +8,7 @@
 
   vars:
     output_file: "{{ repo_root.stdout }}/daily-metrics.txt"
+    umami_script_path: "{{ repo_root.stdout }}/deploy/playbooks/files/get-umami-metrics.py"
 
   tasks:
 
@@ -30,11 +31,22 @@
           grep install.sh /var/log/nginx/opalopc.com.access| wc -l
       register: unix_install_count
 
+    - name: Get umami stats for 1 day
+      local_action:
+        module: ansible.builtin.shell
+        cmd: >
+          python {{ umami_script_path }} 1
+      environment:
+        UMAMI_USERNAME: "{{umami_username | mandatory}}"
+        UMAMI_PASSWORD: "{{umami_password | mandatory}}"
+      register: umami_stats
+
     - name: Print results
       ansible.builtin.debug:
         msg:
         - "Runs: {{ all_agents_with_counts.stdout }}"
         - "Unix installations: {{ unix_install_count.stdout }}"
+        - "Umami stats: {{ umami_stats.stdout }}"
 
     - name: Write results to file
       local_action:
