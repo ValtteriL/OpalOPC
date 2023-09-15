@@ -19,18 +19,6 @@
           git rev-parse --show-toplevel
       register: repo_root
 
-    - name: Get listing of user agents that have requested VERSION.txt, with count
-      ansible.builtin.shell:
-        cmd: >
-          grep VERSION.txt /var/log/nginx/opalopc.com.access| awk '{printf "%s %s\n",$12,$13}'| sed 's/"//g;s/(//g;s/)//g'| sort| uniq -c | sort -nr |awk '{$1=$1;print}'
-      register: all_agents_with_counts
-
-    - name: Get count of requests for install.sh
-      ansible.builtin.shell:
-        cmd: >
-          grep install.sh /var/log/nginx/opalopc.com.access| wc -l
-      register: unix_install_count
-
     - name: Get umami stats for 1 day
       local_action:
         module: ansible.builtin.shell
@@ -40,13 +28,6 @@
         UMAMI_USERNAME: "{{umami_username | mandatory}}"
         UMAMI_PASSWORD: "{{umami_password | mandatory}}"
       register: umami_stats
-
-    - name: Print results
-      ansible.builtin.debug:
-        msg:
-        - "Runs: {{ all_agents_with_counts.stdout }}"
-        - "Unix installations: {{ unix_install_count.stdout }}"
-        - "Umami stats: {{ umami_stats.stdout }}"
 
     - name: Write results to file
       local_action:
