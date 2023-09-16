@@ -8,7 +8,9 @@ pipeline {
             args '-u 0:0' // Force container to run as root
         }
     }
-
+    environment {
+        VAULT_PASSWORD_FILE = credentials('vault-password')
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -17,7 +19,7 @@ pipeline {
         }
         stage('Get daily metrics') {
             steps {
-                sh 'make daily-metrics'
+                sh 'make daily-metrics VAULT_PASSWORD_FILE="$VAULT_PASSWORD_FILE"'
             }
         }
     }
