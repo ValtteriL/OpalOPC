@@ -42,6 +42,9 @@ Metrics (referrer):
 
 Events:
 {self._get_events(startAt, endAt)}
+
+Run User-Agents:
+{self._get_events(startAt, endAt)}
 """
 
     def _get_stats(self, startAt, endAt):
@@ -63,13 +66,17 @@ Events:
             )).read())
 
     def _get_events(self, startAt, endAt):
-        try:
-            return self._prettify_json(request.urlopen(request.Request(
-                f'https://umami.molemmat.fi/api/event-data/events?websiteId={self._website_id}&startAt={startAt}&endAt={endAt}',
-                headers={'Content-Type': 'application/json', 'Authorization': f'Bearer {self.token}'},
-                )).read())
-        except:
-            return
+        return self._prettify_json(request.urlopen(request.Request(
+            f'https://umami.molemmat.fi/api/websites/{self._website_id}/events?unit=hour&timezone=Europe/Helsinki&startAt={startAt}&endAt={endAt}',
+            headers={'Content-Type': 'application/json', 'Authorization': f'Bearer {self.token}'},
+            )).read())
+
+    def _get_run_user_agents(self, startAt, endAt):
+        return self._prettify_json(request.urlopen(request.Request(
+            f'https://umami.molemmat.fi/api/event-data/fields?websiteId={self._website_id}&startAt={startAt}&endAt={endAt}&field=user-agent',
+            headers={'Content-Type': 'application/json', 'Authorization': f'Bearer {self.token}'},
+            )).read())
+
 
     def _prettify_json(self, jsonString):
         return json.dumps(json.loads(jsonString), indent=4)
