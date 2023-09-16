@@ -10,6 +10,7 @@
   vars:
     output_file: "{{ repo_root.stdout }}/daily-metrics.txt"
     umami_script_path: "{{ repo_root.stdout }}/deploy/playbooks/files/get-umami-metrics.py"
+    number_days: 1
 
   tasks:
 
@@ -20,11 +21,11 @@
           cd ../.. && pwd
       register: repo_root
 
-    - name: Get umami stats for 1 day
+    - name: Get umami stats for {{ number_days }} days
       local_action:
         module: ansible.builtin.shell
         cmd: >
-          python3 {{ umami_script_path }} 1
+          python3 {{ umami_script_path }} {{ number_days }}
       environment:
         UMAMI_USERNAME: "{{umami_username | mandatory}}"
         UMAMI_PASSWORD: "{{umami_password | mandatory}}"

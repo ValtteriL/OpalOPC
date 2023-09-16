@@ -44,7 +44,7 @@ Events:
 {self._get_events(startAt, endAt)}
 
 Run User-Agents:
-{self._get_events(startAt, endAt)}
+{self._get_run_user_agents(startAt, endAt)}
 """
 
     def _get_stats(self, startAt, endAt):
@@ -67,7 +67,7 @@ Run User-Agents:
 
     def _get_events(self, startAt, endAt):
         return self._prettify_json(request.urlopen(request.Request(
-            f'https://umami.molemmat.fi/api/websites/{self._website_id}/events?unit=hour&timezone=Europe/Helsinki&startAt={startAt}&endAt={endAt}',
+            f'https://umami.molemmat.fi/api/websites/{self._website_id}/events?unit=day&timezone=Europe/Helsinki&startAt={startAt}&endAt={endAt}',
             headers={'Content-Type': 'application/json', 'Authorization': f'Bearer {self.token}'},
             )).read())
 

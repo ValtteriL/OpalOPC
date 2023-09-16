@@ -8,6 +8,9 @@ pipeline {
             args '-u 0:0' // Force container to run as root
         }
     }
+    parameters {
+        string(name: 'NUMBER_DAYS', defaultValue: '1', description: 'Number of days to get metrics for')
+    }
     environment {
         VAULT_PASSWORD_FILE = credentials('vault-password')
     }
@@ -19,7 +22,7 @@ pipeline {
         }
         stage('Get daily metrics') {
             steps {
-                sh 'make daily-metrics VAULT_PASSWORD_FILE="$VAULT_PASSWORD_FILE"'
+                sh "make daily-metrics VAULT_PASSWORD_FILE=\"$VAULT_PASSWORD_FILE\" NUMBER_DAYS=\"${params.NUMBER_DAYS}\""
             }
         }
     }
@@ -30,7 +33,7 @@ pipeline {
                 def metricreport = readFile("daily-metrics.txt");
             
                 mail \
-                    subject: "Daily OpalOPC metrics", \
+                    subject: "${params.NUMBER_DAYS} day OpalOPC metrics", \
                     body: metricreport, \
                     mimeType: 'text/plain', \
                     to: "valtteri.lehtinen@opalopc.com";
