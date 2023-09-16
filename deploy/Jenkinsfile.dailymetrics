@@ -27,15 +27,14 @@ pipeline {
     post {
         success {
             script {
-                def metricreport = readFile \
-                    file: daily-metrics.txt;
+                def metricreport = readFile("daily-metrics.txt");
+            
+                mail \
+                    subject: "Daily OpalOPC metrics", \
+                    body: metricreport, \
+                    mimeType: 'text/plain', \
+                    to: "valtteri.lehtinen@opalopc.com";
             }
-
-            mail \
-                subject: "Daily OpalOPC metrics", \
-                body: metricreport, \
-                mimeType: 'text/html', \
-                to: "valtteri.lehtinen@opalopc.com";
         }
         failure {
              mail \

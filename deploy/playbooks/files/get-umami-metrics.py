@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # Script to get umami stats and events for opalopc.com
 # reads umami username and password from envs
 # username = UMAMI_USERNAME
