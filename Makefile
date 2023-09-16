@@ -65,3 +65,14 @@ publish-all:
 	@ansible-playbook \
 		--inventory ron, \
 		deploy/playbooks/publish.yaml
+
+
+# Metrics
+VAULT_PASSWORD_FILE := "deploy/vault_password"
+
+.PHONY: daily-metrics
+daily-metrics:
+	@ansible-playbook \
+		--vault-password-file $(VAULT_PASSWORD_FILE) \
+		-e @deploy/playbooks/vault/dailymetrics-vault.yml \
+		deploy/playbooks/dailymetrics.yaml

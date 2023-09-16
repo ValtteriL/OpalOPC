@@ -479,3 +479,5 @@ $RECYCLE.BIN/
 opalopc-report*
 build/
 OpalOPC-cache/
+daily-metrics.txt
+vault_password

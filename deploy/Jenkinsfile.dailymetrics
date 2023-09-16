@@ -1,3 +1,5 @@
+// Job run daily to get metrics and email them to valtteri
+
 pipeline {
     agent {
         dockerfile {
@@ -6,36 +8,34 @@ pipeline {
             args '-u 0:0' // Force container to run as root
         }
     }
-
     environment {
-        DOTNET_CLI_HOME = "/tmp/DOTNET_CLI_HOME"
-        HOME = '/tmp'
+        VAULT_PASSWORD_FILE = credentials('vault-password')
     }
-
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-        stage('Cleanup') {
+        stage('Get daily metrics') {
             steps {
-                sh 'rm -f opalopc-report-*'
-            }
-        }
-        stage('Unit tests') {
-            steps {
-                sh 'make test'
-            }
-        }
-        stage('End-to-end tests') {
-            steps {
-                sh 'make run-e2e-tests'
+                sh 'make daily-metrics VAULT_PASSWORD_FILE="$VAULT_PASSWORD_FILE"'
             }
         }
     }
 
     post {
+        success {
+            script {
+                def metricreport = readFile("daily-metrics.txt");
+            
+                mail \
+                    subject: "Daily OpalOPC metrics", \
+                    body: metricreport, \
+                    mimeType: 'text/plain', \
+                    to: "valtteri.lehtinen@opalopc.com";
+            }
+        }
         failure {
              mail \
                 subject: "Failed Job: ${env.JOB_NAME} build ${env.BUILD_NUMBER}", \
