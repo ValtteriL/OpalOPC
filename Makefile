@@ -73,7 +73,6 @@ VAULT_PASSWORD_FILE := "deploy/vault_password"
 .PHONY: daily-metrics
 daily-metrics:
 	@ansible-playbook \
-		--inventory deploy/inventories/inventory.yaml \
 		--vault-password-file $(VAULT_PASSWORD_FILE) \
 		-e @deploy/playbooks/vault/dailymetrics-vault.yml \
 		deploy/playbooks/dailymetrics.yaml
