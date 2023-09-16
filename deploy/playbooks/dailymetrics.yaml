@@ -5,6 +5,7 @@
 
 - name: Daily metrics
   hosts: localhost
+  gather_facts: false
 
   vars:
     output_file: "{{ repo_root.stdout }}/daily-metrics.txt"
@@ -16,7 +17,7 @@
       local_action:
         module: ansible.builtin.shell
         cmd: >
-          git rev-parse --show-toplevel
+          cd ../.. && pwd
       register: repo_root
 
     - name: Get umami stats for 1 day
