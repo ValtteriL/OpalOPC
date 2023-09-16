@@ -44,7 +44,7 @@ Events:
 {self._get_events(startAt, endAt)}
 
 Run User-Agents:
-{self._get_events(startAt, endAt)}
+{self._get_run_user_agents(startAt, endAt)}
 """
 
     def _get_stats(self, startAt, endAt):
