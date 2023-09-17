@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DOCUMENT Type="Advanced Installer" CreateVersion="21.0.1" version="21.0.1" PreviousModules="appx" Modules="appx" RootPath="." Language="en" Id="{E5A4B205-9699-4856-AC18-87C79CAD342E}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
+    <ROW Name="Application_AssetGenDestFolderPath" Value="Generated Assets" ValueType="1"/>
     <ROW Name="AssetGenPkgDestFolderPath" Value="C:\Users\valtteri\source\repos\opc-ua-security-scanner\Generated Assets" ValueType="1"/>
     <ROW Name="HiddenItems" Value="TilesComponent;TilesComponent"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AppXCfgComponent">
-    <ROW ID="Configuration" Order="1" ManifestFile="AppxManifest.xml" TargetOs="4" AutoUpdatesFrequency="0" AutoUpdatesOptions="0" ManifestBundleFile="AppxBundleManifest.xml" AppInstallerManifestFile="MsixAppInstallerData.xml"/>
-    <ROW ID="Configuration_1" Order="2" OutputFileName="neutral" ParentBuild="Configuration" AutoUpdatesFrequency="0" AutoUpdatesOptions="0"/>
+    <ROW ID="Configuration" Order="1" OutputFolder="C:\Users\valtteri\Desktop" OutputFileName="OpalOPC Setup" ManifestFile="AppxManifest.xml" TargetOs="4" PackageBundle="true" UploadFile="true" AutoUpdatesFrequency="0" AutoUpdatesOptions="0" ManifestBundleFile="AppxBundleManifest.xml" AppInstallerManifestFile="MsixAppInstallerData.xml"/>
+    <ROW ID="Configuration_1" Order="2" OutputFileName="x64" ParentBuild="Configuration" AutoUpdatesFrequency="0" AutoUpdatesOptions="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
@@ -17,41 +18,54 @@
     <ROW Id="2" Name="Assets" Parent="1" Flags="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.GenericFileComponent">
-    <ROW Id="1" Name="StoreLogo.scale-100.png" Path="&lt;AI_RES&gt;appx\StoreLogo.png" ParentDir="2"/>
-    <ROW Id="2" Name="Square150x150Logo.scale-100.png" Path="&lt;AI_RES&gt;appx\Logo.png" ParentDir="2"/>
+    <ROW Id="1" Name="StoreLogo.scale-100.png" Path="OpalOPC\report-resources\assets\images\favicon.png" ParentDir="2"/>
+    <ROW Id="2" Name="Square150x150Logo.scale-100.png" Path="OpalOPC\report-resources\assets\images\favicon.png" ParentDir="2"/>
     <ROW Id="3" Name="Square30x30Logo.scale-100.png" Path="&lt;AI_RES&gt;appx\SmallLogo.png" ParentDir="2"/>
-    <ROW Id="4" Name="SplashScreen.scale-100.png" Path="&lt;AI_RES&gt;appx\SplashScreen.png" ParentDir="2"/>
-    <ROW Id="5" Name="default.html" Path="&lt;AI_RES&gt;appx\default.html" ParentDir="1"/>
+    <ROW Id="4" Name="SplashScreen.scale-100.png" Path="OpalOPC\report-resources\opalopc-logo.png" ParentDir="2"/>
     <ROW Id="6" Name="Square44x44Logo.scale-100.png" Path="&lt;AI_RES&gt;appx\SmallLogo10.png" ParentDir="2"/>
     <ROW Id="7" Name="Square70x70Logo.scale-100.png" Path="&lt;AI_RES&gt;appx\MediumLogo81.png" ParentDir="2"/>
     <ROW Id="8" Name="Square71x71Logo.scale-100.png" Path="&lt;AI_RES&gt;appx\MediumLogo10.png" ParentDir="2"/>
     <ROW Id="9" Name="Wide310x150Logo.scale-100.png" Path="&lt;AI_RES&gt;appx\WideLogo100.png" ParentDir="2"/>
     <ROW Id="10" Name="opalopc-gui.exe" Path="build\win-gui\opalopc-gui.exe" ParentDir="1"/>
-    <ROW Id="11" Name="opalopc.pdb" Path="build\win-gui\opalopc.pdb" ParentDir="1"/>
+    <ROW Id="11" Name="opalopc.exe" Path="build\win\opalopc.exe" ParentDir="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.GenericXmlAttributeComponent">
+    <ROW XmlAttribute="AllowUserInteraction" XmlElement="UX" Name="AllowUserInteraction" Flags="0" Order="0" Value="false"/>
+    <ROW XmlAttribute="AppListEntry" XmlElement="VisualElements" Name="AppListEntry" Flags="0" Order="0" Value="default"/>
+    <ROW XmlAttribute="AppNameInTitle" XmlElement="UX" Name="AppNameInTitle" Flags="0" Order="0" Value="false"/>
     <ROW XmlAttribute="BackgroundColor" XmlElement="VisualElements" Name="BackgroundColor" Flags="0" Order="0" Value="#6393d4"/>
-    <ROW XmlAttribute="Description" XmlElement="VisualElements" Name="Description" Flags="0" Order="0" Value="Desc"/>
-    <ROW XmlAttribute="DisplayName" XmlElement="VisualElements" Name="DisplayName" Flags="0" Order="1" Value="Your Application"/>
+    <ROW XmlAttribute="Description" XmlElement="VisualElements" Name="Description" Flags="0" Order="0" Value="OpalOPC is a vulnerability scanner OPC UA applications"/>
+    <ROW XmlAttribute="DisplayName" XmlElement="VisualElements" Name="DisplayName" Flags="0" Order="1" Value="OpalOPC"/>
+    <ROW XmlAttribute="Executable" XmlElement="Application" Name="Executable" Flags="0" Order="0" FileId="10"/>
+    <ROW XmlAttribute="HorizontalAlignment" XmlElement="LaunchWhenReady" Name="HorizontalAlignment" Flags="0" Order="0" Value="left"/>
+    <ROW XmlAttribute="HorizontalAlignment_1" XmlElement="Icon" Name="HorizontalAlignment" Flags="0" Order="0" Value="left"/>
+    <ROW XmlAttribute="HorizontalAlignment_2" XmlElement="Buttons" Name="HorizontalAlignment" Flags="0" Order="0" Value="left"/>
     <ROW XmlAttribute="Id" XmlElement="Application" Name="Id" Flags="0" Order="0" Value="Id"/>
     <ROW XmlAttribute="IgnorableNamespaces" XmlElement="AppInstallerUX" Name="IgnorableNamespaces" Flags="0" Order="0" Value="ux ux2"/>
     <ROW XmlAttribute="Image" XmlElement="SplashScreen" Name="Image" Flags="0" Order="0" FileId="4"/>
+    <ROW XmlAttribute="IsSecondaryButtonAccent" XmlElement="Buttons" Name="IsSecondaryButtonAccent" Flags="0" Order="0" Value="false"/>
     <ROW XmlAttribute="Language" XmlElement="Resource" Name="Language" Flags="0" Order="0" Value="en-us"/>
-    <ROW XmlAttribute="MaxVersionTested" XmlElement="TargetDeviceFamily" Name="MaxVersionTested" Flags="0" Order="0" Value="10.0.22621.0"/>
-    <ROW XmlAttribute="MinVersion" XmlElement="TargetDeviceFamily" Name="MinVersion" Flags="0" Order="1" Value="10.0.17763.0"/>
+    <ROW XmlAttribute="MaxVersionTested_1" XmlElement="TargetDeviceFamily_1" Name="MaxVersionTested" Flags="0" Order="0" Value="10.0.22621.0"/>
+    <ROW XmlAttribute="MinVersion_1" XmlElement="TargetDeviceFamily_1" Name="MinVersion" Flags="0" Order="0" Value="10.0.17763.0"/>
+    <ROW XmlAttribute="Mode" XmlElement="AppInformation" Name="Mode" Flags="0" Order="0" Value="flyout"/>
     <ROW XmlAttribute="Name" XmlElement="Identity" Name="Name" Flags="0" Order="0" Value="MolemmatOy.OpalOPC"/>
-    <ROW XmlAttribute="Name_1" XmlElement="TargetDeviceFamily" Name="Name" Flags="0" Order="2" Value="Windows.Universal"/>
+    <ROW XmlAttribute="Name_2" XmlElement="TargetDeviceFamily_1" Name="Name" Flags="0" Order="0" Value="Windows.Desktop"/>
+    <ROW XmlAttribute="Orientation" XmlElement="Buttons" Name="Orientation" Flags="0" Order="0" Value="horizontal"/>
     <ROW XmlAttribute="PhoneProductId" XmlElement="PhoneIdentity" Name="PhoneProductId" Flags="0" Order="0" Value="09A47D0E-1E73-456F-BD51-9C68A8223E25"/>
     <ROW XmlAttribute="PhonePublisherId" XmlElement="PhoneIdentity" Name="PhonePublisherId" Flags="0" Order="1" Value="00000000-0000-0000-0000-000000000000"/>
     <ROW XmlAttribute="Preference" XmlElement="Rotation" Name="Preference" Flags="0" Order="0" Value="portrait"/>
     <ROW XmlAttribute="Preference_1" XmlElement="Rotation_1" Name="Preference" Flags="0" Order="0" Value="landscape"/>
+    <ROW XmlAttribute="PrimaryButtonMode" XmlElement="Buttons" Name="PrimaryButtonMode" Flags="0" Order="0" Value="normal"/>
     <ROW XmlAttribute="ProcessorArchitecture" XmlElement="Identity" Name="ProcessorArchitecture" Flags="0" Order="0" Value="neutral"/>
     <ROW XmlAttribute="Publisher" XmlElement="Identity" Name="Publisher" Flags="0" Order="0" Value="CN=Default ID"/>
+    <ROW XmlAttribute="RuntimeBehavior" XmlElement="Application" Name="RuntimeBehavior" Flags="0" Order="0" Value="windowsApp"/>
     <ROW XmlAttribute="Scale" XmlElement="Resource_1" Name="Scale" Flags="0" Order="0" Value="100"/>
+    <ROW XmlAttribute="SecondaryButtonMode" XmlElement="Buttons" Name="SecondaryButtonMode" Flags="0" Order="0" Value="normal"/>
+    <ROW XmlAttribute="ShortName" XmlElement="DefaultTile" Name="ShortName" Flags="0" Order="0" Value="OpalOPC"/>
+    <ROW XmlAttribute="Size" XmlElement="Icon" Name="Size" Flags="0" Order="0" Value="default"/>
     <ROW XmlAttribute="Square150x150Logo" XmlElement="VisualElements" Name="Square150x150Logo" Flags="0" Order="0" FileId="2"/>
     <ROW XmlAttribute="Square44x44Logo" XmlElement="VisualElements" Name="Square44x44Logo" Flags="0" Order="0" FileId="6"/>
     <ROW XmlAttribute="Square71x71Logo" XmlElement="DefaultTile" Name="Square71x71Logo" Flags="0" Order="0" FileId="8"/>
-    <ROW XmlAttribute="StartPage" XmlElement="Application" Name="StartPage" Flags="0" Order="1" FileId="5"/>
     <ROW XmlAttribute="Version" XmlElement="Identity" Name="Version" Flags="0" Order="0" Value="1.0.0.0"/>
     <ROW XmlAttribute="Version_1" XmlElement="AppInstallerUX" Name="Version" Flags="0" Order="0" Value="1.0.0"/>
     <ROW XmlAttribute="Wide310x150Logo" XmlElement="DefaultTile" Name="Wide310x150Logo" Flags="0" Order="0" FileId="9"/>
@@ -91,15 +105,19 @@
     <ROW XmlAttribute="xmlnswincap3" XmlElement="Package" Name="xmlns:wincap3" Flags="0" Order="30" Value="http://schemas.microsoft.com/appx/manifest/foundation/windows10/windowscapabilities/3"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.GenericXmlElementComponent">
+    <ROW XmlElement="AppInformation" ParentElement="AppInstallerUX" Name="AppInformation" Order="4" Flags="0" Type="0"/>
     <ROW XmlElement="AppInstallerUX" Name="AppInstallerUX" Order="0" Flags="0" Type="0"/>
     <ROW XmlElement="Application" ParentElement="Applications" Name="Application" Order="0" Flags="0" Type="4"/>
     <ROW XmlElement="Applications" ParentElement="Package" Name="Applications" Order="4" Flags="0" Type="3"/>
     <ROW XmlElement="Bundle" Name="Bundle" Order="0" Flags="0" Type="0"/>
+    <ROW XmlElement="Buttons" ParentElement="AppInstallerUX" Name="Buttons" Order="2" Flags="0" Type="0"/>
     <ROW XmlElement="DefaultTile" ParentElement="VisualElements" Name="DefaultTile" Order="2" Flags="0" Type="0"/>
     <ROW XmlElement="Dependencies" ParentElement="Package" Name="Dependencies" Order="5" Flags="30" Type="0"/>
     <ROW XmlElement="DisplayName" ParentElement="Properties" Name="DisplayName" Order="0" Flags="0" Text="OpalOPC" Type="1"/>
+    <ROW XmlElement="Icon" ParentElement="AppInstallerUX" Name="Icon" Order="5" Flags="0" Type="0"/>
     <ROW XmlElement="Identity" ParentElement="Package" Name="Identity" Order="0" Flags="0" Type="1"/>
     <ROW XmlElement="InitialRotationPreference" ParentElement="VisualElements" Name="InitialRotationPreference" Order="1" Flags="0" Type="0"/>
+    <ROW XmlElement="LaunchWhenReady" ParentElement="AppInstallerUX" Name="LaunchWhenReady" Order="3" Flags="0" Type="0"/>
     <ROW XmlElement="Logo" ParentElement="Properties" Name="Logo" Order="2" Flags="0" FileId="1" Type="0"/>
     <ROW XmlElement="Package" Name="Package" Order="0" Flags="30" Type="6"/>
     <ROW XmlElement="PhoneIdentity" ParentElement="Package" Name="PhoneIdentity" Order="5" Flags="30" Type="0"/>
@@ -111,7 +129,8 @@
     <ROW XmlElement="Rotation" ParentElement="InitialRotationPreference" Name="Rotation" Order="0" Flags="0" Type="1"/>
     <ROW XmlElement="Rotation_1" ParentElement="InitialRotationPreference" Name="Rotation" Order="1" Flags="0" Type="1"/>
     <ROW XmlElement="SplashScreen" ParentElement="VisualElements" Name="SplashScreen" Order="0" Flags="0" Type="1"/>
-    <ROW XmlElement="TargetDeviceFamily" ParentElement="Dependencies" Name="TargetDeviceFamily" Order="0" Flags="30" Type="28"/>
+    <ROW XmlElement="TargetDeviceFamily_1" ParentElement="Dependencies" Name="TargetDeviceFamily" Order="1" Flags="0" Type="28"/>
+    <ROW XmlElement="UX" ParentElement="AppInstallerUX" Name="UX" Order="1" Flags="0" Type="0"/>
     <ROW XmlElement="VisualElements" ParentElement="Application" Name="VisualElements" Order="0" Flags="0" Type="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.GenericXmlFileComponent">
