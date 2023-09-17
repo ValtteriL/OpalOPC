@@ -25,8 +25,13 @@ namespace Controller
         {
             string thisVersion = Util.VersionUtil.AppAssemblyVersion!.ToString();
 
-            ProductInfoHeaderValue productValue = new ProductInfoHeaderValue("OpalOPC", thisVersion);
+#if DEBUG
+            ProductInfoHeaderValue commentValue = new ProductInfoHeaderValue($"(DEBUG; {GetOSString()}; +https://opalopc.com)");
+#else
             ProductInfoHeaderValue commentValue = new ProductInfoHeaderValue($"({GetOSString()}; +https://opalopc.com)");
+#endif
+
+            ProductInfoHeaderValue productValue = new ProductInfoHeaderValue("OpalOPC", thisVersion);
 
 
             using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
