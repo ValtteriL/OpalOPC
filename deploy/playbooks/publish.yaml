@@ -43,6 +43,7 @@
           fi
 
     - name: Get repo root path
+      tags: asd
       local_action:
         module: ansible.builtin.shell
         cmd: >
@@ -121,6 +122,7 @@
         - build/osx/opalopc
 
     - name: Build Windows installer
+      tags: asd
       block:
         - name: Set Version
           local_action:
