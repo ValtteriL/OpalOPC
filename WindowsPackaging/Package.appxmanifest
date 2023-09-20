@@ -7,13 +7,13 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="778e645d-5ff2-4ea5-b03d-103330b0a292"
-    Publisher="CN=valtteri"
+    Name="OpalOPC"
+    Publisher="CN=Molemmat Oy, O=Molemmat Oy, C=FI"
     Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>WindowsPackaging</DisplayName>
-    <PublisherDisplayName>valtteri</PublisherDisplayName>
+    <DisplayName>OpalOPC</DisplayName>
+    <PublisherDisplayName>Molemmat Oy</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
 
@@ -31,8 +31,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="WindowsPackaging"
-        Description="WindowsPackaging"
+        DisplayName="OpalOPC"
+        Description="OPC UA vulnerability scanner"
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"
         Square44x44Logo="Images\Square44x44Logo.png">
