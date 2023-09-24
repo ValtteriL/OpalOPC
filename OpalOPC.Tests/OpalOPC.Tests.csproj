@@ -9,6 +9,8 @@
     <IsTestProject>true</IsTestProject>
 	<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);BUILT_FOR_WINDOWS</DefineConstants>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OpalOPC.WPF\OpalOPC.WPF.csproj" Condition="$([MSBuild]::IsOSPlatform('Windows'))"/>
+    <ProjectReference Include="..\OpalOPC.WPF\OpalOPC.WPF.csproj" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <ProjectReference Include="..\OpalOPC\OpalOPC.csproj" />
   </ItemGroup>
 

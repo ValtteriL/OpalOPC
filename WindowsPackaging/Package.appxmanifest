@@ -42,11 +42,13 @@
         <uap:SplashScreen Image="Images\SplashScreen.png" />
       </uap:VisualElements>
 		<Extensions>
+      <!--
 			<uap3:Extension Category="windows.appExecutionAlias" Executable="opalopc.exe" EntryPoint="Windows.FullTrustApplication">
 				<uap3:AppExecutionAlias>
 					<desktop:ExecutionAlias Alias="opalopc.exe" />
 				</uap3:AppExecutionAlias>
 			</uap3:Extension>
+    -->
 		</Extensions>
     </Application>
   </Applications>
