@@ -53,6 +53,7 @@
     <ProjectGuid>9c98553b-1b40-4a43-8cee-e085274c9b0d</ProjectGuid>
     <TargetPlatformVersion>10.0.22621.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+	<TargetFramework>net7.0-windows</TargetFramework>
     <DefaultLanguage>en-US</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <NoWarn>$(NoWarn);NU1702</NoWarn>

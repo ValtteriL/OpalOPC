@@ -11,7 +11,7 @@
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <PackageId>opalopc-gui</PackageId>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RuntimeIdentifiers>SelfContained</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
     <WarningsAsErrors>CS4014</WarningsAsErrors>
     <PublishRelease>true</PublishRelease>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
