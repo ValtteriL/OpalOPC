@@ -12,8 +12,7 @@
 
   vars:
     linux_build: "{{ repo_root.stdout }}/build/linux/opalopc"
-    win_build: "{{ repo_root.stdout }}/build/win/opalopc.exe"
-    win_gui_build: "{{ repo_root.stdout }}/build/win-gui/opalopc-gui.exe"
+    win_packages_path: "{{ repo_root.stdout }}/build/win/"
     osx_build: "{{ repo_root.stdout }}/build/osx/opalopc"
     report_resources: "{{ repo_root.stdout }}/OpalOPC/report-resources"
     version_txt_web_path: /var/www/opalopc.com/VERSION.txt
@@ -22,11 +21,12 @@
     debug_report_resource_path_regex: 'http:\/\/localhost:8000\/OpalOPC\/report-resources'
     final_report_resource_path: "https://opalopc.com/report-resources/{{ version | mandatory }}"
     installer_path: "{{ repo_root.stdout }}/OpalOPC/installers/install.sh"
-    windows_installer_path: "{{ repo_root.stdout }}/OpalOPC/installers/Output/OpalOPC-Installer.exe"
     installer_web_path: /var/www/opalopc.com/install.sh
     eula_path: "{{ repo_root.stdout }}/OpalOPC/EULA.txt"
     eula_web_path: /var/www/opalopc.com/EULA.txt
-    windows_temp_build_folder: /mnt/c/Users/valtteri/AppData/Local/Temp/opalopc-gui-build
+    windows_temp_build_folder: /mnt/c/Users/valtteri/AppData/Local/Temp/opalopc-build
+    version_update_script: |
+      [xml]$manifest= get-content "./WindowsPackaging/Package.appxmanifest"; $manifest.Package.Identity.Version = "{{ version | mandatory }}"; $manifest.save("./WindowsPackaging/Package.appxmanifest")
 
   tasks:
 
@@ -61,10 +61,9 @@
         chdir: "{{ repo_root.stdout }}"
       loop:
         - { runtime: linux-x64, output: build/linux }
-        - { runtime: win-x64, output: build/win }
         - { runtime: osx-x64, output: build/osx }
 
-    - name: Build GUI application
+    - name: Build and package Windows applications (CLI and GUI)
       block:
         - name: Create windows temp build folder
           local_action:
@@ -79,25 +78,36 @@
               git archive --format=tar HEAD | (cd {{windows_temp_build_folder}} && tar xf -)
             chdir: "{{ repo_root.stdout }}"
 
-        - name: Build GUI application
+        # Update appxmanifest. This must be done before the build.
+        - name: Version Package Manifest
+          local_action:
+            module: ansible.builtin.shell
+            cmd: >
+              powershell.exe -encodedCommand "{{ version_update_script | b64encode(encoding='utf-16-le') }}"
+            chdir: "{{ windows_temp_build_folder }}"
+
+        - name: Build and package applications
           local_action:
             module: ansible.builtin.shell
             cmd: >
               powershell.exe
-              dotnet publish OpalOPC.WPF
-              --runtime "{{ item.runtime }}"
-              --self-contained
-              --output {{ item.output }}
+              MSBuild.exe ./WindowsPackaging/WindowsPackaging.wapproj
+              /t:restore,publish
+              /p:Configuration=Release
+              /p:Platform="AnyCPU"
+              /p:AppxBundlePlatforms="neutral"
+              /p:AppxPackageDir="build"
+              /p:AppxBundle=Always
+              /p:UapAppxPackageBuildMode=SideloadOnly
+              /p:AppxPackageSigningEnabled=true
               /p:AssemblyVersion="{{ version | mandatory }}"
             chdir: "{{ windows_temp_build_folder }}"
-          loop:
-            - { runtime: win-x64, output: build/win-gui }
 
-        - name: Copy built GUI app to linux side
+        - name: Copy built package to linux side
           local_action:
             module: ansible.builtin.copy
-            src: "{{ windows_temp_build_folder }}/build/win-gui"
-            dest: "{{ repo_root.stdout }}/build/"
+            src: "{{ windows_temp_build_folder }}/WindowsPackaging/build/"
+            dest: "{{ win_packages_path }}"
 
         - name: delete windows temp build folder
           local_action:
@@ -119,36 +129,6 @@
       loop:
         - build/linux/opalopc
         - build/osx/opalopc
-
-    - name: Build Windows installer
-      block:
-        - name: Set Version
-          local_action:
-            module: ansible.builtin.shell
-            cmd: >
-              powershell.exe
-              AdvancedInstaller.com
-              /edit
-              OpalOPC.aip
-              /SetVersion "{{ version | mandatory }}"
-            chdir: "{{ repo_root.stdout }}"
-
-        - name: Build installer
-          local_action:
-            module: ansible.builtin.shell
-            cmd: >
-              powershell.exe
-              AdvancedInstaller.com
-              /build
-              OpalOPC.aip
-            chdir: "{{ repo_root.stdout }}"
-
-        - name: Undo changes to installer file (aip)
-          local_action:
-            module: ansible.builtin.shell
-            cmd: >
-              git checkout -- OpalOPC.aip
-            chdir: "{{ repo_root.stdout }}"
 
     - name: Create releases directory
       become: true
@@ -211,9 +191,9 @@
         owner: root
         group: root
 
-    - name: A helpful reminder to submit updated Windows installer to Microsoft Store
+    - name: A helpful reminder to submit updated Windows package to Microsoft Store
       ansible.builtin.pause:
-        prompt: "Make sure to submit Windows installer to Microsoft Store (OpalOPC Setup.msi on desktop)"
+        prompt: "Make sure to submit Windows package to Microsoft Store (Version {{ version }} in {{ win_packages_path }})"
 
     - name: Deploy EULA.txt
       become: true

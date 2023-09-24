@@ -11,7 +11,7 @@
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <PackageId>opalopc-gui</PackageId>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
     <WarningsAsErrors>CS4014</WarningsAsErrors>
     <PublishRelease>true</PublishRelease>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
@@ -20,6 +20,9 @@
 	<PublishSingleFile>true</PublishSingleFile>
 	<IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
 	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+	<Configurations>Debug;Release</Configurations>
+	<Platforms>AnyCPU;x64</Platforms>
+	<PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

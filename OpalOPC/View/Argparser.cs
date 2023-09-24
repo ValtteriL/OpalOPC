@@ -35,7 +35,19 @@ namespace View
             {
                 // the path
                 options.xmlOutputReportName = path;
-                options.xmlOutputStream = File.OpenWrite(path);
+
+                try
+                {
+                    options.xmlOutputStream = File.OpenWrite(path);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    throw new OptionException($"Not authorized to open \"{path}\" for writing", "");
+                }
+                catch
+                {
+                    throw new OptionException($"Unable to open \"{path}\" for writing", "");
+                }
             }
 
             return options;

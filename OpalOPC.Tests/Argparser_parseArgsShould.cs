@@ -32,6 +32,19 @@ public class Argparser_parseArgsShould
         Assert.True(options.exitCode == null);
     }
 
+    [Theory]
+    [InlineData("-o", "this/path/does/not/exist")]
+    [InlineData("--output", "this/path/does/not/exist2")]
+    public void ParseArgs_InputInvalidOutputFileNameCausesTermination(string flag, string filename)
+    {
+        string[] args = { flag, filename };
+        Argparser argparser = new Argparser(args);
+
+        Options options = argparser.parseArgs();
+
+        Assert.True(options.exitCode == Util.ExitCodes.Error);
+    }
+
     [Fact]
     public void ParseArgs_IncreaseVerbosity1()
     {
