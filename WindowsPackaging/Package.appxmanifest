@@ -3,6 +3,7 @@
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
   IgnorableNamespaces="uap rescap">
@@ -41,11 +42,11 @@
         <uap:SplashScreen Image="Images\SplashScreen.png" />
       </uap:VisualElements>
 		<Extensions>
-			<uap:Extension Category="windows.appExecutionAlias" Executable="opalopc.exe" EntryPoint="Windows.FullTrustApplication">
-				<uap:AppExecutionAlias>
+			<uap3:Extension Category="windows.appExecutionAlias" Executable="opalopc.exe" EntryPoint="Windows.FullTrustApplication">
+				<uap3:AppExecutionAlias>
 					<desktop:ExecutionAlias Alias="opalopc.exe" />
-				</uap:AppExecutionAlias>
-			</uap:Extension>
+				</uap3:AppExecutionAlias>
+			</uap3:Extension>
 		</Extensions>
     </Application>
   </Applications>
