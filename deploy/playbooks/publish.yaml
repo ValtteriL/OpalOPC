@@ -98,7 +98,7 @@
               /p:AppxBundlePlatforms="neutral"
               /p:AppxPackageDir="build"
               /p:AppxBundle=Always
-              /p:UapAppxPackageBuildMode=SideloadOnly
+              /p:UapAppxPackageBuildMode=StoreUpload
               /p:AppxPackageSigningEnabled=true
               /p:AssemblyVersion="{{ version | mandatory }}"
             chdir: "{{ windows_temp_build_folder }}"
