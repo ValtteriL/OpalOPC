@@ -25,6 +25,8 @@
     eula_path: "{{ repo_root.stdout }}/OpalOPC/EULA.txt"
     eula_web_path: /var/www/opalopc.com/EULA.txt
     windows_temp_build_folder: /mnt/c/Users/valtteri/AppData/Local/Temp/opalopc-build
+    version_update_script: |
+      [xml]$manifest= get-content "./WindowsPackaging/Package.appxmanifest"; $manifest.Package.Identity.Version = "{{ version | mandatory }}"; $manifest.save("./WindowsPackaging/Package.appxmanifest")
 
   tasks:
 
@@ -41,7 +43,6 @@
           fi
 
     - name: Get repo root path
-      tags: asd
       local_action:
         module: ansible.builtin.shell
         cmd: >
@@ -77,12 +78,21 @@
               git archive --format=tar HEAD | (cd {{windows_temp_build_folder}} && tar xf -)
             chdir: "{{ repo_root.stdout }}"
 
-        - name: Build GUI application
+        # Update appxmanifest. This must be done before the build.
+        - name: Version Package Manifest
+          local_action:
+            module: ansible.builtin.shell
+            cmd: >
+              powershell.exe -encodedCommand "{{ version_update_script | b64encode(encoding='utf-16-le') }}"
+            chdir: "{{ windows_temp_build_folder }}"
+
+        - name: Build and package applications
           local_action:
             module: ansible.builtin.shell
             cmd: >
               powershell.exe
-              MSBuild.exe .\WindowsPackaging\WindowsPackaging.wapproj
+              MSBuild.exe ./WindowsPackaging/WindowsPackaging.wapproj
+              /t:restore,publish
               /p:Configuration=Release
               /p:Platform="AnyCPU"
               /p:AppxBundlePlatforms="neutral"
