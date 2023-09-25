@@ -30,13 +30,12 @@
 
   tasks:
 
-    - name: Tag repository with version
+    - name: Check tag does not exist
       local_action:
         module: ansible.builtin.shell
         cmd: >
           if [ ! $(git tag -l "{{ version | mandatory }}") ]; then
-            git tag "{{ version | mandatory }}"
-            git push origin "{{ version | mandatory }}"
+            echo "Tag does not exists yet"
           else
             echo "Tag with this version already exists"
             exit 1
@@ -210,3 +209,12 @@
         content: "{{ version | mandatory }}"
         owner: root
         group: root
+
+    - name: Tag repository with version
+      local_action:
+        module: ansible.builtin.shell
+        cmd: >
+          if [ ! $(git tag -l "{{ version | mandatory }}") ]; then
+            git tag "{{ version | mandatory }}"
+            git push origin "{{ version | mandatory }}"
+          fi
