@@ -9,8 +9,8 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="OpalOPC"
-    Publisher="CN=Molemmat Oy, O=Molemmat Oy, C=FI"
+    Name="MolemmatOy.OpalOPC"
+    Publisher="CN=71F2B9D4-2EFD-450C-9A17-47994A86CBE0"
     Version="1.0.0.0" />
 
   <Properties>
