@@ -250,7 +250,7 @@
 
 
                     <!--Targets Area-->
-                    <Grid Grid.Row="0" Grid.Column="1" MinHeight="50" MaxHeight="{Binding ActualHeight, ElementName=AddTargetsBorder}" Margin="0,10,40,20">
+                    <Grid Grid.Row="0" Grid.Column="1" Height="{Binding ActualHeight, ElementName=AddTargetsBorder}" Margin="0,10,40,20">
                         <Border x:Name="TargetsBorder" Background="{StaticResource Light_Blue_Brush}"  CornerRadius="10"  >
                             <Grid x:Name="TargetsGrid" Margin="20" >
                                 <Grid.RowDefinitions>
