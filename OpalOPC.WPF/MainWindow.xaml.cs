@@ -69,6 +69,7 @@ namespace OpalOPC.WPF
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "All files (*.*)|*.*";
             openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            openFileDialog.CheckFileExists = false;
 
             if (openFileDialog.ShowDialog() == true)
             {

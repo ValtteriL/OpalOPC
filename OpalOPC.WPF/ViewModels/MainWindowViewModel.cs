@@ -5,13 +5,9 @@ using Controller;
 using Microsoft.Extensions.Logging;
 using OpalOPC.WPF.Logger;
 using OpalOPC.WPF.ViewModels;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+
 
 namespace OpalOPC.WPF;
 
@@ -101,13 +97,34 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
         }
 
         // check if output file specified
-        outputfile = OutputFileLocation;
-        if (!File.Exists(OutputFileLocation))
+        // if path points to dir => use generated output filename
+        // if path points to file => use it
+        // if neither => try to create new file
+        if (Directory.Exists(OutputFileLocation) || OutputFileLocation == string.Empty)
         {
-            outputfile = Path.Combine(OutputFileLocation, new Util.ArgUtil().DefaultReportName());
+            outputfile = System.IO.Path.Combine(OutputFileLocation, new Util.ArgUtil().DefaultReportName());
         }
-        FileStream outputStream = File.OpenWrite(outputfile);
+        else
+        {
+            outputfile = OutputFileLocation;
+        }
 
+        // check that can write to file
+        FileStream outputStream;
+        try
+        {
+            outputStream = File.OpenWrite(outputfile);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            logger.LogError($"Not authorized to open \"{outputfile}\" for writing", "");
+            return;
+        }
+        catch
+        {
+            logger.LogError($"Unable to open \"{outputfile}\" for writing", "");
+            return;
+        }
 
         ScanController scanController = new ScanController(logger, targetUris, outputStream, generateGUICommandInReport(), token);
 
