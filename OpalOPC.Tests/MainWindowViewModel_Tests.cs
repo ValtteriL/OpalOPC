@@ -136,5 +136,18 @@ public class MainWindowViewModel_Tests
         Assert.True(!model.ScanCompletedSuccessfully);
     }
 
+    // scanning with empty output
+    [Fact]
+    public void ScanWithEmptyOutputFilePath()
+    {
+        MainWindowViewModel model = new MainWindowViewModel();
+        model.OutputFileLocation = string.Empty;
+
+        model.ScanCommand.Execute(null);
+
+        Thread.Sleep(100);
+        Assert.True(model.ScanCompletedSuccessfully);
+    }
+
 }
 #endif
