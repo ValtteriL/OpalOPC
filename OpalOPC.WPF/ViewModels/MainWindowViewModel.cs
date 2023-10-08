@@ -153,6 +153,8 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
     [RelayCommand]
     private void AddTarget()
     {
+        ILogger logger = new GUILogger(Verbosity);
+
         if (TargetToAdd == string.Empty)
         {
             return;
@@ -165,7 +167,15 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
             target = protocol + target;
         }
 
-        Targets = Targets.Append(target).ToHashSet().ToArray();
+        if (Targets.ToList().Contains(target))
+        {
+            logger.LogWarning($"\"{target}\" is already a target. Skipping");
+        }
+        else
+        {
+            Targets = Targets.Append(target).ToHashSet().ToArray();
+        }
+
         TargetToAdd = string.Empty;
         updateTargetsLabel();
     }
@@ -197,14 +207,26 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
 
     public void AddTargetsFromFile(string path)
     {
+        ILogger logger = new GUILogger(Verbosity);
+
         string[] nonEmptyLines = File.ReadAllLines(path).ToList().Where(t => t != String.Empty).ToArray();
+        List<string> targetList = Targets.ToList();
 
         for (int i = 0; i < nonEmptyLines.Length; i++)
         {
-            if (!nonEmptyLines[i].StartsWith(protocol))
+            string target = nonEmptyLines[i];
+
+            if (!target.StartsWith(protocol))
             {
-                nonEmptyLines[i] = protocol + nonEmptyLines[i];
+                target = protocol + target;
             }
+
+            if (targetList.Contains(target))
+            {
+                logger.LogWarning($"\"{target}\" is already a target. Skipping");
+            }
+
+            nonEmptyLines[i] = target; // update array entry
         }
 
         Targets = Targets.Union(nonEmptyLines).Where(t => t != String.Empty).ToArray();
