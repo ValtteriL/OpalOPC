@@ -24,4 +24,8 @@
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client.ComplexTypes" Version="1.4.371.60" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="report-resources/stylesheet.xsl" />
+  </ItemGroup>
+
 </Project>
