@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 using Model;
 
@@ -21,19 +22,33 @@ namespace View
 
         public void printXMLReport(Report report)
         {
-            XmlSerializer serializer = new XmlSerializer(report.GetType());
+            XmlWriterSettings settings = new() { Indent = true };
+            using XmlWriter w = XmlWriter.Create(outputStream, settings);
 
-            XmlWriterSettings settings = new XmlWriterSettings { Indent = true };
-            using (XmlWriter w = XmlWriter.Create(outputStream, settings))
-            {
-                w.WriteProcessingInstruction("xml-stylesheet", $"type=\"text/xsl\" href=\"#stylesheet\"");
-                w.WriteDocType("Report", null, Util.XmlResources.DtdLocation, null);
-                w.WriteRaw(getStylesheet()); // TODO: this must be written inside the Report object
-                serializer.Serialize(w, report);
-            }
+            w.WriteProcessingInstruction("xml-stylesheet", $"type=\"text/xsl\" href=\"#stylesheet\"");
+            w.WriteDocType("Report", null, Util.XmlResources.DtdLocation, null);
+
+            // add stylesheet as child of report
+            XElement reportElement = getReportAsXElement(report);
+            XElement stylesheetElement = getStylesheet();
+            reportElement.Add(stylesheetElement);
+
+            // write report element to outputstream
+            reportElement.WriteTo(w);
         }
 
-        private string getStylesheet()
+        private XElement getReportAsXElement(Report report)
+        {
+            XmlSerializer serializer = new(report.GetType());
+            string reportXml;
+
+            using StringWriter textWriter = new();
+            serializer.Serialize(textWriter, report);
+            reportXml = textWriter.ToString();
+            return XElement.Parse(reportXml);
+        }
+
+        private XElement getStylesheet()
         {
             var assembly = Assembly.GetExecutingAssembly();
             Stream? stream = assembly.GetManifestResourceStream(Util.XmlResources.StylesheetLocation);
@@ -43,8 +58,7 @@ namespace View
                 throw new FileNotFoundException($"Cannot find XSL stylesheet {Util.XmlResources.StylesheetLocation}");
             }
 
-            StreamReader reader = new StreamReader(stream);
-            return reader.ReadToEnd();
+            return XElement.Load(stream);
         }
     }
 }
