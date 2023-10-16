@@ -36,4 +36,18 @@ public class Reporter_printXMLReportShould
 
         reporter.printXMLReport(report);
     }
+
+    [Fact]
+    public void printXMLReport_DtdValidationSucceeds()
+    {
+        StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
+        sw.AutoFlush = true;
+        Reporter reporter = new Reporter(sw.BaseStream);
+        Report report = new Report(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
+
+        reporter.printXMLReport(report);
+
+        // TODO
+        Assert.True(false);
+    }
 }

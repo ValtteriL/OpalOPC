@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="report-resources/stylesheet.xsl" />
+    <EmbeddedResource Include="report-resources/report.dtd" />
   </ItemGroup>
 
 </Project>

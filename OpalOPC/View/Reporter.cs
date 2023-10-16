@@ -26,7 +26,7 @@ namespace View
             using XmlWriter w = XmlWriter.Create(outputStream, settings);
 
             w.WriteProcessingInstruction("xml-stylesheet", $"type=\"text/xsl\" href=\"#stylesheet\"");
-            w.WriteDocType("Report", null, Util.XmlResources.DtdLocation, null);
+            w.WriteDocType("Report", null, null, null);
 
             // add stylesheet as child of report
             XElement reportElement = getReportAsXElement(report);

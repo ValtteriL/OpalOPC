@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!ELEMENT Report (xsl:stylesheet,Targets,StartTime,EndTime,Version,Command,RunStatus)>
+
+<!ELEMENT Report (Targets,StartTime,EndTime,Version,Command,RunStatus,xsl:stylesheet)>
 <!ATTLIST Report xmlns:xsi CDATA #REQUIRED>
 <!ATTLIST Report xmlns:xsd CDATA #REQUIRED>
 
