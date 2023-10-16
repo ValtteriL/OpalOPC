@@ -3,10 +3,10 @@ using View;
 using Model;
 using Xunit;
 
-public class Reporter_printXMLReportShould
+public class Reporter_printXHTMLReportShould
 {
     [Fact]
-    public void printXMLReport_NullReportCausesNullReferenceException()
+    public void printXHTMLReport_NullReportCausesNullReferenceException()
     {
         StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
         sw.AutoFlush = true;
@@ -15,7 +15,7 @@ public class Reporter_printXMLReportShould
 
         try
         {
-            reporter.printXMLReport(report!);
+            reporter.printXHTMLReport(report!);
         }
         catch (System.NullReferenceException)
         {
@@ -27,25 +27,25 @@ public class Reporter_printXMLReportShould
     }
 
     [Fact]
-    public void printXMLReport_NonNullReportSucceeds()
+    public void printXHTMLReport_NonNullReportSucceeds()
     {
         StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
         sw.AutoFlush = true;
         Reporter reporter = new Reporter(sw.BaseStream);
         Report report = new Report(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
 
-        reporter.printXMLReport(report);
+        reporter.printXHTMLReport(report);
     }
 
     [Fact]
-    public void printXMLReport_DtdValidationSucceeds()
+    public void printXHTMLReport_DtdValidationSucceeds()
     {
         StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
         sw.AutoFlush = true;
         Reporter reporter = new Reporter(sw.BaseStream);
         Report report = new Report(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
 
-        reporter.printXMLReport(report);
+        reporter.printXHTMLReport(report);
 
         // TODO
         Assert.True(false);

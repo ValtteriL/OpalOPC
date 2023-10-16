@@ -1,14 +1,16 @@
 using System.Reflection;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using System.Xml.Xsl;
 using Model;
 
 namespace View
 {
     public interface IReporter
     {
-        public void printXMLReport(Report report);
+        public void printXHTMLReport(Report report);
     }
 
     public class Reporter : IReporter
@@ -20,45 +22,41 @@ namespace View
             this.outputStream = outputStream;
         }
 
-        public void printXMLReport(Report report)
+        public void printXHTMLReport(Report report)
         {
             XmlWriterSettings settings = new() { Indent = true };
-            using XmlWriter w = XmlWriter.Create(outputStream, settings);
+            using XmlWriter finalXmlWriter = XmlWriter.Create(outputStream, settings);
 
-            w.WriteProcessingInstruction("xml-stylesheet", $"type=\"text/xsl\" href=\"#stylesheet\"");
-            w.WriteDocType("Report", null, null, null);
+            MemoryStream stream = new();
+            using XmlWriter tempXmlWriter = XmlWriter.Create(stream);
 
-            // add stylesheet as child of report
-            XElement reportElement = getReportAsXElement(report);
-            XElement stylesheetElement = getStylesheet();
-            reportElement.Add(stylesheetElement);
-
-            // write report element to outputstream
-            reportElement.WriteTo(w);
-        }
-
-        private XElement getReportAsXElement(Report report)
-        {
+            // serialize report to tempXmlWriter
             XmlSerializer serializer = new(report.GetType());
-            string reportXml;
+            tempXmlWriter.WriteDocType("Report", null, null, null);
+            serializer.Serialize(tempXmlWriter, report);
 
-            using StringWriter textWriter = new();
-            serializer.Serialize(textWriter, report);
-            reportXml = textWriter.ToString();
-            return XElement.Parse(reportXml);
+            // transform report to xhtml with XSLT
+            // and write to finalXmlWriter
+            XslCompiledTransform xslCompiledTransform = getXSLT();
+            stream.Seek(0, SeekOrigin.Begin);
+            xslCompiledTransform.Transform(XmlReader.Create(stream, new XmlReaderSettings() { DtdProcessing = DtdProcessing.Parse }), finalXmlWriter);
         }
 
-        private XElement getStylesheet()
+
+        private XslCompiledTransform getXSLT()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            Stream? stream = assembly.GetManifestResourceStream(Util.XmlResources.StylesheetLocation);
+            using Stream? stream = assembly.GetManifestResourceStream(Util.XmlResources.StylesheetLocation);
 
             if (stream == null)
             {
                 throw new FileNotFoundException($"Cannot find XSL stylesheet {Util.XmlResources.StylesheetLocation}");
             }
 
-            return XElement.Load(stream);
+            XslCompiledTransform xslCompiledTransform = new();
+            xslCompiledTransform.Load(XmlReader.Create(stream));
+
+            return xslCompiledTransform;
         }
     }
 }
