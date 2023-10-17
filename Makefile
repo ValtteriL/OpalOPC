@@ -1,7 +1,7 @@
 
 # E2E tests
 .PHONY: run-e2e-tests
-run-e2e-tests: run-linux-mac-installer-test run-all-known test-report-structure
+run-e2e-tests: run-linux-mac-installer-test run-all-known
 
 .PHONY: run-linux-mac-installer-test
 run-linux-mac-installer-test:
