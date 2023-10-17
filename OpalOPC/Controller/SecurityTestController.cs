@@ -37,7 +37,21 @@ namespace Controller
                 foreach (IPlugin plugin in _securityTestPlugins)
                 {
                     TaskUtil.CheckForCancellation(_token);
-                    plugin.Run(target);
+
+                    try
+                    {
+                        plugin.Run(target);
+                    }
+                    catch (Exception e)
+                    {
+                        string msg = $"Unknown exception scanning {target.ApplicationName}: {e}";
+                        _logger.LogError(msg);
+
+                        if (target.Servers.Any())
+                        {
+                            target.Servers.First().AddError(new Error(msg));
+                        }
+                    }
                 }
             }
 
