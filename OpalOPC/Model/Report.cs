@@ -12,7 +12,7 @@ namespace Model
         public string? Command { get; set; }
         public string? RunStatus { get; set; }
 
-        private const string dateformat = "ddd MMMM HH:mm:ss yyyy";
+        private const string dateformat = "ddd dd MMMM HH:mm:ss yyyy";
 
         // parameterless constructor for XML serializer
         internal Report()
