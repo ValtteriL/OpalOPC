@@ -2,20 +2,24 @@ namespace Tests;
 using View;
 using Model;
 using Xunit;
+using System.Xml.Serialization;
+using System.Xml;
 
-public class Reporter_printXMLReportShould
+public class Reporter_printXHTMLReportShould
 {
     [Fact]
-    public void printXMLReport_NullReportCausesNullReferenceException()
+    public void printXHTMLReport_NullReportCausesNullReferenceException()
     {
-        StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
-        sw.AutoFlush = true;
-        Reporter reporter = new Reporter(sw.BaseStream);
+        StreamWriter sw = new(new MemoryStream())
+        {
+            AutoFlush = true
+        };
+        Reporter reporter = new(sw.BaseStream);
         Report? report = null;
 
         try
         {
-            reporter.printXMLReport(report!);
+            reporter.PrintXHTMLReport(report!);
         }
         catch (System.NullReferenceException)
         {
@@ -27,13 +31,36 @@ public class Reporter_printXMLReportShould
     }
 
     [Fact]
-    public void printXMLReport_NonNullReportSucceeds()
+    public void printXHTMLReport_NonNullReportSucceeds()
     {
-        StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
-        sw.AutoFlush = true;
-        Reporter reporter = new Reporter(sw.BaseStream);
-        Report report = new Report(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
+        StreamWriter sw = new(new MemoryStream())
+        {
+            AutoFlush = true
+        };
+        Reporter reporter = new(sw.BaseStream);
+        Report report = new(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
 
-        reporter.printXMLReport(report);
+        reporter.PrintXHTMLReport(report);
+    }
+
+    [Fact]
+    public void printXHTMLReport_ReportResourcesReplacedInTestingReports()
+    {
+        MemoryStream ms = new();
+        StreamWriter sw = new(ms)
+        {
+            AutoFlush = true
+        };
+        Reporter reporter = new(sw.BaseStream);
+        Report report = new(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
+
+        reporter.PrintXHTMLReport(report);
+
+        ms.Seek(0, SeekOrigin.Begin);
+        StreamReader reader = new(ms);
+        string reportString = reader.ReadToEnd();
+
+        Assert.Contains(Util.XmlResources.DebugResourcePath, reportString);
+        Assert.DoesNotContain(Util.XmlResources.ProdResourcePath, reportString);
     }
 }

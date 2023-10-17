@@ -8,7 +8,7 @@ public class Reporter_Constructor
     [Fact]
     public void constructor_DoesNotReturnNull()
     {
-        StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
+        StreamWriter sw = new StreamWriter(new MemoryStream());
         sw.AutoFlush = true;
         Reporter reporter = new Reporter(sw.BaseStream);
 
