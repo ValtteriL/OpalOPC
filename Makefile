@@ -7,10 +7,6 @@ run-e2e-tests: run-linux-mac-installer-test run-all-known test-report-structure
 run-linux-mac-installer-test:
 	@cat OpalOPC/installers/install.sh | sudo ACCEPT_EULA=1 bash
 
-## Run against all known targets, verify result is consistent
-oldreport = test-resources/opalopc-report-all-known.xml
-tempreport = /tmp/opalopc-report-all-known.xml
-
 .PHONY: run-all-known
 run-all-known:
 	@dotnet run \
@@ -19,20 +15,13 @@ run-all-known:
 		opc.tcp://echo:53530 \
 		opc.tcp://golf:53530 \
 		opc.tcp://india:53530 \
+		opc.tcp://scanme.opalopc.com:53530 \
 		opc.tcp://opcuaserver.com:48010 \
 		opc.tcp://opcuaserver.com:4840 \
 		opc.tcp://thisdoesnotexistsfafasfada:53530 \
 		opc.tcp://google.com:443 \
 		-vv \
-		--output opalopc-report-all-known.xml
-	@grep -v -e 'StartTime' -e 'EndTime' -e 'RunStatus' opalopc-report-all-known.xml > $(tempreport)
-	@grep -v -e 'StartTime' -e 'EndTime' -e 'RunStatus' $(tempreport) | cmp $(tempreport)
-	@rm -v $(tempreport)
-
-## Verify reports are valid according to dtd
-.PHONY: test-report-structure
-test-report-structure:
-	@xmllint --noout --valid opalopc-report-*
+		--output opalopc-report-all-known.html
 
 # Install locally
 run-linux-mac-installer:
