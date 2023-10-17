@@ -34,7 +34,7 @@ namespace Controller
         public void WriteReport(string runStatus)
         {
             report!.RunStatus = runStatus;
-            _reporter.printXHTMLReport(report!);
+            _reporter.PrintXHTMLReport(report!);
         }
 
     }

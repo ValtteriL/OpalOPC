@@ -12,7 +12,7 @@ public class ReportController_Constructor
     {
         var loggerFactory = LoggerFactory.Create(builder => {});
         ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
-        StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
+        StreamWriter sw = new StreamWriter(new MemoryStream());
         sw.AutoFlush = true;
         Reporter reporter = new Reporter(sw.BaseStream);
         ReportController reportController = new ReportController(logger, reporter);
