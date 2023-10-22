@@ -67,10 +67,20 @@ namespace Controller
             try
             {
                 discoveryUriWithIP = Utils.ParseUri(ConvertToIPBasedURI(discoveryUri.ToString()));
+                if (discoveryUriWithIP == null)
+                {
+                    throw new UriFormatException();
+                }
             }
-            catch (SocketException)
+            catch (UriFormatException)
             {
-                string msg = $"Unable to resolve hostname {discoveryUri.ToString()}";
+                string msg = $"Invalid Uri format {discoveryUri}";
+                _logger.LogError(msg);
+                return targets;
+            }
+            catch (Exception)
+            {
+                string msg = $"Unable to resolve hostname {discoveryUri}";
                 _logger.LogError(msg);
                 return targets;
             }
@@ -194,17 +204,13 @@ namespace Controller
         }
 
         // Given uri as a string, replace the hostname with IP address
-        private static string ConvertToIPBasedURI(String uriString)
+        private static string ConvertToIPBasedURI(string uriString)
         {
-            Uri uri = Utils.ParseUri(uriString);
-            if (uri == null)
-            {
-                throw new UriFormatException();
-            }
+            Uri uri = Utils.ParseUri(uriString) ?? throw new UriFormatException();
+            IPAddress[] addresses = Dns.GetHostAddresses(uri.Host, AddressFamily.InterNetwork);
+            string ip = addresses.First().ToString();
 
-            string ip = Dns.GetHostAddresses(uri!.Host)[0].ToString();
-
-            return uri.OriginalString.Replace(uri!.Host, ip);
+            return uri.OriginalString.Replace(uri.Host, ip);
         }
     }
 }
