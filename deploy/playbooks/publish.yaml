@@ -86,6 +86,7 @@
             chdir: "{{ windows_temp_build_folder }}"
 
         - name: Build and package applications
+          retries: 1
           local_action:
             module: ansible.builtin.shell
             cmd: >
