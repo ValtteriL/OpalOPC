@@ -10,12 +10,12 @@ namespace Plugin
         // "self-signed certificates should not be trusted automatically"
         //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
         // check if self-signed certificates are accepted
-        private static PluginId _pluginId = PluginId.SelfSignedCertificate;
-        private static string _category = PluginCategories.Authentication;
-        private static string _issueTitle = "Self signed client certificates trusted";
+        private static readonly PluginId _pluginId = PluginId.SelfSignedCertificate;
+        private static readonly string _category = PluginCategories.Authentication;
+        private static readonly string _issueTitle = "Self signed client certificates trusted";
 
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N
-        private static double _severity = 5.4;
+        private static readonly double _severity = 5.4;
 
         public SelfSignedCertificatePlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
@@ -35,14 +35,12 @@ namespace Plugin
             return target;
         }
 
-        private async Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription)
+        private static async Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription)
         {
             try
             {
-                ConnectionUtil util = new ConnectionUtil();
-                var session = await util.StartSession(endpointDescription, new UserIdentity());
-                session.Close();
-                session.Dispose();
+                ConnectionUtil util = new();
+                using Opc.Ua.Client.ISession session = await util.StartSession(endpointDescription, new UserIdentity());
             }
             catch (Opc.Ua.ServiceResultException e)
             {

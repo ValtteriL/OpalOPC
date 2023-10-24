@@ -7,12 +7,12 @@ namespace Plugin
 {
     public class CommonCredentialsPlugin : Plugin
     {
-        private static PluginId _pluginId = PluginId.CommonCredentials;
-        private static string _category = PluginCategories.Authentication;
+        private static readonly PluginId _pluginId = PluginId.CommonCredentials;
+        private static readonly string _category = PluginCategories.Authentication;
         private static string _issueTitle = "Common credentials in use";
 
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L
-        private static double _severity = 7.3;
+        private static readonly double _severity = 7.3;
 
         public CommonCredentialsPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
@@ -35,23 +35,20 @@ namespace Plugin
             return target;
         }
 
-        private bool IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity, out NodeIdCollection roleIds)
+        private static bool IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity, out NodeIdCollection roleIds)
         {
             roleIds = new NodeIdCollection();
 
             try
             {
                 ConnectionUtil util = new ConnectionUtil();
-                var session = util.StartSession(endpointDescription, userIdentity).Result;
+                using Opc.Ua.Client.ISession session = util.StartSession(endpointDescription, userIdentity).Result;
                 bool result = false;
                 if (session.Connected)
                 {
                     result = true;
                     roleIds = session.Identity.GrantedRoleIds;
                 }
-
-                session.Close();
-                session.Dispose();
 
                 return result;
             }

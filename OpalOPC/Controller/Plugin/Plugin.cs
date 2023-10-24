@@ -14,9 +14,9 @@ namespace Plugin
     {
         public ILogger _logger;
         public PluginId pluginId { get; }
-        private double _severity;
-        private string _category;
-        private string _name;
+        private readonly double _severity;
+        private readonly string _category;
+        private readonly string _name;
 
         public Plugin(ILogger logger, PluginId pluginId, string category, string name, double severity)
         {

@@ -8,12 +8,12 @@ namespace Plugin
     {
         // Basic128Rsa15 is deprecated - https://profiles.opcfoundation.org/profilefolder/474
 
-        private static PluginId _pluginId = PluginId.SecurityPolicyBasic128Rsa15;
-        private static string _category = PluginCategories.TransportSecurity;
-        private static string _issueTitle = "Deprecated Security Policy Basic128Rsa15";
+        private static readonly PluginId _pluginId = PluginId.SecurityPolicyBasic128Rsa15;
+        private static readonly string _category = PluginCategories.TransportSecurity;
+        private static readonly string _issueTitle = "Deprecated Security Policy Basic128Rsa15";
 
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N
-        private static double _severity = 4.8;
+        private static readonly double _severity = 4.8;
 
         public SecurityPolicyBasic128Rsa15Plugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
 
