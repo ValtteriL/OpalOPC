@@ -8,17 +8,19 @@ namespace Util
     {
         private const string Subject = "CN=Test Cert Subject, C=FI, S=Uusimaa, O=Molemmat Oy";
 
-        private ApplicationConfiguration applicationConfiguration;
-        private EndpointConfiguration endpointConfiguration;
+        private readonly ApplicationConfiguration applicationConfiguration;
+        private readonly EndpointConfiguration endpointConfiguration;
 
         public ConnectionUtil()
         {
-            applicationConfiguration = new ApplicationConfiguration();
-            applicationConfiguration.ApplicationName = "OpalOPC@host";
-            applicationConfiguration.ApplicationUri = "urn:host:OPCUA:OpalOPC";
-            applicationConfiguration.ApplicationType = ApplicationType.Server;
-            applicationConfiguration.ClientConfiguration = new ClientConfiguration();
-            applicationConfiguration.SecurityConfiguration = new SecurityConfiguration();
+            applicationConfiguration = new ApplicationConfiguration
+            {
+                ApplicationName = "OpalOPC@host",
+                ApplicationUri = "urn:host:OPCUA:OpalOPC",
+                ApplicationType = ApplicationType.Server,
+                ClientConfiguration = new ClientConfiguration(),
+                SecurityConfiguration = new SecurityConfiguration()
+            };
 
             // Use self-signed certificate to connect
             applicationConfiguration.SecurityConfiguration.ApplicationCertificate = new CertificateIdentifier(
@@ -30,8 +32,10 @@ namespace Util
                     .CreateForRSA());
 
             // accept any server certificates
-            applicationConfiguration.CertificateValidator = new CertificateValidator();
-            applicationConfiguration.CertificateValidator.AutoAcceptUntrustedCertificates = true;
+            applicationConfiguration.CertificateValidator = new CertificateValidator
+            {
+                AutoAcceptUntrustedCertificates = true
+            };
 
             endpointConfiguration = EndpointConfiguration.Create(applicationConfiguration);
         }
@@ -39,7 +43,7 @@ namespace Util
         // Authenticate with OPC UA server and start a session
         public async Task<ISession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity)
         {
-            ConfiguredEndpoint endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
+            ConfiguredEndpoint endpoint = new(null, endpointDescription, endpointConfiguration);
 
             ISessionFactory sessionFactory = new DefaultSessionFactory();
 

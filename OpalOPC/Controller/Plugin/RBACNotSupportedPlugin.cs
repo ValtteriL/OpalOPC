@@ -8,12 +8,12 @@ namespace Plugin
     public class RBACNotSupportedPlugin : Plugin
     {
         // check if auditing disabled
-        private static PluginId _pluginId = PluginId.RBACNotSupported;
-        private static string _category = PluginCategories.Authorization;
-        private static string _issueTitle = "RBAC not supported";
+        private static readonly PluginId _pluginId = PluginId.RBACNotSupported;
+        private static readonly string _category = PluginCategories.Authorization;
+        private static readonly string _issueTitle = "RBAC not supported";
 
         // Info
-        private static double _severity = 0;
+        private static readonly double _severity = 0;
 
         public RBACNotSupportedPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
@@ -40,7 +40,7 @@ namespace Plugin
                 }
 
                 ConnectionUtil util = new ConnectionUtil();
-                var session = util.StartSession(endpoint.EndpointDescription, identity).Result;
+                using Opc.Ua.Client.ISession session = util.StartSession(endpoint.EndpointDescription, identity).Result;
 
                 // check if rbac supported (if its advertised in profiles or not)
                 DataValue serverProfileArrayValue = session.ReadValue(Util.WellKnownNodes.Server_ServerCapabilities_ServerProfileArray);
@@ -55,7 +55,7 @@ namespace Plugin
             return target;
         }
 
-        private ICollection<string> RBAC_Profiles = new List<string> {
+        private readonly ICollection<string> RBAC_Profiles = new List<string> {
                 Util.WellKnownProfiles.Security_User_Access_Control_Full,
                 Util.WellKnownProfileURIs.Security_User_Access_Control_Full,
                 Util.WellKnownProfiles.UAFX_Controller_Server_Profile,

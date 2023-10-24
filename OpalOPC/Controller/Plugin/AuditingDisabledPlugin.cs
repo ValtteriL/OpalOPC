@@ -8,14 +8,14 @@ namespace Plugin
     public class AuditingDisabledPlugin : Plugin
     {
         // check if auditing disabled
-        private static PluginId _pluginId = PluginId.AuditingDisabled;
-        private static string _category = PluginCategories.Accounting;
-        private static string _issueTitle = "Auditing disabled";
+        private static readonly PluginId _pluginId = PluginId.AuditingDisabled;
+        private static readonly string _category = PluginCategories.Accounting;
+        private static readonly string _issueTitle = "Auditing disabled";
 
         // Medium
-        private static double _severity = 5.0;
+        private static readonly double _severity = 5.0;
 
-        public AuditingDisabledPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
+        public AuditingDisabledPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
         public override Target Run(Target target)
         {
@@ -35,16 +35,16 @@ namespace Plugin
                 }
                 else
                 {
-                    CommonCredentialsIssue credsIssue = (CommonCredentialsIssue) endpoint.Issues.First(i => i.GetType() == typeof(CommonCredentialsIssue));
+                    CommonCredentialsIssue credsIssue = (CommonCredentialsIssue)endpoint.Issues.First(i => i.GetType() == typeof(CommonCredentialsIssue));
                     identity = new UserIdentity(username: credsIssue.username, password: credsIssue.password);
                 }
 
-                ConnectionUtil util = new ConnectionUtil();
-                var session = util.StartSession(endpoint.EndpointDescription, identity).Result;
+                ConnectionUtil util = new();
 
+                using Opc.Ua.Client.ISession session = util.StartSession(endpoint.EndpointDescription, identity).Result;
                 // check if auditing enabled
                 DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
-                if (!(bool)auditingValue.GetValue<System.Boolean>(false))
+                if (!auditingValue.GetValue<bool>(false))
                 {
                     _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} has auditing disabled");
                     endpoint.Issues.Add(CreateIssue());
