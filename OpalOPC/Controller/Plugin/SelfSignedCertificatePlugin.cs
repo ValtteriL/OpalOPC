@@ -42,16 +42,9 @@ namespace Plugin
                 ConnectionUtil util = new();
                 using Opc.Ua.Client.ISession session = await util.StartSession(endpointDescription, new UserIdentity());
             }
-            catch (Opc.Ua.ServiceResultException e)
+            catch (Opc.Ua.ServiceResultException)
             {
-                if (e.Message.Contains("Bad_SecurityChecksFailed")
-                    || e.Message.Contains("BadSecureChannelClosed")
-                    || e.Message.Contains("BadCertificateUriInvalid"))
-                {
-                    return false;
-                }
-                Console.WriteLine($"UNKNOWN EXCEPTION: {endpointDescription.EndpointUrl}");
-                throw;
+                return false;
             }
             return true;
         }
