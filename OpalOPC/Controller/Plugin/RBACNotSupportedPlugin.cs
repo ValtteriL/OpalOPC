@@ -44,7 +44,7 @@ namespace Plugin
 
                 // check if rbac supported (if its advertised in profiles or not)
                 DataValue serverProfileArrayValue = session.ReadValue(Util.WellKnownNodes.Server_ServerCapabilities_ServerProfileArray);
-                string[] serverProfileArray = (string[])serverProfileArrayValue.GetValue<string[]>(new string[0]);
+                string[] serverProfileArray = serverProfileArrayValue.GetValue<string[]>(Array.Empty<string>());
                 if (!serverProfileArray.Intersect(RBAC_Profiles).Any())
                 {
                     _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} is not capable of RBAC");
