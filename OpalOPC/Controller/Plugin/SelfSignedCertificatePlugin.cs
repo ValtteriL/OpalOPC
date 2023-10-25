@@ -5,7 +5,7 @@ using Util;
 
 namespace Plugin
 {
-    public class SelfSignedCertificatePlugin : Plugin
+    public class SelfSignedCertificatePlugin : PreAuthPlugin
     {
         // "self-signed certificates should not be trusted automatically"
         //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
@@ -19,23 +19,20 @@ namespace Plugin
 
         public SelfSignedCertificatePlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
-        public override Target Run(Target target)
+        public override Issue? Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing if {target.ApplicationName} accepts self signed certificate");
+            _logger.LogTrace($"Testing if {endpoint} accepts self signed certificate");
 
-            Parallel.ForEach(target.GetEndpointsBySecurityPolicyUriNot(SecurityPolicies.None), endpoint =>
-                {
-                    if (SelfSignedCertAccepted(endpoint.EndpointDescription).Result)
-                    {
-                        _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} accepts self-signed client certificates");
-                        endpoint.Issues.Add(CreateIssue());
-                    }
-                });
+            if (SelfSignedCertAccepted(endpoint.EndpointDescription).Result)
+            {
+                _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} accepts self-signed client certificates");
+                return CreateIssue();
+            }
 
-            return target;
+            return null;
         }
 
-        private static async Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription)
+        public static async Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription)
         {
             try
             {

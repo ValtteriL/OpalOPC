@@ -1,16 +1,16 @@
 using Microsoft.Extensions.Logging;
 using Model;
+using Opc.Ua.Client;
 
 namespace Plugin
 {
     public interface IPlugin
     {
-        public Target Run(Target target);
         public Issue CreateIssue();
         public PluginId pluginId { get; }
     }
 
-    public abstract class Plugin : IPlugin
+    public abstract class Plugin
     {
         public ILogger _logger;
         public PluginId pluginId { get; }
@@ -27,11 +27,37 @@ namespace Plugin
             _severity = severity;
         }
 
-        public abstract Target Run(Target target);
-
         public Issue CreateIssue()
         {
             return new Issue((int)pluginId, _name, _severity);
         }
+    }
+
+    public interface IPreAuthPlugin
+    {
+        public Issue? Run(Endpoint endpoint);
+    }
+
+    public abstract class PreAuthPlugin : Plugin, IPlugin, IPreAuthPlugin
+    {
+        public PreAuthPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : base(logger, pluginId, category, name, severity)
+        {
+        }
+
+        public abstract Issue? Run(Endpoint endpoint);
+    }
+
+    public interface IPostAuthPlugin
+    {
+        public Issue? Run(ISession session);
+    }
+
+    public abstract class PostAuthPlugin : Plugin, IPlugin, IPostAuthPlugin
+    {
+        public PostAuthPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : base(logger, pluginId, category, name, severity)
+        {
+        }
+
+        public abstract Issue? Run(ISession session);
     }
 }

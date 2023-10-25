@@ -5,7 +5,7 @@ using Util;
 
 namespace Plugin
 {
-    public class CommonCredentialsPlugin : Plugin
+    public class CommonCredentialsPlugin : PreAuthPlugin
     {
         private static readonly PluginId _pluginId = PluginId.CommonCredentials;
         private static readonly string _category = PluginCategories.Authentication;
@@ -16,23 +16,50 @@ namespace Plugin
 
         public CommonCredentialsPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
-        public override Target Run(Target target)
+        public override Issue? Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {target.ApplicationName} for common credentials");
+            _logger.LogTrace($"Testing {endpoint} for common credentials");
 
-            Parallel.ForEach(target.GetBruteableEndpoints(), endpoint =>
+            if (!IsBruteable(endpoint))
             {
-                foreach ((string username, string password) in Util.Credentials.CommonCredentials)
+                return null;
+            }
+
+            List<(string username, string password)> validCredentials = new();
+
+            foreach ((string username, string password) in Util.Credentials.CommonCredentials)
+            {
+
+                if (IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password), out NodeIdCollection roleIds))
                 {
-                    if (IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password), out NodeIdCollection roleIds))
-                    {
-                        _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
-                        _issueTitle = $"Common credentials in use ({username}:{password})";
-                        endpoint.Issues.Add(new CommonCredentialsIssue((int)_pluginId, _issueTitle, _severity, username, password));
-                    }
+                    _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
+                    _issueTitle = $"Common credentials in use ({username}:{password})";
+                    validCredentials.Add((username, password));
+                    return new CommonCredentialsIssue((int)_pluginId, _issueTitle, _severity, username, password);
                 }
-            });
-            return target;
+            }
+
+            if (validCredentials.Count == 1)
+            {
+                (string username, string password) = validCredentials.First();
+                _issueTitle = $"Common credentials in use ({username}:{password})";
+                return new CommonCredentialsIssue((int)_pluginId, _issueTitle, _severity, username, password);
+            }
+            else if (validCredentials.Count > 1)
+            {
+                // TODO
+                return 1;
+            }
+
+            return null;
+        }
+
+        // Check if endpoint is bruteable = username + application authentication is disabled OR self-signed certificates accepted
+        private static bool IsBruteable(Endpoint endpoint)
+        {
+            return endpoint.UserTokenTypes.Contains(UserTokenType.UserName)
+                && (endpoint.SecurityMode == MessageSecurityMode.None
+                    || SelfSignedCertificatePlugin.SelfSignedCertAccepted(endpoint.EndpointDescription).Result);
         }
 
         private static bool IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity, out NodeIdCollection roleIds)
@@ -41,7 +68,7 @@ namespace Plugin
 
             try
             {
-                ConnectionUtil util = new ConnectionUtil();
+                ConnectionUtil util = new();
                 using Opc.Ua.Client.ISession session = util.StartSession(endpointDescription, userIdentity).Result;
                 bool result = false;
                 if (session.Connected)

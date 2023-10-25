@@ -4,7 +4,7 @@ using Opc.Ua;
 
 namespace Plugin
 {
-    public class SecurityModeNonePlugin : Plugin
+    public class SecurityModeNonePlugin : PreAuthPlugin
     {
         // "The SecurityMode should be ′Sign′ or ′SignAndEncrypt′."
         //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
@@ -18,19 +18,17 @@ namespace Plugin
 
         public SecurityModeNonePlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
 
-        public override Target Run(Target target)
+        public override Issue? Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {target.ApplicationName} for Message Security Mode None");
+            _logger.LogTrace($"Testing {endpoint} for Message Security Mode None");
 
-            IEnumerable<Endpoint> NoneSecurityModeEndpoints = target.GetEndpointsBySecurityMode(MessageSecurityMode.None);
-
-            foreach (Endpoint endpoint in NoneSecurityModeEndpoints)
+            if (endpoint.SecurityMode == MessageSecurityMode.None)
             {
                 _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} has security mode None");
-                endpoint.Issues.Add(CreateIssue());
+                return CreateIssue();
             }
 
-            return target;
+            return null;
         }
 
     }

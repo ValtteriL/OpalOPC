@@ -4,7 +4,7 @@ using Opc.Ua;
 
 namespace Plugin
 {
-    public class SecurityPolicyBasic256Plugin : Plugin
+    public class SecurityPolicyBasic256Plugin : PreAuthPlugin
     {
         // Basic256 is deprecated - https://profiles.opcfoundation.org/profilefolder/474
 
@@ -17,19 +17,17 @@ namespace Plugin
 
         public SecurityPolicyBasic256Plugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
 
-        public override Target Run(Target target)
+        public override Issue? Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {target.ApplicationName} for Security Policy Basic256");
+            _logger.LogTrace($"Testing {endpoint} for Security Policy Basic256");
 
-            IEnumerable<Endpoint> Basic256Endpoints = target.GetEndpointsBySecurityPolicyUri(SecurityPolicies.Basic256);
-
-            foreach (Endpoint endpoint in Basic256Endpoints)
+            if (endpoint.SecurityPolicyUri == SecurityPolicies.Basic256)
             {
                 _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} uses Basic256");
-                endpoint.Issues.Add(CreateIssue());
+                return CreateIssue();
             }
 
-            return target;
+            return null;
         }
 
     }

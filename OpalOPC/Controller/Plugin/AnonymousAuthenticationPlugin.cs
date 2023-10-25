@@ -4,7 +4,7 @@ using Opc.Ua;
 
 namespace Plugin
 {
-    public class AnonymousAuthenticationPlugin : Plugin
+    public class AnonymousAuthenticationPlugin : PreAuthPlugin
     {
         // "′anonymous′ should be used only for accessing non-critical UA server resources"
         //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
@@ -18,18 +18,16 @@ namespace Plugin
 
         public AnonymousAuthenticationPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
-        public override Target Run(Target target)
+        public override Issue? Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {target.ApplicationName} for anonymous access");
+            _logger.LogTrace($"Testing {endpoint} for anonymous access");
 
-            IEnumerable<Endpoint> anonymousEndpoints = target.GetEndpointsByUserTokenType(UserTokenType.Anonymous);
-            foreach (Endpoint endpoint in anonymousEndpoints)
+            if (endpoint.UserTokenTypes.Contains(UserTokenType.Anonymous))
             {
-                _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} allows anonymous authentication");
-                endpoint.Issues.Add(CreateIssue());
+                return CreateIssue();
             }
 
-            return target;
+            return null;
         }
 
     }
