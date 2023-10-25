@@ -137,7 +137,7 @@ chmod +x "${OPALOPC_EXECUTABLE_PATH}"
 
 # Add to path
 echo "[7/7] Adding \"opalopc\" to path"
-ln --symbolic --force "${OPALOPC_EXECUTABLE_PATH}" "${OPALOPC_USR_LOCAL_BIN_SYMLINK_PATH}"
+ln -s -f "${OPALOPC_EXECUTABLE_PATH}" "${OPALOPC_USR_LOCAL_BIN_SYMLINK_PATH}"
 
 echo ""
 echo "Installation complete! Type opalopc to get started"
