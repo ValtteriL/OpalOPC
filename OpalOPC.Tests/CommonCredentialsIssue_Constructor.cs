@@ -10,10 +10,9 @@ public class CommonCredentialsIssue_Constructor
         int pluginId = 0;
         string name = "a";
         double severity = 0;
-        string username = "username";
-        string password = "password";
-        CommonCredentialsIssue commonCredentialsIssue = new CommonCredentialsIssue(
-                pluginId, name, severity, username, password
+        List<(string, string)> credentials = new() { ("username", "password") };
+        CommonCredentialsIssue commonCredentialsIssue = new(
+                pluginId, name, severity, credentials
             );
 
         Assert.True(commonCredentialsIssue != null);
@@ -25,14 +24,12 @@ public class CommonCredentialsIssue_Constructor
         int pluginId = 0;
         string name = "a";
         double severity = 0;
-        string username = "username";
-        string password = "password";
-        CommonCredentialsIssue commonCredentialsIssue = new CommonCredentialsIssue(
-                pluginId, name, severity, username, password
+        List<(string, string)> credentials = new() { ("username", "password") };
+        CommonCredentialsIssue commonCredentialsIssue = new(
+                pluginId, name, severity, credentials
             );
 
-        Assert.True(commonCredentialsIssue.username == username);
-        Assert.True(commonCredentialsIssue.password == password);
+        Assert.True(commonCredentialsIssue.Credentials == credentials);
         Assert.True(commonCredentialsIssue.PluginId == pluginId);
         Assert.True(commonCredentialsIssue.Name == name);
         Assert.True(commonCredentialsIssue.Severity == severity);

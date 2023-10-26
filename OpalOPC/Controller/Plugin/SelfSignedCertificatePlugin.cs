@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
+using Opc.Ua.Client;
 using Util;
 
 namespace Plugin
@@ -19,17 +20,19 @@ namespace Plugin
 
         public SelfSignedCertificatePlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
-        public override Issue? Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
             _logger.LogTrace($"Testing if {endpoint} accepts self signed certificate");
+
+            List<ISession> sessions = new();
 
             if (SelfSignedCertAccepted(endpoint.EndpointDescription).Result)
             {
                 _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} accepts self-signed client certificates");
-                return CreateIssue();
+                return (CreateIssue(), sessions);
             }
 
-            return null;
+            return (null, sessions);
         }
 
         public static async Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription)

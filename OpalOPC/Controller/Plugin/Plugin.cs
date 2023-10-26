@@ -35,7 +35,7 @@ namespace Plugin
 
     public interface IPreAuthPlugin
     {
-        public Issue? Run(Endpoint endpoint);
+        public (Issue?, ICollection<ISession>) Run(Endpoint endpoint);
     }
 
     public abstract class PreAuthPlugin : Plugin, IPlugin, IPreAuthPlugin
@@ -44,7 +44,7 @@ namespace Plugin
         {
         }
 
-        public abstract Issue? Run(Endpoint endpoint);
+        public abstract (Issue?, ICollection<ISession>) Run(Endpoint endpoint);
     }
 
     public interface IPostAuthPlugin

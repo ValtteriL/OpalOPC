@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
+using Opc.Ua.Client;
 using Util;
 
 namespace Plugin
@@ -16,42 +17,38 @@ namespace Plugin
 
         public CommonCredentialsPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
-        public override Issue? Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
             _logger.LogTrace($"Testing {endpoint} for common credentials");
 
+            List<ISession> sessions = new();
+
             if (!IsBruteable(endpoint))
             {
-                return null;
+                return (null, sessions);
             }
 
             List<(string username, string password)> validCredentials = new();
 
             foreach ((string username, string password) in Util.Credentials.CommonCredentials)
             {
+                ISession? session = IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password));
 
-                if (IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password), out NodeIdCollection roleIds))
+                if (session != null && session.Connected)
                 {
                     _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
-                    _issueTitle = $"Common credentials in use ({username}:{password})";
                     validCredentials.Add((username, password));
-                    return new CommonCredentialsIssue((int)_pluginId, _issueTitle, _severity, username, password);
                 }
             }
 
-            if (validCredentials.Count == 1)
+            if (validCredentials.Any())
             {
-                (string username, string password) = validCredentials.First();
-                _issueTitle = $"Common credentials in use ({username}:{password})";
-                return new CommonCredentialsIssue((int)_pluginId, _issueTitle, _severity, username, password);
-            }
-            else if (validCredentials.Count > 1)
-            {
-                // TODO
-                return 1;
+                IEnumerable<string> credpairs = validCredentials.Select(c => $"{c.username}:{c.password}");
+                _issueTitle = $"Common credentials in use ({string.Join(", ", credpairs)})";
+                return (new CommonCredentialsIssue((int)_pluginId, _issueTitle, _severity, validCredentials), sessions);
             }
 
-            return null;
+            return (null, sessions);
         }
 
         // Check if endpoint is bruteable = username + application authentication is disabled OR self-signed certificates accepted
@@ -62,26 +59,17 @@ namespace Plugin
                     || SelfSignedCertificatePlugin.SelfSignedCertAccepted(endpoint.EndpointDescription).Result);
         }
 
-        private static bool IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity, out NodeIdCollection roleIds)
+        private static ISession? IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity)
         {
-            roleIds = new NodeIdCollection();
-
             try
             {
                 ConnectionUtil util = new();
                 using Opc.Ua.Client.ISession session = util.StartSession(endpointDescription, userIdentity).Result;
-                bool result = false;
-                if (session.Connected)
-                {
-                    result = true;
-                    roleIds = session.Identity.GrantedRoleIds;
-                }
-
-                return result;
+                return session;
             }
             catch (Exception)
             {
-                return false;
+                return null;
             }
         }
 

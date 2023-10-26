@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
+using Opc.Ua.Client;
 
 namespace Plugin
 {
@@ -17,17 +18,19 @@ namespace Plugin
 
         public SecurityPolicyBasic256Plugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
 
-        public override Issue? Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
             _logger.LogTrace($"Testing {endpoint} for Security Policy Basic256");
+
+            List<ISession> sessions = new();
 
             if (endpoint.SecurityPolicyUri == SecurityPolicies.Basic256)
             {
                 _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} uses Basic256");
-                return CreateIssue();
+                return (CreateIssue(), sessions);
             }
 
-            return null;
+            return (null, sessions);
         }
 
     }

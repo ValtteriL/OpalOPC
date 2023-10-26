@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
+using Opc.Ua.Client;
 
 namespace Plugin
 {
@@ -18,17 +19,19 @@ namespace Plugin
 
         public SecurityModeNonePlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
 
-        public override Issue? Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
             _logger.LogTrace($"Testing {endpoint} for Message Security Mode None");
+
+            List<ISession> sessions = new();
 
             if (endpoint.SecurityMode == MessageSecurityMode.None)
             {
                 _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} has security mode None");
-                return CreateIssue();
+                return (CreateIssue(), sessions);
             }
 
-            return null;
+            return (null, sessions);
         }
 
     }

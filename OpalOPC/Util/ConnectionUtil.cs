@@ -47,12 +47,12 @@ namespace Util
 
             ISessionFactory sessionFactory = new DefaultSessionFactory();
 
-            var session = await sessionFactory.CreateAsync(
-                this.applicationConfiguration,
+            using ISession session = await sessionFactory.CreateAsync(
+                applicationConfiguration,
                 endpoint,
                 false,
                 false,
-                this.applicationConfiguration.ApplicationName,
+                applicationConfiguration.ApplicationName,
                 30 * 1000,
                 userIdentity,
                 null
