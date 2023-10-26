@@ -9,7 +9,7 @@ public class Argparser_Constructor
     public void constructor_DoesNotReturnNull()
     {
         string[] args = { "-v" };
-        Argparser argparser = new Argparser(args);
+        Argparser argparser = new(args);
 
         Assert.True(argparser != null);
     }

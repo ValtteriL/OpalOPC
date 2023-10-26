@@ -102,7 +102,7 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
         // if neither => try to create new file
         if (Directory.Exists(OutputFileLocation) || OutputFileLocation == string.Empty)
         {
-            outputfile = System.IO.Path.Combine(OutputFileLocation, new Util.ArgUtil().DefaultReportName());
+            outputfile = System.IO.Path.Combine(OutputFileLocation, Util.ArgUtil.DefaultReportName());
         }
         else
         {

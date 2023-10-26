@@ -7,11 +7,11 @@ public class Target_Constructor
     [Fact]
     public void constructor_NullInputResultsinNullReferenceException()
     {
-        Opc.Ua.ApplicationDescription description = new Opc.Ua.ApplicationDescription();
+        Opc.Ua.ApplicationDescription description = new();
 
         try
         {
-            Target target = new Target(description);   
+            Target target = new(description);   
         }
         catch (System.NullReferenceException)
         {
@@ -25,7 +25,7 @@ public class Target_Constructor
     [Fact]
     public void constructor_SetsProperties()
     {
-        Opc.Ua.ApplicationDescription description = new Opc.Ua.ApplicationDescription();
+        Opc.Ua.ApplicationDescription description = new();
         string applicationName = "a";
         string applicationUri = "b";
         string productUri = "c";
@@ -34,7 +34,7 @@ public class Target_Constructor
         description.ApplicationUri = applicationUri;
         description.ProductUri = productUri;
 
-        Target target = new Target(description);
+        Target target = new(description);
 
         Assert.True(target.Servers != null);
         Assert.True(target.ApplicationName == applicationName);

@@ -7,9 +7,9 @@ public class EndpointSummary_Constructor
     [Fact]
     public void constructor_DoesNotReturnNull()
     {
-        Opc.Ua.EndpointDescription description = new Opc.Ua.EndpointDescription();
-        Endpoint endpoint = new Endpoint(new Opc.Ua.EndpointDescription());
-        EndpointSummary endpointSummary = new EndpointSummary(endpoint);
+        Opc.Ua.EndpointDescription description = new();
+        Endpoint endpoint = new(new Opc.Ua.EndpointDescription());
+        EndpointSummary endpointSummary = new(endpoint);
 
         Assert.True(endpoint != null);
     }
@@ -21,7 +21,7 @@ public class EndpointSummary_Constructor
 
         try
         {
-            EndpointSummary endpointSummary = new EndpointSummary(endpoint!);
+            EndpointSummary endpointSummary = new(endpoint!);
         }
         catch (System.NullReferenceException)
         {
@@ -35,7 +35,7 @@ public class EndpointSummary_Constructor
     [Fact]
     public void constructor_SetsProperties()
     {
-        Opc.Ua.EndpointDescription description = new Opc.Ua.EndpointDescription();
+        Opc.Ua.EndpointDescription description = new();
         string endpointUrl = "endpointUrl";
         string securityPolicyUrl = "securityPolicyUrl";
         byte[] serverCertificate = new byte[] { 1 };
@@ -43,9 +43,9 @@ public class EndpointSummary_Constructor
         description.SecurityPolicyUri = securityPolicyUrl;
         description.SecurityMode = Opc.Ua.MessageSecurityMode.None;
         description.ServerCertificate = serverCertificate;
-        Endpoint endpoint = new Endpoint(description);
+        Endpoint endpoint = new(description);
 
-        EndpointSummary endpointSummary = new EndpointSummary(endpoint);
+        EndpointSummary endpointSummary = new(endpoint);
 
         Assert.True(endpointSummary.EndpointUrl == endpointUrl);
         Assert.Contains(securityPolicyUrl, endpointSummary.SecurityPolicyUris);

@@ -12,7 +12,7 @@ public class DiscoveryController_Constructor
     {
         var loggerFactory = LoggerFactory.Create(builder => {});
         ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
-        DiscoveryController discoveryController = new DiscoveryController(logger);
+        DiscoveryController discoveryController = new(logger);
 
         Assert.True(discoveryController != null);
     }

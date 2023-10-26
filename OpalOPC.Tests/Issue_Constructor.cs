@@ -11,7 +11,7 @@ public class Issue_Constructor
         string name = "a";
         double severity = 0;
 
-        Issue issue = new Issue(
+        Issue issue = new(
                 pluginId, name, severity
             );
 
@@ -24,7 +24,7 @@ public class Issue_Constructor
         int pluginId = 0;
         string name = "a";
         double severity = 0;
-        Issue issue = new Issue(
+        Issue issue = new(
                 pluginId, name, severity
             );
 

@@ -118,7 +118,7 @@ namespace View
                 extra.ForEach(e => appendTarget(e));
                 if (options.xmlOutputStream == null)
                 {
-                    options.xmlOutputReportName = new Util.ArgUtil().DefaultReportName();
+                    options.xmlOutputReportName = Util.ArgUtil.DefaultReportName();
                     options.xmlOutputStream = File.OpenWrite(options.xmlOutputReportName);
                 }
             }

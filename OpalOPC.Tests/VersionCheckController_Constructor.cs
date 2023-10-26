@@ -12,7 +12,7 @@ public class VersionCheckController_Constructor
     {
         var loggerFactory = LoggerFactory.Create(builder => {});
         ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
-        VersionCheckController versionCheckController = new VersionCheckController(logger);
+        VersionCheckController versionCheckController = new(logger);
 
         Assert.True(versionCheckController != null);
     }

@@ -9,8 +9,8 @@ public class Server_Constructor
     public void constructor_DoesNotReturnNull()
     {
         string discoveryUrl = "a";
-        EndpointDescriptionCollection edc = new EndpointDescriptionCollection();
-        Server server = new Server(discoveryUrl, edc);
+        EndpointDescriptionCollection edc = new();
+        Server server = new(discoveryUrl, edc);
 
         Assert.True(server != null);
     }
@@ -19,8 +19,8 @@ public class Server_Constructor
     public void constructor_SetsProperties()
     {
         string discoveryUrl = "a";
-        EndpointDescriptionCollection edc = new EndpointDescriptionCollection();
-        Server server = new Server(discoveryUrl, edc);
+        EndpointDescriptionCollection edc = new();
+        Server server = new(discoveryUrl, edc);
 
         Assert.True(server.DiscoveryUrl == discoveryUrl);
         foreach (EndpointDescription ed in edc)
