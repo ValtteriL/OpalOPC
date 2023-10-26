@@ -40,9 +40,9 @@ namespace Plugin
             try
             {
                 ConnectionUtil util = new();
-                using Opc.Ua.Client.ISession session = await util.StartSession(endpointDescription, new UserIdentity());
+                ISession session = await util.StartSession(endpointDescription, new UserIdentity());
             }
-            catch (Opc.Ua.ServiceResultException)
+            catch (ServiceResultException)
             {
                 return false;
             }

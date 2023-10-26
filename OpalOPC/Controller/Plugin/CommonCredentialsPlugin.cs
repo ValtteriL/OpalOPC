@@ -64,7 +64,7 @@ namespace Plugin
             try
             {
                 ConnectionUtil util = new();
-                using Opc.Ua.Client.ISession session = util.StartSession(endpointDescription, userIdentity).Result;
+                ISession session = util.StartSession(endpointDescription, userIdentity).Result;
                 return session;
             }
             catch (Exception)

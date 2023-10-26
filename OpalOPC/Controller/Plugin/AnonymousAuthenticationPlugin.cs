@@ -30,7 +30,7 @@ namespace Plugin
             {
 
                 // Open a session
-                using Opc.Ua.Client.ISession session = new ConnectionUtil().StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
+                ISession session = new ConnectionUtil().StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
                 sessions.Add(session);
 
                 return (CreateIssue(), sessions);
