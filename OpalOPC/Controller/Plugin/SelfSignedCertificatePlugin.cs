@@ -18,7 +18,16 @@ namespace Plugin
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N
         private static readonly double _severity = 5.4;
 
-        public SelfSignedCertificatePlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
+        private readonly IConnectionUtil _connectionUtil;
+
+        public SelfSignedCertificatePlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity)
+        {
+            _connectionUtil = new ConnectionUtil();
+        }
+        public SelfSignedCertificatePlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, _pluginId, _category, _issueTitle, _severity)
+        {
+            _connectionUtil = connectionUtil;
+        }
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
@@ -26,7 +35,7 @@ namespace Plugin
 
             List<ISession> sessions = new();
 
-            if (SelfSignedCertAccepted(endpoint.EndpointDescription).Result)
+            if (SelfSignedCertAccepted(endpoint.EndpointDescription, _connectionUtil).Result)
             {
                 _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} accepts self-signed client certificates");
                 return (CreateIssue(), sessions);
@@ -35,12 +44,11 @@ namespace Plugin
             return (null, sessions);
         }
 
-        public static async Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription)
+        public static async Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription, IConnectionUtil connectionUtil)
         {
             try
             {
-                ConnectionUtil util = new();
-                ISession session = await util.StartSession(endpointDescription, new UserIdentity());
+                ISession session = await connectionUtil.StartSession(endpointDescription, new UserIdentity());
             }
             catch (ServiceResultException)
             {

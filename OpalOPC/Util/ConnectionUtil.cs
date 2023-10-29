@@ -4,7 +4,13 @@ using Opc.Ua.Security.Certificates;
 
 namespace Util
 {
-    public class ConnectionUtil
+    public interface IConnectionUtil
+    {
+        public Task<ISession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity);
+
+    }
+
+    public class ConnectionUtil : IConnectionUtil
     {
         private const string Subject = "CN=Test Cert Subject, C=FI, S=Uusimaa, O=Molemmat Oy";
 

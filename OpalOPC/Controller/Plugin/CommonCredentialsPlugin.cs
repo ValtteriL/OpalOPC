@@ -15,7 +15,19 @@ namespace Plugin
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L
         private static readonly double _severity = 7.3;
 
-        public CommonCredentialsPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
+        private readonly IConnectionUtil _connectionUtil;
+
+        public CommonCredentialsPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity)
+        {
+            _connectionUtil = new ConnectionUtil();
+        }
+
+        public CommonCredentialsPlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, _pluginId, _category, _issueTitle, _severity)
+        {
+            _connectionUtil = connectionUtil;
+        }
+
+        
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
@@ -37,6 +49,7 @@ namespace Plugin
                 if (session != null && session.Connected)
                 {
                     _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
+                    sessions.Add(session);
                     validCredentials.Add((username, password));
                 }
             }
@@ -52,19 +65,18 @@ namespace Plugin
         }
 
         // Check if endpoint is bruteable = username + application authentication is disabled OR self-signed certificates accepted
-        private static bool IsBruteable(Endpoint endpoint)
+        private bool IsBruteable(Endpoint endpoint)
         {
             return endpoint.UserTokenTypes.Contains(UserTokenType.UserName)
                 && (endpoint.SecurityMode == MessageSecurityMode.None
-                    || SelfSignedCertificatePlugin.SelfSignedCertAccepted(endpoint.EndpointDescription).Result);
+                    || SelfSignedCertificatePlugin.SelfSignedCertAccepted(endpoint.EndpointDescription, _connectionUtil).Result);
         }
 
-        private static ISession? IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity)
+        private ISession? IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity)
         {
             try
             {
-                ConnectionUtil util = new();
-                ISession session = util.StartSession(endpointDescription, userIdentity).Result;
+                ISession session = _connectionUtil.StartSession(endpointDescription, userIdentity).Result;
                 return session;
             }
             catch (Exception)

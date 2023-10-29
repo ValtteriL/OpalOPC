@@ -18,7 +18,15 @@ namespace Plugin
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L
         private static readonly double _severity = 7.3;
 
-        public AnonymousAuthenticationPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
+        private readonly IConnectionUtil _connectionUtil;
+
+        public AnonymousAuthenticationPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {
+            _connectionUtil = new ConnectionUtil();
+        }
+        public AnonymousAuthenticationPlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, _pluginId, _category, _issueTitle, _severity)
+        {
+            _connectionUtil = connectionUtil;
+        }
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
@@ -30,7 +38,7 @@ namespace Plugin
             {
 
                 // Open a session
-                ISession session = new ConnectionUtil().StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
+                ISession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
                 sessions.Add(session);
 
                 return (CreateIssue(), sessions);

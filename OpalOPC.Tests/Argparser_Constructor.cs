@@ -6,7 +6,7 @@ using Xunit;
 public class Argparser_Constructor
 {
     [Fact]
-    public void constructor_DoesNotReturnNull()
+    public void ConstructorDoesNotReturnNull()
     {
         string[] args = { "-v" };
         Argparser argparser = new(args);
