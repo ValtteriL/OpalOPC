@@ -36,7 +36,7 @@ namespace Model
         // Merge SeparatedEndpoints into Endpointsummaries by endpointUrls
         public void MergeEndpoints()
         {
-            Dictionary<string, EndpointSummary> endpointDictionary = new Dictionary<string, EndpointSummary>();
+            Dictionary<string, EndpointSummary> endpointDictionary = new();
 
             foreach (Endpoint endpoint in SeparatedEndpoints)
             {

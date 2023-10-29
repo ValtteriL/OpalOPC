@@ -9,6 +9,6 @@ namespace Util
 {
     public class ArgUtil
     {
-        public string DefaultReportName() => $"opalopc-report-{DateTime.Now.ToString("yyyyMMddHHmmssffff")}.html";
+        public static string DefaultReportName() => $"opalopc-report-{DateTime.Now:yyyyMMddHHmmssffff}.html";
     }
 }

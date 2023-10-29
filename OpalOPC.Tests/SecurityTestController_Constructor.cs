@@ -12,8 +12,8 @@ public class SecurityTestController_Constructor
     public void constructor_DoesNotReturnNull()
     {
         var loggerFactory = LoggerFactory.Create(builder => {});
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
-        SecurityTestController securityTestController = new SecurityTestController(logger, new List<IPlugin>());
+        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
+        SecurityTestController securityTestController = new(logger, new List<IPlugin>());
 
         Assert.True(securityTestController != null);
     }

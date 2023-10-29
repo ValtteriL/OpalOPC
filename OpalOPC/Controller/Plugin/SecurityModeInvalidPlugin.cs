@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
+using Opc.Ua.Client;
 
 namespace Plugin
 {
-    public class SecurityModeInvalidPlugin : Plugin
+    public class SecurityModeInvalidPlugin : PreAuthPlugin
     {
         // "The SecurityMode should be ′Sign′ or ′SignAndEncrypt′."
         //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
@@ -18,19 +19,19 @@ namespace Plugin
 
         public SecurityModeInvalidPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
 
-        public override Target Run(Target target)
+        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {target.ApplicationName} for Message Security Mode Invalid");
+            _logger.LogTrace($"Testing {endpoint} for Message Security Mode Invalid");
 
-            IEnumerable<Endpoint> invalidSecurityModeEndpoints = target.GetEndpointsBySecurityMode(MessageSecurityMode.Invalid);
+            List<ISession> sessions = new();
 
-            foreach (Endpoint endpoint in invalidSecurityModeEndpoints)
+            if (endpoint.SecurityMode == MessageSecurityMode.Invalid)
             {
                 _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} has invalid security mode");
-                endpoint.Issues.Add(CreateIssue());
+                return (CreateIssue(), sessions);
             }
 
-            return target;
+            return (null, sessions);
         }
 
     }

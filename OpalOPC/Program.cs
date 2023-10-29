@@ -30,10 +30,10 @@ class OpalOPC
 
         ILogger logger = loggerFactory.CreateLogger<OpalOPC>();
 
-        VersionCheckController versionCheckController = new VersionCheckController(logger);
+        VersionCheckController versionCheckController = new(logger);
         versionCheckController.CheckVersion();
 
-        ScanController scanController = new ScanController(logger, options.targets, options.xmlOutputStream!, Environment.CommandLine);
+        ScanController scanController = new(logger, options.targets, options.xmlOutputStream!, Environment.CommandLine);
         scanController.Scan();
 
         if (options.xmlOutputReportName != null)

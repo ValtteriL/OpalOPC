@@ -9,7 +9,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_NoTargets_ResultsInNoTargets()
     {
         string[] args = { "-v" };
-        Argparser argparser = new Argparser(args);
+        Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
 
@@ -23,7 +23,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_InputOutputFileNameMatchesOptionsReportName(string flag, string filename)
     {
         string[] args = { flag, filename };
-        Argparser argparser = new Argparser(args);
+        Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
 
@@ -38,7 +38,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_InputInvalidOutputFileNameCausesTermination(string flag, string filename)
     {
         string[] args = { flag, filename };
-        Argparser argparser = new Argparser(args);
+        Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
 
@@ -49,7 +49,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_IncreaseVerbosity1()
     {
         string[] args = { "-v" };
-        Argparser argparser = new Argparser(args);
+        Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
 
@@ -61,7 +61,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_IncreaseVerbosity2()
     {
         string[] args = { "-v", "-v" };
-        Argparser argparser = new Argparser(args);
+        Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
 
@@ -73,7 +73,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_SilenceLogging()
     {
         string[] args = { "-s" };
-        Argparser argparser = new Argparser(args);
+        Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
 
@@ -84,8 +84,8 @@ public class Argparser_parseArgsShould
     [Fact]
     public void ParseArgs_NoTargets_ResultsInHelp()
     {
-        string[] args = { };
-        Argparser argparser = new Argparser(args);
+        string[] args = Array.Empty<string>();
+        Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
 
@@ -98,7 +98,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_Help_ResultsInHelp(string flag)
     {
         string[] args = { flag };
-        Argparser argparser = new Argparser(args);
+        Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
 
@@ -112,7 +112,7 @@ public class Argparser_parseArgsShould
     {
         string filename = "ahfoihfsa";
         string[] args = { flag, filename };
-        Argparser argparser = new Argparser(args);
+        Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
 

@@ -11,11 +11,13 @@ public class ReportController_generateReportShould
     public void GenerateReport_AddsReportProperty()
     {
         var loggerFactory = LoggerFactory.Create(builder => {});
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
-        StreamWriter sw = new StreamWriter(new MemoryStream());
-        sw.AutoFlush = true;
-        Reporter reporter = new Reporter(sw.BaseStream);
-        ReportController reportController = new ReportController(logger, reporter);
+        ILogger logger = loggerFactory.CreateLogger<ReportController_generateReportShould>();
+        StreamWriter sw = new(new MemoryStream())
+        {
+            AutoFlush = true
+        };
+        Reporter reporter = new(sw.BaseStream);
+        ReportController reportController = new(logger, reporter);
         string commandLine = string.Empty;
 
         Assert.True(reportController.report == null);

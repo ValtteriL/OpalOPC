@@ -12,10 +12,10 @@ namespace Controller
 {
     public class ScanController
     {
-        ILogger _logger;
-        ICollection<Uri> _targets;
-        Stream _reportOutputStream;
-        string _commandLine;
+        readonly ILogger _logger;
+        readonly ICollection<Uri> _targets;
+        readonly Stream _reportOutputStream;
+        readonly string _commandLine;
         readonly CancellationToken? _token;
 
         public ScanController(ILogger logger, ICollection<Uri> targets, Stream reportOutputStream, string commandLine, CancellationToken? token = null)
@@ -41,7 +41,7 @@ namespace Controller
 
             TaskUtil.CheckForCancellation(_token);
 
-            DiscoveryController discoveryController = new DiscoveryController(_logger, _token);
+            DiscoveryController discoveryController = new(_logger, new DiscoveryUtil(), _token);
             ICollection<Target> targets = discoveryController.DiscoverTargets(_targets);
 
             TaskUtil.CheckForCancellation(_token);
@@ -63,12 +63,12 @@ namespace Controller
             new AuditingDisabledPlugin(_logger),
         };
 
-            SecurityTestController securityTestController = new SecurityTestController(_logger, securityTestPlugins, _token);
+            SecurityTestController securityTestController = new(_logger, securityTestPlugins, _token);
             ICollection<Target> testedTargets = securityTestController.TestTargetSecurity(targets);
 
             TaskUtil.CheckForCancellation(_token);
 
-            ReportController reportController = new ReportController(_logger, reporter);
+            ReportController reportController = new(_logger, reporter);
 
             DateTime end = DateTime.Now;
             reportController.GenerateReport(testedTargets, start, end, _commandLine);

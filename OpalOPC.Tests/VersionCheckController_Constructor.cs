@@ -11,8 +11,8 @@ public class VersionCheckController_Constructor
     public void constructor_DoesNotReturnNull()
     {
         var loggerFactory = LoggerFactory.Create(builder => {});
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
-        VersionCheckController versionCheckController = new VersionCheckController(logger);
+        ILogger logger = loggerFactory.CreateLogger<VersionCheckController_Constructor>();
+        VersionCheckController versionCheckController = new(logger);
 
         Assert.True(versionCheckController != null);
     }

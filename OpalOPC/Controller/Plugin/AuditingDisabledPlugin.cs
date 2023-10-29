@@ -1,11 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
+using Opc.Ua.Client;
 using Util;
 
 namespace Plugin
 {
-    public class AuditingDisabledPlugin : Plugin
+    public class AuditingDisabledPlugin : PostAuthPlugin
     {
         // check if auditing disabled
         private static readonly PluginId _pluginId = PluginId.AuditingDisabled;
@@ -17,41 +18,19 @@ namespace Plugin
 
         public AuditingDisabledPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
-        public override Target Run(Target target)
+        public override Issue? Run(ISession session)
         {
-            _logger.LogTrace($"Testing {target.ApplicationName} for disabled auditing");
+            _logger.LogTrace($"Testing {session.Endpoint} for disabled auditing");
 
-            // take all endpoints where login is possible
-            IEnumerable<Endpoint> targetEndpoints = target.GetLoginSuccessfulEndpoints();
-
-            Parallel.ForEach(targetEndpoints, endpoint =>
+            // check if auditing enabled
+            DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
+            if (!auditingValue.GetValue<bool>(false))
             {
-                UserIdentity identity;
+                _logger.LogTrace($"Endpoint {session.Endpoint} has auditing disabled");
+                return CreateIssue();
+            }
 
-                // use anonymous if available, otherwise first valid credential
-                if (endpoint.UserTokenTypes.Contains(UserTokenType.Anonymous))
-                {
-                    identity = new UserIdentity();
-                }
-                else
-                {
-                    CommonCredentialsIssue credsIssue = (CommonCredentialsIssue)endpoint.Issues.First(i => i.GetType() == typeof(CommonCredentialsIssue));
-                    identity = new UserIdentity(username: credsIssue.username, password: credsIssue.password);
-                }
-
-                ConnectionUtil util = new();
-
-                using Opc.Ua.Client.ISession session = util.StartSession(endpoint.EndpointDescription, identity).Result;
-                // check if auditing enabled
-                DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
-                if (!auditingValue.GetValue<bool>(false))
-                {
-                    _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} has auditing disabled");
-                    endpoint.Issues.Add(CreateIssue());
-                }
-            });
-
-            return target;
+            return null;
         }
 
     }

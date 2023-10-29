@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
+using Opc.Ua.Client;
 
 namespace Plugin
 {
-    public class SecurityPolicyNonePlugin : Plugin
+    public class SecurityPolicyNonePlugin : PreAuthPlugin
     {
         // If securitypolicy is none, application authentication is disabled (clients do not use certificate)
         // https://opcfoundation.org/forum/opc-certification-and-interoperability-testing/allowing-anonymous-user-access-a-security-breach-in-opc-ua-conversation/
@@ -18,19 +19,19 @@ namespace Plugin
 
         public SecurityPolicyNonePlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
 
-        public override Target Run(Target target)
+        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {target.ApplicationName} for Security Policy None");
+            _logger.LogTrace($"Testing {endpoint} for Security Policy None");
 
-            IEnumerable<Endpoint> NoneEndpoints = target.GetEndpointsBySecurityPolicyUri(SecurityPolicies.None);
+            List<ISession> sessions = new();
 
-            foreach (Endpoint endpoint in NoneEndpoints)
+            if (endpoint.SecurityPolicyUri == SecurityPolicies.None)
             {
                 _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} has security policy None");
-                endpoint.Issues.Add(CreateIssue());
+                return (CreateIssue(), sessions);
             }
 
-            return target;
+            return (null, sessions);
         }
 
     }

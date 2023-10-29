@@ -12,7 +12,7 @@ namespace OpalOPC.WPF.Logger
 {
     public class GUILogger : ILogger
     {
-        private LogLevel minimumLogLevel;
+        private readonly LogLevel minimumLogLevel;
 
         public GUILogger(LogLevel _minimumLogLevel) {
             minimumLogLevel = _minimumLogLevel;

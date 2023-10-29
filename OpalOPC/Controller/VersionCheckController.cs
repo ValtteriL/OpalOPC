@@ -9,8 +9,8 @@ namespace Controller
     public class VersionCheckController
     {
 
-        ILogger _logger;
-        private Uri versionUri = new Uri("https://opalopc.com/VERSION.txt");
+        readonly ILogger _logger;
+        private readonly Uri versionUri = new("https://opalopc.com/VERSION.txt");
         public bool IsUpToDate { get; private set; }
 
         public VersionCheckController(ILogger logger)
@@ -26,46 +26,44 @@ namespace Controller
             string thisVersion = Util.VersionUtil.AppAssemblyVersion!.ToString();
 
 #if DEBUG
-            ProductInfoHeaderValue commentValue = new ProductInfoHeaderValue($"(DEBUG; {GetOSString()}; +https://opalopc.com)");
+            ProductInfoHeaderValue commentValue = new($"(DEBUG; {GetOSString()}; +https://opalopc.com)");
 #else
             ProductInfoHeaderValue commentValue = new ProductInfoHeaderValue($"({GetOSString()}; +https://opalopc.com)");
 #endif
 
-            ProductInfoHeaderValue productValue = new ProductInfoHeaderValue("OpalOPC", thisVersion);
+            ProductInfoHeaderValue productValue = new("OpalOPC", thisVersion);
 
 
-            using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+            using var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate });
+            HttpResponseMessage response;
+            client.Timeout = System.TimeSpan.FromSeconds(2.5);
+            client.DefaultRequestHeaders.UserAgent.Add(productValue);
+            client.DefaultRequestHeaders.UserAgent.Add(commentValue);
+
+            try
             {
-                HttpResponseMessage response;
-                client.Timeout = System.TimeSpan.FromSeconds(2.5);
-                client.DefaultRequestHeaders.UserAgent.Add(productValue);
-                client.DefaultRequestHeaders.UserAgent.Add(commentValue);
-
-                try
-                {
-                    response = client.GetAsync(versionUri).Result;
-                    response.EnsureSuccessStatusCode();
-                }
-                catch (System.Exception)
-                {
-                    _logger.LogWarning("Unable to check latest OpalOPC version");
-                    return;
-                }
-
-                string latestVersion = response.Content.ReadAsStringAsync().Result.TrimEnd();
-
-                if (latestVersion != thisVersion)
-                {
-                    IsUpToDate = false;
-                    _logger.LogWarning($"Using outdated OpalOPC version {thisVersion} (the latest is {latestVersion})");
-                    return;
-                }
-
-                _logger.LogTrace("Using latest version");
+                response = client.GetAsync(versionUri).Result;
+                response.EnsureSuccessStatusCode();
             }
+            catch (System.Exception)
+            {
+                _logger.LogWarning("Unable to check latest OpalOPC version");
+                return;
+            }
+
+            string latestVersion = response.Content.ReadAsStringAsync().Result.TrimEnd();
+
+            if (latestVersion != thisVersion)
+            {
+                IsUpToDate = false;
+                _logger.LogWarning($"Using outdated OpalOPC version {thisVersion} (the latest is {latestVersion})");
+                return;
+            }
+
+            _logger.LogTrace("Using latest version");
         }
 
-        private string GetOSString()
+        private static string GetOSString()
         {
             string os;
 

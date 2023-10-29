@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
+using Opc.Ua.Client;
 
 namespace Plugin
 {
-    public class SecurityPolicyBasic128Rsa15Plugin : Plugin
+    public class SecurityPolicyBasic128Rsa15Plugin : PreAuthPlugin
     {
         // Basic128Rsa15 is deprecated - https://profiles.opcfoundation.org/profilefolder/474
 
@@ -17,19 +18,19 @@ namespace Plugin
 
         public SecurityPolicyBasic128Rsa15Plugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
 
-        public override Target Run(Target target)
+        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {target.ApplicationName} for Security Policy Basic128Rsa15");
+            _logger.LogTrace($"Testing {endpoint} for Security Policy Basic128Rsa15");
 
-            IEnumerable<Endpoint> Basic128Rsa15Endpoints = target.GetEndpointsBySecurityPolicyUri(SecurityPolicies.Basic128Rsa15);
+            List<ISession> sessions = new();
 
-            foreach (Endpoint endpoint in Basic128Rsa15Endpoints)
+            if (endpoint.SecurityPolicyUri == SecurityPolicies.Basic128Rsa15)
             {
                 _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} uses Basic128Rsa15");
-                endpoint.Issues.Add(CreateIssue());
+                return (CreateIssue(), sessions);
             }
 
-            return target;
+            return (null, sessions);
         }
 
     }

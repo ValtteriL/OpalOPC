@@ -9,9 +9,9 @@ public class Server_AddError
     public void AddError_InputErrorIsAddedToErrors()
     {
         string discoveryUrl = "a";
-        EndpointDescriptionCollection edc = new EndpointDescriptionCollection();
-        Server server = new Server(discoveryUrl, edc);
-        Error error = new Error("");
+        EndpointDescriptionCollection edc = new();
+        Server server = new(discoveryUrl, edc);
+        Error error = new("");
 
         server.AddError(error);
 

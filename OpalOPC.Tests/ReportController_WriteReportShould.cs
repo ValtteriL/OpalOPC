@@ -11,11 +11,13 @@ public class ReportController_WriteReportShould
     public void WriteReport_RunningBeforeGenerateReportCausesNullReferenceException()
     {
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
-        StreamWriter sw = new StreamWriter(new MemoryStream());
-        sw.AutoFlush = true;
-        Reporter reporter = new Reporter(sw.BaseStream);
-        ReportController reportController = new ReportController(logger, reporter);
+        ILogger logger = loggerFactory.CreateLogger<ReportController_WriteReportShould>();
+        StreamWriter sw = new(new MemoryStream())
+        {
+            AutoFlush = true
+        };
+        Reporter reporter = new(sw.BaseStream);
+        ReportController reportController = new(logger, reporter);
         string runStatus = "hello";
 
         try
@@ -35,11 +37,13 @@ public class ReportController_WriteReportShould
     public void WriteReport_AddsReportRunStatus()
     {
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
-        StreamWriter sw = new StreamWriter(new MemoryStream());
-        sw.AutoFlush = true;
-        Reporter reporter = new Reporter(sw.BaseStream);
-        ReportController reportController = new ReportController(logger, reporter);
+        ILogger logger = loggerFactory.CreateLogger<ReportController_WriteReportShould>();
+        StreamWriter sw = new(new MemoryStream())
+        {
+            AutoFlush = true
+        };
+        Reporter reporter = new(sw.BaseStream);
+        ReportController reportController = new(logger, reporter);
         string runStatus = "hello";
         string commandLine = string.Empty;
 

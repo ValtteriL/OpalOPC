@@ -7,7 +7,7 @@ public class Error_Constructor
     [Fact]
     public void constructor_DoesNotReturnNull()
     {
-        Error error = new Error("");
+        Error error = new("");
 
         Assert.True(error != null);
     }
@@ -16,7 +16,7 @@ public class Error_Constructor
     public void constructor_SetsProperties()
     {
         const string message = "a";
-        Error error = new Error(message);
+        Error error = new(message);
 
         Assert.True(error.Message == message);
     }

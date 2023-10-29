@@ -24,7 +24,7 @@ namespace OpalOPC.WPF
         private void Navbar_About_Click(object sender, RoutedEventArgs e)
         {
             // create new instance of window
-            VersionWindow versionWindow = new VersionWindow();
+            VersionWindow versionWindow = new();
 
             // open window as a new dialog
             versionWindow.ShowDialog();
@@ -50,9 +50,11 @@ namespace OpalOPC.WPF
 
         private void DragAndDropTargetsFileButton_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "All files (*.*)|*.*";
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            OpenFileDialog openFileDialog = new()
+            {
+                Filter = "All files (*.*)|*.*",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            };
 
             if (openFileDialog.ShowDialog() == true)
             {
@@ -66,10 +68,12 @@ namespace OpalOPC.WPF
 
         private void BrowseOutputReportFileButton_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "All files (*.*)|*.*";
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            openFileDialog.CheckFileExists = false;
+            OpenFileDialog openFileDialog = new()
+            {
+                Filter = "All files (*.*)|*.*",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                CheckFileExists = false
+            };
 
             if (openFileDialog.ShowDialog() == true)
             {

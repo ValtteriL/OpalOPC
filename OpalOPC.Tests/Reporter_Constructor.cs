@@ -6,11 +6,13 @@ using Xunit;
 public class Reporter_Constructor
 {
     [Fact]
-    public void constructor_DoesNotReturnNull()
+    public void ConstructorDoesNotReturnNull()
     {
-        StreamWriter sw = new StreamWriter(new MemoryStream());
-        sw.AutoFlush = true;
-        Reporter reporter = new Reporter(sw.BaseStream);
+        StreamWriter sw = new(new MemoryStream())
+        {
+            AutoFlush = true
+        };
+        Reporter reporter = new(sw.BaseStream);
 
         Assert.True(reporter != null);
     }

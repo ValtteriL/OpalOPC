@@ -7,8 +7,8 @@ public class Endpoint_Constructor
     [Fact]
     public void constructor_DoesNotReturnNull()
     {
-        Opc.Ua.EndpointDescription description = new Opc.Ua.EndpointDescription();
-        Endpoint endpoint = new Endpoint(description);
+        Opc.Ua.EndpointDescription description = new();
+        Endpoint endpoint = new(description);
 
         Assert.True(endpoint != null);
     }
@@ -16,7 +16,7 @@ public class Endpoint_Constructor
     [Fact]
     public void constructor_SetsProperties()
     {
-        Opc.Ua.EndpointDescription description = new Opc.Ua.EndpointDescription();
+        Opc.Ua.EndpointDescription description = new();
         string endpointUrl = "endpointUrl";
         string securityPolicyUrl = "securityPolicyUrl";
         byte[] serverCertificate = new byte[] { 1 };
@@ -25,7 +25,7 @@ public class Endpoint_Constructor
         description.SecurityMode = Opc.Ua.MessageSecurityMode.None;
         description.ServerCertificate = serverCertificate;
 
-        Endpoint endpoint = new Endpoint(description);
+        Endpoint endpoint = new(description);
 
         Assert.True(endpoint.EndpointDescription == description);
         Assert.True(endpoint.EndpointUrl == endpointUrl);

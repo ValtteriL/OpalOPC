@@ -11,11 +11,13 @@ public class ReportController_Constructor
     public void constructor_DoesNotReturnNull()
     {
         var loggerFactory = LoggerFactory.Create(builder => {});
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
-        StreamWriter sw = new StreamWriter(new MemoryStream());
-        sw.AutoFlush = true;
-        Reporter reporter = new Reporter(sw.BaseStream);
-        ReportController reportController = new ReportController(logger, reporter);
+        ILogger logger = loggerFactory.CreateLogger<ReportController_Constructor>();
+        StreamWriter sw = new(new MemoryStream())
+        {
+            AutoFlush = true
+        };
+        Reporter reporter = new(sw.BaseStream);
+        ReportController reportController = new(logger, reporter);
 
         Assert.True(reportController != null);
     }

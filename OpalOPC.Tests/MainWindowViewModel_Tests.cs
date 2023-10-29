@@ -13,7 +13,7 @@ public class MainWindowViewModel_Tests
     [Fact]
     public void Constructor()
     {
-        MainWindowViewModel model = new MainWindowViewModel();
+        MainWindowViewModel model = new();
 
         Assert.True(model.Title != null);
         Assert.True(model.TargetsLabel == "Targets");
@@ -28,13 +28,13 @@ public class MainWindowViewModel_Tests
     [Fact]
     public void Add_Single_Target()
     {
-        MainWindowViewModel model = new MainWindowViewModel();
+        MainWindowViewModel model = new();
         string target = "asd";
         model.TargetToAdd = target;
 
         model.AddTargetCommand.Execute(null);
 
-        Assert.True(model.TargetToAdd == String.Empty);
+        Assert.True(model.TargetToAdd == string.Empty);
         Assert.Contains($"opc.tcp://{target}", model.Targets);
     }
 
@@ -42,7 +42,7 @@ public class MainWindowViewModel_Tests
     [Fact]
     public void Add_Multiple_Targets()
     {
-        MainWindowViewModel model = new MainWindowViewModel();
+        MainWindowViewModel model = new();
         string target1 = "asd";
         string target2 = "opc.tcp://eee";
         string[] targets = { target1, target2, "" };
@@ -63,7 +63,7 @@ public class MainWindowViewModel_Tests
     [Fact]
     public void Choose_Verbosity()
     {
-        MainWindowViewModel model = new MainWindowViewModel();
+        MainWindowViewModel model = new();
 
         model.NormalVerbosityCommand.Execute(null);
         Assert.True(model.Verbosity == LogLevel.Information);
@@ -79,7 +79,7 @@ public class MainWindowViewModel_Tests
     [Fact]
     public void Remove_Target()
     {
-        MainWindowViewModel model = new MainWindowViewModel();
+        MainWindowViewModel model = new();
         string target = "opc.tcp://asdasd";
         model.Targets = new string[] { target };
 
@@ -92,7 +92,7 @@ public class MainWindowViewModel_Tests
     [Fact]
     public void Select_Target()
     {
-        MainWindowViewModel model = new MainWindowViewModel();
+        MainWindowViewModel model = new();
         string target = "opc.tcp://asdasd";
         model.Targets = new string[] { target };
 
@@ -105,13 +105,13 @@ public class MainWindowViewModel_Tests
     [Fact]
     public void Scan()
     {
-        MainWindowViewModel model = new MainWindowViewModel();
+        MainWindowViewModel model = new();
         string tempfile = Path.GetTempFileName();
         model.OutputFileLocation = tempfile;
 
         model.ScanCommand.Execute(null);
 
-        Thread.Sleep(100);
+        Thread.Sleep(500);
 
         Assert.True(model.ScanCompletedSuccessfully);
         Assert.True(File.Exists(tempfile));
@@ -123,7 +123,7 @@ public class MainWindowViewModel_Tests
     [Fact]
     public void Scan_And_Cancel()
     {
-        MainWindowViewModel model = new MainWindowViewModel();
+        MainWindowViewModel model = new();
         string tempfile = Path.GetTempFileName();
         model.OutputFileLocation = tempfile;
         string target1 = "opc.tcp://opcuaserver.com:48010";
@@ -140,12 +140,14 @@ public class MainWindowViewModel_Tests
     [Fact]
     public void ScanWithEmptyOutputFilePath()
     {
-        MainWindowViewModel model = new MainWindowViewModel();
-        model.OutputFileLocation = string.Empty;
+        MainWindowViewModel model = new()
+        {
+            OutputFileLocation = string.Empty
+        };
 
         model.ScanCommand.Execute(null);
 
-        Thread.Sleep(100);
+        Thread.Sleep(500);
         Assert.True(model.ScanCompletedSuccessfully);
     }
 

@@ -1,11 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
+using Opc.Ua.Client;
 using Util;
 
 namespace Plugin
 {
-    public class SelfSignedCertificatePlugin : Plugin
+    public class SelfSignedCertificatePlugin : PreAuthPlugin
     {
         // "self-signed certificates should not be trusted automatically"
         //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
@@ -17,32 +18,39 @@ namespace Plugin
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N
         private static readonly double _severity = 5.4;
 
-        public SelfSignedCertificatePlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
+        private readonly IConnectionUtil _connectionUtil;
 
-        public override Target Run(Target target)
+        public SelfSignedCertificatePlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity)
         {
-            _logger.LogTrace($"Testing if {target.ApplicationName} accepts self signed certificate");
-
-            Parallel.ForEach(target.GetEndpointsBySecurityPolicyUriNot(SecurityPolicies.None), endpoint =>
-                {
-                    if (SelfSignedCertAccepted(endpoint.EndpointDescription).Result)
-                    {
-                        _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} accepts self-signed client certificates");
-                        endpoint.Issues.Add(CreateIssue());
-                    }
-                });
-
-            return target;
+            _connectionUtil = new ConnectionUtil();
+        }
+        public SelfSignedCertificatePlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, _pluginId, _category, _issueTitle, _severity)
+        {
+            _connectionUtil = connectionUtil;
         }
 
-        private static async Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription)
+        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
+        {
+            _logger.LogTrace($"Testing if {endpoint} accepts self signed certificate");
+
+            List<ISession> sessions = new();
+
+            if (SelfSignedCertAccepted(endpoint.EndpointDescription, _connectionUtil).Result)
+            {
+                _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} accepts self-signed client certificates");
+                return (CreateIssue(), sessions);
+            }
+
+            return (null, sessions);
+        }
+
+        public static async Task<bool> SelfSignedCertAccepted(EndpointDescription endpointDescription, IConnectionUtil connectionUtil)
         {
             try
             {
-                ConnectionUtil util = new();
-                using Opc.Ua.Client.ISession session = await util.StartSession(endpointDescription, new UserIdentity());
+                ISession session = await connectionUtil.StartSession(endpointDescription, new UserIdentity());
             }
-            catch (Opc.Ua.ServiceResultException)
+            catch (ServiceResultException)
             {
                 return false;
             }
