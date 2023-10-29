@@ -29,7 +29,7 @@ public class DiscoveryControllerTest
         new EndpointDescription()
         {
             EndpointUrl = "asd"
-        } 
+        }
     };
 
     [Fact]
