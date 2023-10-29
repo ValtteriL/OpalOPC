@@ -16,7 +16,7 @@ public class CommonCredentialsPluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<CommonCredentialsPluginTest>();
 
         // act
         CommonCredentialsPlugin plugin = new(logger);
@@ -30,7 +30,7 @@ public class CommonCredentialsPluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<SecurityModeInvalidPluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
@@ -61,7 +61,7 @@ public class CommonCredentialsPluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<SecurityModeInvalidPluginTest>();
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),

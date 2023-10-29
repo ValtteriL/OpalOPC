@@ -16,7 +16,7 @@ public class SecurityPolicyBasic256PluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<SecurityPolicyBasic256PluginTest>();
 
         // act
         SecurityPolicyBasic256Plugin plugin = new(logger);
@@ -30,7 +30,7 @@ public class SecurityPolicyBasic256PluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<SecurityPolicyBasic256PluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
@@ -54,7 +54,7 @@ public class SecurityPolicyBasic256PluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<SecurityPolicyBasic256PluginTest>();
         EndpointDescription endpointDescription = new()
         {
             SecurityPolicyUri = new Uri(SecurityPolicies.Basic256).ToString(),

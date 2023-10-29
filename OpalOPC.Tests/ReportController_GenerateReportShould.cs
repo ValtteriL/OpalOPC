@@ -11,7 +11,7 @@ public class ReportController_generateReportShould
     public void GenerateReport_AddsReportProperty()
     {
         var loggerFactory = LoggerFactory.Create(builder => {});
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<ReportController_generateReportShould>();
         StreamWriter sw = new(new MemoryStream())
         {
             AutoFlush = true

@@ -16,7 +16,7 @@ public class AnonymousAuthenticationPluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
 
         // act
         AnonymousAuthenticationPlugin plugin = new(logger);
@@ -30,7 +30,7 @@ public class AnonymousAuthenticationPluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
@@ -57,7 +57,7 @@ public class AnonymousAuthenticationPluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<AnonymousAuthenticationPluginTest>();
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) })

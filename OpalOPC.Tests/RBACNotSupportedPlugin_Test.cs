@@ -16,7 +16,7 @@ public class RBACNotSupportedPluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<RBACNotSupportedPluginTest>();
 
         // act
         RBACNotSupportedPlugin plugin = new(logger);
@@ -30,7 +30,7 @@ public class RBACNotSupportedPluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<SecurityModeInvalidPluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
@@ -56,7 +56,7 @@ public class RBACNotSupportedPluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<SecurityModeInvalidPluginTest>();
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) })

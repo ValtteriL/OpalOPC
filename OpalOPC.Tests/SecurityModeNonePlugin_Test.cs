@@ -16,7 +16,7 @@ public class SecurityModeNonePluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<SecurityModeNonePluginTest>();
 
         // act
         SecurityModeNonePlugin plugin = new(logger);
@@ -30,7 +30,7 @@ public class SecurityModeNonePluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<SecurityModeNonePluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
@@ -55,7 +55,7 @@ public class SecurityModeNonePluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<SecurityModeNonePluginTest>();
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),

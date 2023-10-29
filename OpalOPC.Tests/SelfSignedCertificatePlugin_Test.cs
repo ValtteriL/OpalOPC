@@ -16,7 +16,7 @@ public class SelfSignedCertificatePluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
 
         // act
         SelfSignedCertificatePlugin plugin = new(logger);
@@ -30,7 +30,7 @@ public class SelfSignedCertificatePluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
@@ -58,7 +58,7 @@ public class SelfSignedCertificatePluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
         EndpointDescription endpointDescription = new()
         {
             SecurityPolicyUri = new Uri(SecurityPolicies.None).ToString(),

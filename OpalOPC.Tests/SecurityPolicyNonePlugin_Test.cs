@@ -16,7 +16,7 @@ public class SecurityPolicyNonePluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
 
         // act
         SecurityPolicyNonePlugin plugin = new(logger);
@@ -30,7 +30,7 @@ public class SecurityPolicyNonePluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
@@ -54,7 +54,7 @@ public class SecurityPolicyNonePluginTest
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
+        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
         EndpointDescription endpointDescription = new()
         {
             SecurityPolicyUri = new Uri(SecurityPolicies.None).ToString(),

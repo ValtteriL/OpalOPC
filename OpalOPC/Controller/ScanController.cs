@@ -41,7 +41,7 @@ namespace Controller
 
             TaskUtil.CheckForCancellation(_token);
 
-            DiscoveryController discoveryController = new(_logger, _token);
+            DiscoveryController discoveryController = new(_logger, new DiscoveryUtil(), _token);
             ICollection<Target> targets = discoveryController.DiscoverTargets(_targets);
 
             TaskUtil.CheckForCancellation(_token);

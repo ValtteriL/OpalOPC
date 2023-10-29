@@ -6,7 +6,7 @@ using Xunit;
 public class Reporter_Constructor
 {
     [Fact]
-    public void constructor_DoesNotReturnNull()
+    public void ConstructorDoesNotReturnNull()
     {
         StreamWriter sw = new(new MemoryStream())
         {
