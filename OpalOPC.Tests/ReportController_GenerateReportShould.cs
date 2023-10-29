@@ -12,8 +12,10 @@ public class ReportController_generateReportShould
     {
         var loggerFactory = LoggerFactory.Create(builder => {});
         ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
-        StreamWriter sw = new(new MemoryStream());
-        sw.AutoFlush = true;
+        StreamWriter sw = new(new MemoryStream())
+        {
+            AutoFlush = true
+        };
         Reporter reporter = new(sw.BaseStream);
         ReportController reportController = new(logger, reporter);
         string commandLine = string.Empty;

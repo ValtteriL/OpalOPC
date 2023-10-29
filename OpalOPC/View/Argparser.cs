@@ -6,10 +6,10 @@ namespace View
 {
     public class Argparser
     {
-        private string[] args;
-        private OptionSet optionSet;
-        private Options options = new Options();
-        private string programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+        private readonly string[] args;
+        private readonly OptionSet optionSet;
+        private Options options = new();
+        private readonly string programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
 
         public Argparser(string[] args)
         {
@@ -55,7 +55,7 @@ namespace View
 
         private Options readTargetFile(string path)
         {
-            List<string> lines = new List<string>();
+            List<string> lines = new();
 
             try
             {

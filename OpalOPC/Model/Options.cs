@@ -4,7 +4,7 @@ namespace Model
 {
     public class Options
     {
-        public List<Uri> targets = new List<Uri>();
+        public List<Uri> targets = new();
         public Stream? xmlOutputStream;
         public string? xmlOutputReportName;
         public LogLevel logLevel = LogLevel.Information;

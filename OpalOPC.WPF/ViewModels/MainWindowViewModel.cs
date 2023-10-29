@@ -79,11 +79,11 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
         ScanCompletedSuccessfully = false;
         ILogger logger = new GUILogger(Verbosity);
 
-        VersionCheckController versionCheckController = new VersionCheckController(logger);
+        VersionCheckController versionCheckController = new(logger);
         versionCheckController.CheckVersion();
 
         // create URI list of targets
-        List<Uri> targetUris = new List<Uri>();
+        List<Uri> targetUris = new();
         foreach (String target in Targets)
         {
             try
@@ -126,7 +126,7 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
             return;
         }
 
-        ScanController scanController = new ScanController(logger, targetUris, outputStream, generateGUICommandInReport(), token);
+        ScanController scanController = new(logger, targetUris, outputStream, generateGUICommandInReport(), token);
 
         // scan
         try

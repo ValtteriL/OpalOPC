@@ -84,7 +84,7 @@ public class Argparser_parseArgsShould
     [Fact]
     public void ParseArgs_NoTargets_ResultsInHelp()
     {
-        string[] args = { };
+        string[] args = Array.Empty<string>();
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();

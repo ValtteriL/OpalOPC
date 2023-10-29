@@ -10,8 +10,8 @@ namespace Controller
     public class SecurityTestController
     {
 
-        ILogger _logger;
-        ICollection<IPlugin> _securityTestPlugins;
+        readonly ILogger _logger;
+        readonly ICollection<IPlugin> _securityTestPlugins;
         readonly CancellationToken? _token;
 
         public SecurityTestController(ILogger logger, ICollection<IPlugin> SecurityTestPlugins, CancellationToken? token = null)

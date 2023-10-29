@@ -7,8 +7,8 @@ namespace Controller
     public class ReportController
     {
 
-        ILogger _logger;
-        IReporter _reporter;
+        readonly ILogger _logger;
+        readonly IReporter _reporter;
         public Report? report { get; set; }
 
         public ReportController(ILogger logger, IReporter reporter)

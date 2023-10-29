@@ -12,8 +12,10 @@ public class ReportController_WriteReportShould
     {
         var loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
-        StreamWriter sw = new(new MemoryStream());
-        sw.AutoFlush = true;
+        StreamWriter sw = new(new MemoryStream())
+        {
+            AutoFlush = true
+        };
         Reporter reporter = new(sw.BaseStream);
         ReportController reportController = new(logger, reporter);
         string runStatus = "hello";
@@ -36,8 +38,10 @@ public class ReportController_WriteReportShould
     {
         var loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryController_Constructor>();
-        StreamWriter sw = new(new MemoryStream());
-        sw.AutoFlush = true;
+        StreamWriter sw = new(new MemoryStream())
+        {
+            AutoFlush = true
+        };
         Reporter reporter = new(sw.BaseStream);
         ReportController reportController = new(logger, reporter);
         string runStatus = "hello";

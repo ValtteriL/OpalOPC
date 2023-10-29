@@ -9,7 +9,7 @@ namespace Controller
 {
     public class DiscoveryController
     {
-        ILogger _logger;
+        readonly ILogger _logger;
         readonly CancellationToken? _token;
 
         public DiscoveryController(ILogger logger, CancellationToken? token = null)
@@ -117,7 +117,7 @@ namespace Controller
 
                 TaskUtil.CheckForCancellation(_token);
 
-                Target target = new Target(ad);
+                Target target = new(ad);
 
                 foreach (string s in ad.DiscoveryUrls)
                 {
@@ -142,7 +142,7 @@ namespace Controller
                         string msg = $"Unable to resolve hostname {Utils.ParseUri(s).Host}";
                         _logger.LogWarning(msg);
 
-                        Server server = new Server(s, new EndpointDescriptionCollection());
+                        Server server = new(s, new EndpointDescriptionCollection());
                         server.AddError(new Error(msg));
 
                         target.AddServer(server);
@@ -154,7 +154,7 @@ namespace Controller
                         string msg = $"Https is not supported: {s_by_ip}";
                         _logger.LogWarning(msg);
 
-                        Server server = new Server(s_by_ip, new EndpointDescriptionCollection());
+                        Server server = new(s_by_ip, new EndpointDescriptionCollection());
                         server.AddError(new Error(msg));
 
                         target.AddServer(server);
@@ -182,7 +182,7 @@ namespace Controller
                         }
                         _logger.LogWarning(msg);
 
-                        Server server = new Server(s_by_ip, new EndpointDescriptionCollection());
+                        Server server = new(s_by_ip, new EndpointDescriptionCollection());
                         server.AddError(new Error(msg));
                         target.AddServer(server);
 

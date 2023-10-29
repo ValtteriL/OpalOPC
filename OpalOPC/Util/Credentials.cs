@@ -2,7 +2,8 @@ namespace Util
 {
     public class Credentials
     {
-        public static List<(string username, string password)> CommonCredentials = new List<(string username, string password)> {
+        public static readonly List<(string username, string password)> CommonCredentials = new()
+        {
                 // from https://github.com/COMSYS/msf-opcua/blob/master/credentials/opcua_credentials_sources.txt
                 (username: "HTTPS", password: "password"), // Turck TBEN-L4/5
                 (username: "User", password: "Siemens.1"), // SIMATIC S7-1500
