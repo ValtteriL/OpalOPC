@@ -1,11 +1,11 @@
-#if BUILT_FOR_WINDOWS
-namespace Tests;
 using Microsoft.Extensions.Logging;
 using Model;
 using OpalOPC.WPF;
 using View;
 using Xunit;
 
+#if BUILT_FOR_WINDOWS
+namespace Tests;
 public class MainWindowViewModel_Tests
 {
 

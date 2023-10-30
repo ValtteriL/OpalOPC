@@ -23,7 +23,7 @@ namespace Controller
 
         public ICollection<Target> DiscoverTargets(ICollection<Uri> discoveryUris)
         {
-            _logger.LogDebug($"Starting Discovery with {discoveryUris.Count} URIs");
+            _logger.LogDebug("{Message}", $"Starting Discovery with {discoveryUris.Count} URIs");
 
             ICollection<Target> targets = new List<Target>();
             foreach (Uri uri in discoveryUris)
@@ -58,12 +58,12 @@ namespace Controller
             ICollection<Target> targets = new List<Target>();
 
 
-            _logger.LogDebug($"Discovering applications in {discoveryUri}");
+            _logger.LogDebug("{Message}", $"Discovering applications in {discoveryUri}");
 
             if (discoveryUri.ToString().Contains("https://"))
             {
                 string msg = $"Https is not supported: {discoveryUri}";
-                _logger.LogError(msg);
+                _logger.LogError("{Message}", msg);
                 return targets;
             }
 
@@ -75,7 +75,7 @@ namespace Controller
             }
             catch (Exception)
             {
-                _logger.LogWarning($"Skipping {discoveryUri} because of preceding errors");
+                _logger.LogWarning("{Message}", $"Skipping {discoveryUri} because of preceding errors");
                 return targets;
             }
 
@@ -87,11 +87,11 @@ namespace Controller
             }
             catch (ServiceResultException)
             {
-                _logger.LogWarning($"Skipping {discoveryUri} because of preceding errors");
+                _logger.LogWarning("{Message}", $"Skipping {discoveryUri} because of preceding errors");
                 return targets;
             }
 
-            _logger.LogDebug($"Discovered {adc.Count} applications");
+            _logger.LogDebug("{Message}", $"Discovered {adc.Count} applications");
 
             foreach (ApplicationDescription ad in adc)
             {
@@ -118,17 +118,17 @@ namespace Controller
                 if (ex is UriFormatException)
                 {
                     msg = $"Invalid Uri format {uriString}";
-                    _logger.LogError(msg);
+                    _logger.LogError("{Message}", msg);
                 }
                 else if (ex is SocketException || ex is ArgumentException)
                 {
                     msg = $"Unable to resolve hostname {uriString}";
-                    _logger.LogError(msg);
+                    _logger.LogError("{Message}", msg);
                 }
                 else if (ex is ArgumentNullException || ex is ArgumentOutOfRangeException)
                 {
                     msg = $"Hostname or address of {uriString} is invalid";
-                    _logger.LogError(msg);
+                    _logger.LogError("{Message}", msg);
                 }
                 else
                 {
@@ -150,7 +150,7 @@ namespace Controller
             catch (Opc.Ua.ServiceResultException e)
             {
                 string msg = $"Cannot connect to discovery URI {uri}: {e}";
-                _logger.LogError(msg);
+                _logger.LogError("{Message}", msg);
                 throw;
             }
 
@@ -166,8 +166,8 @@ namespace Controller
 
                 // https://reference.opcfoundation.org/Core/Part4/v104/docs/5.4.4
                 // ask each discoveryUrl for endpoints
-                _logger.LogDebug($"Discovering endpoints for {applicationDescription.ApplicationName} ({applicationDescription.ProductUri})");
-                _logger.LogTrace($"Using DiscoveryUrl {s}");
+                _logger.LogDebug("{Message}", $"Discovering endpoints for {applicationDescription.ApplicationName} ({applicationDescription.ProductUri})");
+                _logger.LogTrace("{Message}", $"Using DiscoveryUrl {s}");
 
                 string s_by_ip;
                 try
@@ -186,7 +186,7 @@ namespace Controller
                 if (s_by_ip.Contains("https://"))
                 {
                     string msg = $"Https is not supported: {s_by_ip}";
-                    _logger.LogWarning(msg);
+                    _logger.LogWarning("{Message}", msg);
 
                     Server server = new(s_by_ip, new EndpointDescriptionCollection());
                     server.AddError(new Error(msg));
@@ -204,7 +204,7 @@ namespace Controller
                 catch (Opc.Ua.ServiceResultException e)
                 {
                     string msg = $"Cannot connect to discovery URI {s_by_ip}: {e}";
-                    _logger.LogWarning(msg);
+                    _logger.LogWarning("{Message}", msg);
 
                     Server server = new(s_by_ip, new EndpointDescriptionCollection());
                     server.AddError(new Error(msg));
@@ -216,7 +216,7 @@ namespace Controller
                 // remove all that contain https scheme
                 edc.RemoveAll(e => e.EndpointUrl.Contains("https://"));
 
-                _logger.LogDebug($"Discovered {edc.Count} endpoints");
+                _logger.LogDebug("{Message}", $"Discovered {edc.Count} endpoints");
 
                 target.AddServer(new Server(s_by_ip, edc));
             }

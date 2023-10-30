@@ -1,4 +1,3 @@
-namespace Tests;
 
 using Microsoft.Extensions.Logging;
 using Model;
@@ -9,13 +8,14 @@ using Plugin;
 using Util;
 using Xunit;
 
+namespace Tests;
 public class CommonCredentialsPluginTest
 {
     [Fact]
     public void ConstructorDoesNotReturnNull()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<CommonCredentialsPluginTest>();
 
         // act
@@ -29,7 +29,7 @@ public class CommonCredentialsPluginTest
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<SecurityModeInvalidPluginTest>();
 
         EndpointDescription endpointDescription = new()
@@ -60,7 +60,7 @@ public class CommonCredentialsPluginTest
     public void ReportsIssues()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<SecurityModeInvalidPluginTest>();
         EndpointDescription endpointDescription = new()
         {

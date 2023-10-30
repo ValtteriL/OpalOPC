@@ -16,7 +16,7 @@ class OpalOPC
             Environment.Exit((int)options.exitCode);
         }
 
-        using var loggerFactory = LoggerFactory.Create(builder =>
+        using ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
         {
             builder
                 .SetMinimumLevel(options.logLevel)

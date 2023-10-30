@@ -1,8 +1,8 @@
-namespace Tests;
 using Model;
 using View;
 using Xunit;
 
+namespace Tests;
 public class Argparser_Constructor
 {
     [Fact]

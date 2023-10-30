@@ -1,4 +1,3 @@
-namespace Tests;
 
 using Microsoft.Extensions.Logging;
 using Model;
@@ -9,13 +8,14 @@ using Plugin;
 using Util;
 using Xunit;
 
+namespace Tests;
 public class AuditingDisabledPluginTest
 {
     [Fact]
     public void ConstructorDoesNotReturnNull()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
 
         // act
@@ -29,7 +29,7 @@ public class AuditingDisabledPluginTest
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
 
         EndpointDescription endpointDescription = new()
@@ -55,7 +55,7 @@ public class AuditingDisabledPluginTest
     public void ReportsIssues()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
         EndpointDescription endpointDescription = new()
         {

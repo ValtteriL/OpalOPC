@@ -1,4 +1,3 @@
-namespace Tests;
 
 using Microsoft.Extensions.Logging;
 using Model;
@@ -9,13 +8,14 @@ using Plugin;
 using Util;
 using Xunit;
 
+namespace Tests;
 public class SecurityModeNonePluginTest
 {
     [Fact]
     public void ConstructorDoesNotReturnNull()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<SecurityModeNonePluginTest>();
 
         // act
@@ -29,7 +29,7 @@ public class SecurityModeNonePluginTest
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<SecurityModeNonePluginTest>();
 
         EndpointDescription endpointDescription = new()
@@ -54,7 +54,7 @@ public class SecurityModeNonePluginTest
     public void ReportsIssues()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<SecurityModeNonePluginTest>();
         EndpointDescription endpointDescription = new()
         {

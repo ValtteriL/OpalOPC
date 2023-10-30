@@ -1,8 +1,8 @@
-namespace Tests;
 using Model;
 using View;
 using Xunit;
 
+namespace Tests;
 public class Reporter_Constructor
 {
     [Fact]

@@ -1,8 +1,8 @@
-namespace Tests;
 using Model;
 using Opc.Ua;
 using Xunit;
 
+namespace Tests;
 public class Server_Constructor
 {
     [Fact]

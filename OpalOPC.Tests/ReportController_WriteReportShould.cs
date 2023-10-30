@@ -1,16 +1,16 @@
-namespace Tests;
 using Controller;
 using Microsoft.Extensions.Logging;
 using Model;
 using View;
 using Xunit;
 
+namespace Tests;
 public class ReportController_WriteReportShould
 {
     [Fact]
     public void WriteReport_RunningBeforeGenerateReportCausesNullReferenceException()
     {
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<ReportController_WriteReportShould>();
         StreamWriter sw = new(new MemoryStream())
         {
@@ -36,7 +36,7 @@ public class ReportController_WriteReportShould
     [Fact]
     public void WriteReport_AddsReportRunStatus()
     {
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<ReportController_WriteReportShould>();
         StreamWriter sw = new(new MemoryStream())
         {

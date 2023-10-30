@@ -1,7 +1,7 @@
-namespace Tests;
 using Model;
 using Xunit;
 
+namespace Tests;
 public class EndpointSummary_Constructor
 {
     [Fact]
