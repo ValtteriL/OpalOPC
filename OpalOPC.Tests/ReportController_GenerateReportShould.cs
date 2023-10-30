@@ -1,16 +1,16 @@
 namespace Tests;
-using View;
-using Model;
-using Xunit;
-using Microsoft.Extensions.Logging;
 using Controller;
+using Microsoft.Extensions.Logging;
+using Model;
+using View;
+using Xunit;
 
 public class ReportController_generateReportShould
 {
     [Fact]
     public void GenerateReport_AddsReportProperty()
     {
-        var loggerFactory = LoggerFactory.Create(builder => {});
+        var loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<ReportController_generateReportShould>();
         StreamWriter sw = new(new MemoryStream())
         {

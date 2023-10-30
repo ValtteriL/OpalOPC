@@ -1,9 +1,9 @@
 namespace Tests;
-using View;
-using Model;
-using Xunit;
-using Microsoft.Extensions.Logging;
 using Controller;
+using Microsoft.Extensions.Logging;
+using Model;
+using View;
+using Xunit;
 
 public class ReportController_WriteReportShould
 {

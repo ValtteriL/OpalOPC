@@ -1,6 +1,6 @@
 namespace Tests;
-using View;
 using Model;
+using View;
 using Xunit;
 
 public class Argparser_parseArgsShould

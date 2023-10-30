@@ -17,7 +17,7 @@ namespace Model
 
         // parameterless constructor for XML serializer
         internal EndpointSummary()
-        {}
+        { }
 
         public EndpointSummary(Endpoint endpoint)
         {

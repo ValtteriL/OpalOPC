@@ -17,7 +17,7 @@ namespace Model
 
         // parameterless constructor for XML serializer
         internal Server()
-        {}
+        { }
 
         public Server(string DiscoveryUrl, EndpointDescriptionCollection edc)
         {
@@ -40,7 +40,7 @@ namespace Model
 
             foreach (Endpoint endpoint in SeparatedEndpoints)
             {
-                if(endpointDictionary.ContainsKey(endpoint.EndpointUrl))
+                if (endpointDictionary.ContainsKey(endpoint.EndpointUrl))
                 {
                     endpointDictionary[endpoint.EndpointUrl].MergeEndpoint(endpoint);
                     continue;

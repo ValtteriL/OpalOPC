@@ -26,7 +26,7 @@ public class EndpointSummary_Constructor
         catch (System.NullReferenceException)
         {
             Assert.True(true);
-            return;   
+            return;
         }
 
         Assert.True(false);

@@ -1,15 +1,15 @@
 namespace Tests;
 
+using System.Net;
+using System.Net.Sockets;
+using Controller;
 using Microsoft.Extensions.Logging;
 using Model;
 using Moq;
 using Opc.Ua;
 using Opc.Ua.Client;
-using Controller;
 using Util;
 using Xunit;
-using System.Net.Sockets;
-using System.Net;
 
 public class DiscoveryControllerTest
 {

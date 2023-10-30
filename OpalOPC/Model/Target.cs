@@ -17,7 +17,7 @@ namespace Model
 
         // parameterless constructor for XML serializer
         internal Target()
-        {}
+        { }
 
         public Target(ApplicationDescription ad)
         {

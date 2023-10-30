@@ -1,12 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Diagnostics;
+using System.IO;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Controller;
 using Microsoft.Extensions.Logging;
 using OpalOPC.WPF.Logger;
 using OpalOPC.WPF.ViewModels;
-using System.Diagnostics;
-using System.IO;
 
 
 namespace OpalOPC.WPF;
@@ -131,7 +131,8 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
         // scan
         try
         {
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 scanController.Scan();
                 logger.LogInformation($"Report saved to {outputfile} (Use browser to view it)");
                 outputStream.Close();
@@ -139,11 +140,11 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
 
             ScanCompletedSuccessfully = true;
         }
-        catch(OperationCanceledException)
+        catch (OperationCanceledException)
         {
             logger.LogWarning($"Scan canceled");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             logger.LogCritical($"Unhandled exception: {ex}");
         }

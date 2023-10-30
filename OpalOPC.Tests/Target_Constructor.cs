@@ -11,7 +11,7 @@ public class Target_Constructor
 
         try
         {
-            Target target = new(description);   
+            Target target = new(description);
         }
         catch (System.NullReferenceException)
         {
