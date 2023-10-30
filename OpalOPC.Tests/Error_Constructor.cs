@@ -1,7 +1,7 @@
-namespace Tests;
 using Model;
 using Xunit;
 
+namespace Tests;
 public class Error_Constructor
 {
     [Fact]

@@ -1,19 +1,18 @@
-namespace Tests;
 
+using System.Net;
+using System.Net.Sockets;
+using Controller;
 using Microsoft.Extensions.Logging;
 using Model;
 using Moq;
 using Opc.Ua;
-using Opc.Ua.Client;
-using Controller;
 using Util;
 using Xunit;
-using System.Net.Sockets;
-using System.Net;
 
+namespace Tests;
 public class DiscoveryControllerTest
 {
-    private ApplicationDescriptionCollection _validApplicationDescriptionCollection = new() { new ApplicationDescription()
+    private readonly ApplicationDescriptionCollection _validApplicationDescriptionCollection = new() { new ApplicationDescription()
     {
         ApplicationName = "test",
         ApplicationType = ApplicationType.Server,
@@ -24,7 +23,7 @@ public class DiscoveryControllerTest
                 "opc.tcp://example.com:53530"
             }
     } };
-    private EndpointDescriptionCollection _validEndpointDescriptionCollection = new()
+    private readonly EndpointDescriptionCollection _validEndpointDescriptionCollection = new()
     {
         new EndpointDescription()
         {
@@ -36,7 +35,7 @@ public class DiscoveryControllerTest
     public void ConstructorDoesNotReturnNull()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
         DiscoveryUtil discoveryUtil = new();
 
@@ -51,7 +50,7 @@ public class DiscoveryControllerTest
     public void ReturnsCorrectNumberOfTargetsAndEndpoints()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
         List<Uri> discoveryUris = new() {
             new Uri("opc.tcp://asd.com"),
@@ -79,7 +78,7 @@ public class DiscoveryControllerTest
     public void EmptyDiscoveryUrisReturnEmptyTargets()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
         DiscoveryUtil discoveryUtil = new();
         DiscoveryController controller = new(logger, discoveryUtil);
@@ -96,7 +95,7 @@ public class DiscoveryControllerTest
     public void HttpsDiscoveryUriReturnsEmptyTargets()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
         DiscoveryUtil discoveryUtil = new();
         DiscoveryController controller = new(logger, discoveryUtil);
@@ -115,7 +114,7 @@ public class DiscoveryControllerTest
     public void SocketExceptionReturnsEmptyTargets()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
         List<Uri> discoveryUris = new() {
             new Uri("opc.tcp://asd.com"),
@@ -139,7 +138,7 @@ public class DiscoveryControllerTest
     public void ExceptionReturnsEmptyTargets()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
         List<Uri> discoveryUris = new() {
             new Uri("opc.tcp://asd.com"),
@@ -163,14 +162,14 @@ public class DiscoveryControllerTest
     public void ResolvesToZeroAddresses()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
         List<Uri> discoveryUris = new() {
             new Uri("opc.tcp://asd.com"),
         };
 
         var mockDiscoveryUtil = new Mock<IDiscoveryUtil>();
-        mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { });
+        mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(Array.Empty<IPAddress>());
         mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
         mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
@@ -187,7 +186,7 @@ public class DiscoveryControllerTest
     public void DiscoverApplicationsServiceResultExceptionReturnsEmptyTargets()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
         List<Uri> discoveryUris = new() {
             new Uri("opc.tcp://asd.com"),
@@ -208,10 +207,10 @@ public class DiscoveryControllerTest
     }
 
     [Fact]
-    public void DiscoverApplicationsExceptionReturnsEmptyTargets()
+    public void DiscoverApplicationsExceptionReturnsInExceptionThrown()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
         List<Uri> discoveryUris = new() {
             new Uri("opc.tcp://asd.com"),
@@ -224,18 +223,15 @@ public class DiscoveryControllerTest
 
         DiscoveryController controller = new(logger, mockDiscoveryUtil.Object);
 
-        // act
-        ICollection<Target> targets = controller.DiscoverTargets(discoveryUris);
-
-        // assert
-        Assert.Empty(targets);
+        // act & assert
+        Assert.Throws<Exception>(() => controller.DiscoverTargets(discoveryUris));
     }
 
     [Fact]
     public void DiscoverEndpointsServiceResultExceptionReturnsSingleTargetNoEndpoints()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
         List<Uri> discoveryUris = new() {
             new Uri("opc.tcp://asd.com"),
@@ -257,10 +253,10 @@ public class DiscoveryControllerTest
     }
 
     [Fact]
-    public void DiscoverEndpointsExceptionReturnsEmptyTargets()
+    public void DiscoverEndpointsExceptionResultsInExceptionThrown()
     {
         // arrange
-        var loggerFactory = LoggerFactory.Create(builder => { });
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
         List<Uri> discoveryUris = new() {
             new Uri("opc.tcp://asd.com"),
@@ -273,11 +269,8 @@ public class DiscoveryControllerTest
 
         DiscoveryController controller = new(logger, mockDiscoveryUtil.Object);
 
-        // act
-        ICollection<Target> targets = controller.DiscoverTargets(discoveryUris);
-
-        // assert
-        Assert.Empty(targets);
+        // act & assert
+        Assert.Throws<Exception>(() => controller.DiscoverTargets(discoveryUris));
     }
 
 }

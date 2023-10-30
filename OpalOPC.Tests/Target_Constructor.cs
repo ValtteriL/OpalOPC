@@ -1,7 +1,7 @@
-namespace Tests;
 using Model;
 using Xunit;
 
+namespace Tests;
 public class Target_Constructor
 {
     [Fact]
@@ -11,7 +11,7 @@ public class Target_Constructor
 
         try
         {
-            Target target = new(description);   
+            Target target = new(description);
         }
         catch (System.NullReferenceException)
         {

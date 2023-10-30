@@ -1,7 +1,7 @@
-namespace Tests;
 using Model;
 using Xunit;
 
+namespace Tests;
 public class EndpointSummary_Constructor
 {
     [Fact]
@@ -26,7 +26,7 @@ public class EndpointSummary_Constructor
         catch (System.NullReferenceException)
         {
             Assert.True(true);
-            return;   
+            return;
         }
 
         Assert.True(false);

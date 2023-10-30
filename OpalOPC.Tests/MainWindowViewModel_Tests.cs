@@ -1,11 +1,11 @@
+using Microsoft.Extensions.Logging;
+using Model;
+using OpalOPC.WPF;
+using View;
+using Xunit;
+
 #if BUILT_FOR_WINDOWS
 namespace Tests;
-using View;
-using Model;
-using Xunit;
-using OpalOPC.WPF;
-using Microsoft.Extensions.Logging;
-
 public class MainWindowViewModel_Tests
 {
 
@@ -128,7 +128,7 @@ public class MainWindowViewModel_Tests
         model.OutputFileLocation = tempfile;
         string target1 = "opc.tcp://opcuaserver.com:48010";
         string target2 = "opc.tcp://opcuaserver.com:4840";
-        model.Targets = new string[] { target1, target2};
+        model.Targets = new string[] { target1, target2 };
 
         model.ScanCommand.Execute(null);
         model.ScanCancelCommand.Execute(null);

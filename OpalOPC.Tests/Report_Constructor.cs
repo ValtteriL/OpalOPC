@@ -1,7 +1,7 @@
-namespace Tests;
 using Model;
 using Xunit;
 
+namespace Tests;
 public class Report_Constructor
 {
     [Fact]
@@ -19,7 +19,7 @@ public class Report_Constructor
         DateTime stop = DateTime.MaxValue;
         List<Target> targets = new();
         string commandLine = string.Empty;
-        
+
         Report report = new(targets, start, stop, commandLine);
 
         Assert.True(report.Targets.Count == targets.Count);

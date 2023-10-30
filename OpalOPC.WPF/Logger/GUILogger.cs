@@ -1,12 +1,12 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Extensions.Logging;
-using OpalOPC.WPF.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
+using OpalOPC.WPF.ViewModels;
 
 namespace OpalOPC.WPF.Logger
 {
@@ -14,7 +14,8 @@ namespace OpalOPC.WPF.Logger
     {
         private readonly LogLevel minimumLogLevel;
 
-        public GUILogger(LogLevel _minimumLogLevel) {
+        public GUILogger(LogLevel _minimumLogLevel)
+        {
             minimumLogLevel = _minimumLogLevel;
         }
 

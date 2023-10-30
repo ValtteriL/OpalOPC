@@ -27,7 +27,7 @@ namespace Plugin
             _connectionUtil = connectionUtil;
         }
 
-        
+
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {

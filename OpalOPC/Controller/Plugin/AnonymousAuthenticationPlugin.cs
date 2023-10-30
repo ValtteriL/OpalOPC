@@ -20,7 +20,8 @@ namespace Plugin
 
         private readonly IConnectionUtil _connectionUtil;
 
-        public AnonymousAuthenticationPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {
+        public AnonymousAuthenticationPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity)
+        {
             _connectionUtil = new ConnectionUtil();
         }
         public AnonymousAuthenticationPlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, _pluginId, _category, _issueTitle, _severity)

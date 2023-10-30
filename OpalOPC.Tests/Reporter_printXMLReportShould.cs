@@ -1,10 +1,10 @@
-namespace Tests;
-using View;
-using Model;
-using Xunit;
-using System.Xml.Serialization;
 using System.Xml;
+using System.Xml.Serialization;
+using Model;
+using View;
+using Xunit;
 
+namespace Tests;
 public class Reporter_printXHTMLReportShould
 {
     [Fact]

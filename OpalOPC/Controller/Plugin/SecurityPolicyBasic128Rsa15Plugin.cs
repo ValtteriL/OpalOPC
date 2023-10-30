@@ -16,7 +16,7 @@ namespace Plugin
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N
         private static readonly double _severity = 4.8;
 
-        public SecurityPolicyBasic128Rsa15Plugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) {}
+        public SecurityPolicyBasic128Rsa15Plugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {

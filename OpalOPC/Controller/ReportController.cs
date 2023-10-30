@@ -23,7 +23,7 @@ namespace Controller
             _logger.LogDebug("Generating report");
 
             // Merge opctarget endpoints
-            foreach(Target target in targets)
+            foreach (Target target in targets)
             {
                 target.MergeEndpoints();
             }
