@@ -57,31 +57,46 @@ namespace Controller
 
             ICollection<Target> targets = new List<Target>();
 
+
+            _logger.LogDebug($"Discovering applications in {discoveryUri}");
+
+            if (discoveryUri.ToString().Contains("https://"))
+            {
+                string msg = $"Https is not supported: {discoveryUri}";
+                _logger.LogError(msg);
+                return targets;
+            }
+
+            Uri discoveryUriWithIP;
+
             try
             {
-                _logger.LogDebug($"Discovering applications in {discoveryUri}");
-
-                if (discoveryUri.ToString().Contains("https://"))
-                {
-                    string msg = $"Https is not supported: {discoveryUri}";
-                    _logger.LogError(msg);
-                    return targets;
-                }
-
-                Uri discoveryUriWithIP = Utils.ParseUri(ConvertToIPBasedURI(discoveryUri.ToString()));
-
-                ApplicationDescriptionCollection adc = DiscoverApplications(discoveryUriWithIP);
-
-                _logger.LogDebug($"Discovered {adc.Count} applications");
-
-                foreach (ApplicationDescription ad in adc)
-                {
-                    TaskUtil.CheckForCancellation(_token);
-                    targets.Add(DiscoverEndpoints(ad));
-                }
+                discoveryUriWithIP = Utils.ParseUri(ConvertToIPBasedURI(discoveryUri.ToString()));
             }
             catch (Exception)
             {
+                _logger.LogWarning($"Skipping {discoveryUri} because of preceding errors");
+                return targets;
+            }
+
+            ApplicationDescriptionCollection adc;
+
+            try
+            {
+                adc = DiscoverApplications(discoveryUriWithIP);
+            }
+            catch (ServiceResultException)
+            {
+                _logger.LogWarning($"Skipping {discoveryUri} because of preceding errors");
+                return targets;
+            }
+
+            _logger.LogDebug($"Discovered {adc.Count} applications");
+
+            foreach (ApplicationDescription ad in adc)
+            {
+                TaskUtil.CheckForCancellation(_token);
+                targets.Add(DiscoverEndpoints(ad));
             }
 
             return targets;
@@ -97,17 +112,30 @@ namespace Controller
                 string ip = addresses.First().ToString();
                 return uri.OriginalString.Replace(uri.Host, ip);
             }
-            catch (UriFormatException)
+            catch (Exception ex)
             {
-                string msg = $"Invalid Uri format {uriString}";
-                _logger.LogError(msg);
-                throw;
-            }
-            catch (Exception)
-            {
-                string msg = $"Unable to resolve hostname {uriString}";
-                _logger.LogWarning(msg);
-                throw;
+                string msg;
+                if (ex is UriFormatException)
+                {
+                    msg = $"Invalid Uri format {uriString}";
+                    _logger.LogError(msg);
+                }
+                else if (ex is SocketException || ex is ArgumentException)
+                {
+                    msg = $"Unable to resolve hostname {uriString}";
+                    _logger.LogError(msg);
+                }
+                else if (ex is ArgumentNullException || ex is ArgumentOutOfRangeException)
+                {
+                    msg = $"Hostname or address of {uriString} is invalid";
+                    _logger.LogError(msg);
+                }
+                else
+                {
+                    throw;
+                }
+
+                throw new Exception(msg);
             }
         }
 
@@ -121,19 +149,8 @@ namespace Controller
             }
             catch (Opc.Ua.ServiceResultException e)
             {
-                if (e.Message.Contains("BadRequestTimeout"))
-                {
-                    _logger.LogError($"Timeout connecting to discovery URI {uri}");
-                }
-                else if (e.Message.Contains("BadNotConnected") || e.Message.Contains("BadSecureChannelClosed"))
-                {
-                    _logger.LogError($"Error connecting to discovery URI {uri}");
-                }
-                else
-                {
-                    _logger.LogError($"Unknown exception connecting to discovery URI: {e}");
-                }
-
+                string msg = $"Cannot connect to discovery URI {uri}: {e}";
+                _logger.LogError(msg);
                 throw;
             }
 
@@ -157,15 +174,10 @@ namespace Controller
                 {
                     s_by_ip = ConvertToIPBasedURI(s);
                 }
-                catch (UriFormatException)
-                {
-                    continue;
-                }
                 catch (Exception e)
                 {
-                    string msg = $"{Utils.ParseUri(s).Host}: {e.Message}";
                     Server server = new(s, new EndpointDescriptionCollection());
-                    server.AddError(new Error(msg));
+                    server.AddError(new Error(e.Message));
 
                     target.AddServer(server);
                     continue;
@@ -191,16 +203,7 @@ namespace Controller
                 }
                 catch (Opc.Ua.ServiceResultException e)
                 {
-                    string msg = string.Empty;
-
-                    if (e.Message.Contains("BadNotConnected"))
-                    {
-                        msg = $"Cannot connect to discovery URI {s_by_ip}";
-                    }
-                    else
-                    {
-                        msg = $"Unknown exception connecting to discovery URI {s_by_ip}: {e}";
-                    }
+                    string msg = $"Cannot connect to discovery URI {s_by_ip}: {e}";
                     _logger.LogWarning(msg);
 
                     Server server = new(s_by_ip, new EndpointDescriptionCollection());

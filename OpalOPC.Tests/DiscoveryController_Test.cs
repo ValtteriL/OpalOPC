@@ -208,7 +208,7 @@ public class DiscoveryControllerTest
     }
 
     [Fact]
-    public void DiscoverApplicationsExceptionReturnsEmptyTargets()
+    public void DiscoverApplicationsExceptionReturnsInExceptionThrown()
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
@@ -224,11 +224,8 @@ public class DiscoveryControllerTest
 
         DiscoveryController controller = new(logger, mockDiscoveryUtil.Object);
 
-        // act
-        ICollection<Target> targets = controller.DiscoverTargets(discoveryUris);
-
-        // assert
-        Assert.Empty(targets);
+        // act & assert
+        Assert.Throws<Exception>(() => controller.DiscoverTargets(discoveryUris));
     }
 
     [Fact]
@@ -257,7 +254,7 @@ public class DiscoveryControllerTest
     }
 
     [Fact]
-    public void DiscoverEndpointsExceptionReturnsEmptyTargets()
+    public void DiscoverEndpointsExceptionResultsInExceptionThrown()
     {
         // arrange
         var loggerFactory = LoggerFactory.Create(builder => { });
@@ -273,11 +270,8 @@ public class DiscoveryControllerTest
 
         DiscoveryController controller = new(logger, mockDiscoveryUtil.Object);
 
-        // act
-        ICollection<Target> targets = controller.DiscoverTargets(discoveryUris);
-
-        // assert
-        Assert.Empty(targets);
+        // act & assert
+        Assert.Throws<Exception>(() => controller.DiscoverTargets(discoveryUris));
     }
 
 }
