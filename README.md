@@ -32,3 +32,6 @@ make run-opcuaserver.com-weather
 # test install.sh
 make run-linux-mac-installer
 ```
+
+
+test
