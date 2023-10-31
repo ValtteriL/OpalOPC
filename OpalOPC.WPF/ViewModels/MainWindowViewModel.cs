@@ -7,6 +7,7 @@ using Controller;
 using Microsoft.Extensions.Logging;
 using OpalOPC.WPF.Logger;
 using OpalOPC.WPF.ViewModels;
+using Opc.Ua.Client;
 
 
 namespace OpalOPC.WPF;
@@ -113,7 +114,7 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
         FileStream outputStream;
         try
         {
-            outputStream = File.OpenWrite(outputfile);
+            outputStream = File.Create(outputfile);
         }
         catch (UnauthorizedAccessException)
         {
