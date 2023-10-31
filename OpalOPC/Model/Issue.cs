@@ -14,9 +14,9 @@ namespace Model
 
         public Issue(int pluginId, string name, double severity)
         {
-            this.PluginId = pluginId;
-            this.Name = name;
-            this.Severity = severity;
+            PluginId = pluginId;
+            Name = name;
+            Severity = severity;
         }
     }
 }

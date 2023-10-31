@@ -11,27 +11,27 @@ namespace Plugin
         // "′anonymous′ should be used only for accessing non-critical UA server resources"
         //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
         // try anonymous authentication
-        private static readonly PluginId _pluginId = PluginId.AnonymousAuthentication;
-        private static readonly string _category = PluginCategories.Authentication;
-        private static readonly string _issueTitle = "Anonymous authentication enabled";
+        private static readonly PluginId s_pluginId = PluginId.AnonymousAuthentication;
+        private static readonly string s_category = PluginCategories.Authentication;
+        private static readonly string s_issueTitle = "Anonymous authentication enabled";
 
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L
-        private static readonly double _severity = 7.3;
+        private static readonly double s_severity = 7.3;
 
         private readonly IConnectionUtil _connectionUtil;
 
-        public AnonymousAuthenticationPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity)
+        public AnonymousAuthenticationPlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
         {
             _connectionUtil = new ConnectionUtil();
         }
-        public AnonymousAuthenticationPlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, _pluginId, _category, _issueTitle, _severity)
+        public AnonymousAuthenticationPlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
         {
             _connectionUtil = connectionUtil;
         }
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {endpoint} for anonymous access");
+            _logger.LogTrace("{Message}", $"Testing {endpoint} for anonymous access");
 
             List<ISession> sessions = new();
 

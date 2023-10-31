@@ -30,11 +30,11 @@ namespace Controller
         public void Scan()
         {
             DateTime start = DateTime.Now;
-            _logger.LogInformation($"Starting OpalOPC {Util.VersionUtil.AppAssemblyVersion} ( https://opalopc.com )");
+            _logger.LogInformation("{Message}", $"Starting OpalOPC {Util.VersionUtil.AppAssemblyVersion} ( https://opalopc.com )");
 
             if (_targets.Count == 0)
             {
-                _logger.LogWarning("No targets were specified, so 0 applications will be scanned.");
+                _logger.LogWarning("{Message}", "No targets were specified, so 0 applications will be scanned.");
             }
 
             IReporter reporter = new Reporter(_reportOutputStream);
@@ -75,7 +75,7 @@ namespace Controller
 
             TimeSpan ts = (end - start);
             string runStatus = $"OpalOPC done: {_targets.Count} Discovery URLs ({reportController.report!.Targets.Count} applications found) scanned in {Math.Round(ts.TotalSeconds, 2)} seconds";
-            _logger.LogInformation(runStatus);
+            _logger.LogInformation("{Message}", runStatus);
 
             reportController.WriteReport(runStatus);
         }

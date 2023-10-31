@@ -24,13 +24,13 @@ namespace Model
             this.DiscoveryUrl = DiscoveryUrl;
             foreach (EndpointDescription e in edc)
             {
-                this.SeparatedEndpoints.Add(new Endpoint(e));
+                SeparatedEndpoints.Add(new Endpoint(e));
             }
         }
 
         public void AddError(Error error)
         {
-            this.Errors.Add(error);
+            Errors.Add(error);
         }
 
         // Merge SeparatedEndpoints into Endpointsummaries by endpointUrls
@@ -49,7 +49,7 @@ namespace Model
                 endpointDictionary.Add(endpoint.EndpointUrl, new EndpointSummary(endpoint));
             }
 
-            this.Endpoints = endpointDictionary.Values.ToList();
+            Endpoints = endpointDictionary.Values.ToList();
         }
 
     }

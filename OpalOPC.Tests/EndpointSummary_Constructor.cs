@@ -5,16 +5,6 @@ namespace Tests;
 public class EndpointSummary_Constructor
 {
     [Fact]
-    public void constructor_DoesNotReturnNull()
-    {
-        Opc.Ua.EndpointDescription description = new();
-        Endpoint endpoint = new(new Opc.Ua.EndpointDescription());
-        EndpointSummary endpointSummary = new(endpoint);
-
-        Assert.True(endpoint != null);
-    }
-
-    [Fact]
     public void constructor_NullInputReturnsNullReferenceException()
     {
         Endpoint? endpoint = null;

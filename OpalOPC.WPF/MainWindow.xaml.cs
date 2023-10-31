@@ -44,7 +44,7 @@ namespace OpalOPC.WPF
         private void HandleFileOpen(string path)
         {
             // Handle target file
-            MainWindowViewModel viewModel = (MainWindowViewModel)this.DataContext;
+            MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
             viewModel.AddTargetsFromFile(path);
         }
 
@@ -61,7 +61,7 @@ namespace OpalOPC.WPF
                 string fileName = openFileDialog.FileName;
 
                 // Handle target file
-                MainWindowViewModel viewModel = (MainWindowViewModel)this.DataContext;
+                MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
                 viewModel.AddTargetsFromFile(System.IO.Path.GetFullPath(fileName));
             }
         }
@@ -80,7 +80,7 @@ namespace OpalOPC.WPF
                 string path = System.IO.Path.GetFullPath(openFileDialog.FileName);
 
                 // Handle output location selection
-                MainWindowViewModel viewModel = (MainWindowViewModel)this.DataContext;
+                MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
                 viewModel.SetOutputFileLocation(path);
             }
         }
@@ -91,7 +91,7 @@ namespace OpalOPC.WPF
             Button? btn = sender as Button;
 
             // Handle target deletion
-            MainWindowViewModel viewModel = (MainWindowViewModel)this.DataContext;
+            MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
             viewModel.DeleteTarget((string)btn!.DataContext);
         }
 
@@ -101,7 +101,7 @@ namespace OpalOPC.WPF
             TextBlock? block = sender as TextBlock;
 
             // Handle target deletion
-            MainWindowViewModel viewModel = (MainWindowViewModel)this.DataContext;
+            MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
             viewModel.SetTargetToAdd((string)block!.DataContext);
         }
     }

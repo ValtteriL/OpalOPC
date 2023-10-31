@@ -25,20 +25,20 @@ namespace Controller
         // Run all security tests and return result-populated opcTarget
         public ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets)
         {
-            _logger.LogTrace($"Loaded {_securityTestPlugins.Count} security test plugins");
-            _logger.LogTrace($"Plugins: {string.Join(", ", _securityTestPlugins.Select(p => (int)p.pluginId))}");
+            _logger.LogTrace("{Message}", $"Loaded {_securityTestPlugins.Count} security test plugins");
+            _logger.LogTrace("{Message}", $"Plugins: {string.Join(", ", _securityTestPlugins.Select(p => (int)p.pluginId))}");
 
-            _logger.LogDebug($"Starting security tests of {opcTargets.Count} targets");
+            _logger.LogDebug("{Message}", $"Starting security tests of {opcTargets.Count} targets");
 
             foreach (Target target in opcTargets)
             {
-                _logger.LogDebug($"Testing {target.ApplicationName} ({target.ProductUri})");
+                _logger.LogDebug("{Message}", $"Testing {target.ApplicationName} ({target.ProductUri})");
 
                 try
                 {
                     foreach (Endpoint endpoint in GetAllTargetEndpoints(target))
                     {
-                        _logger.LogTrace($"Testing endpoint {endpoint} of {target.ApplicationName}");
+                        _logger.LogTrace("{Message}", $"Testing endpoint {endpoint} of {target.ApplicationName}");
                         TestEndpointSecurity(endpoint);
                     }
 
@@ -46,7 +46,7 @@ namespace Controller
                 catch (Exception e)
                 {
                     string msg = $"Unknown exception scanning {target.ApplicationName}: {e}";
-                    _logger.LogError(msg);
+                    _logger.LogError("{Message}", msg);
 
                     if (target.Servers.Any())
                     {
@@ -78,7 +78,7 @@ namespace Controller
 
             List<ISession> sessions = new();
 
-            _logger.LogTrace($"Starting pre-authentication tests");
+            _logger.LogTrace("{Message}", $"Starting pre-authentication tests");
             foreach (IPreAuthPlugin preauthPlugin in _securityTestPlugins.Where(p => p is PreAuthPlugin).Cast<IPreAuthPlugin>())
             {
                 TaskUtil.CheckForCancellation(_token);
@@ -87,22 +87,22 @@ namespace Controller
                 sessions.AddRange(preauthsessions);
                 if (preauthissue != null) endpoint.Issues.Add(preauthissue);
             }
-            _logger.LogTrace($"Finished pre-authentication tests");
+            _logger.LogTrace("{Message}", $"Finished pre-authentication tests");
 
             if (!sessions.Any())
             {
-                _logger.LogWarning($"Cannot authenticate to {endpoint}. Skipping post-authentication tests");
+                _logger.LogWarning("{Message}", $"Cannot authenticate to {endpoint}. Skipping post-authentication tests");
                 return endpoint;
             }
 
-            _logger.LogTrace($"Starting post-authentication tests");
+            _logger.LogTrace("{Message}", $"Starting post-authentication tests");
             foreach (IPostAuthPlugin postAuthPlugin in _securityTestPlugins.Where(p => p is PreAuthPlugin).Cast<IPostAuthPlugin>())
             {
                 TaskUtil.CheckForCancellation(_token);
                 Issue? postauthIssue = postAuthPlugin.Run(sessions.First());
                 if (postauthIssue != null) endpoint.Issues.Add(postauthIssue);
             }
-            _logger.LogTrace($"Finished post-authentication tests");
+            _logger.LogTrace("{Message}", $"Finished post-authentication tests");
 
             return endpoint;
         }

@@ -18,17 +18,17 @@ namespace Model
 
         public Endpoint(EndpointDescription e)
         {
-            this.EndpointDescription = e;
+            EndpointDescription = e;
 
-            this.EndpointUrl = e.EndpointUrl;
-            this.SecurityPolicyUri = e.SecurityPolicyUri;
-            this.SecurityMode = e.SecurityMode;
-            this.ServerCertificate = e.ServerCertificate;
+            EndpointUrl = e.EndpointUrl;
+            SecurityPolicyUri = e.SecurityPolicyUri;
+            SecurityMode = e.SecurityMode;
+            ServerCertificate = e.ServerCertificate;
 
             foreach (UserTokenPolicy utp in e.UserIdentityTokens)
             {
-                this.UserTokenPolicyIds.Add(utp.PolicyId);
-                this.UserTokenTypes.Add(utp.TokenType);
+                UserTokenPolicyIds.Add(utp.PolicyId);
+                UserTokenTypes.Add(utp.TokenType);
             }
         }
     }
