@@ -21,20 +21,20 @@ namespace Model
 
         public EndpointSummary(Endpoint endpoint)
         {
-            this.EndpointUrl = endpoint.EndpointUrl;
-            this.ServerCertificate = endpoint.ServerCertificate;
+            EndpointUrl = endpoint.EndpointUrl;
+            ServerCertificate = endpoint.ServerCertificate;
 
-            this.MergeEndpoint(endpoint);
+            MergeEndpoint(endpoint);
         }
 
         public EndpointSummary MergeEndpoint(Endpoint endpoint)
         {
-            this.SecurityPolicyUris.Add(endpoint.SecurityPolicyUri);
-            this.MessageSecurityModes.Add(endpoint.SecurityMode);
+            SecurityPolicyUris.Add(endpoint.SecurityPolicyUri);
+            MessageSecurityModes.Add(endpoint.SecurityMode);
 
-            this.UserTokenPolicyIds = this.UserTokenPolicyIds.Union(endpoint.UserTokenPolicyIds).ToHashSet();
-            this.UserTokenTypes = this.UserTokenTypes.Union(endpoint.UserTokenTypes).ToHashSet();
-            this.Issues = this.Issues.Union(endpoint.Issues).DistinctBy(i => i.Name).OrderByDescending(i => i.Severity).ToHashSet();
+            UserTokenPolicyIds = UserTokenPolicyIds.Union(endpoint.UserTokenPolicyIds).ToHashSet();
+            UserTokenTypes = UserTokenTypes.Union(endpoint.UserTokenTypes).ToHashSet();
+            Issues = Issues.Union(endpoint.Issues).DistinctBy(i => i.Name).OrderByDescending(i => i.Severity).ToHashSet();
 
             return this;
         }

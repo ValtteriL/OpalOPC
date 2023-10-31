@@ -20,7 +20,7 @@ namespace Controller
         // Reporter and targets, generate report
         public void GenerateReport(ICollection<Target> targets, DateTime Start, DateTime End, string commandLine)
         {
-            _logger.LogDebug("Generating report");
+            _logger.LogDebug("{Message}", "Generating report");
 
             // Merge opctarget endpoints
             foreach (Target target in targets)

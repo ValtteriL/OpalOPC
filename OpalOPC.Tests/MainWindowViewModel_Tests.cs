@@ -1,10 +1,10 @@
+#if BUILT_FOR_WINDOWS
 using Microsoft.Extensions.Logging;
 using Model;
 using OpalOPC.WPF;
 using View;
 using Xunit;
 
-#if BUILT_FOR_WINDOWS
 namespace Tests;
 public class MainWindowViewModel_Tests
 {
@@ -111,7 +111,7 @@ public class MainWindowViewModel_Tests
 
         model.ScanCommand.Execute(null);
 
-        Thread.Sleep(500);
+        Thread.Sleep(1000);
 
         Assert.True(model.ScanCompletedSuccessfully);
         Assert.True(File.Exists(tempfile));

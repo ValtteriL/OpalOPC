@@ -23,7 +23,7 @@ namespace OpalOPC.WPF
         public VersionWindow()
         {
             InitializeComponent();
-            this.VersionTextBlock.Text = $" Version : {Util.VersionUtil.AppAssemblyVersion}";
+            VersionTextBlock.Text = $" Version : {Util.VersionUtil.AppAssemblyVersion}";
         }
 
         private void Browse_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)

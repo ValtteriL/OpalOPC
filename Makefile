@@ -27,6 +27,16 @@ run-all-known:
 run-linux-mac-installer:
 	@cat OpalOPC/installers/install.sh | sudo bash
 
+# Lint (fix format)
+.PHONY: lint
+lint:
+	@dotnet format
+
+# Lint (check format, dont make changes)
+.PHONY: lint-check
+lint-check:
+	@dotnet format --verify-no-changes
+
 # Build
 .PHONY: build
 build:

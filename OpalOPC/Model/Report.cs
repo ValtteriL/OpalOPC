@@ -12,7 +12,7 @@ namespace Model
         public string? Command { get; set; }
         public string? RunStatus { get; set; }
 
-        private const string dateformat = "ddd dd MMMM HH:mm:ss yyyy";
+        private const string Dateformat = "ddd dd MMMM HH:mm:ss yyyy";
 
         // parameterless constructor for XML serializer
         internal Report()
@@ -21,8 +21,8 @@ namespace Model
         public Report(ICollection<Target> opcTargets, DateTime Start, DateTime End, string commandLine)
         {
             Targets = opcTargets.ToList();
-            StartTime = Start.ToString(dateformat);
-            EndTime = End.ToString(dateformat);
+            StartTime = Start.ToString(Dateformat);
+            EndTime = End.ToString(Dateformat);
             Command = commandLine;
         }
     }
