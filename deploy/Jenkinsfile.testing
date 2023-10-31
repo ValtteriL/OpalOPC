@@ -23,6 +23,11 @@ pipeline {
                 sh 'rm -f opalopc-report-*'
             }
         }
+        stage('Lint') {
+            steps {
+                sh 'make lint'
+            }
+        }
         stage('Unit tests') {
             steps {
                 sh 'make test'
