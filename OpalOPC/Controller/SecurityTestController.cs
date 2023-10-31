@@ -36,12 +36,18 @@ namespace Controller
 
                 try
                 {
+                    int nSessions = 0;
+
                     foreach (Endpoint endpoint in GetAllTargetEndpoints(target))
                     {
                         _logger.LogTrace("{Message}", $"Testing endpoint {endpoint.EndpointUrl} of {target.ApplicationName}");
-                        TestEndpointSecurity(endpoint);
+                        nSessions += TestEndpointSecurity(endpoint);
                     }
 
+                    if (nSessions == 0)
+                    {
+                        _logger.LogWarning("{Message}", $"Cannot authenticate to {target.ApplicationName}. Skipping post-authentication tests");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -70,12 +76,33 @@ namespace Controller
             return endpoints;
         }
 
-        private Endpoint TestEndpointSecurity(Endpoint endpoint)
+        private int TestEndpointSecurity(Endpoint endpoint)
         {
             // run first pre-auth plugins, and save opened sessions
             // run then post-auth plugins
-            // ConnectionUtil takes care of closing the sessions
+            // finally close sessions
+            // return number of sessions
 
+            ICollection<ISession> sessions = TestEndpointPreauth(endpoint);
+
+            if (!sessions.Any())
+            {
+                return sessions.Count;
+            }
+
+            TestEndpointPostAuth(endpoint, sessions);
+
+            _logger.LogTrace("{Message}", $"Closing sessions");
+            foreach (ISession session in sessions)
+            {
+                session.Dispose();
+            }
+
+            return sessions.Count;
+        }
+
+        private ICollection<ISession> TestEndpointPreauth(Endpoint endpoint)
+        {
             List<ISession> sessions = new();
 
             _logger.LogTrace("{Message}", $"Starting pre-authentication tests");
@@ -89,12 +116,11 @@ namespace Controller
             }
             _logger.LogTrace("{Message}", $"Finished pre-authentication tests");
 
-            if (!sessions.Any())
-            {
-                _logger.LogWarning("{Message}", $"Cannot authenticate to {endpoint.EndpointUrl}. Skipping post-authentication tests");
-                return endpoint;
-            }
+            return sessions;
+        }
 
+        private void TestEndpointPostAuth(Endpoint endpoint, ICollection<ISession> sessions)
+        {
             _logger.LogTrace("{Message}", $"Starting post-authentication tests");
             foreach (IPostAuthPlugin postAuthPlugin in _securityTestPlugins.Where(p => p is PostAuthPlugin).Cast<IPostAuthPlugin>())
             {
@@ -103,8 +129,6 @@ namespace Controller
                 if (postauthIssue != null) endpoint.Issues.Add(postauthIssue);
             }
             _logger.LogTrace("{Message}", $"Finished post-authentication tests");
-
-            return endpoint;
         }
     }
 }
