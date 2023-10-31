@@ -40,7 +40,7 @@ namespace Controller
 
                     foreach (Endpoint endpoint in GetAllTargetEndpoints(target))
                     {
-                        _logger.LogTrace("{Message}", $"Testing endpoint {endpoint.EndpointUrl} of {target.ApplicationName}");
+                        _logger.LogTrace("{Message}", $"Testing endpoint {endpoint.EndpointUrl} of {target.ApplicationName} ({endpoint.EndpointDescription.SecurityPolicyUri})");
                         nSessions += TestEndpointSecurity(endpoint);
                     }
 

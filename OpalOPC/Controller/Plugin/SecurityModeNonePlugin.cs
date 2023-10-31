@@ -21,7 +21,7 @@ namespace Plugin
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {endpoint} for Message Security Mode None");
+            _logger.LogTrace($"Testing {endpoint.EndpointUrl} for Message Security Mode None");
 
             List<ISession> sessions = new();
 

@@ -21,7 +21,7 @@ namespace Plugin
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {endpoint} for Security Policy None");
+            _logger.LogTrace($"Testing {endpoint.EndpointUrl} for Security Policy None");
 
             List<ISession> sessions = new();
 

@@ -31,7 +31,7 @@ namespace Plugin
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {endpoint} for common credentials");
+            _logger.LogTrace($"Testing {endpoint.EndpointUrl} for common credentials");
 
             List<ISession> sessions = new();
 

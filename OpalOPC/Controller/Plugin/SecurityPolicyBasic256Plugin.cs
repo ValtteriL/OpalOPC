@@ -20,7 +20,7 @@ namespace Plugin
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {endpoint} for Security Policy Basic256");
+            _logger.LogTrace($"Testing {endpoint.EndpointUrl} for Security Policy Basic256");
 
             List<ISession> sessions = new();
 
