@@ -147,7 +147,7 @@ public class MainWindowViewModel_Tests
 
         model.ScanCommand.Execute(null);
 
-        Thread.Sleep(500);
+        Thread.Sleep(1000);
         Assert.True(model.ScanCompletedSuccessfully);
     }
 

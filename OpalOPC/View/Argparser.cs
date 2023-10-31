@@ -38,7 +38,7 @@ namespace View
 
                 try
                 {
-                    options.xmlOutputStream = File.OpenWrite(path);
+                    options.xmlOutputStream = File.Create(path);
                 }
                 catch (UnauthorizedAccessException)
                 {
@@ -119,7 +119,7 @@ namespace View
                 if (options.xmlOutputStream == null)
                 {
                     options.xmlOutputReportName = Util.ArgUtil.DefaultReportName();
-                    options.xmlOutputStream = File.OpenWrite(options.xmlOutputReportName);
+                    setOutputFile(options.xmlOutputReportName);
                 }
             }
             catch (OptionException e)
