@@ -20,13 +20,13 @@ namespace Plugin
 
         public override Issue? Run(ISession session)
         {
-            _logger.LogTrace($"Testing {session.Endpoint} for disabled auditing");
+            _logger.LogTrace($"Testing {session.Endpoint.EndpointUrl} for disabled auditing");
 
             // check if auditing enabled
             DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
             if (!auditingValue.GetValue<bool>(false))
             {
-                _logger.LogTrace($"Endpoint {session.Endpoint} has auditing disabled");
+                _logger.LogTrace($"Endpoint {session.Endpoint.EndpointUrl} has auditing disabled");
                 return CreateIssue();
             }
 

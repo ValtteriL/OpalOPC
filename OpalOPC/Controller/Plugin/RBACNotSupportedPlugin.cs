@@ -20,14 +20,14 @@ namespace Plugin
 
         public override Issue? Run(ISession session)
         {
-            _logger.LogTrace($"Testing {session.Endpoint} for RBAC support");
+            _logger.LogTrace($"Testing {session.Endpoint.EndpointUrl} for RBAC support");
 
             // check if rbac supported (if its advertised in profiles or not)
             DataValue serverProfileArrayValue = session.ReadValue(Util.WellKnownNodes.Server_ServerCapabilities_ServerProfileArray);
             string[] serverProfileArray = serverProfileArrayValue.GetValue<string[]>(Array.Empty<string>());
             if (!serverProfileArray.Intersect(_rBAC_Profiles).Any())
             {
-                _logger.LogTrace($"Endpoint {session.Endpoint} is not capable of RBAC");
+                _logger.LogTrace($"Endpoint {session.Endpoint.EndpointUrl} is not capable of RBAC");
                 return CreateIssue();
             }
 
