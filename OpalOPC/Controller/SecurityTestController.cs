@@ -38,7 +38,7 @@ namespace Controller
                 {
                     foreach (Endpoint endpoint in GetAllTargetEndpoints(target))
                     {
-                        _logger.LogTrace("{Message}", $"Testing endpoint {endpoint} of {target.ApplicationName}");
+                        _logger.LogTrace("{Message}", $"Testing endpoint {endpoint.EndpointUrl} of {target.ApplicationName}");
                         TestEndpointSecurity(endpoint);
                     }
 
@@ -91,12 +91,12 @@ namespace Controller
 
             if (!sessions.Any())
             {
-                _logger.LogWarning("{Message}", $"Cannot authenticate to {endpoint}. Skipping post-authentication tests");
+                _logger.LogWarning("{Message}", $"Cannot authenticate to {endpoint.EndpointUrl}. Skipping post-authentication tests");
                 return endpoint;
             }
 
             _logger.LogTrace("{Message}", $"Starting post-authentication tests");
-            foreach (IPostAuthPlugin postAuthPlugin in _securityTestPlugins.Where(p => p is PreAuthPlugin).Cast<IPostAuthPlugin>())
+            foreach (IPostAuthPlugin postAuthPlugin in _securityTestPlugins.Where(p => p is PostAuthPlugin).Cast<IPostAuthPlugin>())
             {
                 TaskUtil.CheckForCancellation(_token);
                 Issue? postauthIssue = postAuthPlugin.Run(sessions.First());

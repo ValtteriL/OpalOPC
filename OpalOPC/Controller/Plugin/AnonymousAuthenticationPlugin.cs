@@ -38,9 +38,16 @@ namespace Plugin
             if (endpoint.UserTokenTypes.Contains(UserTokenType.Anonymous))
             {
 
-                // Open a session
-                ISession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
-                sessions.Add(session);
+                // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
+                try
+                {
+                    ISession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
+                    sessions.Add(session);
+                }
+                catch (Exception)
+                {
+
+                }
 
                 return (CreateIssue(), sessions);
             }

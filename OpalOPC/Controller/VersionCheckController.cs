@@ -10,7 +10,7 @@ namespace Controller
     {
 
         readonly ILogger _logger;
-        private readonly Uri _versionUri = new("https://opalopc.com/VERSION.txt");
+        private readonly Uri versionUri = new("https://opalopc.com/VERSION.txt");
         public bool IsUpToDate { get; private set; }
 
         public VersionCheckController(ILogger logger)
@@ -42,7 +42,7 @@ namespace Controller
 
             try
             {
-                response = client.GetAsync(_versionUri).Result;
+                response = client.GetAsync(versionUri).Result;
                 response.EnsureSuccessStatusCode();
             }
             catch (System.Exception)
@@ -56,7 +56,7 @@ namespace Controller
             if (latestVersion != thisVersion)
             {
                 IsUpToDate = false;
-                _logger.LogWarning("{Message}", $"Using outdated OpalOPC version {thisVersion} (the latest is {latestVersion})");
+                _logger.LogWarning($"Using outdated OpalOPC version {thisVersion} (the latest is {latestVersion})");
                 return;
             }
 
