@@ -9,24 +9,24 @@ namespace Plugin
     public class AuditingDisabledPlugin : PostAuthPlugin
     {
         // check if auditing disabled
-        private static readonly PluginId _pluginId = PluginId.AuditingDisabled;
-        private static readonly string _category = PluginCategories.Accounting;
-        private static readonly string _issueTitle = "Auditing disabled";
+        private static readonly PluginId s_pluginId = PluginId.AuditingDisabled;
+        private static readonly string s_category = PluginCategories.Accounting;
+        private static readonly string s_issueTitle = "Auditing disabled";
 
         // Medium
-        private static readonly double _severity = 5.0;
+        private static readonly double s_severity = 5.0;
 
-        public AuditingDisabledPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity) { }
+        public AuditingDisabledPlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity) { }
 
         public override Issue? Run(ISession session)
         {
-            _logger.LogTrace($"Testing {session.Endpoint.EndpointUrl} for disabled auditing");
+            _logger.LogTrace("{Message}", $"Testing {session.Endpoint.EndpointUrl} for disabled auditing");
 
             // check if auditing enabled
             DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
-            if (!auditingValue.GetValue<bool>(false))
+            if (!auditingValue.GetValue(false))
             {
-                _logger.LogTrace($"Endpoint {session.Endpoint.EndpointUrl} has auditing disabled");
+                _logger.LogTrace("{Message}", $"Endpoint {session.Endpoint.EndpointUrl} has auditing disabled");
                 return CreateIssue();
             }
 
