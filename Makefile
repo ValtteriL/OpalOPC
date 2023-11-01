@@ -1,7 +1,7 @@
 
 # E2E tests
 .PHONY: run-e2e-tests
-run-e2e-tests: run-linux-mac-installer-test run-all-known
+run-e2e-tests: run-linux-mac-installer-test run-all-known verify-no-fail-on-echo-golf-india
 
 .PHONY: run-linux-mac-installer-test
 run-linux-mac-installer-test:
@@ -46,6 +46,11 @@ build:
 .PHONY: run
 run:
 	@dotnet run --runtime linux-x64 --project OpalOPC -- opc.tcp://echo:53530
+
+# Run locally
+.PHONY: verify-no-fail-on-echo-golf-india
+verify-no-fail-on-echo-golf-india:
+	@! dotnet run --runtime linux-x64 --project OpalOPC -- -vvv opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 | grep -i -v -q -e "fail"
 
 # Server for serving XSL on localhost, for development (with run)
 .PHONY: server
