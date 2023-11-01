@@ -30,7 +30,7 @@ namespace Controller
 
             _logger.LogDebug("{Message}", $"Starting security tests of {opcTargets.Count} targets");
 
-            foreach (Target target in opcTargets)
+            Parallel.ForEach(opcTargets, new ParallelOptions { MaxDegreeOfParallelism = 10 }, target =>
             {
                 _logger.LogDebug("{Message}", $"Testing {target.ApplicationName} ({target.ProductUri})");
 
@@ -59,7 +59,7 @@ namespace Controller
                         target.Servers.First().AddError(new Error(msg));
                     }
                 }
-            }
+            });
 
             return opcTargets;
         }
