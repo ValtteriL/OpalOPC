@@ -1,8 +1,6 @@
 #if BUILT_FOR_WINDOWS
 using Microsoft.Extensions.Logging;
-using Model;
 using OpalOPC.WPF;
-using View;
 using Xunit;
 
 namespace Tests;

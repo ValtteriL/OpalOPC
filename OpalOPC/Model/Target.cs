@@ -1,5 +1,4 @@
 using Opc.Ua;
-using Plugin;
 
 namespace Model
 {

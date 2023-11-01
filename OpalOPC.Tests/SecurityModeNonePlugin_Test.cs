@@ -1,11 +1,9 @@
 
 using Microsoft.Extensions.Logging;
 using Model;
-using Moq;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Plugin;
-using Util;
 using Xunit;
 
 namespace Tests;

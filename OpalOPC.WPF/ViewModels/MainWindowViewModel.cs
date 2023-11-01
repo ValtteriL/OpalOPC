@@ -7,7 +7,6 @@ using Controller;
 using Microsoft.Extensions.Logging;
 using OpalOPC.WPF.Logger;
 using OpalOPC.WPF.ViewModels;
-using Opc.Ua.Client;
 
 
 namespace OpalOPC.WPF;
