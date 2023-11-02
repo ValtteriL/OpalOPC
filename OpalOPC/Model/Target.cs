@@ -6,7 +6,7 @@ namespace Model
     {
 
         private readonly ApplicationDescription? _applicationDescription;
-        public List<Server> Servers { get; set; } = new List<Server>();
+        public List<Server> Servers { get; set; } = new();
 
         public ApplicationType? Type { get; set; }
         public string? ApplicationName { get; set; }

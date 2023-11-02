@@ -5,7 +5,7 @@ namespace Model
     [XmlInclude(typeof(CommonCredentialsIssue))]
     public class Report
     {
-        public List<Target> Targets { get; private set; } = new List<Target>();
+        public List<Target> Targets { get; private set; } = new();
         public string? StartTime { get; set; }
         public string? EndTime { get; set; }
         public string Version { get; set; } = Util.VersionUtil.AppAssemblyVersion!.ToString();
