@@ -31,7 +31,7 @@ namespace Plugin
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
-            _logger.LogTrace("{Message}", $"Testing if {endpoint} accepts self signed certificate");
+            _logger.LogTrace("{Message}", $"Testing if {endpoint.EndpointUrl} accepts self signed certificate");
 
             List<ISession> sessions = new();
 
