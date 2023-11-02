@@ -50,7 +50,7 @@ run:
 # Run locally
 .PHONY: verify-no-fail-on-echo-golf-india
 verify-no-fail-on-echo-golf-india:
-	@! dotnet run --runtime linux-x64 --project OpalOPC -- -vvv opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 | grep -i -v -q -e "fail"
+	@! dotnet run --runtime linux-x64 --project OpalOPC -- -vvv opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 | grep -i -e "fail"
 
 # Server for serving XSL on localhost, for development (with run)
 .PHONY: server
