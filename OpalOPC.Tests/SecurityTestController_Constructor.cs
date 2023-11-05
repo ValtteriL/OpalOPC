@@ -1,8 +1,6 @@
 using Controller;
 using Microsoft.Extensions.Logging;
-using Model;
 using Plugin;
-using View;
 using Xunit;
 
 namespace Tests;

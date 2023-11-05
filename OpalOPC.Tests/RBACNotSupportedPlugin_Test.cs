@@ -5,7 +5,6 @@ using Moq;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Plugin;
-using Util;
 using Xunit;
 
 namespace Tests;
@@ -34,7 +33,8 @@ public class RBACNotSupportedPluginTest
 
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Certificate) })
+            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Certificate) }),
+            EndpointUrl = "opc.tcp://localhost:4840",
         };
         Endpoint endpoint = new(endpointDescription);
 
@@ -43,6 +43,7 @@ public class RBACNotSupportedPluginTest
         // session should return any of the well-known RBAC profiles on session.ReadValue(Util.WellKnownNodes.Server_ServerCapabilities_ServerProfileArray)
         var mockSession = new Mock<ISession>();
         mockSession.Setup(session => session.ReadValue(Util.WellKnownNodes.Server_ServerCapabilities_ServerProfileArray)).Returns(new DataValue(new Variant(new string[] { Util.WellKnownProfiles.Security_User_Access_Control_Full })));
+        mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
 
         // act
         Issue? issue = plugin.Run(mockSession.Object);
@@ -59,13 +60,15 @@ public class RBACNotSupportedPluginTest
         ILogger logger = loggerFactory.CreateLogger<SecurityModeInvalidPluginTest>();
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) })
+            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
+            EndpointUrl = "opc.tcp://localhost:4840",
         };
         Endpoint endpoint = new(endpointDescription);
 
         // session should return none of the well-known RBAC profiles on session.ReadValue(Util.WellKnownNodes.Server_ServerCapabilities_ServerProfileArray)
         var mockSession = new Mock<ISession>();
         mockSession.Setup(session => session.ReadValue(Util.WellKnownNodes.Server_ServerCapabilities_ServerProfileArray)).Returns(new DataValue());
+        mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
 
         RBACNotSupportedPlugin plugin = new(logger);
 

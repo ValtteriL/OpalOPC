@@ -1,4 +1,3 @@
-using Model;
 using View;
 using Xunit;
 

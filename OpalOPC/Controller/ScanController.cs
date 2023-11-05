@@ -1,9 +1,5 @@
-using System.Net;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Model;
-using Opc.Ua;
-using Opc.Ua.Bindings;
 using Plugin;
 using Util;
 using View;

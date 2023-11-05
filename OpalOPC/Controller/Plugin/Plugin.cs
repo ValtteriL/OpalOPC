@@ -4,10 +4,18 @@ using Opc.Ua.Client;
 
 namespace Plugin
 {
+    public enum Plugintype
+    {
+        PreAuthPlugin = 1,
+        PostAuthPlugin = 2,
+    }
+
     public interface IPlugin
     {
         public Issue CreateIssue();
         public PluginId pluginId { get; }
+
+        public Plugintype Type { get; }
     }
 
     public abstract class Plugin
@@ -33,31 +41,34 @@ namespace Plugin
         }
     }
 
-    public interface IPreAuthPlugin
+    public interface IPreAuthPlugin : IPlugin
     {
         public (Issue?, ICollection<ISession>) Run(Endpoint endpoint);
     }
 
-    public abstract class PreAuthPlugin : Plugin, IPlugin, IPreAuthPlugin
+    public abstract class PreAuthPlugin : Plugin, IPreAuthPlugin
     {
         public PreAuthPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : base(logger, pluginId, category, name, severity)
         {
         }
 
+        public Plugintype Type => Plugintype.PreAuthPlugin;
+
         public abstract (Issue?, ICollection<ISession>) Run(Endpoint endpoint);
     }
 
-    public interface IPostAuthPlugin
+    public interface IPostAuthPlugin : IPlugin
     {
         public Issue? Run(ISession session);
     }
 
-    public abstract class PostAuthPlugin : Plugin, IPlugin, IPostAuthPlugin
+    public abstract class PostAuthPlugin : Plugin, IPostAuthPlugin
     {
         public PostAuthPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : base(logger, pluginId, category, name, severity)
         {
         }
 
+        public Plugintype Type => Plugintype.PostAuthPlugin;
         public abstract Issue? Run(ISession session);
     }
 }

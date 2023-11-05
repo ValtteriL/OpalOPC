@@ -53,7 +53,7 @@ namespace Util
 
             ISessionFactory sessionFactory = new DefaultSessionFactory();
 
-            using ISession session = await sessionFactory.CreateAsync(
+            ISession session = await sessionFactory.CreateAsync(
                 applicationConfiguration,
                 endpoint,
                 false,

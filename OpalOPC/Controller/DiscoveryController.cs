@@ -188,7 +188,7 @@ namespace Controller
                     string msg = $"Https is not supported: {s_by_ip}";
                     _logger.LogWarning("{Message}", msg);
 
-                    Server server = new(s_by_ip, new EndpointDescriptionCollection());
+                    Server server = new(s, new EndpointDescriptionCollection());
                     server.AddError(new Error(msg));
 
                     target.AddServer(server);
@@ -206,7 +206,7 @@ namespace Controller
                     string msg = $"Cannot connect to discovery URI {s_by_ip}: {e}";
                     _logger.LogWarning("{Message}", msg);
 
-                    Server server = new(s_by_ip, new EndpointDescriptionCollection());
+                    Server server = new(s, new EndpointDescriptionCollection());
                     server.AddError(new Error(msg));
                     target.AddServer(server);
 
@@ -218,7 +218,7 @@ namespace Controller
 
                 _logger.LogDebug("{Message}", $"Discovered {edc.Count} endpoints");
 
-                target.AddServer(new Server(s_by_ip, edc));
+                target.AddServer(new Server(s, edc));
             }
             return target;
         }

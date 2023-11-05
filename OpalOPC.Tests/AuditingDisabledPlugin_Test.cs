@@ -5,7 +5,6 @@ using Moq;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Plugin;
-using Util;
 using Xunit;
 
 namespace Tests;
@@ -34,7 +33,8 @@ public class AuditingDisabledPluginTest
 
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Certificate) })
+            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Certificate) }),
+            EndpointUrl = "opc.tcp://localhost:4840",
         };
         Endpoint endpoint = new(endpointDescription);
 
@@ -43,6 +43,7 @@ public class AuditingDisabledPluginTest
         // session should return true to session.ReadValue(Util.WellKnownNodes.Server_Auditing)
         var mockSession = new Mock<ISession>();
         mockSession.Setup(session => session.ReadValue(Util.WellKnownNodes.Server_Auditing)).Returns(new DataValue(new Variant(true)));
+        mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
 
         // act
         Issue? issue = plugin.Run(mockSession.Object);
@@ -59,13 +60,15 @@ public class AuditingDisabledPluginTest
         ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) })
+            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
+            EndpointUrl = "opc.tcp://localhost:4840",
         };
         Endpoint endpoint = new(endpointDescription);
 
         // session should return false to session.ReadValue(Util.WellKnownNodes.Server_Auditing)
         var mockSession = new Mock<ISession>();
         mockSession.Setup(session => session.ReadValue(Util.WellKnownNodes.Server_Auditing)).Returns(new DataValue(new Variant(false)));
+        mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
 
         AuditingDisabledPlugin plugin = new(logger);
 

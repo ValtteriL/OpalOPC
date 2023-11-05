@@ -1,6 +1,5 @@
 using Controller;
 using Microsoft.Extensions.Logging;
-using Model;
 using View;
 using Xunit;
 

@@ -31,16 +31,23 @@ namespace Plugin
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
-            _logger.LogTrace("{Message}", $"Testing {endpoint} for anonymous access");
+            _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for anonymous access");
 
             List<ISession> sessions = new();
 
             if (endpoint.UserTokenTypes.Contains(UserTokenType.Anonymous))
             {
 
-                // Open a session
-                ISession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
-                sessions.Add(session);
+                // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
+                try
+                {
+                    ISession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
+                    sessions.Add(session);
+                }
+                catch (Exception)
+                {
+
+                }
 
                 return (CreateIssue(), sessions);
             }

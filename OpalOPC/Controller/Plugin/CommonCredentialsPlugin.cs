@@ -8,21 +8,21 @@ namespace Plugin
 {
     public class CommonCredentialsPlugin : PreAuthPlugin
     {
-        private static readonly PluginId _pluginId = PluginId.CommonCredentials;
-        private static readonly string _category = PluginCategories.Authentication;
-        private static string _issueTitle = "Common credentials in use";
+        private static readonly PluginId s_pluginId = PluginId.CommonCredentials;
+        private static readonly string s_category = PluginCategories.Authentication;
+        private static string s_issueTitle = "Common credentials in use";
 
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L
-        private static readonly double _severity = 7.3;
+        private static readonly double s_severity = 7.3;
 
         private readonly IConnectionUtil _connectionUtil;
 
-        public CommonCredentialsPlugin(ILogger logger) : base(logger, _pluginId, _category, _issueTitle, _severity)
+        public CommonCredentialsPlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
         {
             _connectionUtil = new ConnectionUtil();
         }
 
-        public CommonCredentialsPlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, _pluginId, _category, _issueTitle, _severity)
+        public CommonCredentialsPlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
         {
             _connectionUtil = connectionUtil;
         }
@@ -31,7 +31,7 @@ namespace Plugin
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
         {
-            _logger.LogTrace($"Testing {endpoint} for common credentials");
+            _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for common credentials");
 
             List<ISession> sessions = new();
 
@@ -48,7 +48,7 @@ namespace Plugin
 
                 if (session != null && session.Connected)
                 {
-                    _logger.LogTrace($"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
+                    _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
                     sessions.Add(session);
                     validCredentials.Add((username, password));
                 }
@@ -57,8 +57,8 @@ namespace Plugin
             if (validCredentials.Any())
             {
                 IEnumerable<string> credpairs = validCredentials.Select(c => $"{c.username}:{c.password}");
-                _issueTitle = $"Common credentials in use ({string.Join(", ", credpairs)})";
-                return (new CommonCredentialsIssue((int)_pluginId, _issueTitle, _severity, validCredentials), sessions);
+                s_issueTitle = $"Common credentials in use ({string.Join(", ", credpairs)})";
+                return (new CommonCredentialsIssue((int)s_pluginId, s_issueTitle, s_severity, validCredentials), sessions);
             }
 
             return (null, sessions);

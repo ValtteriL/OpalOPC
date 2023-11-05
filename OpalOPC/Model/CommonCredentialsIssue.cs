@@ -1,5 +1,3 @@
-using Opc.Ua;
-
 namespace Model
 {
     public class CommonCredentialsIssue : Issue
