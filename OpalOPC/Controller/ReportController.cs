@@ -21,13 +21,6 @@ namespace Controller
         public void GenerateReport(ICollection<Target> targets, DateTime Start, DateTime End, string commandLine)
         {
             _logger.LogDebug("{Message}", "Generating report");
-
-            // Merge opctarget endpoints
-            foreach (Target target in targets)
-            {
-                target.MergeEndpoints();
-            }
-
             report = new Report(targets, Start, End, commandLine);
         }
 

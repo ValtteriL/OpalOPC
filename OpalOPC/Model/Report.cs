@@ -20,7 +20,15 @@ namespace Model
 
         public Report(ICollection<Target> opcTargets, DateTime Start, DateTime End, string commandLine)
         {
-            Targets = opcTargets.ToList();
+            // Merge opctarget endpoints
+            foreach (Target target in opcTargets)
+            {
+                target.MergeEndpoints();
+            }
+
+            // sort targets by highest server issue severity
+            Targets = opcTargets.OrderByDescending(t => t.Servers.Max(s => s.Endpoints.Max(e => e.Issues.Max(i => i.Severity)))).ToList();
+
             StartTime = Start.ToString(Dateformat);
             EndTime = End.ToString(Dateformat);
             Command = commandLine;

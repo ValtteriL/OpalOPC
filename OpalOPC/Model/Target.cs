@@ -42,6 +42,9 @@ namespace Model
             {
                 server.MergeEndpoints();
             }
+
+            // sort servers within target by issue severity
+            Servers = Servers.OrderByDescending(s => s.Endpoints.Max(e => e.Issues.Max(i => i.Severity))).ToList();
         }
     }
 }

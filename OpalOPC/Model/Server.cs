@@ -49,7 +49,8 @@ namespace Model
                 endpointDictionary.Add(endpoint.EndpointUrl, new EndpointSummary(endpoint));
             }
 
-            Endpoints = endpointDictionary.Values.ToList();
+            // sort endpoints within server by issue severity
+            Endpoints = endpointDictionary.Values.OrderByDescending(e => e.Issues.Max(i => i.Severity)).ToList();
         }
 
     }
