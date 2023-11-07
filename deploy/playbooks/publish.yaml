@@ -193,6 +193,10 @@
         owner: root
         group: root
 
+    - name: Ensure linux-mac installer got unix file endings
+      become: true
+      shell: dos2unix "{{ installer_web_path | mandatory }}"
+
     - name: A helpful reminder to submit updated Windows package to Microsoft Store
       ansible.builtin.pause:
         prompt: "Make sure to submit Windows package to Microsoft Store (Version {{ version }} in {{ win_packages_path }})"
