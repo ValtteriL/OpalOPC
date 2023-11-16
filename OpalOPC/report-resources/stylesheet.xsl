@@ -369,7 +369,7 @@
                                       <xsl:when test="Severity &gt;= 7">
                                         <td>
                                           <div class="row">
-                                            <div class="col pe-0 text-start">Hight (<xsl:value-of
+                                            <div class="col pe-0 text-start">High (<xsl:value-of
                                                 select="Severity" />)</div>
                                             <div class="col">
                                               <div class="results high">
