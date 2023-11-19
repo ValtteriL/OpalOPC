@@ -16,15 +16,18 @@ namespace Plugin
         private static readonly double s_severity = 7.3;
 
         private readonly IConnectionUtil _connectionUtil;
+        private readonly AuthenticationData _authenticationData;
 
-        public CommonCredentialsPlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
+        public CommonCredentialsPlugin(ILogger logger, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
         {
             _connectionUtil = new ConnectionUtil();
+            _authenticationData = authenticationData;
         }
 
-        public CommonCredentialsPlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
+        public CommonCredentialsPlugin(ILogger logger, IConnectionUtil connectionUtil, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
         {
             _connectionUtil = connectionUtil;
+            _authenticationData = authenticationData;
         }
 
 
@@ -44,13 +47,18 @@ namespace Plugin
 
             foreach ((string username, string password) in Util.Credentials.CommonCredentials)
             {
-                ISession? session = IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password));
+                AttemptLogin(sessions, validCredentials, endpoint, username, password);
+            }
 
-                if (session != null && session.Connected)
+            if (!validCredentials.Any())
+            {
+                // no valid credentials found, try again with different application certificates
+                foreach (CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
                 {
-                    _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
-                    sessions.Add(session);
-                    validCredentials.Add((username, password));
+                    foreach ((string username, string password) in Util.Credentials.CommonCredentials)
+                    {
+                        AttemptLogin(sessions, validCredentials, endpoint, username, password, applicationCertificate);
+                    }
                 }
             }
 
@@ -72,16 +80,31 @@ namespace Plugin
                     || SelfSignedCertificatePlugin.SelfSignedCertAccepted(endpoint.EndpointDescription, _connectionUtil).Result);
         }
 
-        private ISession? IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity)
+        private void AttemptLogin(List<ISession> sessions, List<(string, string)> validCredentials, Endpoint endpoint, string username, string password, CertificateIdentifier? certificateIdentifier = null)
         {
             try
             {
-                ISession session = _connectionUtil.StartSession(endpointDescription, userIdentity).Result;
-                return session;
+                ISession session;
+
+                if (certificateIdentifier == null)
+                {
+                    session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity(username, password)).Result;
+                }
+                else
+                {
+                    session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity(username, password), certificateIdentifier).Result;
+                }
+
+                if (session != null && session.Connected)
+                {
+                    _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
+                    sessions.Add(session);
+                    validCredentials.Add((username, password));
+                }
             }
             catch (Exception)
             {
-                return null;
+                return;
             }
         }
 
