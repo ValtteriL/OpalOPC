@@ -8,6 +8,7 @@ namespace Plugin
     {
         PreAuthPlugin = 1,
         PostAuthPlugin = 2,
+        AuthPlugin = 3,
     }
 
     public interface IPlugin
@@ -52,7 +53,7 @@ namespace Plugin
         {
         }
 
-        public Plugintype Type => Plugintype.PreAuthPlugin;
+        public virtual Plugintype Type => Plugintype.PreAuthPlugin;
 
         public abstract (Issue?, ICollection<ISession>) Run(Endpoint endpoint);
     }

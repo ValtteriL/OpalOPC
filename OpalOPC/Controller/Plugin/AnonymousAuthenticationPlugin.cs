@@ -19,14 +19,17 @@ namespace Plugin
         private static readonly double s_severity = 7.3;
 
         private readonly IConnectionUtil _connectionUtil;
+        private readonly AuthenticationData _authenticationData;
 
-        public AnonymousAuthenticationPlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
+        public AnonymousAuthenticationPlugin(ILogger logger, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
         {
             _connectionUtil = new ConnectionUtil();
+            _authenticationData = authenticationData;
         }
-        public AnonymousAuthenticationPlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
+        public AnonymousAuthenticationPlugin(ILogger logger, IConnectionUtil connectionUtil, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
         {
             _connectionUtil = connectionUtil;
+            _authenticationData = authenticationData;
         }
 
         public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
@@ -37,16 +40,32 @@ namespace Plugin
 
             if (endpoint.UserTokenTypes.Contains(UserTokenType.Anonymous))
             {
-
+                // try with self signed cert, if not working, try application certificates one by one until one works or they run out
                 // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                 try
                 {
                     ISession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
                     sessions.Add(session);
+                    return (CreateIssue(), sessions);
                 }
                 catch (Exception)
                 {
 
+                }
+
+                foreach (Opc.Ua.CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
+                {
+                    // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
+                    try
+                    {
+                        ISession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity(), applicationCertificate).Result;
+                        sessions.Add(session);
+                        return (CreateIssue(), sessions);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
 
                 return (CreateIssue(), sessions);

@@ -51,7 +51,7 @@ namespace Controller
             new SecurityPolicyBasic256Plugin(_logger),
             new SecurityPolicyNonePlugin(_logger),
 
-            new AnonymousAuthenticationPlugin(_logger),
+            new AnonymousAuthenticationPlugin(_logger, new AuthenticationData()), // TODO
             new SelfSignedCertificatePlugin(_logger),
 
             new CommonCredentialsPlugin(_logger),
