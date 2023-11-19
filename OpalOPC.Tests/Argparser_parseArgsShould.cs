@@ -106,6 +106,18 @@ public class Argparser_parseArgsShould
     }
 
     [Theory]
+    [InlineData("--version")]
+    public void ParseArgs_Version_ResultsInVersion(string flag)
+    {
+        string[] args = { flag };
+        Argparser argparser = new(args);
+
+        Options options = argparser.parseArgs();
+
+        Assert.True(options.exitCode == Util.ExitCodes.Success);
+    }
+
+    [Theory]
     [InlineData("-i")]
     [InlineData("--input")]
     public void ParseArgs_InvalidInputFile_ResultsInError(string flag)

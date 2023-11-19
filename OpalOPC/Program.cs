@@ -38,11 +38,11 @@ class OpalOPC
 
         if (options.xmlOutputReportName != null)
         {
-            logger.LogInformation($"Report saved to {options.xmlOutputReportName} (Use browser to view it)");
+            logger.LogInformation("{Message}", $"Report saved to {options.xmlOutputReportName} (Use browser to view it)");
         }
 
 #if DEBUG
-        logger.LogInformation($"Access report directly: http://localhost:8000/{options.xmlOutputReportName}");
+        logger.LogInformation("{Message}", $"Access report directly: http://localhost:8000/{options.xmlOutputReportName}");
 #endif
 
         return 0;
