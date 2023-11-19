@@ -10,5 +10,6 @@ namespace Model
         public LogLevel logLevel = LogLevel.Information;
         public bool shouldShowHelp;
         public int? exitCode;
+        public bool shouldShowVersion;
     }
 }
