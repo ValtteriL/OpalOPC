@@ -122,6 +122,9 @@ namespace Controller
         private void TestEndpointPostAuth(Endpoint endpoint, ICollection<ISecurityTestSession> securityTestSessions)
         {
             _logger.LogTrace("{Message}", $"Starting post-authentication tests");
+
+            if (securityTestSessions.Any()) TestEndpointSessionCredentials(endpoint, securityTestSessions);
+
             foreach (IPostAuthPlugin postAuthPlugin in _securityTestPlugins.Where(p => p.Type == Plugintype.PostAuthPlugin).Cast<IPostAuthPlugin>())
             {
                 TaskUtil.CheckForCancellation(_token);
@@ -129,6 +132,16 @@ namespace Controller
                 if (postauthIssue != null) endpoint.Issues.Add(postauthIssue);
             }
             _logger.LogTrace("{Message}", $"Finished post-authentication tests");
+        }
+
+        private void TestEndpointSessionCredentials(Endpoint endpoint, ICollection<ISecurityTestSession> securityTestSessions)
+        {
+            foreach (ISessionCredentialPlugin sessionCredentialPlugin in _securityTestPlugins.Where(p => p.Type == Plugintype.SessionCredentialPlugin).Cast<ISessionCredentialPlugin>())
+            {
+                TaskUtil.CheckForCancellation(_token);
+                Issue? postauthIssue = sessionCredentialPlugin.Run(securityTestSessions);
+                if (postauthIssue != null) endpoint.Issues.Add(postauthIssue);
+            }
         }
     }
 }

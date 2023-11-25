@@ -8,7 +8,7 @@ namespace Plugin
     {
         PreAuthPlugin = 1,
         PostAuthPlugin = 2,
-        SessionCredentialsPlugin = 3,
+        SessionCredentialPlugin = 3,
     }
 
     public interface IPlugin
@@ -84,7 +84,7 @@ namespace Plugin
         {
         }
 
-        public Plugintype Type => Plugintype.SessionCredentialsPlugin;
+        public Plugintype Type => Plugintype.SessionCredentialPlugin;
         public abstract Issue? Run(ICollection<ISecurityTestSession> sessionsAndCredentials);
     }
 }
