@@ -18,11 +18,11 @@ namespace Plugin
 
         public SecurityPolicyBasic128Rsa15Plugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity) { }
 
-        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint)
         {
             _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for Security Policy Basic128Rsa15");
 
-            List<ISession> sessions = new();
+            List<ISecurityTestSession> sessions = new();
 
             if (endpoint.SecurityPolicyUri == SecurityPolicies.Basic128Rsa15)
             {

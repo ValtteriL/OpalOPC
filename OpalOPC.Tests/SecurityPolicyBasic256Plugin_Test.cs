@@ -40,7 +40,7 @@ public class SecurityPolicyBasic256PluginTest
 
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
 
         // assert
         Assert.True(issue == null);
@@ -62,7 +62,7 @@ public class SecurityPolicyBasic256PluginTest
         SecurityPolicyBasic256Plugin plugin = new(logger);
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
 
         // assert
         Assert.True(issue != null);

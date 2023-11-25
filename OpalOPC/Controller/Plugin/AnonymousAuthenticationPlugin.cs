@@ -32,11 +32,11 @@ namespace Plugin
             _authenticationData = authenticationData;
         }
 
-        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint)
         {
             _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for anonymous access");
 
-            List<ISession> sessions = new();
+            List<ISecurityTestSession> sessions = new();
 
             if (endpoint.UserTokenTypes.Contains(UserTokenType.Anonymous))
             {
@@ -44,7 +44,7 @@ namespace Plugin
                 // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                 try
                 {
-                    ISession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
+                    ISecurityTestSession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
                     sessions.Add(session);
                     return (CreateIssue(), sessions);
                 }
@@ -58,7 +58,7 @@ namespace Plugin
                     // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                     try
                     {
-                        ISession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity(), applicationCertificate).Result;
+                        ISecurityTestSession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity(), applicationCertificate).Result;
                         sessions.Add(session);
                         return (CreateIssue(), sessions);
                     }

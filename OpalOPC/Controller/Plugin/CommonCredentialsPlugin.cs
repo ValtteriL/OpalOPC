@@ -32,11 +32,11 @@ namespace Plugin
 
 
 
-        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint)
         {
             _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for common credentials");
 
-            List<ISession> sessions = new();
+            List<ISecurityTestSession> sessions = new();
 
             if (!IsBruteable(endpoint))
             {
@@ -73,18 +73,18 @@ namespace Plugin
         }
 
         // Check if endpoint is bruteable = username + application authentication is disabled OR self-signed certificates accepted
-        private bool IsBruteable(Endpoint endpoint)
+        // we can only test if username authentication is enabled - we can't test if self-signed certificates are accepted
+        // this means that we may try to brute a non-bruteable endpoint, but we will not miss any bruteable endpoints
+        private static bool IsBruteable(Endpoint endpoint)
         {
-            return endpoint.UserTokenTypes.Contains(UserTokenType.UserName)
-                && (endpoint.SecurityMode == MessageSecurityMode.None
-                    || SelfSignedCertificatePlugin.SelfSignedCertAccepted(endpoint.EndpointDescription, _connectionUtil).Result);
+            return endpoint.UserTokenTypes.Contains(UserTokenType.UserName);
         }
 
-        private void AttemptLogin(List<ISession> sessions, List<(string, string)> validCredentials, Endpoint endpoint, string username, string password, CertificateIdentifier? certificateIdentifier = null)
+        private void AttemptLogin(List<ISecurityTestSession> sessions, List<(string, string)> validCredentials, Endpoint endpoint, string username, string password, CertificateIdentifier? certificateIdentifier = null)
         {
             try
             {
-                ISession session;
+                ISecurityTestSession session;
 
                 if (certificateIdentifier == null)
                 {
@@ -95,7 +95,7 @@ namespace Plugin
                     session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity(username, password), certificateIdentifier).Result;
                 }
 
-                if (session != null && session.Connected)
+                if (session != null && session.Session.Connected)
                 {
                     _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
                     sessions.Add(session);

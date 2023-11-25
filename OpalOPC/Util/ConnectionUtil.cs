@@ -1,3 +1,5 @@
+using System.Net;
+using Model;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Opc.Ua.Security.Certificates;
@@ -6,8 +8,8 @@ namespace Util
 {
     public interface IConnectionUtil
     {
-        public Task<ISession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity);
-        public Task<ISession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity, CertificateIdentifier identifier);
+        public Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity);
+        public Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity, CertificateIdentifier identifier);
     }
 
     public class ConnectionUtil : IConnectionUtil
@@ -46,16 +48,22 @@ namespace Util
         }
 
         // Authenticate with OPC UA server and start a session
-        public async Task<ISession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity)
+        public async Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity)
         {
-            return await StartSession(endpointDescription, userIdentity, _certificateIdentifier);
+            SessionCredential credential = new(userIdentity, _certificateIdentifier, true);
+            return await StartSession(endpointDescription, credential);
         }
 
-        public async Task<ISession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity, CertificateIdentifier identifier)
+        public async Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity, CertificateIdentifier identifier)
         {
+            SessionCredential credential = new(userIdentity, identifier);
+            return await StartSession(endpointDescription, credential);
+        }
 
+        private async Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, SessionCredential sessionCredential)
+        {
             // Prepare application and endpoint configurations
-            _applicationConfiguration.SecurityConfiguration.ApplicationCertificate = identifier;
+            _applicationConfiguration.SecurityConfiguration.ApplicationCertificate = sessionCredential.applicationCertificate;
             EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(_applicationConfiguration);
 
             ConfiguredEndpoint endpoint = new(null, endpointDescription, endpointConfiguration);
@@ -69,11 +77,11 @@ namespace Util
                 false,
                 _applicationConfiguration.ApplicationName,
                 30 * 1000,
-                userIdentity,
+                sessionCredential.identity,
                 null
             ).ConfigureAwait(false);
 
-            return session;
+            return new SecurityTestSession(session, sessionCredential);
         }
     }
 }

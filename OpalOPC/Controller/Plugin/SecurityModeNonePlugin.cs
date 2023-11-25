@@ -19,11 +19,11 @@ namespace Plugin
 
         public SecurityModeNonePlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity) { }
 
-        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint)
         {
             _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for Message Security Mode None");
 
-            List<ISession> sessions = new();
+            List<ISecurityTestSession> sessions = new();
 
             if (endpoint.SecurityMode == MessageSecurityMode.None)
             {

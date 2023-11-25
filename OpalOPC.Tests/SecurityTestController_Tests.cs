@@ -84,7 +84,7 @@ namespace Tests
             var opcTargets = new List<Target> { target, target, target };
 
             var mockPreAuthPlugin = new Mock<IPreAuthPlugin>();
-            mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<Endpoint>())).Returns((new Issue(1, "test", 2), new List<ISession>()));
+            mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<Endpoint>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
             mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
             SecurityTestController securityTestController = new(_loggerMock.Object, new List<IPlugin> { mockPreAuthPlugin.Object });
 
@@ -100,7 +100,7 @@ namespace Tests
         {
             // arrange
             var mockPreAuthPlugin = new Mock<IPreAuthPlugin>();
-            mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<Endpoint>())).Returns((new Issue(1, "test", 2), new List<ISession>()));
+            mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<Endpoint>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
             mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
             SecurityTestController securityTestController = new(_loggerMock.Object, new List<IPlugin> { mockPreAuthPlugin.Object });
 
@@ -120,10 +120,10 @@ namespace Tests
 
             var opcTargets = new List<Target> { target };
 
-            var sessionMock = new Mock<ISession>();
+            var sessionMock = new Mock<ISecurityTestSession>();
 
             var mockPreAuthPlugin = new Mock<IPreAuthPlugin>();
-            mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<Endpoint>())).Returns((new Issue(1, "test", 2), new List<ISession>() { sessionMock.Object }));
+            mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<Endpoint>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>() { sessionMock.Object }));
             mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
 
             var mockPostAuthPlugin = new Mock<IPostAuthPlugin>();
@@ -150,10 +150,10 @@ namespace Tests
 
             var opcTargets = new List<Target> { target };
 
-            var sessionMock = new Mock<ISession>();
+            var sessionMock = new Mock<SecurityTestSession>();
 
             var mockPreAuthPlugin = new Mock<IPreAuthPlugin>();
-            mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<Endpoint>())).Returns((new Issue(1, "test", 2), new List<ISession>()));
+            mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<Endpoint>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
             mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
 
             var mockPostAuthPlugin = new Mock<IPostAuthPlugin>();

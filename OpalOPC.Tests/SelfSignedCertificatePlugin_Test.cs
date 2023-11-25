@@ -11,15 +11,22 @@ using Xunit;
 namespace Tests;
 public class SelfSignedCertificatePluginTest
 {
+    private readonly ILogger _logger;
+
+    public SelfSignedCertificatePluginTest()
+    {
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
+        _logger = loggerFactory.CreateLogger<SelfSignedCertificatePluginTest>();
+    }
+
+
     [Fact]
     public void ConstructorDoesNotReturnNull()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
 
         // act
-        SelfSignedCertificatePlugin plugin = new(logger);
+        SelfSignedCertificatePlugin plugin = new(_logger);
 
         // assert
         Assert.True(plugin != null);
@@ -29,54 +36,39 @@ public class SelfSignedCertificatePluginTest
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
+        var mockSecurityTestSession = new Mock<ISecurityTestSession>();
+        var mockCertificateIdentifier = new Mock<CertificateIdentifier>();
+        SessionCredential sessionCredential = new(new UserIdentity(), mockCertificateIdentifier.Object);
+        mockSecurityTestSession.Setup(session => session.Credential).Returns(sessionCredential);
+        mockSecurityTestSession.Setup(session => session.EndpointUrl).Returns("test");
 
-        EndpointDescription endpointDescription = new()
-        {
-            SecurityPolicyUri = new Uri(SecurityPolicies.Aes128_Sha256_RsaOaep).ToString(),
-        };
-        Endpoint endpoint = new(endpointDescription);
-
-        var mockConnectionUtil = new Mock<IConnectionUtil>();
-        var mockSession = new Mock<ISession>();
-        mockConnectionUtil.Setup(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Throws<ServiceResultException>();
-
-        SelfSignedCertificatePlugin plugin = new(logger, mockConnectionUtil.Object);
+        SelfSignedCertificatePlugin plugin = new(_logger);
 
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        Issue? issue = plugin.Run(new List<ISecurityTestSession> { mockSecurityTestSession.Object });
 
         // assert
         Assert.True(issue == null);
-        Assert.Empty(sessions);
     }
 
     [Fact]
     public void ReportsIssues()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
-        EndpointDescription endpointDescription = new()
-        {
-            SecurityPolicyUri = new Uri(SecurityPolicies.None).ToString(),
-        };
-        Endpoint endpoint = new(endpointDescription);
+        SelfSignedCertificatePlugin plugin = new(_logger);
 
-        var mockConnectionUtil = new Mock<IConnectionUtil>();
-        var mockSession = new Mock<ISession>();
-        mockConnectionUtil.Setup(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Returns(mockSession.Object);
-
-        SelfSignedCertificatePlugin plugin = new(logger, mockConnectionUtil.Object);
+        var mockSecurityTestSession = new Mock<ISecurityTestSession>();
+        var mockCertificateIdentifier = new Mock<CertificateIdentifier>();
+        SessionCredential sessionCredential = new(new UserIdentity(), mockCertificateIdentifier.Object, true);
+        mockSecurityTestSession.Setup(session => session.Credential).Returns(sessionCredential);
+        mockSecurityTestSession.Setup(session => session.EndpointUrl).Returns("test");
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        Issue? issue = plugin.Run(new List<ISecurityTestSession> { mockSecurityTestSession.Object });
 
         // assert
         Assert.True(issue != null);
-        Assert.Empty(sessions);
     }
 
 }

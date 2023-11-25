@@ -8,7 +8,7 @@ namespace Plugin
     {
         PreAuthPlugin = 1,
         PostAuthPlugin = 2,
-        AuthPlugin = 3,
+        SessionCredentialsPlugin = 3,
     }
 
     public interface IPlugin
@@ -44,7 +44,7 @@ namespace Plugin
 
     public interface IPreAuthPlugin : IPlugin
     {
-        public (Issue?, ICollection<ISession>) Run(Endpoint endpoint);
+        public (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint);
     }
 
     public abstract class PreAuthPlugin : Plugin, IPreAuthPlugin
@@ -55,7 +55,7 @@ namespace Plugin
 
         public virtual Plugintype Type => Plugintype.PreAuthPlugin;
 
-        public abstract (Issue?, ICollection<ISession>) Run(Endpoint endpoint);
+        public abstract (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint);
     }
 
     public interface IPostAuthPlugin : IPlugin
@@ -71,5 +71,20 @@ namespace Plugin
 
         public Plugintype Type => Plugintype.PostAuthPlugin;
         public abstract Issue? Run(ISession session);
+    }
+
+    public interface ISessionCredentialPlugin : IPlugin
+    {
+        public Issue? Run(ICollection<ISecurityTestSession> sessionsAndCredentials);
+    }
+
+    public abstract class SessionCredentialPlugin : Plugin, ISessionCredentialPlugin
+    {
+        public SessionCredentialPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : base(logger, pluginId, category, name, severity)
+        {
+        }
+
+        public Plugintype Type => Plugintype.SessionCredentialsPlugin;
+        public abstract Issue? Run(ICollection<ISecurityTestSession> sessionsAndCredentials);
     }
 }

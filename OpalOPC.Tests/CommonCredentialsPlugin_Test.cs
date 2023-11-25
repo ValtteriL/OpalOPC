@@ -41,14 +41,14 @@ public class CommonCredentialsPluginTest
 
         // StartSession returns only closed sessions
         var mockConnectionUtil = new Mock<IConnectionUtil>();
-        var mockSession = new Mock<ISession>();
-        mockSession.Setup(session => session.Connected).Returns(false);
+        var mockSession = new Mock<ISecurityTestSession>();
+        mockSession.Setup(session => session.Session.Connected).Returns(false);
         mockConnectionUtil.Setup(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Returns(mockSession.Object);
 
         CommonCredentialsPlugin plugin = new(logger, mockConnectionUtil.Object, new AuthenticationData());
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
 
         // assert
         mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
@@ -73,16 +73,16 @@ public class CommonCredentialsPluginTest
         // StartSession should return a dummy session
         // StartSession returns single open session, then closed sessions
         var mockConnectionUtil = new Mock<IConnectionUtil>();
-        var mockSessionSuccess = new Mock<ISession>();
-        mockSessionSuccess.Setup(session => session.Connected).Returns(true);
-        var mockSession = new Mock<ISession>();
-        mockSession.Setup(session => session.Connected).Returns(false);
+        var mockSessionSuccess = new Mock<ISecurityTestSession>();
+        mockSessionSuccess.Setup(session => session.Session.Connected).Returns(true);
+        var mockSession = new Mock<ISecurityTestSession>();
+        mockSession.Setup(session => session.Session.Connected).Returns(false);
         mockConnectionUtil.SetupSequence(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Returns(mockSessionSuccess.Object).Returns(mockSession.Object);
 
         CommonCredentialsPlugin plugin = new(logger, mockConnectionUtil.Object, new AuthenticationData());
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
 
         // assert
         mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
@@ -108,10 +108,10 @@ public class CommonCredentialsPluginTest
         // StartSession should return a dummy session
         // StartSession returns single open session, then closed sessions
         var mockConnectionUtil = new Mock<IConnectionUtil>();
-        var mockSessionSuccess = new Mock<ISession>();
-        mockSessionSuccess.Setup(session => session.Connected).Returns(true);
-        var mockSession = new Mock<ISession>();
-        mockSession.Setup(session => session.Connected).Returns(false);
+        var mockSessionSuccess = new Mock<ISecurityTestSession>();
+        mockSessionSuccess.Setup(session => session.Session.Connected).Returns(true);
+        var mockSession = new Mock<ISecurityTestSession>();
+        mockSession.Setup(session => session.Session.Connected).Returns(false);
         mockConnectionUtil.SetupSequence(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Returns(mockSession.Object).Returns(mockSession.Object); // return closed session if no app certificate
         mockConnectionUtil.SetupSequence(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()).Result).Returns(mockSession.Object).Returns(mockSessionSuccess.Object); // return successful session for app certificate
 
@@ -122,7 +122,7 @@ public class CommonCredentialsPluginTest
         CommonCredentialsPlugin plugin = new(logger, mockConnectionUtil.Object, authenticationData);
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
 
         // assert
         mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));

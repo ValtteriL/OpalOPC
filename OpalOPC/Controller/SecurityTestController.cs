@@ -83,49 +83,49 @@ namespace Controller
             // finally close sessions
             // return number of sessions
 
-            ICollection<ISession> sessions = TestEndpointPreauth(endpoint);
+            ICollection<ISecurityTestSession> securityTestSessions = TestEndpointPreauth(endpoint);
 
-            if (!sessions.Any())
+            if (!securityTestSessions.Any())
             {
-                return sessions.Count;
+                return securityTestSessions.Count;
             }
 
-            TestEndpointPostAuth(endpoint, sessions);
+            TestEndpointPostAuth(endpoint, securityTestSessions);
 
             _logger.LogTrace("{Message}", $"Closing sessions");
-            foreach (ISession session in sessions)
+            foreach (SecurityTestSession securityTestSession in securityTestSessions.Cast<SecurityTestSession>())
             {
-                session.Dispose();
+                securityTestSession.Dispose();
             }
 
-            return sessions.Count;
+            return securityTestSessions.Count;
         }
 
-        private ICollection<ISession> TestEndpointPreauth(Endpoint endpoint)
+        private ICollection<ISecurityTestSession> TestEndpointPreauth(Endpoint endpoint)
         {
-            List<ISession> sessions = new();
+            List<ISecurityTestSession> securityTestSessions = new();
 
             _logger.LogTrace("{Message}", $"Starting pre-authentication tests");
             foreach (IPreAuthPlugin preauthPlugin in _securityTestPlugins.Where(p => p.Type == Plugintype.PreAuthPlugin).Cast<IPreAuthPlugin>())
             {
                 TaskUtil.CheckForCancellation(_token);
-                (Issue? preauthissue, ICollection<ISession> preauthsessions) = preauthPlugin.Run(endpoint);
+                (Issue? preauthissue, ICollection<ISecurityTestSession> preauthsessions) = preauthPlugin.Run(endpoint);
 
-                sessions.AddRange(preauthsessions);
+                securityTestSessions.AddRange(preauthsessions);
                 if (preauthissue != null) endpoint.Issues.Add(preauthissue);
             }
             _logger.LogTrace("{Message}", $"Finished pre-authentication tests");
 
-            return sessions;
+            return securityTestSessions;
         }
 
-        private void TestEndpointPostAuth(Endpoint endpoint, ICollection<ISession> sessions)
+        private void TestEndpointPostAuth(Endpoint endpoint, ICollection<ISecurityTestSession> securityTestSessions)
         {
             _logger.LogTrace("{Message}", $"Starting post-authentication tests");
             foreach (IPostAuthPlugin postAuthPlugin in _securityTestPlugins.Where(p => p.Type == Plugintype.PostAuthPlugin).Cast<IPostAuthPlugin>())
             {
                 TaskUtil.CheckForCancellation(_token);
-                Issue? postauthIssue = postAuthPlugin.Run(sessions.First());
+                Issue? postauthIssue = postAuthPlugin.Run(securityTestSessions.First().Session);
                 if (postauthIssue != null) endpoint.Issues.Add(postauthIssue);
             }
             _logger.LogTrace("{Message}", $"Finished post-authentication tests");
