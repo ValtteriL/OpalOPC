@@ -1,4 +1,5 @@
 using Opc.Ua;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace Model
 {
@@ -28,6 +29,18 @@ namespace Model
             ProductUri = ad.ProductUri;
 
             Servers = new List<Server>();
+        }
+
+        public ICollection<Endpoint> GetEndpoints()
+        {
+            List<Endpoint> endpoints = new();
+
+            foreach (ICollection<Endpoint> serverEndpointList in Servers.Select(s => s.SeparatedEndpoints))
+            {
+                endpoints.AddRange(serverEndpointList);
+            }
+
+            return endpoints;
         }
 
         public void AddServer(Server server)

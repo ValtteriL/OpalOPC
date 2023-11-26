@@ -24,7 +24,11 @@ namespace Plugin
 
         public override Issue? Run(ICollection<ISecurityTestSession> securityTestSessions)
         {
-            // expects there to be at least one session
+            if (!securityTestSessions.Any())
+            {
+                return null;
+            }
+
             _logger.LogTrace("{Message}", $"Testing if {securityTestSessions.First().EndpointUrl} accepts self signed application certificate");
 
             foreach (ISecurityTestSession securityTestSession in securityTestSessions)

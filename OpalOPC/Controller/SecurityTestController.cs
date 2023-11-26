@@ -38,7 +38,7 @@ namespace Controller
                 {
                     int nSessions = 0;
 
-                    foreach (Endpoint endpoint in GetAllTargetEndpoints(target))
+                    foreach (Endpoint endpoint in target.GetEndpoints())
                     {
                         _logger.LogTrace("{Message}", $"Testing endpoint {endpoint.EndpointUrl} of {target.ApplicationName} ({endpoint.EndpointDescription.SecurityPolicyUri})");
                         nSessions += TestEndpointSecurity(endpoint);
@@ -62,18 +62,6 @@ namespace Controller
             });
 
             return opcTargets;
-        }
-
-        private static ICollection<Endpoint> GetAllTargetEndpoints(Target target)
-        {
-            List<Endpoint> endpoints = new();
-
-            foreach (ICollection<Endpoint> serverEndpointList in target.Servers.Select(s => s.SeparatedEndpoints))
-            {
-                endpoints.AddRange(serverEndpointList);
-            }
-
-            return endpoints;
         }
 
         private int TestEndpointSecurity(Endpoint endpoint)
@@ -106,7 +94,7 @@ namespace Controller
             List<ISecurityTestSession> securityTestSessions = new();
 
             _logger.LogTrace("{Message}", $"Starting pre-authentication tests");
-            foreach (IPreAuthPlugin preauthPlugin in _securityTestPlugins.Where(p => p.Type == Plugintype.PreAuthPlugin).Cast<IPreAuthPlugin>())
+            foreach (IPreAuthPlugin preauthPlugin in GetPluginsByType(Plugintype.PreAuthPlugin).Cast<IPreAuthPlugin>())
             {
                 TaskUtil.CheckForCancellation(_token);
                 (Issue? preauthissue, ICollection<ISecurityTestSession> preauthsessions) = preauthPlugin.Run(endpoint);
@@ -123,9 +111,9 @@ namespace Controller
         {
             _logger.LogTrace("{Message}", $"Starting post-authentication tests");
 
-            if (securityTestSessions.Any()) TestEndpointSessionCredentials(endpoint, securityTestSessions);
+            TestEndpointSessionCredentials(endpoint, securityTestSessions);
 
-            foreach (IPostAuthPlugin postAuthPlugin in _securityTestPlugins.Where(p => p.Type == Plugintype.PostAuthPlugin).Cast<IPostAuthPlugin>())
+            foreach (IPostAuthPlugin postAuthPlugin in GetPluginsByType(Plugintype.PostAuthPlugin).Cast<IPostAuthPlugin>())
             {
                 TaskUtil.CheckForCancellation(_token);
                 Issue? postauthIssue = postAuthPlugin.Run(securityTestSessions.First().Session);
@@ -136,12 +124,17 @@ namespace Controller
 
         private void TestEndpointSessionCredentials(Endpoint endpoint, ICollection<ISecurityTestSession> securityTestSessions)
         {
-            foreach (ISessionCredentialPlugin sessionCredentialPlugin in _securityTestPlugins.Where(p => p.Type == Plugintype.SessionCredentialPlugin).Cast<ISessionCredentialPlugin>())
+            foreach (ISessionCredentialPlugin sessionCredentialPlugin in GetPluginsByType(Plugintype.SessionCredentialPlugin).Cast<ISessionCredentialPlugin>())
             {
                 TaskUtil.CheckForCancellation(_token);
                 Issue? postauthIssue = sessionCredentialPlugin.Run(securityTestSessions);
                 if (postauthIssue != null) endpoint.Issues.Add(postauthIssue);
             }
+        }
+
+        private ICollection<IPlugin> GetPluginsByType(Plugintype plugintype)
+        {
+            return _securityTestPlugins.Where(p => p.Type == plugintype).ToList();
         }
     }
 }
