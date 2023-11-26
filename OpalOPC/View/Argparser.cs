@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Mono.Options;
+using Util;
 
 namespace View
 {
@@ -10,6 +11,7 @@ namespace View
         private readonly OptionSet _optionSet;
         private Options _options = new();
         private readonly string _programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+        private readonly IFileUtil _fileUtil;
 
         public Argparser(string[] args)
         {
@@ -19,10 +21,85 @@ namespace View
                 { "v", "increase verbosity (can be specified up to 2 times)", v => _options.logLevel = (v == null) ? _options.logLevel : _options.logLevel == LogLevel.Information ? LogLevel.Debug : LogLevel.Trace },
                 { "h|help", "show this message and exit", h => _options.shouldShowHelp = h != null },
                 { "s", "silence output (useful with -o -)", s => _options.logLevel = (s == null) ? _options.logLevel : LogLevel.None },
+                { "l|login-credential=", "username:password for user authentication", u => _options = addLoginCredential(u) },
+                { "b|brute-force-credential=", "username:password for brute force attack", u => _options = addBruteForceCredential(u) },
+                { "L|login-credential-file=", "input username:password pairs for authentication from list", l => _options = addLoginCredentialsFromFile(l) },
+                { "B|brute-force-credential-file=", "input username:password pairs for brute force attack from list", l => _options = addBruteForceCredentialsFromFile(l) },
                 { "version", "show version and exit", ver => _options.shouldShowVersion = ver != null },
             };
 
             _args = args;
+            _fileUtil = new FileUtil();
+        }
+
+        // constructor for tests 
+        public Argparser(string[] args, IFileUtil fileUtil) : this(args)
+        {
+            _fileUtil = fileUtil;
+        }
+
+        private static (string, string) splitUsernamePassword(string usernamePassword)
+        {
+            string[] splitLine = usernamePassword.Split(':', 2);
+            if (splitLine.Length == 2)
+            {
+                return (splitLine[0], splitLine[1]);
+            }
+            else
+            {
+                throw new OptionException($"\"{usernamePassword}\" is invalid user authentication credential", "");
+            }
+        }
+
+        private ICollection<string> readFileToList(string path)
+        {
+            List<string> lines;
+
+            try
+            {
+                lines = _fileUtil.ReadFileToList(path).ToList();
+
+            }
+            catch (System.Exception e)
+            {
+                throw new OptionException(e.Message, "");
+            }
+
+            return lines;
+        }
+
+        private Options addBruteForceCredentialsFromFile(string path)
+        {
+            foreach (string line in readFileToList(path))
+            {
+                addBruteForceCredential(line);
+            }
+
+            return _options;
+        }
+
+        private Options addLoginCredentialsFromFile(string path)
+        {
+            foreach (string line in readFileToList(path))
+            {
+                addLoginCredential(line);
+            }
+
+            return _options;
+        }
+
+        private Options addLoginCredential(string credential)
+        {
+            (string username, string password) = splitUsernamePassword(credential);
+            _options.authenticationData.AddLoginCredential(username, password);
+            return _options;
+        }
+
+        private Options addBruteForceCredential(string credential)
+        {
+            (string username, string password) = splitUsernamePassword(credential);
+            _options.authenticationData.AddBruteForceCredential(username, password);
+            return _options;
         }
 
         private Options setOutputFile(string path)
@@ -71,7 +148,7 @@ namespace View
                 }
                 else
                 {
-                    lines = File.ReadAllLines(path).ToList();
+                    lines = _fileUtil.ReadFileToList(path).ToList();
                 }
             }
             catch (System.Exception e)
@@ -156,7 +233,8 @@ namespace View
                 deleteReportIfCreatedAlready();
                 printHelp();
                 _options.exitCode = Util.ExitCodes.Success;
-            } else if (_options.shouldShowVersion)
+            }
+            else if (_options.shouldShowVersion)
             {
                 deleteReportIfCreatedAlready();
                 printVersion();

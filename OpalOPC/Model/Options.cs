@@ -11,5 +11,6 @@ namespace Model
         public bool shouldShowHelp;
         public int? exitCode;
         public bool shouldShowVersion;
+        public AuthenticationData authenticationData = new();
     }
 }
