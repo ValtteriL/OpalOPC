@@ -9,26 +9,19 @@ using Xunit;
 namespace Tests;
 public class SecurityPolicyBasic128Rsa15PluginTest
 {
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
+    private readonly ILogger _logger;
+    private readonly SecurityPolicyBasic128Rsa15Plugin _plugin;
+
+    public SecurityPolicyBasic128Rsa15PluginTest()
     {
-        // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityPolicyBasic128Rsa15PluginTest>();
-
-        // act
-        SecurityPolicyBasic128Rsa15Plugin plugin = new(logger);
-
-        // assert
-        Assert.True(plugin != null);
+        _logger = LoggerFactory.Create(builder => { }).CreateLogger<SecurityPolicyBasic128Rsa15PluginTest>();
+        _plugin = new SecurityPolicyBasic128Rsa15Plugin(_logger);
     }
 
     [Fact]
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityPolicyBasic128Rsa15PluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
@@ -36,11 +29,9 @@ public class SecurityPolicyBasic128Rsa15PluginTest
         };
         Endpoint endpoint = new(endpointDescription);
 
-        SecurityPolicyBasic128Rsa15Plugin plugin = new(logger);
-
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(endpoint);
 
         // assert
         Assert.True(issue == null);
@@ -51,18 +42,14 @@ public class SecurityPolicyBasic128Rsa15PluginTest
     public void ReportsIssues()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityPolicyBasic128Rsa15PluginTest>();
         EndpointDescription endpointDescription = new()
         {
             SecurityPolicyUri = new Uri(SecurityPolicies.Basic128Rsa15).ToString(),
         };
         Endpoint endpoint = new(endpointDescription);
 
-        SecurityPolicyBasic128Rsa15Plugin plugin = new(logger);
-
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(endpoint);
 
         // assert
         Assert.True(issue != null);

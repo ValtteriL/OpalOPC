@@ -9,26 +9,18 @@ using Xunit;
 namespace Tests;
 public class SecurityModeInvalidPluginTest
 {
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
+    private readonly ILogger _logger;
+    private readonly SecurityModeInvalidPlugin _plugin;
+    public SecurityModeInvalidPluginTest()
     {
-        // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityModeInvalidPluginTest>();
-
-        // act
-        SecurityModeInvalidPlugin plugin = new(logger);
-
-        // assert
-        Assert.True(plugin != null);
+        _logger = LoggerFactory.Create(builder => { }).CreateLogger<SecurityModeInvalidPluginTest>();
+        _plugin = new SecurityModeInvalidPlugin(_logger);
     }
 
     [Fact]
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityModeInvalidPluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
@@ -37,11 +29,9 @@ public class SecurityModeInvalidPluginTest
         };
         Endpoint endpoint = new(endpointDescription);
 
-        SecurityModeInvalidPlugin plugin = new(logger);
-
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(endpoint);
 
         // assert
         Assert.True(issue == null);
@@ -52,8 +42,6 @@ public class SecurityModeInvalidPluginTest
     public void ReportsIssues()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityModeInvalidPluginTest>();
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
@@ -61,10 +49,8 @@ public class SecurityModeInvalidPluginTest
         };
         Endpoint endpoint = new(endpointDescription);
 
-        SecurityModeInvalidPlugin plugin = new(logger);
-
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(endpoint);
 
         // assert
         Assert.True(issue != null);

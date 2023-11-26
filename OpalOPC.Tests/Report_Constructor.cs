@@ -4,13 +4,6 @@ using Xunit;
 namespace Tests;
 public class Report_Constructor
 {
-    [Fact]
-    public void constructor_DoesNotReturnNull()
-    {
-        Report report = new(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
-
-        Assert.True(report != null);
-    }
 
     [Fact]
     public void constructor_SetsProperties()

@@ -9,26 +9,19 @@ using Xunit;
 namespace Tests;
 public class SecurityModeNonePluginTest
 {
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
+
+    private readonly ILogger _logger;
+    private readonly SecurityModeNonePlugin _plugin;
+    public SecurityModeNonePluginTest()
     {
-        // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityModeNonePluginTest>();
-
-        // act
-        SecurityModeNonePlugin plugin = new(logger);
-
-        // assert
-        Assert.True(plugin != null);
+        _logger = LoggerFactory.Create(builder => { }).CreateLogger<SecurityModeNonePluginTest>();
+        _plugin = new SecurityModeNonePlugin(_logger);
     }
 
     [Fact]
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityModeNonePluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
@@ -37,11 +30,9 @@ public class SecurityModeNonePluginTest
         };
         Endpoint endpoint = new(endpointDescription);
 
-        SecurityModeNonePlugin plugin = new(logger);
-
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(endpoint);
 
         // assert
         Assert.True(issue == null);
@@ -52,8 +43,6 @@ public class SecurityModeNonePluginTest
     public void ReportsIssues()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityModeNonePluginTest>();
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
@@ -61,10 +50,8 @@ public class SecurityModeNonePluginTest
         };
         Endpoint endpoint = new(endpointDescription);
 
-        SecurityModeNonePlugin plugin = new(logger);
-
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(endpoint);
 
         // assert
         Assert.True(issue != null);

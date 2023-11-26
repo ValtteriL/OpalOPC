@@ -12,41 +12,31 @@ namespace Tests;
 public class SelfSignedCertificatePluginTest
 {
     private readonly ILogger _logger;
+    private readonly Mock<ISecurityTestSession> _mockSecurityTestSession;
+    private readonly Mock<CertificateIdentifier> _mockCertificateIdentifier;
+    private readonly SelfSignedCertificatePlugin _plugin;
 
     public SelfSignedCertificatePluginTest()
     {
         ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         _logger = loggerFactory.CreateLogger<SelfSignedCertificatePluginTest>();
+        _mockSecurityTestSession = new Mock<ISecurityTestSession>();
+        _mockCertificateIdentifier = new Mock<CertificateIdentifier>();
+        _plugin = new SelfSignedCertificatePlugin(_logger);
     }
 
-
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
-    {
-        // arrange
-
-        // act
-        SelfSignedCertificatePlugin plugin = new(_logger);
-
-        // assert
-        Assert.True(plugin != null);
-    }
 
     [Fact]
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        var mockSecurityTestSession = new Mock<ISecurityTestSession>();
-        var mockCertificateIdentifier = new Mock<CertificateIdentifier>();
-        SessionCredential sessionCredential = new(new UserIdentity(), mockCertificateIdentifier.Object);
-        mockSecurityTestSession.Setup(session => session.Credential).Returns(sessionCredential);
-        mockSecurityTestSession.Setup(session => session.EndpointUrl).Returns("test");
-
-        SelfSignedCertificatePlugin plugin = new(_logger);
+        SessionCredential sessionCredential = new(new UserIdentity(), _mockCertificateIdentifier.Object);
+        _mockSecurityTestSession.Setup(session => session.Credential).Returns(sessionCredential);
+        _mockSecurityTestSession.Setup(session => session.EndpointUrl).Returns("test");
 
 
         // act
-        Issue? issue = plugin.Run(new List<ISecurityTestSession> { mockSecurityTestSession.Object });
+        Issue? issue = _plugin.Run(new List<ISecurityTestSession> { _mockSecurityTestSession.Object });
 
         // assert
         Assert.True(issue == null);
@@ -56,16 +46,12 @@ public class SelfSignedCertificatePluginTest
     public void ReportsIssues()
     {
         // arrange
-        SelfSignedCertificatePlugin plugin = new(_logger);
-
-        var mockSecurityTestSession = new Mock<ISecurityTestSession>();
-        var mockCertificateIdentifier = new Mock<CertificateIdentifier>();
-        SessionCredential sessionCredential = new(new UserIdentity(), mockCertificateIdentifier.Object, true);
-        mockSecurityTestSession.Setup(session => session.Credential).Returns(sessionCredential);
-        mockSecurityTestSession.Setup(session => session.EndpointUrl).Returns("test");
+        SessionCredential sessionCredential = new(new UserIdentity(), _mockCertificateIdentifier.Object, true);
+        _mockSecurityTestSession.Setup(session => session.Credential).Returns(sessionCredential);
+        _mockSecurityTestSession.Setup(session => session.EndpointUrl).Returns("test");
 
         // act
-        Issue? issue = plugin.Run(new List<ISecurityTestSession> { mockSecurityTestSession.Object });
+        Issue? issue = _plugin.Run(new List<ISecurityTestSession> { _mockSecurityTestSession.Object });
 
         // assert
         Assert.True(issue != null);

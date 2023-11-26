@@ -5,15 +5,6 @@ using Xunit;
 namespace Tests;
 public class Server_Constructor
 {
-    [Fact]
-    public void constructor_DoesNotReturnNull()
-    {
-        string discoveryUrl = "a";
-        EndpointDescriptionCollection edc = new();
-        Server server = new(discoveryUrl, edc);
-
-        Assert.True(server != null);
-    }
 
     [Fact]
     public void constructor_SetsProperties()

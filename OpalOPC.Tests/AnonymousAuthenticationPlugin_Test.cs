@@ -12,26 +12,21 @@ using Xunit;
 namespace Tests;
 public class AnonymousAuthenticationPluginTest
 {
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
+    private readonly ILogger _logger;
+    private readonly Mock<IConnectionUtil> _mockConnectionUtil;
+    private readonly Mock<ISecurityTestSession> _mockSession;
+
+    public AnonymousAuthenticationPluginTest()
     {
-        // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
-
-        // act
-        AnonymousAuthenticationPlugin plugin = new(logger, new AuthenticationData());
-
-        // assert
-        Assert.True(plugin != null);
+        _logger = LoggerFactory.Create(builder => { }).CreateLogger<AnonymousAuthenticationPluginTest>();
+        _mockConnectionUtil = new Mock<IConnectionUtil>();
+        _mockSession = new Mock<ISecurityTestSession>();
     }
 
     [Fact]
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
@@ -40,16 +35,14 @@ public class AnonymousAuthenticationPluginTest
         Endpoint endpoint = new(endpointDescription);
 
         // StartSession should not be called at all
-        var mockConnectionUtil = new Mock<IConnectionUtil>();
-
-        AnonymousAuthenticationPlugin plugin = new(logger, mockConnectionUtil.Object, new AuthenticationData());
+        AnonymousAuthenticationPlugin plugin = new(_logger, _mockConnectionUtil.Object, new AuthenticationData());
 
         // act
         (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
 
         // assert
-        mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Never());
-        mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Never());
+        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Never());
+        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Never());
         Assert.True(issue == null);
         Assert.Empty(sessions);
     }
@@ -58,8 +51,6 @@ public class AnonymousAuthenticationPluginTest
     public void ReportsIssues()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AnonymousAuthenticationPluginTest>();
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) })
@@ -67,19 +58,17 @@ public class AnonymousAuthenticationPluginTest
         Endpoint endpoint = new(endpointDescription);
 
         // StartSession should return a dummy session
-        var mockConnectionUtil = new Mock<IConnectionUtil>();
-        var mockSession = new Mock<ISecurityTestSession>();
-        mockConnectionUtil.Setup(conn => conn.StartSession(endpointDescription, It.IsAny<UserIdentity>()).Result).Returns(mockSession.Object);
+        _mockConnectionUtil.Setup(conn => conn.StartSession(endpointDescription, It.IsAny<UserIdentity>()).Result).Returns(_mockSession.Object);
 
-        AnonymousAuthenticationPlugin plugin = new(logger, mockConnectionUtil.Object, new AuthenticationData());
+        AnonymousAuthenticationPlugin plugin = new(_logger, _mockConnectionUtil.Object, new AuthenticationData());
 
         // act
         (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
 
         // assert
         Assert.True(issue != null);
-        mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Once);
-        mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Never());
+        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Once);
+        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Never());
         Assert.NotEmpty(sessions);
         Assert.True(sessions.Count == 1);
     }
@@ -88,8 +77,6 @@ public class AnonymousAuthenticationPluginTest
     public void FailureToOpenSessionFailsGracefully()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AnonymousAuthenticationPluginTest>();
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) })
@@ -97,16 +84,15 @@ public class AnonymousAuthenticationPluginTest
         Endpoint endpoint = new(endpointDescription);
 
         // StartSession should return a dummy session
-        var mockConnectionUtil = new Mock<IConnectionUtil>();
-        mockConnectionUtil.Setup(conn => conn.StartSession(endpointDescription, It.IsAny<UserIdentity>()).Result).Throws(new Exception());
+        _mockConnectionUtil.Setup(conn => conn.StartSession(endpointDescription, It.IsAny<UserIdentity>()).Result).Throws(new Exception());
 
-        AnonymousAuthenticationPlugin plugin = new(logger, mockConnectionUtil.Object, new AuthenticationData());
+        AnonymousAuthenticationPlugin plugin = new(_logger, _mockConnectionUtil.Object, new AuthenticationData());
 
         // act
         (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
 
         // assert
-        mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Once);
+        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Once);
         Assert.True(issue != null);
         Assert.Empty(sessions);
     }
@@ -115,8 +101,6 @@ public class AnonymousAuthenticationPluginTest
     public void ApplicationCertificatesAreTried()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AnonymousAuthenticationPluginTest>();
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) })
@@ -124,23 +108,21 @@ public class AnonymousAuthenticationPluginTest
         Endpoint endpoint = new(endpointDescription);
 
         // StartSession should return a dummy session
-        var mockConnectionUtil = new Mock<IConnectionUtil>();
-        var mockSession = new Mock<ISecurityTestSession>();
-        mockConnectionUtil.Setup(conn => conn.StartSession(endpointDescription, It.IsAny<UserIdentity>()).Result).Throws(new Exception());
-        mockConnectionUtil.Setup(conn => conn.StartSession(endpointDescription, It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()).Result).Returns(mockSession.Object);
+        _mockConnectionUtil.Setup(conn => conn.StartSession(endpointDescription, It.IsAny<UserIdentity>()).Result).Throws(new Exception());
+        _mockConnectionUtil.Setup(conn => conn.StartSession(endpointDescription, It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()).Result).Returns(_mockSession.Object);
 
         AuthenticationData authenticationData = new();
         var mockCertIdentifier = new Mock<CertificateIdentifier>();
         authenticationData.applicationCertificates.Add(mockCertIdentifier.Object);
 
-        AnonymousAuthenticationPlugin plugin = new(logger, mockConnectionUtil.Object, authenticationData);
+        AnonymousAuthenticationPlugin plugin = new(_logger, _mockConnectionUtil.Object, authenticationData);
 
         // act
         (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
 
         // assert
-        mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Once);
-        mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Once);
+        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Once);
+        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Once);
         Assert.True(issue != null);
         Assert.True(sessions.Count == 1);
     }

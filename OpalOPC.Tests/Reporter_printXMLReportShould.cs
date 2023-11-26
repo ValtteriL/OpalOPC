@@ -5,19 +5,28 @@ using Xunit;
 namespace Tests;
 public class Reporter_printXHTMLReportShould
 {
-    [Fact]
-    public void printXHTMLReport_NullReportCausesNullReferenceException()
+    private readonly Reporter _reporter;
+    private readonly MemoryStream _memoryStream;
+
+    public Reporter_printXHTMLReportShould()
     {
-        StreamWriter sw = new(new MemoryStream())
+        _memoryStream = new();
+
+        StreamWriter sw = new(_memoryStream)
         {
             AutoFlush = true
         };
-        Reporter reporter = new(sw.BaseStream);
+        _reporter = new(sw.BaseStream);
+    }
+
+    [Fact]
+    public void printXHTMLReport_NullReportCausesNullReferenceException()
+    {
         Report? report = null;
 
         try
         {
-            reporter.PrintXHTMLReport(report!);
+            _reporter.PrintXHTMLReport(report!);
         }
         catch (System.NullReferenceException)
         {
@@ -31,31 +40,20 @@ public class Reporter_printXHTMLReportShould
     [Fact]
     public void printXHTMLReport_NonNullReportSucceeds()
     {
-        StreamWriter sw = new(new MemoryStream())
-        {
-            AutoFlush = true
-        };
-        Reporter reporter = new(sw.BaseStream);
         Report report = new(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
 
-        reporter.PrintXHTMLReport(report);
+        _reporter.PrintXHTMLReport(report);
     }
 
     [Fact]
     public void printXHTMLReport_ReportResourcesReplacedInTestingReports()
     {
-        MemoryStream ms = new();
-        StreamWriter sw = new(ms)
-        {
-            AutoFlush = true
-        };
-        Reporter reporter = new(sw.BaseStream);
         Report report = new(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
 
-        reporter.PrintXHTMLReport(report);
+        _reporter.PrintXHTMLReport(report);
 
-        ms.Seek(0, SeekOrigin.Begin);
-        StreamReader reader = new(ms);
+        _memoryStream.Seek(0, SeekOrigin.Begin);
+        StreamReader reader = new(_memoryStream);
         string reportString = reader.ReadToEnd();
 
         Assert.Contains(Util.XmlResources.DebugResourcePath, reportString);
