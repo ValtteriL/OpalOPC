@@ -13,14 +13,16 @@ namespace Controller
         readonly Stream _reportOutputStream;
         readonly string _commandLine;
         readonly CancellationToken? _token;
+        readonly AuthenticationData _authenticationData;
 
-        public ScanController(ILogger logger, ICollection<Uri> targets, Stream reportOutputStream, string commandLine, CancellationToken? token = null)
+        public ScanController(ILogger logger, ICollection<Uri> targets, Stream reportOutputStream, string commandLine, AuthenticationData authenticationData, CancellationToken? token = null)
         {
             _logger = logger;
             _targets = targets;
             _reportOutputStream = reportOutputStream;
             _commandLine = commandLine;
             _token = token;
+            _authenticationData = authenticationData;
         }
 
         public void Scan()
@@ -51,10 +53,10 @@ namespace Controller
             new SecurityPolicyBasic256Plugin(_logger),
             new SecurityPolicyNonePlugin(_logger),
 
-            new AnonymousAuthenticationPlugin(_logger, new AuthenticationData()), // TODO
+            new AnonymousAuthenticationPlugin(_logger, _authenticationData),
             new SelfSignedCertificatePlugin(_logger),
 
-            new CommonCredentialsPlugin(_logger, new AuthenticationData()), // TODO
+            new CommonCredentialsPlugin(_logger, _authenticationData),
             new RBACNotSupportedPlugin(_logger),
             new AuditingDisabledPlugin(_logger),
         };

@@ -13,11 +13,11 @@ namespace View
 
     public class Reporter : IReporter
     {
-        private readonly Stream outputStream;
+        private readonly Stream _outputStream;
 
         public Reporter(Stream outputStream)
         {
-            this.outputStream = outputStream;
+            this._outputStream = outputStream;
         }
 
         public void PrintXHTMLReport(Report report)
@@ -30,7 +30,7 @@ namespace View
 
             // read XSLT, and use its settings to create XmlWriter to outputStream
             XslCompiledTransform xslCompiledTransform = getXSLT();
-            using XmlWriter finalXmlWriter = XmlWriter.Create(outputStream, xslCompiledTransform.OutputSettings);
+            using XmlWriter finalXmlWriter = XmlWriter.Create(_outputStream, xslCompiledTransform.OutputSettings);
 
             // transform report to xhtml with XSLT
             // and write to outputStream
@@ -38,7 +38,7 @@ namespace View
             xslCompiledTransform.Transform(XmlReader.Create(stream, new XmlReaderSettings() { DtdProcessing = DtdProcessing.Parse }), finalXmlWriter);
         }
 
-        private XslCompiledTransform getXSLT()
+        private static XslCompiledTransform getXSLT()
         {
             var assembly = Assembly.GetExecutingAssembly();
             using Stream? stream = assembly.GetManifestResourceStream(Util.XmlResources.StylesheetLocation);

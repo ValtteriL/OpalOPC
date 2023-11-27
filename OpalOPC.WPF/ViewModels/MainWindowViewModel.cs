@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Controller;
 using Microsoft.Extensions.Logging;
+using Model;
 using OpalOPC.WPF.Logger;
 using OpalOPC.WPF.ViewModels;
 
@@ -84,7 +85,7 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
 
         // create URI list of targets
         List<Uri> targetUris = new();
-        foreach (String target in Targets)
+        foreach (string target in Targets)
         {
             try
             {
@@ -126,7 +127,7 @@ public partial class MainWindowViewModel : ObservableObject, IRecipient<LogMessa
             return;
         }
 
-        ScanController scanController = new(logger, targetUris, outputStream, generateGUICommandInReport(), token);
+        ScanController scanController = new(logger, targetUris, outputStream, generateGUICommandInReport(), new AuthenticationData(), token); // TODO: use authentication data from GUI
 
         // scan
         try
