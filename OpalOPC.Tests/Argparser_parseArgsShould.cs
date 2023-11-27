@@ -1,5 +1,9 @@
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using Model;
 using Moq;
+using Opc.Ua;
+using Opc.Ua.Security.Certificates;
 using Util;
 using View;
 using Xunit;
@@ -367,7 +371,7 @@ public class Argparser_parseArgsShould
         // act
         Options options = argparser.parseArgs();
 
-        // asser
+        // assert
         Assert.True(options.exitCode == ExitCodes.Error);
     }
 
@@ -389,4 +393,114 @@ public class Argparser_parseArgsShould
         // assert
         Assert.True(options.exitCode == ExitCodes.Error);
     }
+
+    public enum CertType
+    {
+        User,
+        Application,
+    }
+
+    [Theory]
+    [InlineData("-c", CertType.User)]
+    [InlineData("--user-certificate-and-privatekey", CertType.User)]
+    [InlineData("-a", CertType.Application)]
+    [InlineData("--application-certificate-and-privatekey", CertType.Application)]
+    public void ParseArgs_CertFile_ResultsInUserOrApplicationCertificate(string flag, CertType certType)
+    {
+        // arrange
+        string certpath = "certpath";
+        string privkeypath = "privkeypath";
+        string patharg = $"{certpath}:{privkeypath}";
+        string[] args = { flag, patharg };
+        X509Certificate2 cert = CertificateBuilder.Create("CN=Root CA").CreateForRSA();
+
+        _fileUtilMock.Setup(x => x.CreateFromPemFile(certpath, privkeypath)).Returns(cert);
+        Argparser argparser = new(args, _fileUtilMock.Object);
+
+        // act
+        Options options = argparser.parseArgs();
+
+        // assert
+        Assert.True(options.exitCode == null);
+
+
+        List<CertificateIdentifier> certificateIdentifiers;
+        if (certType == CertType.User)
+        {
+            certificateIdentifiers = options.authenticationData.userCertificates;
+        }
+        else
+        {
+            certificateIdentifiers = options.authenticationData.applicationCertificates;
+        }
+
+        Assert.True(certificateIdentifiers.Count == 1);
+        Assert.True(certificateIdentifiers.First().Certificate.Thumbprint == cert.Thumbprint);
+    }
+
+    [Theory]
+    [InlineData("-c", CertType.User)]
+    [InlineData("--user-certificate-and-privatekey", CertType.User)]
+    [InlineData("-a", CertType.Application)]
+    [InlineData("--application-certificate-and-privatekey", CertType.Application)]
+    public void ParseArgs_CertFile_ResultsInUserOrApplicationCertificateMultiple(string flag, CertType certType)
+    {
+        // arrange
+        string certpath = "certpath";
+        string privkeypath = "privkeypath";
+        string patharg = $"{certpath}:{privkeypath}";
+        string[] args = { flag, patharg, flag, patharg };
+        X509Certificate2 cert = CertificateBuilder.Create("CN=Root CA").CreateForRSA();
+
+        _fileUtilMock.Setup(x => x.CreateFromPemFile(certpath, privkeypath)).Returns(cert);
+        Argparser argparser = new(args, _fileUtilMock.Object);
+        List<CertificateIdentifier> certificateIdentifiers;
+
+
+        // act
+        Options options = argparser.parseArgs();
+
+        if (certType == CertType.User)
+        {
+            certificateIdentifiers = options.authenticationData.userCertificates;
+        }
+        else
+        {
+            certificateIdentifiers = options.authenticationData.applicationCertificates;
+        }
+
+        // assert
+        Assert.True(options.exitCode == null);
+        Assert.True(certificateIdentifiers.Count == 2);
+        foreach (CertificateIdentifier identifier in certificateIdentifiers)
+        {
+            Assert.True(identifier.Certificate.Thumbprint == cert.Thumbprint);
+        }
+    }
+
+    [Theory]
+    [InlineData("-c")]
+    [InlineData("--user-certificate-and-privatekey")]
+    [InlineData("-a")]
+    [InlineData("--application-certificate-and-privatekey")]
+    public void ParseArgs_CertFileCryptoGraphicException_ResultsInError(string flag)
+    {
+        // arrange
+        string certpath = "certpath";
+        string privkeypath = "privkeypath";
+        string patharg = $"{certpath}:{privkeypath}";
+        string[] args = { flag, patharg };
+        X509Certificate2 cert = CertificateBuilder.Create("CN=Root CA").CreateForRSA();
+
+        _fileUtilMock.Setup(x => x.CreateFromPemFile(certpath, privkeypath)).Throws(new CryptographicException());
+        Argparser argparser = new(args, _fileUtilMock.Object);
+
+        // act
+        Options options = argparser.parseArgs();
+
+        // assert
+        Assert.True(options.exitCode == ExitCodes.Error);
+    }
+
+
 }

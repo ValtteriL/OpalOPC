@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using Opc.Ua;
 
 namespace Model
@@ -20,6 +21,15 @@ namespace Model
         public void AddBruteForceCredential(string username, string password)
         {
             bruteForceCredentials.Add((username, password));
+        }
+
+        public void AddApplicationCertificate(CertificateIdentifier certificate)
+        {
+            applicationCertificates.Add(certificate);
+        }
+        public void AddUserCertificate(CertificateIdentifier certificate)
+        {
+            userCertificates.Add(certificate);
         }
     }
 }
