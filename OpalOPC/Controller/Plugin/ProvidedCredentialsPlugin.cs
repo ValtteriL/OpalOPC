@@ -30,8 +30,6 @@ namespace Plugin
             _authenticationData = authenticationData;
         }
 
-
-
         public override (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint)
         {
             _logger.LogTrace("{Message}", $"Trying to authenticate to {endpoint.EndpointUrl} with provided user credentials");
@@ -40,7 +38,7 @@ namespace Plugin
             List<(string username, string password)> validUsernamePasswords = new();
             List<CertificateIdentifier> validCertificates = new();
 
-            if (IsBruteable(endpoint))
+            if (endpoint.IsBruteable())
             {
                 AttempLoginWithUsernamesPasswords(sessions, validUsernamePasswords, endpoint);
             }
@@ -51,7 +49,7 @@ namespace Plugin
                 // no valid credentials found, try again with different application certificates
                 foreach (CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
                 {
-                    if (IsBruteable(endpoint))
+                    if (endpoint.IsBruteable())
                     {
                         AttempLoginWithUsernamesPasswords(sessions, validUsernamePasswords, endpoint, applicationCertificate);
                     }
@@ -70,19 +68,16 @@ namespace Plugin
             return (null, sessions);
         }
 
-        // Check if endpoint is bruteable = username + application authentication is disabled OR self-signed certificates accepted
-        // we can only test if username authentication is enabled - we can't test if self-signed certificates are accepted
-        // this means that we may try to brute a non-bruteable endpoint, but we will not miss any bruteable endpoints
-        private static bool IsBruteable(Endpoint endpoint)
-        {
-            return endpoint.UserTokenTypes.Contains(UserTokenType.UserName);
-        }
-
         private void AttempLoginWithUserCertificates(List<ISecurityTestSession> sessions, List<CertificateIdentifier> validCertificates, Endpoint endpoint, CertificateIdentifier? certificateIdentifier = null)
         {
             foreach (CertificateIdentifier userCertificate in _authenticationData.userCertificates)
             {
-                ISecurityTestSession? session = AttemptLogin(endpoint, new UserIdentity(userCertificate), certificateIdentifier);
+                ISecurityTestSession? session;
+                if (certificateIdentifier == null)
+                    session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(userCertificate));
+                else
+                    session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(userCertificate), certificateIdentifier);
+
                 if (session != null && session.Session.Connected)
                 {
                     _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} uses provided user certificate ({userCertificate.Thumbprint})");
@@ -96,7 +91,12 @@ namespace Plugin
         {
             foreach ((string username, string password) in _authenticationData.loginCredentials)
             {
-                ISecurityTestSession? session = AttemptLogin(endpoint, new UserIdentity(username, password), certificateIdentifier);
+                ISecurityTestSession? session;
+                if (certificateIdentifier == null)
+                    session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password));
+                else
+                    session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password), certificateIdentifier);
+                
                 if (session != null && session.Session.Connected)
                 {
                     _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} uses provided username:password ({username}:{password})");
@@ -105,32 +105,5 @@ namespace Plugin
                 }
             }
         }
-
-        private ISecurityTestSession? AttemptLogin(Endpoint endpoint, UserIdentity identity, CertificateIdentifier? certificateIdentifier = null)
-        {
-            try
-            {
-                ISecurityTestSession session;
-
-                if (certificateIdentifier == null)
-                {
-                    session = _connectionUtil.StartSession(endpoint.EndpointDescription, identity).Result;
-                }
-                else
-                {
-                    session = _connectionUtil.StartSession(endpoint.EndpointDescription, identity, certificateIdentifier).Result;
-                }
-
-                if (session != null && session.Session.Connected)
-                {
-                    return session;
-                }
-            }
-            catch (Exception)
-            {
-            }
-            return null;
-        }
-
     }
 }

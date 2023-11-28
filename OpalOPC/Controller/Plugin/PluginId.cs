@@ -14,5 +14,6 @@ namespace Plugin
         SecurityPolicyNone = 10009,
         SelfSignedCertificate = 10010,
         ProvidedCredentials = 10011,
+        BruteForce = 10012,
     }
 }

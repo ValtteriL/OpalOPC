@@ -4,21 +4,41 @@ using Model;
 using Moq;
 using Opc.Ua;
 using Opc.Ua.Client;
+using Opc.Ua.Security.Certificates;
 using Plugin;
 using Util;
 using Xunit;
 
 namespace Tests;
-public class CommonCredentialsPluginTest
+public class BruteForcePluginTest
 {
     private readonly ILogger _logger;
     private readonly Mock<IConnectionUtil> _mockConnectionUtil;
     private readonly Mock<ISecurityTestSession> _mockSession;
     private readonly Mock<ISecurityTestSession> _mockSessionSuccess;
-
-    public CommonCredentialsPluginTest()
+    private readonly int _expectedConnectionAttempts;
+    private readonly int _expectedConnectionAttemptsWithAppCerts;
+    private readonly AuthenticationData _authenticationData = new()
     {
-        _logger = LoggerFactory.Create(builder => { }).CreateLogger<CommonCredentialsPluginTest>();
+        bruteForceCredentials = new List<(string, string)> {
+                ("username", "password"),
+                ("username2", "password2")
+            },
+        applicationCertificates = new List<CertificateIdentifier>
+        {
+                new CertificateIdentifier(CertificateBuilder.Create("CN=Test").CreateForRSA()),
+                new CertificateIdentifier(CertificateBuilder.Create("CN=Test").CreateForRSA())
+        },
+        userCertificates = new List<CertificateIdentifier>
+        {
+                new CertificateIdentifier(CertificateBuilder.Create("CN=Test").CreateForRSA()),
+                new CertificateIdentifier(CertificateBuilder.Create("CN=Test").CreateForRSA())
+        }
+    };
+
+    public BruteForcePluginTest()
+    {
+        _logger = LoggerFactory.Create(builder => { }).CreateLogger<BruteForcePluginTest>();
         _mockConnectionUtil = new Mock<IConnectionUtil>();
 
         _mockSession = new Mock<ISecurityTestSession>();
@@ -26,6 +46,9 @@ public class CommonCredentialsPluginTest
 
         _mockSessionSuccess = new Mock<ISecurityTestSession>();
         _mockSessionSuccess.Setup(session => session.Session.Connected).Returns(true);
+
+        _expectedConnectionAttempts = _authenticationData.bruteForceCredentials.Count;
+        _expectedConnectionAttemptsWithAppCerts = _expectedConnectionAttempts * _authenticationData.applicationCertificates.Count;
     }
 
 
@@ -44,14 +67,14 @@ public class CommonCredentialsPluginTest
         _mockSession.Setup(session => session.Session.Connected).Returns(false);
         _mockConnectionUtil.Setup(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>())).Returns(_mockSession.Object);
 
-        CommonCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, new AuthenticationData());
+        BruteForcePlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
 
         // act
         (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
 
         // assert
-        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
-        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Never);
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Exactly(_expectedConnectionAttemptsWithAppCerts));
         Assert.True(issue == null);
         Assert.Empty(sessions);
     }
@@ -71,13 +94,13 @@ public class CommonCredentialsPluginTest
         // StartSession returns single open session, then closed sessions
         _mockConnectionUtil.SetupSequence(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>())).Returns(_mockSessionSuccess.Object).Returns(_mockSession.Object);
 
-        CommonCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, new AuthenticationData());
+        BruteForcePlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
 
         // act
         (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
 
         // assert
-        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
         _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Never);
         Assert.True(issue != null);
         Assert.NotEmpty(sessions);
@@ -101,17 +124,15 @@ public class CommonCredentialsPluginTest
         _mockConnectionUtil.SetupSequence(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>())).Returns(_mockSession.Object).Returns(_mockSessionSuccess.Object); // return successful session for app certificate
 
         var MockCertificateIdentifier = new Mock<CertificateIdentifier>();
-        AuthenticationData authenticationData = new();
-        authenticationData.applicationCertificates.Add(MockCertificateIdentifier.Object);
 
-        CommonCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, authenticationData);
+        BruteForcePlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
 
         // act
         (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
 
         // assert
-        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
-        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Exactly(_expectedConnectionAttemptsWithAppCerts));
         Assert.True(issue != null);
         Assert.NotEmpty(sessions);
         Assert.True(sessions.Count == 1);

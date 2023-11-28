@@ -10,6 +10,8 @@ namespace Util
     {
         public Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity);
         public Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity, CertificateIdentifier identifier);
+        public ISecurityTestSession? AttemptLogin(Endpoint endpoint, UserIdentity identity, CertificateIdentifier certificateIdentifier);
+        public ISecurityTestSession? AttemptLogin(Endpoint endpoint, UserIdentity identity);
     }
 
     public class ConnectionUtil : IConnectionUtil
@@ -83,5 +85,33 @@ namespace Util
 
             return new SecurityTestSession(session, sessionCredential);
         }
+
+        public ISecurityTestSession? AttemptLogin(Endpoint endpoint, UserIdentity identity, CertificateIdentifier? certificateIdentifier = null)
+        {
+            try
+            {
+                ISecurityTestSession session;
+
+                if (certificateIdentifier == null)
+                {
+                    session = StartSession(endpoint.EndpointDescription, identity).Result;
+                }
+                else
+                {
+                    session = StartSession(endpoint.EndpointDescription, identity, certificateIdentifier).Result;
+                }
+
+                if (session != null && session.Session.Connected)
+                {
+                    return session;
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return null;
+        }
+
+        public ISecurityTestSession? AttemptLogin(Endpoint endpoint, UserIdentity identity) => AttemptLogin(endpoint, identity, null);
     }
 }

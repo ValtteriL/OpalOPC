@@ -64,7 +64,7 @@ public class ProvidedCredentialsPluginTest
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        _mockConnectionUtil.Setup(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Returns(_mockSession.Object);
+        _mockConnectionUtil.Setup(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>())).Returns(_mockSession.Object);
 
         ProvidedCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
 
@@ -72,9 +72,9 @@ public class ProvidedCredentialsPluginTest
         (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_endpoint);
 
         // assert
-        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
-        _mockConnectionUtil.Verify(conn => conn.StartSession(
-            It.IsAny<EndpointDescription>(),
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(
+            It.IsAny<Endpoint>(),
             It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()),
             Times.Exactly(_expectedConnectionAttemptsWithAppCert));
         Assert.True(issue == null);
@@ -88,7 +88,7 @@ public class ProvidedCredentialsPluginTest
 
         // StartSession should return a dummy session
         // StartSession returns single open session, then closed sessions
-        _mockConnectionUtil.Setup(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Returns(_mockSessionSuccess.Object);
+        _mockConnectionUtil.Setup(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>())).Returns(_mockSessionSuccess.Object);
 
         ProvidedCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
 
@@ -96,30 +96,11 @@ public class ProvidedCredentialsPluginTest
         (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_endpoint);
 
         // assert
-        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
-        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Never); // not tried as success seen without
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Never); // not tried as success seen without
         Assert.True(issue != null);
         Assert.NotEmpty(sessions);
         Assert.True(sessions.Count == _expectedConnectionAttempts);
-    }
-
-    
-    [Fact]
-    public void ExceptionsInConnectingResultInNoIssueOrSessions()
-    {
-        // arrange
-        _mockConnectionUtil.Setup(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Throws(new Exception());
-
-        ProvidedCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
-
-        // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_endpoint);
-
-        // assert
-        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
-        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Exactly(_expectedConnectionAttemptsWithAppCert));
-        Assert.True(issue == null);
-        Assert.Empty(sessions);
     }
 
     [Fact]
@@ -129,8 +110,8 @@ public class ProvidedCredentialsPluginTest
 
         // StartSession should return a dummy session
         // StartSession returns single open session, then closed sessions
-        _mockConnectionUtil.Setup(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Returns(_mockSession.Object);
-        _mockConnectionUtil.Setup(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()).Result).Returns(_mockSessionSuccess.Object);
+        _mockConnectionUtil.Setup(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>())).Returns(_mockSession.Object);
+        _mockConnectionUtil.Setup(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>())).Returns(_mockSessionSuccess.Object);
 
         ProvidedCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
 
@@ -138,8 +119,8 @@ public class ProvidedCredentialsPluginTest
         (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_endpoint);
 
         // assert
-        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
-        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Exactly(_expectedConnectionAttemptsWithAppCert));
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Exactly(_expectedConnectionAttemptsWithAppCert));
         Assert.True(issue != null);
         Assert.NotEmpty(sessions);
         Assert.True(sessions.Count == _expectedConnectionAttemptsWithAppCert);
