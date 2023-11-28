@@ -66,7 +66,7 @@ namespace Plugin
             {
                 IEnumerable<string> credpairs = validCredentials.Select(c => $"{c.username}:{c.password}");
                 s_issueTitle = $"Common credentials in use ({string.Join(", ", credpairs)})";
-                return (new CommonCredentialsIssue((int)s_pluginId, s_issueTitle, s_severity, validCredentials), sessions);
+                return (new CredentialsIssue((int)s_pluginId, s_issueTitle, s_severity, validCredentials), sessions);
             }
 
             return (null, sessions);

@@ -56,6 +56,7 @@ namespace Controller
             new AnonymousAuthenticationPlugin(_logger, _authenticationData),
             new SelfSignedCertificatePlugin(_logger),
 
+            new ProvidedCredentialsPlugin(_logger, _authenticationData),
             new CommonCredentialsPlugin(_logger, _authenticationData),
             new RBACNotSupportedPlugin(_logger),
             new AuditingDisabledPlugin(_logger),
