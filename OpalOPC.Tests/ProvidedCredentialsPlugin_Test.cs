@@ -27,13 +27,13 @@ public class ProvidedCredentialsPluginTest
             },
         applicationCertificates = new List<CertificateIdentifier>
         {
-                new CertificateIdentifier(CertificateBuilder.Create("CN=Test").CreateForRSA()),
-                new CertificateIdentifier(CertificateBuilder.Create("CN=Test").CreateForRSA())
+                new(CertificateBuilder.Create("CN=Test").CreateForRSA()),
+                new(CertificateBuilder.Create("CN=Test").CreateForRSA())
         },
         userCertificates = new List<CertificateIdentifier>
         {
-                new CertificateIdentifier(CertificateBuilder.Create("CN=Test").CreateForRSA()),
-                new CertificateIdentifier(CertificateBuilder.Create("CN=Test").CreateForRSA())
+                new(CertificateBuilder.Create("CN=Test").CreateForRSA()),
+                new(CertificateBuilder.Create("CN=Test").CreateForRSA())
         }
     };
 
