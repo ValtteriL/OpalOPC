@@ -1,0 +1,1158 @@
+<UserControl
+    x:Class="OpalOPC.WPF.Views.ConfigurationView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:customControls="clr-namespace:OpalOPC.WPF.CustomControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:OpalOPC.WPF.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+    xmlns:viewModels="clr-namespace:OpalOPC.WPF.ViewModels"
+    d:DataContext="{d:DesignInstance viewModels:ConfigurationViewModel,
+                                     IsDesignTimeCreatable=True}"
+    d:DesignHeight="11080"
+    d:DesignWidth="680"
+    mc:Ignorable="d">
+    <Grid>
+        <ScrollViewer x:Name="TheScrollViewer">
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ActualHeight, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                <Condition Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="VerticalScrollBarVisibility" Value="Disabled" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
+            <Grid x:Name="RootGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition>
+                        <RowDefinition.Style>
+                            <Style TargetType="RowDefinition">
+                                <Setter Property="Height" Value="Auto" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ActualHeight, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                            <Condition Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Height" Value="1.5*" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RowDefinition.Style>
+                    </RowDefinition>
+                    <RowDefinition>
+                        <RowDefinition.Style>
+                            <Style TargetType="RowDefinition">
+                                <Setter Property="Height" Value="Auto" />
+                                <Style.Triggers>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ActualHeight, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                            <Condition Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Height" Value="*" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </RowDefinition.Style>
+                    </RowDefinition>
+                </Grid.RowDefinitions>
+
+                <!--  TOP SECTION  -->
+                <Grid x:Name="TopSectionGrid" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="1.5*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition>
+                            <RowDefinition.Style>
+                                <Style TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="*" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="Height" Value="Auto" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </RowDefinition.Style>
+                        </RowDefinition>
+                        <RowDefinition>
+                            <RowDefinition.Style>
+                                <Style TargetType="RowDefinition">
+                                    <Setter Property="Height" Value="Auto" />
+                                </Style>
+                            </RowDefinition.Style>
+                        </RowDefinition>
+                    </Grid.RowDefinitions>
+
+
+                    <!--  APP AUTHENTICATION SECTION  -->
+                    <Border
+                        x:Name="SectionAppAuthBorder"
+                        Margin="20,10,20,20"
+                        HorizontalAlignment="Stretch"
+                        Background="{StaticResource Light_Blue_Brush}"
+                        CornerRadius="10">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Grid.Row" Value="0" />
+                                <Setter Property="Grid.Column" Value="0" />
+                                <Setter Property="Grid.ColumnSpan" Value="1" />
+                                <Setter Property="VerticalAlignment" Value="Stretch" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="True">
+                                        <Setter Property="Grid.ColumnSpan" Value="2" />
+                                        <Setter Property="VerticalAlignment" Value="Top" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+
+                        </Border.Style>
+                        <Grid Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Vertical">
+                                <TextBlock
+                                    Margin="0,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Foreground="{StaticResource Text_Brush}"
+                                    Style="{StaticResource LargeHeaderTextBlockStyle}"
+                                    Text="Application Authentication" />
+                                <Rectangle
+                                    Height="2"
+                                    Margin="0,10,0,0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    Stroke="{StaticResource Dark_Grey_Brush}"
+                                    StrokeThickness="1" />
+                            </StackPanel>
+
+                            <Grid Grid.Row="1" Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <customControls:CustomTextBox
+                                    Grid.Column="0"
+                                    Height="70"
+                                    Margin="0,0,5,0"
+                                    Padding="10,0,10,0"
+                                    VerticalContentAlignment="Center"
+                                    HeaderText="Select Certificate file"
+                                    HintText="Paste location here or browse files"
+                                    Text="{Binding OutputFileLocation}" />
+                                <Button
+                                    Grid.Column="1"
+                                    Height="50"
+                                    Margin="0,0,0,0"
+                                    Padding="5,0,5,0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Bottom"
+                                    Background="{StaticResource Blue_Button_Brush}"
+                                    Opacity="1"
+                                    Template="{StaticResource ImageButtonTemplate}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image
+                                            Width="20"
+                                            Height="20"
+                                            Source="{StaticResource browseButtonIconDrawingImage}" />
+                                        <TextBlock
+                                            Margin="10,0,0,0"
+                                            VerticalAlignment="Center"
+                                            FontSize="{StaticResource SmallFontSize}"
+                                            FontWeight="DemiBold"
+                                            Foreground="{StaticResource Dark_Blue_Brush}"
+                                            Text="Browse" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <customControls:CustomTextBox
+                                    Grid.Column="0"
+                                    Height="70"
+                                    Margin="0,0,5,0"
+                                    Padding="10,0,10,0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalContentAlignment="Center"
+                                    HeaderText="Select Private key file"
+                                    HintText="Paste location here or browse files"
+                                    Text="{Binding OutputFileLocation}" />
+
+                                <Button
+                                    Grid.Column="1"
+                                    Height="50"
+                                    Margin="0,0,0,0"
+                                    Padding="5,0,5,0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Bottom"
+                                    Background="{StaticResource Blue_Button_Brush}"
+                                    Opacity="1"
+                                    Template="{StaticResource ImageButtonTemplate}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image
+                                            Width="20"
+                                            Height="20"
+                                            Source="{StaticResource browseButtonIconDrawingImage}" />
+                                        <TextBlock
+                                            Margin="10,0,0,0"
+                                            VerticalAlignment="Center"
+                                            FontSize="{StaticResource SmallFontSize}"
+                                            FontWeight="DemiBold"
+                                            Foreground="{StaticResource Dark_Blue_Brush}"
+                                            Text="Browse" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                            <Button
+                                Grid.Row="3"
+                                Width="94"
+                                Height="43"
+                                Margin="0,15,0,0"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource Dark_Blue_Brush}"
+                                Command="{Binding AddTargetCommand}"
+                                Template="{StaticResource ImageButtonTemplate}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image
+                                        Width="14"
+                                        Height="14"
+                                        Source="{StaticResource addButtonIconDrawingImage}" />
+                                    <TextBlock
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center"
+                                        FontSize="{StaticResource SmallFontSize}"
+                                        FontWeight="DemiBold"
+                                        Foreground="{StaticResource White_Brush}"
+                                        Text="Add" />
+                                </StackPanel>
+                            </Button>
+
+
+                            <Border
+                                Grid.Row="4"
+                                Margin="0,20,0,0"
+                                Background="White"
+                                CornerRadius="5">
+                                <Grid Margin="20">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Grid.Row="0" Orientation="Vertical">
+                                        <TextBlock
+                                            Margin="0,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Foreground="{StaticResource Text_Brush}"
+                                            Style="{StaticResource LargeHeaderTextBlockStyle}"
+                                            Text="Certificate/Private key" />
+                                        <Rectangle
+                                            Height="2"
+                                            Margin="0,10,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Top"
+                                            Stroke="{StaticResource Dark_Grey_Brush}"
+                                            StrokeThickness="1" />
+                                    </StackPanel>
+                                    <Grid
+                                        x:Name="PrivateKeysListBoxGrid"
+                                        Grid.Row="1"
+                                        Margin="0,5,0,0">
+
+                                        <ListBox
+                                            AlternationCount="2"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ItemsSource="{Binding PrivateKeysAndCertificates}"
+                                            ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                            <ListBox.Style>
+                                                <Style BasedOn="{StaticResource EmptyListStyle}" TargetType="ListBox">
+                                                    <Setter Property="Height" Value="270" />
+                                                    <Setter Property="VerticalAlignment" Value="Top" />
+                                                    <Style.Triggers>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding ActualHeight, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                                                <Condition Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <MultiDataTrigger.Setters>
+                                                                <Setter Property="Height" Value="Auto" />
+                                                                <Setter Property="VerticalAlignment" Value="Stretch" />
+                                                            </MultiDataTrigger.Setters>
+                                                        </MultiDataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ListBox.Style>
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Height="38">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <TextBlock
+                                                            Grid.Column="0"
+                                                            Margin="5,0,0,0"
+                                                            HorizontalAlignment="Left"
+                                                            VerticalAlignment="Center"
+                                                            FontSize="{StaticResource MediumFontSize}"
+                                                            Foreground="{StaticResource Dark_Grey_Brush}"
+                                                            Text="{Binding .}" />
+                                                        <Button
+                                                            Grid.Column="1"
+                                                            Margin="0,0,5,0"
+                                                            HorizontalAlignment="Right"
+                                                            VerticalAlignment="Center"
+                                                            Background="Transparent"
+                                                            BorderThickness="0"
+                                                            Foreground="Red">
+                                                            <Image
+                                                                Width="15"
+                                                                Height="18"
+                                                                Source="{StaticResource recycleBinIconDrawingImage}" />
+                                                        </Button>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </Grid>
+
+                                </Grid>
+                            </Border>
+
+
+
+
+                        </Grid>
+
+                    </Border>
+
+                    <!--  USER AUTHENTICATION SECTION  -->
+                    <Border
+                        x:Name="SectionUserAuthBorder"
+                        HorizontalAlignment="Stretch"
+                        Background="{StaticResource Light_Blue_Brush}"
+                        CornerRadius="10">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Grid.Row" Value="0" />
+                                <Setter Property="Grid.Column" Value="1" />
+                                <Setter Property="Margin" Value="0,10,20,20" />
+                                <Setter Property="VerticalAlignment" Value="Stretch" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="True">
+                                        <Setter Property="Grid.Row" Value="1" />
+                                        <Setter Property="Grid.Column" Value="0" />
+                                        <Setter Property="Grid.ColumnSpan" Value="2" />
+                                        <Setter Property="Margin" Value="20,0,20,20" />
+                                        <Setter Property="VerticalAlignment" Value="Top" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+
+                        </Border.Style>
+                        <Grid Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Vertical">
+                                <TextBlock
+                                    Margin="0,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Foreground="{StaticResource Text_Brush}"
+                                    Style="{StaticResource LargeHeaderTextBlockStyle}"
+                                    Text="User Authentication" />
+                                <Rectangle
+                                    Height="2"
+                                    Margin="0,10,0,0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    Stroke="{StaticResource Dark_Grey_Brush}"
+                                    StrokeThickness="1" />
+                            </StackPanel>
+
+                            <Grid Grid.Row="1" Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <!--  LEFT SIDE  -->
+                                <Grid>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Row" Value="0" />
+                                            <Setter Property="Grid.Column" Value="0" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize780Converter}}" Value="True">
+                                                    <Setter Property="Grid.ColumnSpan" Value="2" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <customControls:CustomTextBox
+                                        Grid.Row="0"
+                                        Height="50"
+                                        Margin="0,0,0,0"
+                                        Padding="10,0,10,0"
+                                        VerticalContentAlignment="Center"
+                                        HintText="Username"
+                                        Text="{Binding OutputFileLocation}" />
+                                    <customControls:CustomTextBox
+                                        Grid.Row="1"
+                                        Height="50"
+                                        Margin="0,10,0,0"
+                                        Padding="10,0,10,0"
+                                        VerticalContentAlignment="Center"
+                                        HintText="Password"
+                                        Text="{Binding OutputFileLocation}" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Width="94"
+                                        Height="43"
+                                        Margin="0,15,0,0"
+                                        HorizontalAlignment="Left"
+                                        Background="{StaticResource Dark_Blue_Brush}"
+                                        Command="{Binding AddTargetCommand}"
+                                        Template="{StaticResource ImageButtonTemplate}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image
+                                                Width="14"
+                                                Height="14"
+                                                Source="{StaticResource addButtonIconDrawingImage}" />
+                                            <TextBlock
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="{StaticResource SmallFontSize}"
+                                                FontWeight="DemiBold"
+                                                Foreground="{StaticResource White_Brush}"
+                                                Text="Add" />
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Button
+                                        x:Name="DragAndDropTargetsFileButton"
+                                        Grid.Row="3"
+                                        Width="200"
+                                        MinWidth="150"
+                                        MinHeight="50"
+                                        MaxWidth="500"
+                                        MaxHeight="250"
+                                        Margin="0,10,0,0"
+                                        HorizontalAlignment="Left"
+                                        AllowDrop="True"
+                                        Background="{StaticResource White_Brush}"
+                                        Template="{StaticResource DragAndDropButtonTemplate}">
+                                        <StackPanel
+                                            Margin="10"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Vertical">
+                                            <Image
+                                                Width="25"
+                                                Height="25"
+                                                Source="{StaticResource dragDropButtonIconDrawingImage}" />
+                                            <TextBlock
+                                                Margin="10,5,0,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="{StaticResource SmallFontSize}"
+                                                FontWeight="DemiBold"
+                                                Foreground="{StaticResource Text_Brush}"
+                                                Text="Import From File"
+                                                TextAlignment="Center"
+                                                TextWrapping="Wrap" />
+                                            <TextBlock
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="{StaticResource TinyFontSize}"
+                                                Foreground="{StaticResource Dark_Grey_Brush}"
+                                                Text="Drag And Drop Files Here"
+                                                TextAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                    <TextBlock
+                                        Grid.Row="4"
+                                        Margin="0,10,0,10"
+                                        FontSize="{StaticResource VerySmallFontSize}"
+                                        Foreground="{StaticResource Dark_Grey_Brush}"
+                                        Text="*username:password on each line" />
+
+
+                                    <Grid Grid.Row="5" Margin="0,10,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <customControls:CustomTextBox
+                                            Grid.Column="0"
+                                            Height="70"
+                                            Margin="0,0,5,0"
+                                            Padding="10,0,10,0"
+                                            VerticalContentAlignment="Center"
+                                            HeaderText="Select Certificate file"
+                                            HintText="Paste location here or browse files"
+                                            Text="{Binding OutputFileLocation}" />
+                                        <Button
+                                            Grid.Column="1"
+                                            Height="50"
+                                            MinWidth="80"
+                                            Margin="0,0,0,0"
+                                            Padding="5,0,5,0"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Bottom"
+                                            Background="{StaticResource Blue_Button_Brush}"
+                                            Opacity="1"
+                                            Template="{StaticResource ImageButtonTemplate}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image
+                                                    Width="20"
+                                                    Height="20"
+                                                    Source="{StaticResource browseButtonIconDrawingImage}" />
+                                                <TextBlock
+                                                    Margin="10,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="{StaticResource SmallFontSize}"
+                                                    FontWeight="DemiBold"
+                                                    Foreground="{StaticResource Dark_Blue_Brush}"
+                                                    Text="Browse" />
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                    <Grid Grid.Row="6" Margin="0,10,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <customControls:CustomTextBox
+                                            Grid.Column="0"
+                                            Height="70"
+                                            Margin="0,0,5,0"
+                                            Padding="10,0,10,0"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalContentAlignment="Center"
+                                            HeaderText="Select Private key file"
+                                            HintText="Paste location here or browse files"
+                                            Text="{Binding OutputFileLocation}" />
+                                        <Button
+                                            Grid.Column="1"
+                                            Height="50"
+                                            MinWidth="80"
+                                            Margin="0,0,0,0"
+                                            Padding="5,0,5,0"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Bottom"
+                                            Background="{StaticResource Blue_Button_Brush}"
+                                            Opacity="1"
+                                            Template="{StaticResource ImageButtonTemplate}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image
+                                                    Width="20"
+                                                    Height="20"
+                                                    Source="{StaticResource browseButtonIconDrawingImage}" />
+                                                <TextBlock
+                                                    Margin="10,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="{StaticResource SmallFontSize}"
+                                                    FontWeight="DemiBold"
+                                                    Foreground="{StaticResource Dark_Blue_Brush}"
+                                                    Text="Browse" />
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+
+                                    <Button
+                                        Grid.Row="7"
+                                        Width="94"
+                                        Height="43"
+                                        Margin="0,15,0,0"
+                                        HorizontalAlignment="Left"
+                                        Background="{StaticResource Dark_Blue_Brush}"
+                                        Command="{Binding AddTargetCommand}"
+                                        Template="{StaticResource ImageButtonTemplate}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image
+                                                Width="14"
+                                                Height="14"
+                                                Source="{StaticResource addButtonIconDrawingImage}" />
+                                            <TextBlock
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="{StaticResource SmallFontSize}"
+                                                FontWeight="DemiBold"
+                                                Foreground="{StaticResource White_Brush}"
+                                                Text="Add" />
+                                        </StackPanel>
+                                    </Button>
+
+                                </Grid>
+
+
+                                <!--  RIGHT SIDE  -->
+                                <Grid>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Row" Value="0" />
+                                            <Setter Property="Grid.Column" Value="1" />
+                                            <Setter Property="Margin" Value="15,0,0,0" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize780Converter}}" Value="True">
+                                                    <Setter Property="Grid.Row" Value="1" />
+                                                    <Setter Property="Grid.Column" Value="0" />
+                                                    <Setter Property="Grid.ColumnSpan" Value="2" />
+                                                    <Setter Property="Margin" Value="0,20,0,0" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+
+
+                                    <Border
+                                        Grid.Row="0"
+                                        Margin="0,0,0,0"
+                                        Background="White"
+                                        CornerRadius="5">
+                                        <Grid Margin="20">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Vertical">
+                                                <TextBlock
+                                                    Margin="0,0,0,0"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Top"
+                                                    Foreground="{StaticResource Text_Brush}"
+                                                    Style="{StaticResource LargeHeaderTextBlockStyle}"
+                                                    Text="Usernames/Passwords" />
+                                                <Rectangle
+                                                    Height="2"
+                                                    Margin="0,10,0,0"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Top"
+                                                    Stroke="{StaticResource Dark_Grey_Brush}"
+                                                    StrokeThickness="1" />
+                                            </StackPanel>
+                                            <Grid
+                                                x:Name="UsersListBoxGrid"
+                                                Grid.Row="1"
+                                                Margin="0,5,0,0">
+                                                <ListBox
+                                                    AlternationCount="2"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    ItemsSource="{Binding UsersAndPasswords}"
+                                                    ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                                    <ListBox.Style>
+                                                        <Style BasedOn="{StaticResource EmptyListStyle}" TargetType="ListBox">
+                                                            <Setter Property="Height" Value="200" />
+                                                            <Setter Property="VerticalAlignment" Value="Top" />
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding ActualHeight, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                                                        <Condition Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <MultiDataTrigger.Setters>
+                                                                        <Setter Property="Height" Value="Auto" />
+                                                                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                                                                    </MultiDataTrigger.Setters>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ListBox.Style>
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid Height="38">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition />
+                                                                    <ColumnDefinition />
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <TextBlock
+                                                                    Grid.Column="0"
+                                                                    Margin="5,0,0,0"
+                                                                    HorizontalAlignment="Left"
+                                                                    VerticalAlignment="Center"
+                                                                    FontSize="{StaticResource MediumFontSize}"
+                                                                    Foreground="{StaticResource Dark_Grey_Brush}"
+                                                                    Text="{Binding .}" />
+                                                                <Button
+                                                                    Grid.Column="1"
+                                                                    Margin="0,0,5,0"
+                                                                    HorizontalAlignment="Right"
+                                                                    VerticalAlignment="Center"
+                                                                    Background="Transparent"
+                                                                    BorderThickness="0"
+                                                                    Foreground="Red">
+                                                                    <Image
+                                                                        Width="15"
+                                                                        Height="18"
+                                                                        Source="{StaticResource recycleBinIconDrawingImage}" />
+                                                                </Button>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+                                                </ListBox>
+                                            </Grid>
+
+                                        </Grid>
+                                    </Border>
+
+                                    <Border
+                                        Grid.Row="1"
+                                        Margin="0,20,0,0"
+                                        Background="White"
+                                        CornerRadius="5">
+                                        <Grid Margin="20">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Vertical">
+                                                <TextBlock
+                                                    Margin="0,0,0,0"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Top"
+                                                    Foreground="{StaticResource Text_Brush}"
+                                                    Style="{StaticResource LargeHeaderTextBlockStyle}"
+                                                    Text="Certificate/Private key" />
+                                                <Rectangle
+                                                    Height="2"
+                                                    Margin="0,10,0,0"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Top"
+                                                    Stroke="{StaticResource Dark_Grey_Brush}"
+                                                    StrokeThickness="1" />
+                                            </StackPanel>
+                                            <Grid
+                                                x:Name="UsersKeysListBoxGrid"
+                                                Grid.Row="1"
+                                                Margin="0,5,0,0">
+                                                <ListBox
+                                                    AlternationCount="2"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    ItemsSource="{Binding PrivateKeysAndCertificates}"
+                                                    ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                                    <ListBox.Style>
+                                                        <Style BasedOn="{StaticResource EmptyListStyle}" TargetType="ListBox">
+                                                            <Setter Property="Height" Value="200" />
+                                                            <Setter Property="VerticalAlignment" Value="Top" />
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding ActualHeight, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                                                        <Condition Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <MultiDataTrigger.Setters>
+                                                                        <Setter Property="Height" Value="Auto" />
+                                                                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                                                                    </MultiDataTrigger.Setters>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ListBox.Style>
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid Height="38">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition />
+                                                                    <ColumnDefinition />
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <TextBlock
+                                                                    Grid.Column="0"
+                                                                    Margin="5,0,0,0"
+                                                                    HorizontalAlignment="Left"
+                                                                    VerticalAlignment="Center"
+                                                                    FontSize="{StaticResource MediumFontSize}"
+                                                                    Foreground="{StaticResource Dark_Grey_Brush}"
+                                                                    Text="{Binding .}" />
+                                                                <Button
+                                                                    Grid.Column="1"
+                                                                    Margin="0,0,5,0"
+                                                                    HorizontalAlignment="Right"
+                                                                    VerticalAlignment="Center"
+                                                                    Background="Transparent"
+                                                                    BorderThickness="0"
+                                                                    Foreground="Red">
+                                                                    <Image
+                                                                        Width="15"
+                                                                        Height="18"
+                                                                        Source="{StaticResource recycleBinIconDrawingImage}" />
+                                                                </Button>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+                                                </ListBox>
+                                            </Grid>
+
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+
+
+                </Grid>
+
+
+
+                <!--  BRUTE FORCE SECTION  -->
+                <Grid x:Name="BottomSectionGrid" Grid.Row="1">
+                    <Border
+                        Grid.Row="0"
+                        Margin="20,0,20,20"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="{StaticResource Light_Blue_Brush}"
+                        CornerRadius="10">
+
+                        <Grid Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Vertical">
+                                <TextBlock
+                                    Margin="0,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Foreground="{StaticResource Text_Brush}"
+                                    Style="{StaticResource LargeHeaderTextBlockStyle}"
+                                    Text="Brute Force" />
+                                <Rectangle
+                                    Height="2"
+                                    Margin="0,10,0,0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    Stroke="{StaticResource Dark_Grey_Brush}"
+                                    StrokeThickness="1" />
+                            </StackPanel>
+
+                            <Grid Grid.Row="1" Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition>
+                                        <RowDefinition.Style>
+                                            <Style TargetType="RowDefinition">
+                                                <Setter Property="Height" Value="Auto" />
+                                            </Style>
+                                        </RowDefinition.Style>
+                                    </RowDefinition>
+                                    <RowDefinition>
+                                        <RowDefinition.Style>
+                                            <Style TargetType="RowDefinition">
+                                                <Setter Property="Height" Value="Auto" />
+                                            </Style>
+                                        </RowDefinition.Style>
+                                    </RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <!--  LEFT SIDE  -->
+                                <Grid Column="0">
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Grid.Row" Value="0" />
+                                            <Setter Property="Grid.Column" Value="0" />
+                                            <Setter Property="Grid.ColumnSpan" Value="1" />
+                                            <Setter Property="VerticalAlignment" Value="Stretch" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize780Converter}}" Value="True">
+                                                    <Setter Property="Grid.ColumnSpan" Value="2" />
+                                                    <Setter Property="VerticalAlignment" Value="Top" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="15" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <customControls:CustomTextBox
+                                            Grid.Column="0"
+                                            Height="50"
+                                            Margin="0,0,0,0"
+                                            Padding="10,0,10,0"
+                                            VerticalContentAlignment="Center"
+                                            HintText="Username"
+                                            Text="{Binding something}" />
+                                        <customControls:CustomTextBox
+                                            Grid.Column="2"
+                                            Height="50"
+                                            Margin="0,0,0,0"
+                                            Padding="10,0,10,0"
+                                            VerticalContentAlignment="Center"
+                                            HintText="Password"
+                                            Text="{Binding OutputFileLocation}" />
+                                    </Grid>
+
+                                    <Button
+                                        Grid.Row="1"
+                                        Width="94"
+                                        Height="43"
+                                        Margin="0,15,0,0"
+                                        HorizontalAlignment="Left"
+                                        Background="{StaticResource Dark_Blue_Brush}"
+                                        Command="{Binding AddTargetCommand}"
+                                        Template="{StaticResource ImageButtonTemplate}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image
+                                                Width="14"
+                                                Height="14"
+                                                Source="{StaticResource addButtonIconDrawingImage}" />
+                                            <TextBlock
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="{StaticResource SmallFontSize}"
+                                                FontWeight="DemiBold"
+                                                Foreground="{StaticResource White_Brush}"
+                                                Text="Add" />
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Button
+                                        Grid.Row="2"
+                                        Width="200"
+                                        MinWidth="150"
+                                        MinHeight="50"
+                                        MaxWidth="500"
+                                        MaxHeight="250"
+                                        Margin="0,10,0,0"
+                                        HorizontalAlignment="Left"
+                                        AllowDrop="True"
+                                        Background="{StaticResource White_Brush}"
+                                        Template="{StaticResource DragAndDropButtonTemplate}">
+                                        <StackPanel
+                                            Margin="10"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Vertical">
+                                            <Image
+                                                Width="25"
+                                                Height="25"
+                                                Source="{StaticResource dragDropButtonIconDrawingImage}" />
+                                            <TextBlock
+                                                Margin="10,5,0,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="{StaticResource SmallFontSize}"
+                                                FontWeight="DemiBold"
+                                                Foreground="{StaticResource Text_Brush}"
+                                                Text="Import From File"
+                                                TextAlignment="Center"
+                                                TextWrapping="Wrap" />
+                                            <TextBlock
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="{StaticResource TinyFontSize}"
+                                                Foreground="{StaticResource Dark_Grey_Brush}"
+                                                Text="Drag And Drop Files Here"
+                                                TextAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                    <TextBlock
+                                        Grid.Row="3"
+                                        Margin="0,10,0,10"
+                                        FontSize="{StaticResource VerySmallFontSize}"
+                                        Foreground="{StaticResource Dark_Grey_Brush}"
+                                        Text="*username:password on each line" />
+
+                                </Grid>
+
+                                <!--  RIGHT SIDE  -->
+                                <Grid>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Grid.Row" Value="0" />
+                                            <Setter Property="Grid.Column" Value="1" />
+                                            <Setter Property="Grid.ColumnSpan" Value="1" />
+                                            <Setter Property="Margin" Value="15,0,0,0" />
+                                            <Setter Property="VerticalAlignment" Value="Stretch" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize780Converter}}" Value="True">
+                                                    <Setter Property="Grid.Row" Value="1" />
+                                                    <Setter Property="Grid.Column" Value="0" />
+                                                    <Setter Property="Grid.ColumnSpan" Value="2" />
+                                                    <Setter Property="VerticalAlignment" Value="Top" />
+                                                    <Setter Property="Margin" Value="0,20,0,0" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                    <Border
+                                        Grid.Row="0"
+                                        Background="White"
+                                        CornerRadius="5">
+                                        <Grid Margin="20">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Vertical">
+                                                <TextBlock
+                                                    Margin="0,0,0,0"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Top"
+                                                    Foreground="{StaticResource Text_Brush}"
+                                                    Style="{StaticResource LargeHeaderTextBlockStyle}"
+                                                    Text="Username/Password" />
+                                                <Rectangle
+                                                    Height="2"
+                                                    Margin="0,10,0,0"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Top"
+                                                    Stroke="{StaticResource Dark_Grey_Brush}"
+                                                    StrokeThickness="1" />
+                                            </StackPanel>
+                                            <Grid
+                                                x:Name="BruteUsersListBoxGrid"
+                                                Grid.Row="1"
+                                                Margin="0,5,0,0">
+                                                <ListBox
+                                                    AlternationCount="2"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    ItemsSource="{Binding UsersAndPasswords}"
+                                                    ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                                    <ListBox.Style>
+                                                        <Style BasedOn="{StaticResource EmptyListStyle}" TargetType="ListBox">
+                                                            <Setter Property="Height" Value="200" />
+                                                            <Setter Property="VerticalAlignment" Value="Top" />
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding ActualHeight, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                                                        <Condition Binding="{Binding ActualWidth, ElementName=RootGrid, Converter={StaticResource LayoutSize1280Converter}}" Value="False" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <MultiDataTrigger.Setters>
+                                                                        <Setter Property="Height" Value="Auto" />
+                                                                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                                                                    </MultiDataTrigger.Setters>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ListBox.Style>
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid Height="38">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition />
+                                                                    <ColumnDefinition />
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <TextBlock
+                                                                    Grid.Column="0"
+                                                                    Margin="5,0,0,0"
+                                                                    HorizontalAlignment="Left"
+                                                                    VerticalAlignment="Center"
+                                                                    FontSize="{StaticResource MediumFontSize}"
+                                                                    Foreground="{StaticResource Dark_Grey_Brush}"
+                                                                    Text="{Binding .}" />
+                                                                <Button
+                                                                    Grid.Column="1"
+                                                                    Margin="0,0,5,0"
+                                                                    HorizontalAlignment="Right"
+                                                                    VerticalAlignment="Center"
+                                                                    Background="Transparent"
+                                                                    BorderThickness="0"
+                                                                    Foreground="Red">
+                                                                    <Image
+                                                                        Width="15"
+                                                                        Height="18"
+                                                                        Source="{StaticResource recycleBinIconDrawingImage}" />
+                                                                </Button>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+                                                </ListBox>
+                                            </Grid>
+
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+
+
+
+                </Grid>
+
+
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

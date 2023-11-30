@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -34,6 +34,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Themes\**" />
+    <EmbeddedResource Remove="Themes\**" />
+    <None Remove="Themes\**" />
+    <Page Remove="Themes\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <Content Include="opalopc.ico" />
   </ItemGroup>
 
@@ -45,10 +52,6 @@
   <ItemGroup>
     <Resource Include="Assets\LogoImage.png" />
     <Resource Include="Assets\LogoImageBackground.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>

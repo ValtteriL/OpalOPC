@@ -1,5 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
     <Geometry x:Key="normalGeometry1">F1 M26,27z M0,0z M21.6092,9.50306L21.6092,4.05105C21.6092,3.77292 21.4987,3.50619 21.3021,3.30953 21.1054,3.11286 20.8387,3.00238 20.5605,3.00238L5.87923,3.00238C5.60111,3.00238 5.33438,3.11286 5.13771,3.30953 4.94105,3.50619 4.83057,3.77292 4.83057,4.05105L4.83057,22.927C4.83057,23.2052 4.94105,23.4719 5.13771,23.6685 5.33438,23.8652 5.60111,23.9757 5.87923,23.9757L11.1226,23.9757</Geometry>
@@ -10,22 +9,46 @@
     <DrawingGroup x:Key="normalDrawingGroup" ClipGeometry="M0,0 V27 H26 V0 H0 Z">
         <GeometryDrawing Geometry="{StaticResource normalGeometry1}">
             <GeometryDrawing.Pen>
-                <Pen Brush="#FF67A4C6" Thickness="1.573" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                <Pen
+                    Brush="#FF67A4C6"
+                    EndLineCap="Round"
+                    LineJoin="Round"
+                    MiterLimit="1"
+                    StartLineCap="Round"
+                    Thickness="1.573" />
             </GeometryDrawing.Pen>
         </GeometryDrawing>
         <GeometryDrawing Geometry="{StaticResource normalGeometry2}">
             <GeometryDrawing.Pen>
-                <Pen Brush="#FF67A4C6" Thickness="1.573" StartLineCap="Round" EndLineCap="Round" LineJoin="Miter" MiterLimit="1" />
+                <Pen
+                    Brush="#FF67A4C6"
+                    EndLineCap="Round"
+                    LineJoin="Miter"
+                    MiterLimit="1"
+                    StartLineCap="Round"
+                    Thickness="1.573" />
             </GeometryDrawing.Pen>
         </GeometryDrawing>
         <GeometryDrawing Geometry="{StaticResource normalGeometry3}">
             <GeometryDrawing.Pen>
-                <Pen Brush="#FF67A4C6" Thickness="1.573" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                <Pen
+                    Brush="#FF67A4C6"
+                    EndLineCap="Round"
+                    LineJoin="Round"
+                    MiterLimit="1"
+                    StartLineCap="Round"
+                    Thickness="1.573" />
             </GeometryDrawing.Pen>
         </GeometryDrawing>
         <GeometryDrawing Geometry="{StaticResource normalGeometry4}">
             <GeometryDrawing.Pen>
-                <Pen Brush="#FF67A4C6" Thickness="1.573" StartLineCap="Round" EndLineCap="Round" LineJoin="Miter" MiterLimit="1" />
+                <Pen
+                    Brush="#FF67A4C6"
+                    EndLineCap="Round"
+                    LineJoin="Miter"
+                    MiterLimit="1"
+                    StartLineCap="Round"
+                    Thickness="1.573" />
             </GeometryDrawing.Pen>
         </GeometryDrawing>
         <GeometryDrawing Brush="#FF67A4C6" Geometry="{StaticResource normalGeometry5}" />
@@ -42,17 +65,34 @@
     <DrawingGroup x:Key="traceDrawingGroup" ClipGeometry="M0,0 V27 H27 V0 H0 Z">
         <GeometryDrawing Geometry="{StaticResource traceGeometry1}">
             <GeometryDrawing.Pen>
-                <Pen Brush="#FF3E9656" Thickness="1.573" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                <Pen
+                    Brush="#FF3E9656"
+                    EndLineCap="Round"
+                    LineJoin="Round"
+                    MiterLimit="1"
+                    StartLineCap="Round"
+                    Thickness="1.573" />
             </GeometryDrawing.Pen>
         </GeometryDrawing>
         <GeometryDrawing Geometry="{StaticResource traceGeometry2}">
             <GeometryDrawing.Pen>
-                <Pen Brush="#FF3E9656" Thickness="1.573" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                <Pen
+                    Brush="#FF3E9656"
+                    EndLineCap="Round"
+                    LineJoin="Round"
+                    MiterLimit="1"
+                    StartLineCap="Round"
+                    Thickness="1.573" />
             </GeometryDrawing.Pen>
         </GeometryDrawing>
         <GeometryDrawing Geometry="{StaticResource traceGeometry3}">
             <GeometryDrawing.Pen>
-                <Pen Brush="#FF3E9656" Thickness="1.573" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Round" />
+                <Pen
+                    Brush="#FF3E9656"
+                    EndLineCap="Flat"
+                    LineJoin="Round"
+                    StartLineCap="Flat"
+                    Thickness="1.573" />
             </GeometryDrawing.Pen>
         </GeometryDrawing>
     </DrawingGroup>
@@ -76,31 +116,30 @@
     <DrawingGroup x:Key="aboutVersionIconDrawingGroup" ClipGeometry="M0,0 V22 H21 V0 H0 Z">
         <GeometryDrawing Geometry="{StaticResource aboutVersionIconGeometry}">
             <GeometryDrawing.Pen>
-                <Pen Brush="#FF5452B8" Thickness="1.6" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                <Pen
+                    Brush="#FF5452B8"
+                    EndLineCap="Round"
+                    LineJoin="Round"
+                    MiterLimit="1"
+                    StartLineCap="Round"
+                    Thickness="1.6" />
             </GeometryDrawing.Pen>
         </GeometryDrawing>
     </DrawingGroup>
     <DrawingImage x:Key="aboutVersionIconDrawingImage" Drawing="{StaticResource aboutVersionIconDrawingGroup}" />
-    <Geometry x:Key="startButtonIconGeometry1">F1 M20,20z M0,0z M5.83361,11.4433C4.72278,10.8017,4.72278,9.19833,5.83361,8.55666L13.3336,4.22666C14.4444,3.58499,15.8336,4.38666,15.8336,5.66999L15.8336,14.33C15.8336,15.6133,14.4444,16.415,13.3336,15.7733L5.83361,11.4433z</Geometry>
-    <Geometry x:Key="startButtonIconGeometry2">F1 M20,20z M0,0z M3.3335,15.8333L3.3335,4.16666</Geometry>
-    <DrawingGroup x:Key="startButtonIconDrawingGroup" ClipGeometry="M0,0 V20 H20 V0 H0 Z">
-        <GeometryDrawing Geometry="{StaticResource startButtonIconGeometry1}">
-            <GeometryDrawing.Pen>
-                <Pen Brush="#FFF4F6FC" Thickness="2" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Round" />
-            </GeometryDrawing.Pen>
-        </GeometryDrawing>
-        <GeometryDrawing Geometry="{StaticResource startButtonIconGeometry2}">
-            <GeometryDrawing.Pen>
-                <Pen Brush="#FFF4F6FC" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
-            </GeometryDrawing.Pen>
-        </GeometryDrawing>
+    <Geometry x:Key="startButtonIconGeometry1">m 256.9,274.5 c 10.2,0 18.5,-8.3 18.5,-18.5 V 82.5 C 275.4,72.3 267.1,64 256.9,64 246.7,64 238.4,72.3 238.4,82.5 V 256 c 0,10.2 8.3,18.5 18.5,18.5 z M 380.4,111.7 c -3.3,-2.8 -7.5,-4.3 -11.8,-4.3 -5.3,0 -10.4,2.3 -13.8,6.4 -3.2,3.7 -4.7,8.4 -4.3,13.3 0.4,4.8 2.7,9.3 6.4,12.4 34.8,29.5 54.8,72.3 54.8,117.4 0,85.4 -69.8,154.8 -155.6,154.8 -85.8,0 -155.6,-69.5 -155.6,-154.8 0,-45.2 20,-88 54.8,-117.4 3.7,-3.1 6,-7.5 6.4,-12.4 0.4,-4.8 -1.1,-9.6 -4.3,-13.3 -3.5,-4 -8.5,-6.4 -13.8,-6.4 -4.3,0 -8.5,1.5 -11.8,4.3 C 88.7,148.1 64,201 64,256.8 64,362.2 150.1,448 256,448 361.9,448 448,362.2 448,256.8 448,201 423.3,148.1 380.4,111.7 Z</Geometry>
+    <DrawingGroup x:Key="startButtonIconDrawingGroup">
+        <GeometryDrawing Brush="#FFF4F6FC" Geometry="{StaticResource startButtonIconGeometry1}" />
     </DrawingGroup>
     <DrawingImage x:Key="startButtonIconDrawingImage" Drawing="{StaticResource startButtonIconDrawingGroup}" />
-    <Geometry x:Key="addButtonIconGeometry">F1 M18,19z M0,0z M14.835,2.15002L18,5.31502 6.33,17 0,10.6625 3.165,7.49752 6.33,10.6625 14.835,2.15002z M14.835,4.25002L6.33,12.77 3.165,9.64252 2.1075,10.6625 6.33,14.8775 15.8925,5.31502 14.835,4.25002z</Geometry>
-    <DrawingGroup x:Key="addButtonIconDrawingGroup" ClipGeometry="M0,0 V19 H18 V0 H0 Z">
+
+    <Geometry x:Key="addButtonIconGeometry">M416 277.333H277.333V416h-42.666V277.333H96v-42.666h138.667V96h42.666v138.667H416v42.666z</Geometry>
+    <DrawingGroup x:Key="addButtonIconDrawingGroup">
         <GeometryDrawing Brush="#FFF4F6FC" Geometry="{StaticResource addButtonIconGeometry}" />
     </DrawingGroup>
     <DrawingImage x:Key="addButtonIconDrawingImage" Drawing="{StaticResource addButtonIconDrawingGroup}" />
+
+
     <Geometry x:Key="helpButtonIconGeometry">F1 M24,24z M0,0z M11.95,18C12.3,18 12.596,17.879 12.838,17.637 13.08,17.395 13.2007,17.0993 13.2,16.75 13.2,16.4 13.0793,16.104 12.838,15.862 12.5967,15.62 12.3007,15.4993 11.95,15.5 11.6,15.5 11.3043,15.621 11.063,15.863 10.8217,16.105 10.7007,16.4007 10.7,16.75 10.7,17.1 10.821,17.396 11.063,17.638 11.305,17.88 11.6007,18.0007 11.95,18z M11.05,14.15L12.9,14.15C12.9,13.6 12.9627,13.1667 13.088,12.85 13.2133,12.5333 13.5673,12.1 14.15,11.55 14.5833,11.1167 14.925,10.704 15.175,10.312 15.425,9.92 15.55,9.44933 15.55,8.9 15.55,7.96667 15.2083,7.25 14.525,6.75 13.8417,6.25 13.0333,6 12.1,6 11.15,6 10.379,6.25 9.787,6.75 9.195,7.25 8.78267,7.85 8.55,8.55L10.2,9.2C10.2833,8.9 10.471,8.575 10.763,8.225 11.055,7.875 11.5007,7.7 12.1,7.7 12.6333,7.7 13.0333,7.846 13.3,8.138 13.5667,8.43 13.7,8.75067 13.7,9.1 13.7,9.43333 13.6,9.746 13.4,10.038 13.2,10.33 12.95,10.6007 12.65,10.85 11.9167,11.5 11.4667,11.9917 11.3,12.325 11.1333,12.6583 11.05,13.2667 11.05,14.15z M12,22C10.6167,22 9.31667,21.7373 8.1,21.212 6.88333,20.6867 5.825,19.9743 4.925,19.075 4.025,18.175 3.31267,17.1167 2.788,15.9 2.26333,14.6833 2.00067,13.3833 2,12 2,10.6167 2.26267,9.31667 2.788,8.1 3.31333,6.88333 4.02567,5.825 4.925,4.925 5.825,4.025 6.88333,3.31267 8.1,2.788 9.31667,2.26333 10.6167,2.00067 12,2 13.3833,2 14.6833,2.26267 15.9,2.788 17.1167,3.31333 18.175,4.02567 19.075,4.925 19.975,5.825 20.6877,6.88333 21.213,8.1 21.7383,9.31667 22.0007,10.6167 22,12 22,13.3833 21.7373,14.6833 21.212,15.9 20.6867,17.1167 19.9743,18.175 19.075,19.075 18.175,19.975 17.1167,20.6877 15.9,21.213 14.6833,21.7383 13.3833,22.0007 12,22z M12,20C14.2333,20 16.125,19.225 17.675,17.675 19.225,16.125 20,14.2333 20,12 20,9.76667 19.225,7.875 17.675,6.325 16.125,4.775 14.2333,4 12,4 9.76667,4 7.875,4.775 6.325,6.325 4.775,7.875 4,9.76667 4,12 4,14.2333 4.775,16.125 6.325,17.675 7.875,19.225 9.76667,20 12,20z</Geometry>
     <DrawingGroup x:Key="helpButtonIconDrawingGroup" ClipGeometry="M0,0 V24 H24 V0 H0 Z">
         <GeometryDrawing Brush="#FF7788A9" Geometry="{StaticResource helpButtonIconGeometry}" />
@@ -128,14 +167,16 @@
         <DrawingGroup Transform="0.928834773764884,0.370494214590642,-0.370494214590642,0.928834773764884,-2.30925591521794,-5.97775259266591">
             <GeometryDrawing>
                 <GeometryDrawing.Brush>
-                    <SolidColorBrush Color="#FF5452B8" Opacity="0.07" />
+                    <SolidColorBrush Opacity="0.07" Color="#FF5452B8" />
                 </GeometryDrawing.Brush>
                 <GeometryDrawing.Geometry>
-                    <RectangleGeometry RadiusX="31.5874" RadiusY="31.5874" Rect="14.4058,-9,209.586,63.1748" />
+                    <RectangleGeometry
+                        RadiusX="31.5874"
+                        RadiusY="31.5874"
+                        Rect="14.4058,-9,209.586,63.1748" />
                 </GeometryDrawing.Geometry>
             </GeometryDrawing>
         </DrawingGroup>
     </DrawingGroup>
     <DrawingImage x:Key="roundedRectangleDrawingImage" Drawing="{StaticResource roundedRectangleDrawingGroup}" />
-
 </ResourceDictionary>

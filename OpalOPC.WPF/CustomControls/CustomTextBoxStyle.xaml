@@ -1,0 +1,95 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:customControls="clr-namespace:OpalOPC.WPF.CustomControls"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <Style TargetType="{x:Type customControls:CustomTextBox}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type customControls:CustomTextBox}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Grid.Row="0"
+                            Margin="0,0,0,5"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Foreground="{StaticResource Text_Brush}"
+                            Text="{TemplateBinding HeaderText}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HeaderText}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HeaderText}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <TextBox
+                            x:Name="TextBox"
+                            Grid.Row="1"
+                            Padding="{TemplateBinding Padding}"
+                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            FontSize="{StaticResource SmallFontSize}"
+                            Foreground="{StaticResource Text_Brush}"
+                            Text="{TemplateBinding Text}"
+                            ToolTip="{TemplateBinding HintText}">
+                            <TextBox.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="5" />
+                                </Style>
+                                <VisualBrush
+                                    x:Key="TextBoxHintBrush"
+                                    AlignmentX="Center"
+                                    AlignmentY="Center"
+                                    Stretch="None">
+                                    <VisualBrush.Visual>
+                                        <Border
+                                            Width="{Binding ElementName=TextBox, Path=ActualWidth}"
+                                            Height="{Binding ElementName=TextBox, Path=ActualHeight}"
+                                            Padding="10"
+                                            Background="White">
+                                            <Label
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Content="{Binding HintText, RelativeSource={RelativeSource AncestorType=customControls:CustomTextBox, Mode=FindAncestor}}"
+                                                FontSize="{StaticResource SmallFontSize}"
+                                                Foreground="{StaticResource Dark_Grey_Brush}" />
+                                        </Border>
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </TextBox.Resources>
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Style.Triggers>
+                                        <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                                            <Setter Property="Background" Value="{StaticResource TextBoxHintBrush}" />
+                                        </Trigger>
+                                        <Trigger Property="Text" Value="{x:Null}">
+                                            <Setter Property="Background" Value="{StaticResource TextBoxHintBrush}" />
+                                        </Trigger>
+                                        <Trigger Property="IsKeyboardFocused" Value="True">
+                                            <Setter Property="Background" Value="White" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

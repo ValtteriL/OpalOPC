@@ -1,6 +1,7 @@
 #if BUILT_FOR_WINDOWS
 using Microsoft.Extensions.Logging;
 using OpalOPC.WPF;
+using OpalOPC.WPF.ViewModels;
 using Xunit;
 
 namespace Tests;
@@ -11,7 +12,7 @@ public class MainWindowViewModel_Tests
     [Fact]
     public void Constructor()
     {
-        MainWindowViewModel model = new();
+        ScanViewModel model = new();
 
         Assert.True(model.Title != null);
         Assert.True(model.TargetsLabel == "Targets");

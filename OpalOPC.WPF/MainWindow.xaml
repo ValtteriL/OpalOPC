@@ -5,16 +5,20 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:OpalOPC.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:OpalOPC.WPF.Models"
     xmlns:resources="clr-namespace:OpalOPC.WPF.Resources"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:viewModels="clr-namespace:OpalOPC.WPF.ViewModels"
+    xmlns:views="clr-namespace:OpalOPC.WPF.Views"
     Title="{Binding Title}"
     Width="1280"
     Height="768"
     MinWidth="800"
     MinHeight="600"
-    d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
+    d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel,
+                                     IsDesignTimeCreatable=True}"
     d:DesignHeight="800"
-    d:DesignWidth="800"
+    d:DesignWidth="1200"
     Background="{StaticResource White_Brush}"
     SnapsToDevicePixels="True"
     UseLayoutRounding="True"
@@ -22,46 +26,6 @@
     mc:Ignorable="d">
 
     <Window.Resources>
-        <resources:ScrollBarVisibilityConverter x:Key="ScrollBarVisibilityConverter" />
-        <!--  Style for buttons to grey them out while disabled  -->
-        <Style x:Key="GrayDisabledButton" TargetType="Button">
-            <Style.Triggers>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Opacity" Value=".25" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style TargetType="{x:Type ListBoxItem}">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Style.Triggers>
-                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                    <Setter Property="Background" Value="{StaticResource ListItem_Background_Brush}" />
-                </Trigger>
-                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                    <Setter Property="Background" Value="Transparent" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style
-            x:Key="EmptyListStyle"
-            BasedOn="{StaticResource {x:Type ListBox}}"
-            TargetType="ListBox">
-            <Style.Triggers>
-                <Trigger Property="HasItems" Value="False">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate>
-                                <TextBlock>No targets specified.</TextBlock>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-
         <Style x:Key="NavbarCustomButtonTemplateStyle" TargetType="Button">
             <Setter Property="Foreground" Value="{StaticResource Dark_Grey_Brush}" />
             <Setter Property="Template">
@@ -69,14 +33,15 @@
                     <ControlTemplate TargetType="Button">
                         <Border
                             x:Name="border"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{StaticResource NavBarBackground_Brush}"
                             BorderBrush="Black"
                             BorderThickness="0"
                             CornerRadius="10">
                             <ContentPresenter
                                 x:Name="contentPresenter"
-                                Margin="0,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center" />
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -94,82 +59,16 @@
         </Style>
 
 
-        <ControlTemplate x:Key="ImageButtonTemplate" TargetType="Button">
-            <Border
-                x:Name="border"
-                Background="{TemplateBinding Background}"
-                BorderBrush="Black"
-                BorderThickness="0"
-                CornerRadius="5">
-                <ContentPresenter
-                    Margin="0,0,0,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center" />
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="border" Property="Background" Value="{StaticResource NavBarButtonHover_Brush}" />
-                    <Setter Property="Cursor" Value="Hand" />
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter TargetName="border" Property="Background" Value="LightBlue" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-
-
-        <ControlTemplate x:Key="DragAndDropButtonTemplate" TargetType="Button">
-            <Border
-                x:Name="border"
-                Background="{TemplateBinding Background}"
-                BorderThickness="1,1,1,1"
-                CornerRadius="10">
-                <ContentPresenter
-                    Margin="0,0,0,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center" />
-                <Border.BorderBrush>
-                    <DrawingBrush
-                        TileMode="Tile"
-                        Viewport="0,0,16,16"
-                        ViewportUnits="Absolute">
-                        <DrawingBrush.Drawing>
-                            <DrawingGroup>
-                                <GeometryDrawing Brush="Black">
-                                    <GeometryDrawing.Geometry>
-                                        <GeometryGroup>
-                                            <RectangleGeometry Rect="0,0,50,50" />
-                                            <RectangleGeometry Rect="50,50,50,50" />
-                                        </GeometryGroup>
-                                    </GeometryDrawing.Geometry>
-                                </GeometryDrawing>
-                            </DrawingGroup>
-                        </DrawingBrush.Drawing>
-                    </DrawingBrush>
-                </Border.BorderBrush>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="border" Property="Background" Value="{StaticResource NavBarButtonHover_Brush}" />
-                    <Setter Property="Cursor" Value="Hand" />
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter TargetName="border" Property="Background" Value="LightBlue" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-
-
     </Window.Resources>
 
 
     <Grid x:Name="TopLevelWindowGrid">
         <Grid.ColumnDefinitions>
             <!--  navigation bar left  -->
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="230" />
 
             <!--  content area right  -->
-            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!--  navbar on left side  -->
@@ -187,18 +86,27 @@
                 </StackPanel>
 
                 <!--  Navbar buttons  -->
+
+                <ListBox
+                    x:Name="NavigationMenuListBox"
+                    Margin="10,0,10,0"
+                    ItemContainerStyle="{DynamicResource NavigationListBoxItemStyle}"
+                    ItemTemplate="{DynamicResource NavigationDataTemplate}"
+                    ItemsSource="{Binding ViewCollection}"
+                    SelectedItem="{Binding SelectedView}"
+                    SelectionMode="Single"
+                    Style="{StaticResource NavigationListBoxStyle}" />
+
                 <Button
                     Width="Auto"
                     Height="62"
                     Margin="10,0,10,10"
-                    Padding="0"
-                    HorizontalAlignment="Stretch"
+                    Padding="20,0,0,0"
                     VerticalAlignment="Top"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Left"
                     Click="Navbar_About_Click"
                     Style="{StaticResource NavbarCustomButtonTemplateStyle}">
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                         <Path
                             Width="24"
                             Height="24"
@@ -213,9 +121,6 @@
                             Text="About" />
                     </StackPanel>
                 </Button>
-
-
-
                 <!--  logo at the bottom  -->
                 <StackPanel VerticalAlignment="Center">
                     <Image
@@ -231,691 +136,31 @@
         </Grid>
 
         <!--  content area on right side  -->
-
-        <Grid x:Name="MainContentGrid" Grid.Column="1">
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-                <ScrollViewer.Style>
-                    <Style TargetType="ScrollViewer">
-                        <Setter Property="VerticalScrollBarVisibility" Value="Disabled" />
+        <Grid Grid.Column="1">
+            <ContentControl>
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Converter={StaticResource ScrollBarVisibilityConverter}}" Value="True">
-                                <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
+                            <DataTrigger Binding="{Binding SelectedView.ViewType}" Value="{x:Static models:ViewType.ScanView}">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <views:ScanView />
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding SelectedView.ViewType}" Value="{x:Static models:ViewType.ConfigurationView}">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <views:ConfigurationView />
+                                    </Setter.Value>
+                                </Setter>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </ScrollViewer.Style>
-                <Grid>
-                    <Grid.RowDefinitions>
-
-                        <RowDefinition Height="2*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <!--  <RowDefinition Height="39*"/>
-                              <RowDefinition Height="18*" MaxHeight="194"/>
-                              <RowDefinition Height="5*" MaxHeight="50"/>
-                              <RowDefinition Height="30*"/> />-->
-                    </Grid.RowDefinitions>
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="1.2*" />
-                    </Grid.ColumnDefinitions>
-
-                    <!--  Add targets area  -->
-                    <Grid
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        MinHeight="50"
-                        Margin="20,10,20,20">
-                        <Border
-                            x:Name="AddTargetsBorder"
-                            HorizontalAlignment="Stretch"
-                            Background="{StaticResource Light_Blue_Brush}"
-                            CornerRadius="10">
-                            <StackPanel x:Name="AddTargetsStackPanel" Margin="20">
-                                <TextBlock
-                                    Margin="0,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Foreground="{StaticResource Text_Brush}"
-                                    Style="{StaticResource LargeHeaderTextBlockStyle}"
-                                    Text="Add targets" />
-                                <Rectangle
-                                    Height="2"
-                                    Margin="0,10,0,0"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Top"
-                                    Stroke="{StaticResource Dark_Grey_Brush}"
-                                    StrokeThickness="1" />
-
-                                <!--  customized textbox  -->
-                                <TextBox
-                                    Height="50"
-                                    Margin="0,20,0,10"
-                                    Padding="10"
-                                    VerticalContentAlignment="Center"
-                                    FontSize="{StaticResource SmallFontSize}"
-                                    Foreground="{StaticResource Dark_Grey_Brush}"
-                                    Text="{Binding TargetToAdd}">
-                                    <TextBox.Style>
-                                        <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="TextBox">
-                                            <Style.Resources>
-                                                <VisualBrush
-                                                    x:Key="TextBoxHintBrush"
-                                                    AlignmentX="Left"
-                                                    AlignmentY="Center"
-                                                    Stretch="None">
-                                                    <VisualBrush.Visual>
-                                                        <Label
-                                                            Content="   Enter a new target"
-                                                            FontSize="{StaticResource SmallFontSize}"
-                                                            Foreground="{StaticResource Dark_Grey_Brush}" />
-                                                    </VisualBrush.Visual>
-                                                </VisualBrush>
-                                            </Style.Resources>
-                                            <Style.Triggers>
-                                                <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
-                                                    <Setter Property="Background" Value="{StaticResource TextBoxHintBrush}" />
-                                                </Trigger>
-                                                <Trigger Property="Text" Value="{x:Null}">
-                                                    <Setter Property="Background" Value="{StaticResource TextBoxHintBrush}" />
-                                                </Trigger>
-                                                <Trigger Property="IsKeyboardFocused" Value="True">
-                                                    <Setter Property="Background" Value="White" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBox.Style>
-                                    <TextBox.Resources>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="CornerRadius" Value="5" />
-                                        </Style>
-                                    </TextBox.Resources>
-                                </TextBox>
-
-                                <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
-                                    <Button
-                                        Width="94"
-                                        Height="43"
-                                        Margin="0,0,0,0"
-                                        HorizontalAlignment="Left"
-                                        Background="{StaticResource Dark_Blue_Brush}"
-                                        Command="{Binding AddTargetCommand}"
-                                        Template="{StaticResource ImageButtonTemplate}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image
-                                                Width="18"
-                                                Height="18"
-                                                Source="{StaticResource addButtonIconDrawingImage}" />
-                                            <TextBlock
-                                                Margin="10,0,0,0"
-                                                VerticalAlignment="Center"
-                                                FontSize="{StaticResource SmallFontSize}"
-                                                FontWeight="DemiBold"
-                                                Foreground="{StaticResource White_Brush}"
-                                                Text="Add" />
-                                        </StackPanel>
-                                    </Button>
-                                    <TextBlock
-                                        Margin="0,10,0,10"
-                                        FontSize="{StaticResource SmallFontSize}"
-                                        Foreground="{StaticResource Dark_Grey_Brush}"
-                                        Text="Or" />
-
-
-                                    <!--  Drag and Drop File Button  -->
-                                    <Button
-                                        x:Name="DragAndDropTargetsFileButton"
-                                        MinWidth="150"
-                                        MinHeight="50"
-                                        MaxWidth="500"
-                                        MaxHeight="250"
-                                        Margin="0,0,0,0"
-                                        AllowDrop="True"
-                                        Background="{StaticResource White_Brush}"
-                                        Click="DragAndDropTargetsFileButton_Click"
-                                        Drop="DragAndDropTargetsFileButton_Drop"
-                                        Template="{StaticResource DragAndDropButtonTemplate}">
-                                        <StackPanel
-                                            Margin="10"
-                                            HorizontalAlignment="Center"
-                                            Orientation="Vertical">
-                                            <Image
-                                                Width="25"
-                                                Height="25"
-                                                Source="{StaticResource dragDropButtonIconDrawingImage}" />
-                                            <TextBlock
-                                                Margin="10,5,0,0"
-                                                VerticalAlignment="Center"
-                                                FontSize="{StaticResource SmallFontSize}"
-                                                FontWeight="DemiBold"
-                                                Foreground="{StaticResource Text_Brush}"
-                                                Text="Import From File"
-                                                TextAlignment="Center"
-                                                TextWrapping="Wrap" />
-                                            <TextBlock
-                                                Margin="10,0,0,0"
-                                                VerticalAlignment="Center"
-                                                FontSize="{StaticResource TinyFontSize}"
-                                                Foreground="{StaticResource Dark_Grey_Brush}"
-                                                Text="Drag And Drop Files Here"
-                                                TextAlignment="Center" />
-                                        </StackPanel>
-                                    </Button>
-                                    <TextBlock
-                                        Margin="0,10,0,10"
-                                        FontSize="{StaticResource VerySmallFontSize}"
-                                        Foreground="{StaticResource Dark_Grey_Brush}"
-                                        Text="*One URI Per Line" />
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-
-
-                    <!--  Targets Area  -->
-                    <Grid
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Margin="0,10,20,20">
-                        <Border
-                            x:Name="TargetsBorder"
-                            Background="{StaticResource Light_Blue_Brush}"
-                            CornerRadius="10">
-                            <Grid x:Name="TargetsGrid" Margin="20">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <TextBlock
-                                    Grid.Row="0"
-                                    Margin="0,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Foreground="{StaticResource Text_Brush}"
-                                    Style="{StaticResource LargeHeaderTextBlockStyle}"
-                                    Text="{Binding TargetsLabel}" />
-                                <Rectangle
-                                    Grid.Row="1"
-                                    Height="2"
-                                    Margin="0,10,0,20"
-                                    HorizontalAlignment="Stretch"
-                                    Stroke="{StaticResource Dark_Grey_Brush}"
-                                    StrokeThickness="1" />
-
-                                <Grid x:Name="TargetsListBoxGrid" Grid.Row="2">
-                                    <ListBox
-                                        AlternationCount="2"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        ItemsSource="{Binding Targets}"
-                                        ScrollViewer.VerticalScrollBarVisibility="Visible">
-                                        <ListBox.Style>
-                                            <Style BasedOn="{StaticResource EmptyListStyle}" TargetType="ListBox">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Converter={StaticResource ScrollBarVisibilityConverter}}" Value="True">
-                                                        <Setter Property="MaxHeight" Value="250" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ListBox.Style>
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid Height="38">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition />
-                                                        <ColumnDefinition />
-                                                    </Grid.ColumnDefinitions>
-
-                                                    <TextBlock
-                                                        Grid.Column="0"
-                                                        Margin="5,0,0,0"
-                                                        HorizontalAlignment="Left"
-                                                        VerticalAlignment="Center"
-                                                        FontSize="{StaticResource MediumFontSize}"
-                                                        Foreground="{StaticResource Dark_Grey_Brush}"
-                                                        MouseDown="TextBlock_MouseDown"
-                                                        Text="{Binding .}" />
-                                                    <Button
-                                                        Grid.Column="1"
-                                                        Margin="0,0,5,0"
-                                                        HorizontalAlignment="Right"
-                                                        VerticalAlignment="Center"
-                                                        Background="Transparent"
-                                                        BorderThickness="0"
-                                                        Click="TargetListViewItemDeleteButton_Click"
-                                                        Foreground="Red">
-                                                        <Image
-                                                            Width="15"
-                                                            Height="18"
-                                                            Source="{StaticResource recycleBinIconDrawingImage}" />
-                                                    </Button>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
-                                </Grid>
-                            </Grid>
-                        </Border>
-                    </Grid>
-
-
-                    <!--  Select Verbosity Level Area  -->
-                    <Grid
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Margin="20,0,20,20">
-                        <Border Background="{StaticResource Light_Blue_Brush}" CornerRadius="10">
-                            <StackPanel x:Name="SelectVerbosityStackPanel" Margin="20">
-                                <TextBlock
-                                    Margin="0,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Foreground="{StaticResource Text_Brush}"
-                                    Style="{StaticResource LargeHeaderTextBlockStyle}"
-                                    Text="Select verbosity level" />
-                                <Rectangle
-                                    Height="2"
-                                    Margin="0,10,0,0"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Top"
-                                    Stroke="{StaticResource Dark_Grey_Brush}"
-                                    StrokeThickness="1" />
-
-
-                                <!--  custom radio button style / triggers embedded in stackpanel resources  -->
-                                <ScrollViewer
-                                    Padding="0,0,0,2"
-                                    HorizontalScrollBarVisibility="Auto"
-                                    VerticalScrollBarVisibility="Disabled">
-                                    <ScrollViewer.Resources>
-                                        <system:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">10</system:Double>
-                                    </ScrollViewer.Resources>
-                                    <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-                                        <StackPanel.Resources>
-                                            <Style x:Key="VerbosityRadioButtonStyle" TargetType="RadioButton">
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsChecked" Value="False">
-                                                        <Setter Property="BorderThickness" Value="0" />
-                                                        <Setter Property="BorderBrush" Value="Black" />
-                                                    </Trigger>
-                                                </Style.Triggers>
-
-                                                <Setter Property="BorderThickness" Value="1" />
-
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="RadioButton">
-                                                            <Border
-                                                                x:Name="border"
-                                                                Background="{TemplateBinding Background}"
-                                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                                CornerRadius="10">
-                                                                <ContentPresenter
-                                                                    Margin="0,0,0,0"
-                                                                    HorizontalAlignment="Center"
-                                                                    VerticalAlignment="Center" />
-                                                            </Border>
-                                                            <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter TargetName="border" Property="Background" Value="{StaticResource NavBarButtonHover_Brush}" />
-                                                                    <Setter Property="Cursor" Value="Hand" />
-                                                                </Trigger>
-                                                                <Trigger Property="IsPressed" Value="True">
-                                                                    <Setter TargetName="border" Property="Background" Value="LightBlue" />
-                                                                </Trigger>
-                                                            </ControlTemplate.Triggers>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </StackPanel.Resources>
-                                        <!--  verbosity levels as radiobuttons  -->
-                                        <RadioButton
-                                            x:Name="NormalVerbosityRadioButton"
-                                            Width="106"
-                                            Height="80"
-                                            Margin="0,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            Background="{StaticResource NormalVerbosity_Brush}"
-                                            BorderBrush="Black"
-                                            Command="{Binding NormalVerbosityCommand}"
-                                            IsChecked="True"
-                                            Style="{StaticResource VerbosityRadioButtonStyle}">
-                                            <StackPanel Orientation="Vertical">
-                                                <Image
-                                                    Width="25"
-                                                    Height="25"
-                                                    Source="{StaticResource normalDrawingImage}" />
-                                                <TextBlock
-                                                    Margin="0,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    FontSize="{StaticResource SmallFontSize}"
-                                                    FontWeight="DemiBold"
-                                                    Foreground="{StaticResource NormalVerbosityText_Brush}"
-                                                    Text="Normal" />
-                                            </StackPanel>
-                                        </RadioButton>
-
-                                        <RadioButton
-                                            x:Name="DebugVerbosityRadioButton"
-                                            Width="106"
-                                            Height="80"
-                                            Margin="5,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            Background="{StaticResource DebugVerbosity_Brush}"
-                                            BorderBrush="Black"
-                                            Command="{Binding VerboseVerbosityCommand}"
-                                            Style="{StaticResource VerbosityRadioButtonStyle}">
-                                            <StackPanel Orientation="Vertical">
-                                                <Image
-                                                    Width="25"
-                                                    Height="25"
-                                                    Source="{StaticResource debugDrawingImage}" />
-                                                <TextBlock
-                                                    Margin="0,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    FontSize="{StaticResource SmallFontSize}"
-                                                    FontWeight="DemiBold"
-                                                    Foreground="{StaticResource DebugVerbosityText_Brush}"
-                                                    Text="Debug" />
-                                            </StackPanel>
-                                        </RadioButton>
-
-                                        <RadioButton
-                                            x:Name="TraceVerbosityRadioButton"
-                                            Width="106"
-                                            Height="80"
-                                            Margin="5,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            Background="{StaticResource TraceVerbosity_Brush}"
-                                            BorderBrush="Black"
-                                            Command="{Binding TraceVerbosityCommand}"
-                                            Style="{StaticResource VerbosityRadioButtonStyle}">
-                                            <StackPanel Orientation="Vertical">
-                                                <Image
-                                                    Width="25"
-                                                    Height="25"
-                                                    Source="{StaticResource traceDrawingImage}" />
-                                                <TextBlock
-                                                    Margin="0,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    FontSize="{StaticResource SmallFontSize}"
-                                                    FontWeight="DemiBold"
-                                                    Foreground="{StaticResource TraceVerbosityText_Brush}"
-                                                    Text="Trace" />
-                                            </StackPanel>
-                                        </RadioButton>
-                                    </StackPanel>
-                                </ScrollViewer>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-
-
-                    <!--  Output Report File Location Area  -->
-                    <Grid
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Margin="0,0,20,20">
-                        <Border Background="{StaticResource Light_Blue_Brush}" CornerRadius="10">
-                            <StackPanel
-                                x:Name="OutputReportStackPanel"
-                                Margin="20"
-                                Orientation="Vertical">
-                                <TextBlock
-                                    Margin="0,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Foreground="{StaticResource Text_Brush}"
-                                    Style="{StaticResource LargeHeaderTextBlockStyle}"
-                                    Text="Select the output report location" />
-                                <Rectangle
-                                    Height="2"
-                                    Margin="0,10,0,0"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Top"
-                                    Stroke="{StaticResource Dark_Grey_Brush}"
-                                    StrokeThickness="1" />
-
-                                <Grid Margin="0,40,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <!--  customized textbox  -->
-                                    <TextBox
-                                        x:Name="outputReportFileTextBox"
-                                        Grid.Column="0"
-                                        Height="50"
-                                        Margin="0,0,5,0"
-                                        Padding="10"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalContentAlignment="Center"
-                                        FontSize="{StaticResource SmallFontSize}"
-                                        FontWeight="DemiBold"
-                                        Foreground="{StaticResource Text_Brush}"
-                                        Text="{Binding OutputFileLocation}">
-                                        <TextBox.Style>
-                                            <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="TextBox">
-                                                <Style.Resources>
-                                                    <VisualBrush
-                                                        x:Key="TextBoxHintBrush"
-                                                        AlignmentX="Left"
-                                                        AlignmentY="Center"
-                                                        Stretch="None">
-                                                        <VisualBrush.Visual>
-                                                            <Label
-                                                                Content="   Paste location here or browse files"
-                                                                FontSize="{StaticResource SmallFontSize}"
-                                                                Foreground="{StaticResource Dark_Grey_Brush}" />
-                                                        </VisualBrush.Visual>
-                                                    </VisualBrush>
-                                                </Style.Resources>
-                                                <Style.Triggers>
-                                                    <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
-                                                        <Setter Property="Background" Value="{StaticResource TextBoxHintBrush}" />
-                                                    </Trigger>
-                                                    <Trigger Property="Text" Value="{x:Null}">
-                                                        <Setter Property="Background" Value="{StaticResource TextBoxHintBrush}" />
-                                                    </Trigger>
-                                                    <Trigger Property="IsKeyboardFocused" Value="True">
-                                                        <Setter Property="Background" Value="White" />
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
-                                        <TextBox.ToolTip>
-                                            <ToolTip>
-                                                <DockPanel>
-                                                    <TextBlock>Omit filename for automatic naming.</TextBlock>
-                                                </DockPanel>
-                                            </ToolTip>
-                                        </TextBox.ToolTip>
-                                        <TextBox.Resources>
-                                            <Style TargetType="{x:Type Border}">
-                                                <Setter Property="CornerRadius" Value="5" />
-                                            </Style>
-                                        </TextBox.Resources>
-                                    </TextBox>
-
-                                    <!--  Browse Button  -->
-                                    <Button
-                                        x:Name="browseOutputReportFileButton"
-                                        Grid.Column="1"
-                                        Height="50"
-                                        Margin="0,0,0,0"
-                                        Padding="5,0,5,0"
-                                        HorizontalAlignment="Stretch"
-                                        Background="{StaticResource Blue_Button_Brush}"
-                                        Click="BrowseOutputReportFileButton_Click"
-                                        Opacity="1"
-                                        Template="{StaticResource ImageButtonTemplate}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image
-                                                Width="20"
-                                                Height="20"
-                                                Source="{StaticResource browseButtonIconDrawingImage}" />
-                                            <TextBlock
-                                                Margin="10,0,0,0"
-                                                VerticalAlignment="Center"
-                                                FontSize="{StaticResource SmallFontSize}"
-                                                FontWeight="DemiBold"
-                                                Foreground="{StaticResource Dark_Blue_Brush}"
-                                                Text="Browse" />
-                                        </StackPanel>
-                                    </Button>
-                                </Grid>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-
-                    <!--  Start Stop OpenReport Button Area  -->
-                    <Grid
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        Height="50"
-                        Margin="20,0,20,0">
-                        <StackPanel Orientation="Horizontal">
-                            <Button
-                                x:Name="StartButton"
-                                Width="94"
-                                Height="40"
-                                Margin="0,0,7,0"
-                                HorizontalAlignment="Left"
-                                Background="{StaticResource Green_Button_Brush}"
-                                Command="{Binding ScanCommand}"
-                                Style="{StaticResource GrayDisabledButton}"
-                                Template="{StaticResource ImageButtonTemplate}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image
-                                        Width="15"
-                                        Height="15"
-                                        Source="{StaticResource startButtonIconDrawingImage}" />
-                                    <TextBlock
-                                        Margin="10,0,0,0"
-                                        VerticalAlignment="Center"
-                                        FontSize="{StaticResource SmallFontSize}"
-                                        FontWeight="DemiBold"
-                                        Foreground="{StaticResource White_Brush}"
-                                        Text="Scan" />
-                                </StackPanel>
-                            </Button>
-
-                            <Button
-                                x:Name="StopButton"
-                                Width="97"
-                                Height="40"
-                                Margin="0,0,7,0"
-                                HorizontalAlignment="Left"
-                                Background="{StaticResource Red_Button_Brush}"
-                                Command="{Binding ScanCancelCommand}"
-                                Style="{StaticResource GrayDisabledButton}"
-                                Template="{StaticResource ImageButtonTemplate}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Path
-                                        Width="15"
-                                        Height="15"
-                                        Data="F1 M 0 15 L 0 0 L 15 0 L 15 15 L 0 15 Z M 2 13 L 13 13 L 13 2 L 2 2 L 2 13 Z"
-                                        Fill="{StaticResource Light_Blue_Brush}"
-                                        Stretch="Fill" />
-                                    <TextBlock
-                                        Margin="10,0,0,0"
-                                        VerticalAlignment="Center"
-                                        FontSize="{StaticResource SmallFontSize}"
-                                        FontWeight="DemiBold"
-                                        Foreground="{StaticResource White_Brush}"
-                                        Text="Cancel" />
-                                </StackPanel>
-                            </Button>
-
-                            <Button
-                                x:Name="OpenReportButton"
-                                Width="236"
-                                Height="40"
-                                Margin="0,0,7,0"
-                                HorizontalAlignment="Left"
-                                Background="{StaticResource Light_Blue_Button_Brush}"
-                                Command="{Binding OpenReportCommand}"
-                                Style="{StaticResource GrayDisabledButton}"
-                                Template="{StaticResource ImageButtonTemplate}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image
-                                        Width="25"
-                                        Height="25"
-                                        Source="{StaticResource openReportButtonIconDrawingImage}" />
-                                    <TextBlock
-                                        Margin="10,0,0,0"
-                                        VerticalAlignment="Center"
-                                        FontSize="{StaticResource SmallFontSize}"
-                                        FontWeight="DemiBold"
-                                        Foreground="{StaticResource White_Brush}"
-                                        Text="Open Report" />
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-
-
-                    <!--  Log Messages Area  -->
-                    <Grid
-                        Grid.Row="3"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        MinHeight="100"
-                        Margin="20,0,20,20">
-                        <Border
-                            x:Name="LogMessagesBorder"
-                            Background="{StaticResource Light_Blue_Brush}"
-                            CornerRadius="10">
-                            <Grid Margin="20">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <TextBlock
-                                    Grid.Row="0"
-                                    Margin="0,0,0,20"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Foreground="{StaticResource Text_Brush}"
-                                    Style="{StaticResource LargeHeaderTextBlockStyle}"
-                                    Text="Log messages" />
-
-                                <Border
-                                    x:Name="borderborder"
-                                    Grid.Row="1"
-                                    BorderBrush="{StaticResource Dark_Grey_Brush}"
-                                    BorderThickness="0.5">
-                                    <TextBox
-                                        Background="White"
-                                        BorderThickness="0"
-                                        IsReadOnly="True"
-                                        Text="{Binding Log, Mode=OneWay}"
-                                        TextWrapping="Wrap"
-                                        VerticalScrollBarVisibility="Visible">
-                                        <TextBox.Style>
-                                            <Style TargetType="TextBox">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Converter={StaticResource ScrollBarVisibilityConverter}}" Value="True">
-                                                        <Setter Property="MaxHeight" Value="200" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
-                                    </TextBox>
-                                </Border>
-                            </Grid>
-                        </Border>
-                    </Grid>
-                </Grid>
-            </ScrollViewer>
+                </ContentControl.Style>
+            </ContentControl>
         </Grid>
+
 
     </Grid>
 </Window>
