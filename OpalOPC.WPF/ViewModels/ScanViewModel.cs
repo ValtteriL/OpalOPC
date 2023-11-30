@@ -15,28 +15,28 @@ namespace OpalOPC.WPF.ViewModels;
 public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
 {
     [ObservableProperty]
-    private string targetsLabel = "Targets";
+    private string _targetsLabel = "Targets";
 
     [ObservableProperty]
-    private string outputFileLocation = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
+    private string _outputFileLocation = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
 
     [ObservableProperty]
-    private string targetToAdd = string.Empty;
+    private string _targetToAdd = string.Empty;
 
     [ObservableProperty]
-    private string[] targets = Array.Empty<string>();
+    private string[] _targets = Array.Empty<string>();
 
     [ObservableProperty]
-    private string? log = string.Empty;
+    private string? _log = string.Empty;
 
     [ObservableProperty]
-    private LogLevel verbosity = LogLevel.Information;
+    private LogLevel _verbosity = LogLevel.Information;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(OpenReportCommand))]
-    private bool scanCompletedSuccessfully = false;
+    private bool _scanCompletedSuccessfully = false;
 
-    private string outputfile = string.Empty;
+    private string _outputfile = string.Empty;
     const string Protocol = "opc.tcp://";
 
     public ScanViewModel()
@@ -100,27 +100,27 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         // if neither => try to create new file
         if (Directory.Exists(OutputFileLocation) || OutputFileLocation == string.Empty)
         {
-            outputfile = System.IO.Path.Combine(OutputFileLocation, Util.ArgUtil.DefaultReportName());
+            _outputfile = System.IO.Path.Combine(OutputFileLocation, Util.ArgUtil.DefaultReportName());
         }
         else
         {
-            outputfile = OutputFileLocation;
+            _outputfile = OutputFileLocation;
         }
 
         // check that can write to file
         FileStream outputStream;
         try
         {
-            outputStream = File.Create(outputfile);
+            outputStream = File.Create(_outputfile);
         }
         catch (UnauthorizedAccessException)
         {
-            logger.LogError("{Message}", $"Not authorized to open \"{outputfile}\" for writing");
+            logger.LogError("{Message}", $"Not authorized to open \"{_outputfile}\" for writing");
             return;
         }
         catch
         {
-            logger.LogError("{Message}", $"Unable to open \"{outputfile}\" for writing");
+            logger.LogError("{Message}", $"Unable to open \"{_outputfile}\" for writing");
             return;
         }
 
@@ -132,7 +132,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
             await Task.Run(() =>
             {
                 scanController.Scan();
-                logger.LogInformation("{Message}", $"Report saved to {outputfile} (Use browser to view it)");
+                logger.LogInformation("{Message}", $"Report saved to {_outputfile} (Use browser to view it)");
                 outputStream.Close();
             }, token);
 
@@ -152,8 +152,6 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
     [RelayCommand]
     private void AddTarget()
     {
-        throw new NotImplementedException();
-
         ILogger logger = new GUILogger(Verbosity);
 
         if (TargetToAdd == string.Empty)
@@ -185,7 +183,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
     [RelayCommand(CanExecute = nameof(canOpenReport))]
     private void OpenReport()
     {
-        Process.Start(new ProcessStartInfo(outputfile) { UseShellExecute = true });
+        Process.Start(new ProcessStartInfo(_outputfile) { UseShellExecute = true });
     }
 
     private bool canOpenReport()
@@ -255,9 +253,11 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
             case LogLevel.Trace:
                 verbosityInReport = "Trace";
                 break;
-            default:
+            case LogLevel.Information:
                 verbosityInReport = "Normal";
                 break;
+            default:
+                throw new NotImplementedException();
         }
 
 

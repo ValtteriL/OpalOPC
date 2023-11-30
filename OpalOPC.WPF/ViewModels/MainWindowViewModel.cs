@@ -9,10 +9,10 @@ namespace OpalOPC.WPF.ViewModels;
 public partial class MainWindowViewModel : ObservableObject
 {
     [ObservableProperty]
-    private string title = $"OpalOPC {Util.VersionUtil.AppAssemblyVersion}";
+    private string _title = $"OpalOPC {Util.VersionUtil.AppAssemblyVersion}";
 
-    [ObservableProperty] private ObservableCollection<Models.View> viewCollection;
-    [ObservableProperty] private Models.View selectedView;
+    [ObservableProperty] private ObservableCollection<Models.View> _viewCollection;
+    [ObservableProperty] private Models.View _selectedView;
 
     public MainWindowViewModel()
     {

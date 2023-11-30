@@ -46,7 +46,7 @@ public partial class ScanView : UserControl
             string fileName = openFileDialog.FileName;
 
             // Handle target file
-            ScanViewModel viewModel = (ViewModels.ScanViewModel)DataContext;
+            ScanViewModel viewModel = (ScanViewModel)DataContext;
             viewModel.AddTargetsFromFile(System.IO.Path.GetFullPath(fileName));
         }
     }
@@ -65,7 +65,7 @@ public partial class ScanView : UserControl
             string path = System.IO.Path.GetFullPath(openFileDialog.FileName);
 
             // Handle output location selection
-            ScanViewModel viewModel = (ViewModels.ScanViewModel)DataContext;
+            ScanViewModel viewModel = (ScanViewModel)DataContext;
             viewModel.SetOutputFileLocation(path);
         }
     }
