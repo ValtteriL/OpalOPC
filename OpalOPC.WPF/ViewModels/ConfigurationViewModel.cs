@@ -11,31 +11,12 @@ public partial class ConfigurationViewModel : ObservableObject
     {
         PrivateKeysAndCertificates = new ObservableCollection<string>
         {
-            "Certificate_label : PrivateKey_label 1",
-            "Certificate_label : PrivateKey_label 2",
-            "Certificate_label : PrivateKey_label 3",
-            "Certificate_label : PrivateKey_label 4",
-            "Certificate_label : PrivateKey_label 5",
-            "Certificate_label : PrivateKey_label 6",
-            "Certificate_label : PrivateKey_label 7",
-            "Certificate_label : PrivateKey_label 8",
-            "Certificate_label : PrivateKey_label 9",
-            "Certificate_label : PrivateKey_label 10",
+            "475da948e4ba44d9b5bc31ab4b8006113fd5f538",
         };
 
         UsersAndPasswords = new ObservableCollection<string>
         {
-            "Username: Password 1",
-            "Username: Password 2",
-            "Username: Password 3",
-            "Username: Password 4",
-            "Username: Password 5",
-            "Username: Password 6",
-            "Username: Password 7",
-            "Username: Password 8",
-            "Username: Password 9",
-            "Username: Password 10",
-
+            "admin:secret",
         };
 
     }

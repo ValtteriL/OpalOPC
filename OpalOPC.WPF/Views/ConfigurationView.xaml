@@ -166,7 +166,7 @@
                                     Margin="0,0,5,0"
                                     Padding="10,0,10,0"
                                     VerticalContentAlignment="Center"
-                                    HeaderText="Select Certificate file"
+                                    HeaderText="Certificate file"
                                     HintText="Paste location here or browse files"
                                     Text="{Binding OutputFileLocation}" />
                                 <Button
@@ -206,7 +206,7 @@
                                     Padding="10,0,10,0"
                                     HorizontalAlignment="Stretch"
                                     VerticalContentAlignment="Center"
-                                    HeaderText="Select Private key file"
+                                    HeaderText="Private key file"
                                     HintText="Paste location here or browse files"
                                     Text="{Binding OutputFileLocation}" />
 
@@ -541,7 +541,7 @@
                                             Margin="0,0,5,0"
                                             Padding="10,0,10,0"
                                             VerticalContentAlignment="Center"
-                                            HeaderText="Select Certificate file"
+                                            HeaderText="Certificate file"
                                             HintText="Paste location here or browse files"
                                             Text="{Binding OutputFileLocation}" />
                                         <Button
@@ -582,7 +582,7 @@
                                             Padding="10,0,10,0"
                                             HorizontalAlignment="Stretch"
                                             VerticalContentAlignment="Center"
-                                            HeaderText="Select Private key file"
+                                            HeaderText="Private key file"
                                             HintText="Paste location here or browse files"
                                             Text="{Binding OutputFileLocation}" />
                                         <Button

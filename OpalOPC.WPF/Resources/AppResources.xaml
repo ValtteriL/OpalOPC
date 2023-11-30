@@ -36,7 +36,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate>
-                            <TextBlock>Nothing found.</TextBlock>
+                            <TextBlock>No targets specified.</TextBlock>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>

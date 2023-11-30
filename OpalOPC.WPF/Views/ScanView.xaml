@@ -79,7 +79,7 @@
                                     Margin="0,15,0,0"
                                     Padding="10,0,10,0"
                                     VerticalContentAlignment="Center"
-                                    HintText="Enter A New Target"
+                                    HintText="Enter a new target"
                                     Text="{Binding TargetToAdd}" />
 
                                 <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
@@ -506,7 +506,7 @@
                                         FontSize="{StaticResource SmallFontSize}"
                                         FontWeight="DemiBold"
                                         Foreground="{StaticResource White_Brush}"
-                                        Text="Start" />
+                                        Text="Scan" />
                                 </StackPanel>
                             </Button>
 
