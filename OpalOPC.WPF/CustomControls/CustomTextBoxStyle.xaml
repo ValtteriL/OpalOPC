@@ -44,7 +44,7 @@
                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                             FontSize="{StaticResource SmallFontSize}"
                             Foreground="{StaticResource Text_Brush}"
-                            Text="{TemplateBinding Text}"
+                            Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text}"
                             ToolTip="{TemplateBinding HintText}">
                             <TextBox.Resources>
                                 <Style TargetType="{x:Type Border}">
