@@ -40,7 +40,7 @@ namespace Plugin
 
             if (endpoint.UserTokenTypes.Contains(UserTokenType.Anonymous))
             {
-                // try with self signed cert, if not working, try application certificates one by one until one works or they run out
+                // try with self-signed cert, if not working, try application certificates one by one until one works or they run out
                 // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                 try
                 {
