@@ -35,8 +35,7 @@ namespace OpalOPC.WPF.Views
 
             _openFileDialog = new()
             {
-                Filter = "All files (*.*)|*.*",
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "PEM files (*.pem)|*.pem",
             };
         }
 
