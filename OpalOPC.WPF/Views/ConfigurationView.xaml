@@ -547,8 +547,9 @@
                                             VerticalContentAlignment="Center"
                                             HeaderText="Certificate file"
                                             HintText="Paste location here or browse files"
-                                            Text="{Binding OutputFileLocation}" />
+                                            Text="{Binding UserCertificatePath}" />
                                         <Button
+                                            x:Name="BrowseUserCertificateButton"
                                             Grid.Column="1"
                                             Height="50"
                                             MinWidth="80"
@@ -558,7 +559,7 @@
                                             VerticalAlignment="Bottom"
                                             Background="{StaticResource Blue_Button_Brush}"
                                             Opacity="1"
-                                            Template="{StaticResource ImageButtonTemplate}">
+                                            Template="{StaticResource ImageButtonTemplate}" Click="BrowseUserCertificateButton_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <Image
                                                     Width="20"
@@ -588,8 +589,9 @@
                                             VerticalContentAlignment="Center"
                                             HeaderText="Private key file"
                                             HintText="Paste location here or browse files"
-                                            Text="{Binding OutputFileLocation}" />
+                                            Text="{Binding UserPrivateKeyPath}" />
                                         <Button
+                                            x:Name="BrowseUserPrivateKeyButton"
                                             Grid.Column="1"
                                             Height="50"
                                             MinWidth="80"
@@ -599,7 +601,7 @@
                                             VerticalAlignment="Bottom"
                                             Background="{StaticResource Blue_Button_Brush}"
                                             Opacity="1"
-                                            Template="{StaticResource ImageButtonTemplate}">
+                                            Template="{StaticResource ImageButtonTemplate}" Click="BrowseUserPrivateKeyButton_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <Image
                                                     Width="20"
@@ -617,13 +619,14 @@
                                     </Grid>
 
                                     <Button
+                                        x:Name="AddUserCertificateButton"
                                         Grid.Row="7"
                                         Width="94"
                                         Height="43"
                                         Margin="0,15,0,0"
                                         HorizontalAlignment="Left"
                                         Background="{StaticResource Dark_Blue_Brush}"
-                                        Command="{Binding AddTargetCommand}"
+                                        Command="{Binding AddUserCertificateCommand}"
                                         Template="{StaticResource ImageButtonTemplate}">
                                         <StackPanel Orientation="Horizontal">
                                             <Image
@@ -792,7 +795,7 @@
                                                     AlternationCount="2"
                                                     Background="Transparent"
                                                     BorderThickness="0"
-                                                    ItemsSource="{Binding PrivateKeysAndCertificates}"
+                                                    ItemsSource="{Binding UserCertificateIdentifiers}"
                                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
                                                     <ListBox.Style>
                                                         <Style BasedOn="{StaticResource EmptyListStyle}" TargetType="ListBox">
@@ -835,6 +838,7 @@
                                                                     VerticalAlignment="Center"
                                                                     Background="Transparent"
                                                                     BorderThickness="0"
+                                                                    Click="UserCertificatesListItemDeleteButton_Click"
                                                                     Foreground="Red">
                                                                     <Image
                                                                         Width="15"

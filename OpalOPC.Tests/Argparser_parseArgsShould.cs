@@ -20,14 +20,10 @@ public class Argparser_parseArgsShould
     private readonly string _path = "testuserfile";
     private readonly (string, string) _loginCredential;
     private readonly (string, string) _loginCredential2;
-    private readonly List<string> _usernameFileLines;
-    private readonly List<string> _passwordFileLines;
     private readonly List<string> _loginFileLinesSingle;
     private readonly List<string> _loginFileLines;
     public Argparser_parseArgsShould()
     {
-        _usernameFileLines = new List<string> { _username, _username2 };
-        _passwordFileLines = new List<string> { _password, _password2 };
         _loginFileLinesSingle = new List<string> { $"{_username}:{_password}" };
         _loginFileLines = new List<string> { $"{_username}:{_password}", $"{_username2}:{_password2}" };
         _loginCredential = (_username, _password);
@@ -413,8 +409,9 @@ public class Argparser_parseArgsShould
         string patharg = $"{certpath}:{privkeypath}";
         string[] args = { flag, patharg };
         X509Certificate2 cert = CertificateBuilder.Create("CN=Root CA").CreateForRSA();
+        CertificateIdentifier certificateIdentifier = new(cert);
 
-        _fileUtilMock.Setup(x => x.CreateFromPemFile(certpath, privkeypath)).Returns(cert);
+        _fileUtilMock.Setup(x => x.CreateCertificateIdentifierFromPemFile(certpath, privkeypath)).Returns(certificateIdentifier);
         Argparser argparser = new(args, _fileUtilMock.Object);
 
         // act
@@ -435,7 +432,7 @@ public class Argparser_parseArgsShould
         }
 
         Assert.True(certificateIdentifiers.Count == 1);
-        Assert.True(certificateIdentifiers.First().Certificate.Thumbprint == cert.Thumbprint);
+        Assert.Contains(certificateIdentifier, certificateIdentifiers);
     }
 
     [Theory]
@@ -451,8 +448,9 @@ public class Argparser_parseArgsShould
         string patharg = $"{certpath}:{privkeypath}";
         string[] args = { flag, patharg, flag, patharg };
         X509Certificate2 cert = CertificateBuilder.Create("CN=Root CA").CreateForRSA();
+        CertificateIdentifier certificateIdentifier = new(cert);
 
-        _fileUtilMock.Setup(x => x.CreateFromPemFile(certpath, privkeypath)).Returns(cert);
+        _fileUtilMock.Setup(x => x.CreateCertificateIdentifierFromPemFile(certpath, privkeypath)).Returns(certificateIdentifier);
         Argparser argparser = new(args, _fileUtilMock.Object);
         List<CertificateIdentifier> certificateIdentifiers;
 
@@ -492,7 +490,7 @@ public class Argparser_parseArgsShould
         string[] args = { flag, patharg };
         X509Certificate2 cert = CertificateBuilder.Create("CN=Root CA").CreateForRSA();
 
-        _fileUtilMock.Setup(x => x.CreateFromPemFile(certpath, privkeypath)).Throws(new CryptographicException());
+        _fileUtilMock.Setup(x => x.CreateCertificateIdentifierFromPemFile(certpath, privkeypath)).Throws(new CryptographicException());
         Argparser argparser = new(args, _fileUtilMock.Object);
 
         // act

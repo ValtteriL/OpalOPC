@@ -25,12 +25,19 @@ namespace OpalOPC.WPF.Views
     public partial class ConfigurationView : UserControl
     {
         private readonly ConfigurationViewModel _viewModel;
+        private readonly OpenFileDialog _openFileDialog;
 
         public ConfigurationView()
         {
             InitializeComponent();
             DataContext = new ConfigurationViewModel();
             _viewModel = (ConfigurationViewModel)DataContext;
+
+            _openFileDialog = new()
+            {
+                Filter = "All files (*.*)|*.*",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            };
         }
 
         private void BrowseApplicationCertificateButton_Click(object sender, RoutedEventArgs e)
@@ -45,17 +52,11 @@ namespace OpalOPC.WPF.Views
             _viewModel.SetApplicationPrivateKeyPath(path);
         }
 
-        private static string GetFilePathFromUser()
+        private string GetFilePathFromUser()
         {
-            OpenFileDialog openFileDialog = new()
+            if (_openFileDialog.ShowDialog() == true)
             {
-                Filter = "All files (*.*)|*.*",
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            };
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                return System.IO.Path.GetFullPath(openFileDialog.FileName);
+                return System.IO.Path.GetFullPath(_openFileDialog.FileName);
             }
 
             return string.Empty;
@@ -67,6 +68,26 @@ namespace OpalOPC.WPF.Views
 
             // Handle target deletion
             _viewModel.DeleteApplicationCertificate((CertificateIdentifier)btn!.DataContext);
+        }
+
+        private void BrowseUserCertificateButton_Click(object sender, RoutedEventArgs e)
+        {
+            string path = GetFilePathFromUser();
+            _viewModel.SetUserCertificatePath(path);
+        }
+
+        private void BrowseUserPrivateKeyButton_Click(object sender, RoutedEventArgs e)
+        {
+            string path = GetFilePathFromUser();
+            _viewModel.SetUserPrivateKeyPath(path);
+        }
+
+        private void UserCertificatesListItemDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+
+            // Handle target deletion
+            _viewModel.DeleteUserCertificate((CertificateIdentifier)btn!.DataContext);
         }
     }
 }

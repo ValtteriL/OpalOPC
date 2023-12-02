@@ -76,17 +76,17 @@ namespace View
 
         private CertificateIdentifier readCertificate(string certPath, string privkeyPath)
         {
-            X509Certificate2 cert;
+            CertificateIdentifier cert;
             try
             {
-                cert = _fileUtil.CreateFromPemFile(certPath, privkeyPath);
+                cert = _fileUtil.CreateCertificateIdentifierFromPemFile(certPath, privkeyPath);
             }
             catch (Exception)
             {
                 throw new OptionException($"Unable to process certificate {certPath} with private key {privkeyPath}", "");
             }
 
-            return new CertificateIdentifier(cert);
+            return cert;
         }
 
         private Options addAppCertificatePrivatekey(string paths)

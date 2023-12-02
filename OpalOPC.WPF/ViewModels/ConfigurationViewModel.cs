@@ -28,6 +28,21 @@ public partial class ConfigurationViewModel : ObservableObject
         return !string.IsNullOrEmpty(ApplicationCertificatePath) && !string.IsNullOrEmpty(ApplicationPrivateKeyPath);
     }
 
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddUserCertificateCommand))]
+    private string _userCertificatePath = string.Empty;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddUserCertificateCommand))]
+    private string _userPrivateKeyPath = string.Empty;
+
+    [ObservableProperty] private ObservableCollection<CertificateIdentifier> _userCertificateIdentifiers = new();
+
+    private bool UserCertificatePrivateKeyPathsSet()
+    {
+        return !string.IsNullOrEmpty(UserCertificatePath) && !string.IsNullOrEmpty(UserPrivateKeyPath);
+    }
+
     private readonly IFileUtil _fileUtil;
     private readonly IMessageBoxUtil _messageBoxUtil;
 
@@ -74,8 +89,7 @@ public partial class ConfigurationViewModel : ObservableObject
         // clear ApplicationCertificatePath and ApplicationPrivateKeyPath
         try
         {
-            X509Certificate2 x509Certificate2 = _fileUtil.CreateFromPemFile(ApplicationCertificatePath, ApplicationPrivateKeyPath);
-            CertificateIdentifier certificateIdentifier = new(x509Certificate2);
+            CertificateIdentifier certificateIdentifier = _fileUtil.CreateCertificateIdentifierFromPemFile(ApplicationCertificatePath, ApplicationPrivateKeyPath);
             ApplicationCertificateIdentifiers.Add(certificateIdentifier);
             SetApplicationCertificatePath(string.Empty);
             SetApplicationPrivateKeyPath(string.Empty);
@@ -86,9 +100,44 @@ public partial class ConfigurationViewModel : ObservableObject
         }
     }
 
+    public void SetUserCertificatePath(string fullPath)
+    {
+        UserCertificatePath = fullPath;
+    }
+
+    public void SetUserPrivateKeyPath(string fullPath)
+    {
+        UserPrivateKeyPath = fullPath;
+    }
+
+    [RelayCommand(CanExecute = nameof(UserCertificatePrivateKeyPathsSet))]
+    private void AddUserCertificate()
+    {
+        // read certificate and private key into CertificateIdentifier
+        // make messagebox on exception
+        // add certificateIdentifier to ApplicationCertificateIdentifiers
+        // clear UserCertificatePath and UserPrivateKeyPath
+        try
+        {
+            CertificateIdentifier certificateIdentifier = _fileUtil.CreateCertificateIdentifierFromPemFile(UserCertificatePath, UserPrivateKeyPath);
+            UserCertificateIdentifiers.Add(certificateIdentifier);
+            SetUserCertificatePath(string.Empty);
+            SetUserPrivateKeyPath(string.Empty);
+        }
+        catch (Exception e)
+        {
+            _messageBoxUtil.Show(e.Message);
+        }
+    }
+
     public void DeleteApplicationCertificate(CertificateIdentifier certificateIdentifier)
     {
         ApplicationCertificateIdentifiers.Remove(certificateIdentifier);
+    }
+
+    public void DeleteUserCertificate(CertificateIdentifier certificateIdentifier)
+    {
+        UserCertificateIdentifiers.Remove(certificateIdentifier);
     }
 
 }
