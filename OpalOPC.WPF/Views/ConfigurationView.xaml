@@ -315,6 +315,15 @@
                                                                 <Setter Property="VerticalAlignment" Value="Stretch" />
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
+                                                        <Trigger Property="HasItems" Value="False">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate>
+                                                                        <TextBlock>No certificates specified.</TextBlock>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </ListBox.Style>
@@ -722,6 +731,15 @@
                                                                         <Setter Property="VerticalAlignment" Value="Stretch" />
                                                                     </MultiDataTrigger.Setters>
                                                                 </MultiDataTrigger>
+                                                                <Trigger Property="HasItems" Value="False">
+                                                                    <Setter Property="Template">
+                                                                        <Setter.Value>
+                                                                            <ControlTemplate>
+                                                                                <TextBlock>No credentials specified.</TextBlock>
+                                                                            </ControlTemplate>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                </Trigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </ListBox.Style>
@@ -815,6 +833,15 @@
                                                                         <Setter Property="VerticalAlignment" Value="Stretch" />
                                                                     </MultiDataTrigger.Setters>
                                                                 </MultiDataTrigger>
+                                                                <Trigger Property="HasItems" Value="False">
+                                                                    <Setter Property="Template">
+                                                                        <Setter.Value>
+                                                                            <ControlTemplate>
+                                                                                <TextBlock>No certificates specified.</TextBlock>
+                                                                            </ControlTemplate>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                </Trigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </ListBox.Style>
@@ -1114,6 +1141,15 @@
                                                                         <Setter Property="VerticalAlignment" Value="Stretch" />
                                                                     </MultiDataTrigger.Setters>
                                                                 </MultiDataTrigger>
+                                                                <Trigger Property="HasItems" Value="False">
+                                                                    <Setter Property="Template">
+                                                                        <Setter.Value>
+                                                                            <ControlTemplate>
+                                                                                <TextBlock>No credentials specified.</TextBlock>
+                                                                            </ControlTemplate>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                </Trigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </ListBox.Style>
