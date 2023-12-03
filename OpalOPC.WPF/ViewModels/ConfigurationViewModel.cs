@@ -75,21 +75,13 @@ public partial class ConfigurationViewModel : ObservableObject
     private readonly IFileUtil _fileUtil;
     private readonly IMessageBoxUtil _messageBoxUtil;
 
-    [ObservableProperty] private ObservableCollection<string> _privateKeysAndCertificates;
-    [ObservableProperty] private ObservableCollection<(string, string)> _usernamesAndPasswords = new ObservableCollection<(string, string)>();
-    [ObservableProperty] private ObservableCollection<(string, string)> _bruteUsernamesAndPasswords = new ObservableCollection<(string, string)>();
-    public ConfigurationViewModel()
+    [ObservableProperty] private ObservableCollection<(string, string)> _usernamesAndPasswords = new();
+    [ObservableProperty] private ObservableCollection<(string, string)> _bruteUsernamesAndPasswords = new();
+    public ConfigurationViewModel() : this(new FileUtil(), new MessageBoxUtil())
     {
-        PrivateKeysAndCertificates = new ObservableCollection<string>
-        {
-            "475da948e4ba44d9b5bc31ab4b8006113fd5f538",
-        };
-
-        _fileUtil = new FileUtil();
-        _messageBoxUtil = new MessageBoxUtil();
     }
 
-    public ConfigurationViewModel(IFileUtil fileUtil, IMessageBoxUtil messageBoxUtil) : this()
+    public ConfigurationViewModel(IFileUtil fileUtil, IMessageBoxUtil messageBoxUtil)
     {
         _fileUtil = fileUtil;
         _messageBoxUtil = messageBoxUtil;

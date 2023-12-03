@@ -7,7 +7,9 @@ using CommunityToolkit.Mvvm.Messaging;
 using Controller;
 using Microsoft.Extensions.Logging;
 using Model;
+using OpalOPC.WPF.GuiUtil;
 using OpalOPC.WPF.Logger;
+using Util;
 
 
 namespace OpalOPC.WPF.ViewModels;
@@ -23,8 +25,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
     [ObservableProperty]
     private string _targetToAdd = string.Empty;
 
-    [ObservableProperty]
-    private string[] _targets = Array.Empty<string>();
+    [ObservableProperty] private ObservableCollection<string> _targets = new();
 
     [ObservableProperty]
     private string? _log = string.Empty;
@@ -39,10 +40,20 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
     private string _outputfile = string.Empty;
     const string Protocol = "opc.tcp://";
 
-    public ScanViewModel()
+    private readonly IFileUtil _fileUtil;
+    private readonly IMessageBoxUtil _messageBoxUtil;
+
+    public ScanViewModel() : this(new FileUtil(), new MessageBoxUtil())
+    {
+    }
+
+    public ScanViewModel(IFileUtil fileUtil, IMessageBoxUtil messageBoxUtil)
     {
         // register to log messages from logger
         WeakReferenceMessenger.Default.Register<LogMessage>(this);
+
+        _fileUtil = fileUtil;
+        _messageBoxUtil = messageBoxUtil;
     }
 
     [RelayCommand]
@@ -124,7 +135,8 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
             return;
         }
 
-        ScanController scanController = new(logger, targetUris, outputStream, generateGUICommandInReport(), new AuthenticationData(), token); // TODO: use authentication data from GUI
+        AuthenticationData authenticationData = new(); // TODO: add support for authentication
+        ScanController scanController = new(logger, targetUris, outputStream, generateGUICommandInReport(), authenticationData, token);
 
         // scan
         try
@@ -166,13 +178,13 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
             target = Protocol + target;
         }
 
-        if (Targets.ToList().Contains(target))
+        if (Targets.Contains(target))
         {
             logger.LogWarning("{Message}", $"\"{target}\" is already a target. Skipping");
         }
         else
         {
-            Targets = Targets.Append(target).ToHashSet().ToArray();
+            Targets.Add(target);
         }
 
         TargetToAdd = string.Empty;
@@ -198,43 +210,46 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
 
     public void DeleteTarget(string target)
     {
-        var targetsSet = Targets.ToHashSet();
-        targetsSet.Remove(target);
-        Targets = targetsSet.ToArray();
+        Targets.Remove(target);
         updateTargetsLabel();
     }
 
     public void AddTargetsFromFile(string path)
     {
-        ILogger logger = new GUILogger(Verbosity);
-
-        string[] nonEmptyLines = File.ReadAllLines(path).ToList().Where(t => t != string.Empty).ToArray();
-        List<string> targetList = Targets.ToList();
-
-        for (int i = 0; i < nonEmptyLines.Length; i++)
+        try
         {
-            string target = nonEmptyLines[i];
-
-            if (!target.StartsWith(Protocol))
+            ILogger logger = new GUILogger(Verbosity);
+            _fileUtil.ReadFileToList(path).ToList().ForEach(line =>
             {
-                target = Protocol + target;
-            }
+                string target = line;
 
-            if (targetList.Contains(target))
-            {
-                logger.LogWarning("{Message}", $"\"{target}\" is already a target. Skipping");
-            }
+                if (!target.StartsWith(Protocol))
+                {
+                    target = Protocol + target;
+                }
 
-            nonEmptyLines[i] = target; // update array entry
+                if (Targets.Contains(target))
+                {
+                    logger.LogWarning("{Message}", $"\"{target}\" is already a target. Skipping");
+                }
+                else
+                {
+                    Targets.Add(target);
+                }
+
+            });
         }
-
-        Targets = Targets.Union(nonEmptyLines).Where(t => t != string.Empty).ToArray();
+        catch (Exception e)
+        {
+            _messageBoxUtil.Show(e.Message);
+        }
         updateTargetsLabel();
+
     }
 
     private void updateTargetsLabel()
     {
-        TargetsLabel = $"Targets ({Targets.Length})";
+        TargetsLabel = $"Targets ({Targets.Count})";
     }
 
     public void Receive(LogMessage message)

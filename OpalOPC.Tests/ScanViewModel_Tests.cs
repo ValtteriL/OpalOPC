@@ -51,7 +51,7 @@ public class ScanViewModel_Tests
 
         model.AddTargetsFromFile(tempfile);
 
-        Assert.True(model.Targets.Length == 2); // empty should not be there
+        Assert.True(model.Targets.Count == 3);
         Assert.Contains($"opc.tcp://{target1}", model.Targets);
         Assert.Contains($"{target2}", model.Targets);
 
@@ -80,11 +80,11 @@ public class ScanViewModel_Tests
     {
         ScanViewModel model = new();
         string target = "opc.tcp://asdasd";
-        model.Targets = new string[] { target };
+        model.Targets.Add(target);
 
         model.DeleteTarget(target);
 
-        Assert.True(model.Targets.Length == 0);
+        Assert.True(model.Targets.Count == 0);
     }
 
     // selecting target
@@ -93,7 +93,7 @@ public class ScanViewModel_Tests
     {
         ScanViewModel model = new();
         string target = "opc.tcp://asdasd";
-        model.Targets = new string[] { target };
+        model.Targets.Add(target);
 
         model.SetTargetToAdd(target);
 
@@ -127,7 +127,8 @@ public class ScanViewModel_Tests
         model.OutputFileLocation = tempfile;
         string target1 = "opc.tcp://opcuaserver.com:48010";
         string target2 = "opc.tcp://opcuaserver.com:4840";
-        model.Targets = new string[] { target1, target2 };
+        model.Targets.Add(target1);
+        model.Targets.Add(target2);
 
         model.ScanCommand.Execute(null);
         model.ScanCancelCommand.Execute(null);

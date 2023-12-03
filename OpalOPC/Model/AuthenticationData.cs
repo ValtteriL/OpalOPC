@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using Opc.Ua;
 
 namespace Model
@@ -10,6 +9,17 @@ namespace Model
 
         public List<(string, string)> loginCredentials = new();
         public List<(string, string)> bruteForceCredentials = new();
+
+        public AuthenticationData()
+        {
+        }
+        public AuthenticationData(ICollection<CertificateIdentifier> applicationCertificates, ICollection<CertificateIdentifier> userCertificates, ICollection<(string, string)> loginCredentials, ICollection<(string, string)> bruteForceCredentials)
+        {
+            this.applicationCertificates = applicationCertificates.ToList();
+            this.userCertificates = userCertificates.ToList();
+            this.loginCredentials = loginCredentials.ToList();
+            this.bruteForceCredentials = bruteForceCredentials.ToList();
+        }
 
         public void AddLoginCredential(string username, string password)
         {
