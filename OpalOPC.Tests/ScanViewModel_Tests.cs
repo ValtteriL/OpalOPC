@@ -1,12 +1,26 @@
 #if BUILT_FOR_WINDOWS
 using Microsoft.Extensions.Logging;
+using Model;
+using Moq;
 using OpalOPC.WPF;
+using OpalOPC.WPF.GuiUtil;
 using OpalOPC.WPF.ViewModels;
+using Util;
 using Xunit;
 
 namespace Tests;
 public class ScanViewModel_Tests
 {
+    private readonly Mock<IScanViewModelUtil> _scanViewModelUtilMock;
+    private readonly Mock<IFileUtil> _fileUtilMock;
+    private readonly Mock<IMessageBoxUtil> _messageBoxUtilMock;
+
+    public ScanViewModel_Tests()
+    {
+        _scanViewModelUtilMock = new Mock<IScanViewModelUtil>();
+        _fileUtilMock = new Mock<IFileUtil>();
+        _messageBoxUtilMock = new Mock<IMessageBoxUtil>();
+    }
 
     // initial values when starting
     [Fact]
@@ -104,7 +118,11 @@ public class ScanViewModel_Tests
     [Fact]
     public void Scan()
     {
-        ScanViewModel model = new();
+        _scanViewModelUtilMock.Setup(x => x.GetAuthenticationData()).Returns(new AuthenticationData());
+        _scanViewModelUtilMock.Setup(x => x.CheckVersion(It.IsAny<ILogger>()));
+        _fileUtilMock.Setup(x => x.Create(It.IsAny<string>())).Returns(new MemoryStream());
+
+        ScanViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object, _scanViewModelUtilMock.Object);
         string tempfile = Path.GetTempFileName();
         model.OutputFileLocation = tempfile;
 
@@ -140,7 +158,11 @@ public class ScanViewModel_Tests
     [Fact]
     public void ScanWithEmptyOutputFilePath()
     {
-        ScanViewModel model = new()
+        _scanViewModelUtilMock.Setup(x => x.GetAuthenticationData()).Returns(new AuthenticationData());
+        _scanViewModelUtilMock.Setup(x => x.CheckVersion(It.IsAny<ILogger>()));
+        _fileUtilMock.Setup(x => x.Create(It.IsAny<string>())).Returns(new MemoryStream());
+
+        ScanViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object, _scanViewModelUtilMock.Object)
         {
             OutputFileLocation = string.Empty
         };

@@ -1,20 +1,34 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
-using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
+using CommunityToolkit.Mvvm.Messaging;
+using Model;
 using OpalOPC.WPF.GuiUtil;
-using OpalOPC.WPF.Logger;
+using OpalOPC.WPF.Models;
 using Opc.Ua;
-using Org.BouncyCastle.Asn1.X509;
 using Util;
 
 namespace OpalOPC.WPF.ViewModels;
 
 public partial class ConfigurationViewModel : ObservableObject
 {
+    public ConfigurationViewModel() : this(new FileUtil(), new MessageBoxUtil())
+    {
+    }
+
+    public ConfigurationViewModel(IFileUtil fileUtil, IMessageBoxUtil messageBoxUtil)
+    {
+        // Register the receive authenticationdata request messages
+        WeakReferenceMessenger.Default.Register<ConfigurationViewModel, AuthenticationDataRequestMessage>(this, (r, m) =>
+        {
+            m.Reply(new AuthenticationData(ApplicationCertificateIdentifiers, UserCertificateIdentifiers, UsernamesAndPasswords, BruteUsernamesAndPasswords));
+        });
+
+        _fileUtil = fileUtil;
+        _messageBoxUtil = messageBoxUtil;
+    }
+
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(AddApplicationCertificateCommand))]
     private string _applicationCertificatePath = string.Empty;
@@ -77,15 +91,6 @@ public partial class ConfigurationViewModel : ObservableObject
 
     [ObservableProperty] private ObservableCollection<(string, string)> _usernamesAndPasswords = new();
     [ObservableProperty] private ObservableCollection<(string, string)> _bruteUsernamesAndPasswords = new();
-    public ConfigurationViewModel() : this(new FileUtil(), new MessageBoxUtil())
-    {
-    }
-
-    public ConfigurationViewModel(IFileUtil fileUtil, IMessageBoxUtil messageBoxUtil)
-    {
-        _fileUtil = fileUtil;
-        _messageBoxUtil = messageBoxUtil;
-    }
 
     public void SetApplicationCertificatePath(string fullPath)
     {
@@ -160,7 +165,7 @@ public partial class ConfigurationViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(UsernamePasswordSet))]
     private void AddUsernamePassword()
     {
-        UsernamesAndPasswords.Add((Username,Password));
+        UsernamesAndPasswords.Add((Username, Password));
         Username = string.Empty;
         Password = string.Empty;
     }

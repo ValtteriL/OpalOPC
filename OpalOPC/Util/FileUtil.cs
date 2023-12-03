@@ -8,6 +8,7 @@ namespace Util
     {
         public ICollection<string> ReadFileToList(string path);
         public CertificateIdentifier CreateCertificateIdentifierFromPemFile(string certPath, string privkeyPath);
+        public Stream Create(string path);
     }
 
     public class FileUtil : IFileUtil
@@ -20,6 +21,11 @@ namespace Util
         public CertificateIdentifier CreateCertificateIdentifierFromPemFile(string certPath, string privkeyPath)
         {
             return new CertificateIdentifier(X509Certificate2.CreateFromPemFile(certPath, privkeyPath));
+        }
+
+        public Stream Create(string path)
+        {
+            return File.Create(path);
         }
     }
 }

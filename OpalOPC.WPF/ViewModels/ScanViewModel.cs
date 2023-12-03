@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Model;
 using OpalOPC.WPF.GuiUtil;
 using OpalOPC.WPF.Logger;
+using OpalOPC.WPF.Models;
 using Util;
 
 
@@ -42,18 +43,21 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
 
     private readonly IFileUtil _fileUtil;
     private readonly IMessageBoxUtil _messageBoxUtil;
+    private readonly IScanViewModelUtil _scanViewModelUtil;
+    private AuthenticationData _authenticationData = new();
 
-    public ScanViewModel() : this(new FileUtil(), new MessageBoxUtil())
+    public ScanViewModel() : this(new FileUtil(), new MessageBoxUtil(), new ScanViewModelUtil())
     {
     }
 
-    public ScanViewModel(IFileUtil fileUtil, IMessageBoxUtil messageBoxUtil)
+    public ScanViewModel(IFileUtil fileUtil, IMessageBoxUtil messageBoxUtil, IScanViewModelUtil scanViewModelUtil)
     {
         // register to log messages from logger
         WeakReferenceMessenger.Default.Register<LogMessage>(this);
 
         _fileUtil = fileUtil;
         _messageBoxUtil = messageBoxUtil;
+        _scanViewModelUtil = scanViewModelUtil;
     }
 
     [RelayCommand]
@@ -88,8 +92,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         ScanCompletedSuccessfully = false;
         ILogger logger = new GUILogger(Verbosity);
 
-        VersionCheckController versionCheckController = new(logger);
-        versionCheckController.CheckVersion();
+        _scanViewModelUtil.CheckVersion(logger);
 
         // create URI list of targets
         List<Uri> targetUris = new();
@@ -118,37 +121,24 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
             _outputfile = OutputFileLocation;
         }
 
-        // check that can write to file
-        FileStream outputStream;
-        try
-        {
-            outputStream = File.Create(_outputfile);
-        }
-        catch (UnauthorizedAccessException)
-        {
-            logger.LogError("{Message}", $"Not authorized to open \"{_outputfile}\" for writing");
-            return;
-        }
-        catch
-        {
-            logger.LogError("{Message}", $"Unable to open \"{_outputfile}\" for writing");
-            return;
-        }
-
-        AuthenticationData authenticationData = new(); // TODO: add support for authentication
-        ScanController scanController = new(logger, targetUris, outputStream, generateGUICommandInReport(), authenticationData, token);
-
         // scan
         try
         {
+            using Stream outputStream = _fileUtil.Create(_outputfile);
+            _authenticationData = _scanViewModelUtil.GetAuthenticationData();
+            ScanController scanController = new(logger, targetUris, outputStream, generateGUICommandInReport(), _authenticationData, token);
+
             await Task.Run(() =>
             {
                 scanController.Scan();
                 logger.LogInformation("{Message}", $"Report saved to {_outputfile} (Use browser to view it)");
-                outputStream.Close();
             }, token);
 
             ScanCompletedSuccessfully = true;
+        }
+        catch (Exception e) when (e is UnauthorizedAccessException || e is IOException || e is PathTooLongException || e is DirectoryNotFoundException)
+        {
+            logger.LogError("{Message}", $"Error opening report file for writing: {e.Message}");
         }
         catch (OperationCanceledException)
         {
@@ -171,24 +161,39 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
             return;
         }
 
-        // add protocol if missing
-        string target = TargetToAdd;
-        if (!target.StartsWith(Protocol))
-        {
-            target = Protocol + target;
-        }
-
-        if (Targets.Contains(target))
-        {
-            logger.LogWarning("{Message}", $"\"{target}\" is already a target. Skipping");
-        }
-        else
-        {
-            Targets.Add(target);
-        }
+        AddTarget(TargetToAdd, logger);
 
         TargetToAdd = string.Empty;
         updateTargetsLabel();
+    }
+
+    private void AddTarget(string target, ILogger logger)
+    {
+        string modifiedTarget = target;
+
+        if (!modifiedTarget.StartsWith(Protocol))
+        {
+            modifiedTarget = Protocol + target;
+        }
+
+        if (Targets.Contains(modifiedTarget))
+        {
+            logger.LogWarning("{Message}", $"\"{modifiedTarget}\" is already a target. Skipping");
+        }
+        else
+        {
+            try
+            {
+                _ = new Uri(modifiedTarget);
+            }
+            catch (System.Exception)
+            {
+                logger.LogError("{Message}", $"\"{target}\" is invalid target");
+                return;
+            }
+
+            Targets.Add(modifiedTarget);
+        }
     }
 
 
@@ -221,21 +226,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
             ILogger logger = new GUILogger(Verbosity);
             _fileUtil.ReadFileToList(path).ToList().ForEach(line =>
             {
-                string target = line;
-
-                if (!target.StartsWith(Protocol))
-                {
-                    target = Protocol + target;
-                }
-
-                if (Targets.Contains(target))
-                {
-                    logger.LogWarning("{Message}", $"\"{target}\" is already a target. Skipping");
-                }
-                else
-                {
-                    Targets.Add(target);
-                }
+                AddTarget(line, logger);
 
             });
         }
@@ -275,7 +266,14 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
                 throw new NotImplementedException();
         }
 
-
-        return $"Launched via GUI with following settings: (Verbosity: {verbosityInReport} | Output: {OutputFileLocation} | Targets: {string.Join(", ", Targets)})";
+        return $"Launched via GUI with following settings: (" +
+            $"Verbosity: {verbosityInReport} " +
+            $"| Output: {OutputFileLocation} " +
+            $"| Targets: {string.Join(", ", Targets)} " +
+            $"| User authentication certificates: {_authenticationData.userCertificates} " +
+            $"| User authentication credentials: {_authenticationData.loginCredentials} " +
+            $"| Application authentication: {_authenticationData.applicationCertificates} " +
+            $"| Brute force credentials: {_authenticationData.bruteForceCredentials} " +
+            $")";
     }
 }
