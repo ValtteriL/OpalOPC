@@ -107,20 +107,38 @@ namespace OpalOPC.WPF.Views
             {
                 // Note that you can have more than one file.
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                HandleFileOpen(files[0]);
+                _viewModel.AddUsernamesPasswordsFromFile(files[0]);
             }
-        }
-
-        private void HandleFileOpen(string path)
-        {
-            // Handle target file
-            _viewModel.AddUsernamesPasswordsFromFile(path);
         }
 
         private void DragAndDropUsernamePasswordFileButton_Click(object sender, RoutedEventArgs e)
         {
             string path = GetFilePathFromUser(_allFilesFilter);
             _viewModel.AddUsernamesPasswordsFromFile(path);
+        }
+
+        private void DragAndDropBruteUsernamePasswordFileButton_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                _viewModel.AddBruteUsernamesPasswordsFromFile(files[0]);
+            }
+        }
+
+        private void DragAndDropBruteUsernamePasswordFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            string path = GetFilePathFromUser(_allFilesFilter);
+            _viewModel.AddBruteUsernamesPasswordsFromFile(path);
+        }
+
+        private void BruteUsernamePasswordListItemDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+
+            // Handle target deletion
+            _viewModel.DeleteBruteUsernamePassword(((string, string))btn!.DataContext);
         }
     }
 }

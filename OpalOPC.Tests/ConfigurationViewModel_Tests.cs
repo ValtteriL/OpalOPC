@@ -235,6 +235,81 @@ public class ConfigurationViewModel_Tests
         Assert.True(model.UsernamesAndPasswords.Count == 0);
     }
 
+    // add brute username and password
+    [Fact]
+    public void AddBruteUsernameAndPassword()
+    {
+        // Arrange
+        ConfigurationViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object);
+        string username = "username";
+        string password = "password";
 
+        model.BruteUsername = username;
+        model.BrutePassword = password;
+
+        // Act
+        model.AddBruteUsernamePasswordCommand.Execute(null);
+
+        // Assert
+        Assert.True(model.BruteUsername == string.Empty);
+        Assert.True(model.BrutePassword == string.Empty);
+        Assert.True(model.BruteUsernamesAndPasswords.Count == 1);
+        Assert.Contains((username, password), model.BruteUsernamesAndPasswords);
+    }
+
+    // remove brute username and password
+    [Fact]
+    public void RemoveBruteUsernameAndPassword()
+    {
+        // Arrange
+        ConfigurationViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object);
+        string username = "username";
+        string password = "password";
+
+        model.BruteUsernamesAndPasswords.Add((username, password));
+
+        // Act
+        model.DeleteBruteUsernamePassword((username, password));
+
+        // Assert
+        Assert.True(model.BruteUsernamesAndPasswords.Count == 0);
+    }
+
+    // add brute usernames and passwords from file
+    [Fact]
+    public void AddBruteUsernamesAndPasswordsFromFile()
+    {
+        // Arrange
+        string path = "path";
+        string[] lines = { "username:password", "username2:password2" };
+        _fileUtilMock.Setup(_fileUtilMock => _fileUtilMock.ReadFileToList(It.IsAny<string>()))
+            .Returns(lines.ToList());
+        ConfigurationViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object);
+
+        // Act
+        model.AddBruteUsernamesPasswordsFromFile(path);
+
+        // Assert
+        Assert.True(model.BruteUsernamesAndPasswords.Count == 2);
+        Assert.Contains(("username", "password"), model.BruteUsernamesAndPasswords);
+        Assert.Contains(("username2", "password2"), model.BruteUsernamesAndPasswords);
+    }
+
+    // add brute usernames and passwords from file throws exception
+    [Fact]
+    public void AddBruteUsernamesAndPasswordsFromFile_ThrowsException()
+    {
+        // Arrange
+        string path = "path";
+        _fileUtilMock.Setup(_fileUtilMock => _fileUtilMock.ReadFileToList(It.IsAny<string>()))
+            .Throws(new Exception());
+        ConfigurationViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object);
+
+        // Act
+        model.AddBruteUsernamesPasswordsFromFile(path);
+
+        // Assert
+        Assert.True(model.BruteUsernamesAndPasswords.Count == 0);
+    }
 }
 #endif

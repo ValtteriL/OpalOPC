@@ -58,11 +58,26 @@ public partial class ConfigurationViewModel : ObservableObject
         return !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password);
     }
 
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddBruteUsernamePasswordCommand))]
+    private string _bruteUsername = string.Empty;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddBruteUsernamePasswordCommand))]
+    private string _brutePassword = string.Empty;
+
+    private bool BruteUsernamePasswordSet()
+    {
+        return !string.IsNullOrEmpty(BruteUsername) && !string.IsNullOrEmpty(BrutePassword);
+    }
+
     private readonly IFileUtil _fileUtil;
     private readonly IMessageBoxUtil _messageBoxUtil;
 
     [ObservableProperty] private ObservableCollection<string> _privateKeysAndCertificates;
     [ObservableProperty] private ObservableCollection<(string, string)> _usernamesAndPasswords = new ObservableCollection<(string, string)>();
+    [ObservableProperty] private ObservableCollection<(string, string)> _bruteUsernamesAndPasswords = new ObservableCollection<(string, string)>();
     public ConfigurationViewModel()
     {
         PrivateKeysAndCertificates = new ObservableCollection<string>
@@ -167,16 +182,46 @@ public partial class ConfigurationViewModel : ObservableObject
     {
         try
         {
-            _fileUtil.ReadFileToList(path).ToList().ForEach(line =>
-            {
-                string[] split = line.Split(':');
-                UsernamesAndPasswords.Add((split[0], split[1]));
-            });
+            AddUsernamesPasswordsFromFileToCollection(path, UsernamesAndPasswords);
         }
         catch (Exception e)
         {
             _messageBoxUtil.Show(e.Message);
         }
+    }
+
+    [RelayCommand(CanExecute = nameof(BruteUsernamePasswordSet))]
+    private void AddBruteUsernamePassword()
+    {
+        BruteUsernamesAndPasswords.Add((BruteUsername, BrutePassword));
+        BruteUsername = string.Empty;
+        BrutePassword = string.Empty;
+    }
+
+    public void AddBruteUsernamesPasswordsFromFile(string path)
+    {
+        try
+        {
+            AddUsernamesPasswordsFromFileToCollection(path, BruteUsernamesAndPasswords);
+        }
+        catch (Exception e)
+        {
+            _messageBoxUtil.Show(e.Message);
+        }
+    }
+
+    private void AddUsernamesPasswordsFromFileToCollection(string path, ICollection<(string, string)> collection)
+    {
+        _fileUtil.ReadFileToList(path).ToList().ForEach(line =>
+        {
+            string[] split = line.Split(':');
+            collection.Add((split[0], split[1]));
+        });
+    }
+
+    public void DeleteBruteUsernamePassword((string, string) usernamePassword)
+    {
+        BruteUsernamesAndPasswords.Remove(usernamePassword);
     }
 
 }

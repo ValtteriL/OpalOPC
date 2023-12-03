@@ -959,7 +959,7 @@
                                             Padding="10,0,10,0"
                                             VerticalContentAlignment="Center"
                                             HintText="Username"
-                                            Text="{Binding something}" />
+                                            Text="{Binding BruteUsername}" />
                                         <customControls:CustomTextBox
                                             Grid.Column="2"
                                             Height="50"
@@ -967,7 +967,7 @@
                                             Padding="10,0,10,0"
                                             VerticalContentAlignment="Center"
                                             HintText="Password"
-                                            Text="{Binding OutputFileLocation}" />
+                                            Text="{Binding BrutePassword}" />
                                     </Grid>
 
                                     <Button
@@ -977,7 +977,7 @@
                                         Margin="0,15,0,0"
                                         HorizontalAlignment="Left"
                                         Background="{StaticResource Dark_Blue_Brush}"
-                                        Command="{Binding AddTargetCommand}"
+                                        Command="{Binding AddBruteUsernamePasswordCommand}"
                                         Template="{StaticResource ImageButtonTemplate}">
                                         <StackPanel Orientation="Horizontal">
                                             <Image
@@ -995,6 +995,7 @@
                                     </Button>
 
                                     <Button
+                                        x:Name="DragAndDropBruteUsernamePasswordFileButton"
                                         Grid.Row="2"
                                         Width="200"
                                         MinWidth="150"
@@ -1004,6 +1005,8 @@
                                         Margin="0,10,0,0"
                                         HorizontalAlignment="Left"
                                         AllowDrop="True"
+                                        Click="DragAndDropBruteUsernamePasswordFileButton_Click"
+                                        Drop="DragAndDropBruteUsernamePasswordFileButton_Drop"
                                         Background="{StaticResource White_Brush}"
                                         Template="{StaticResource DragAndDropButtonTemplate}">
                                         <StackPanel
@@ -1094,7 +1097,7 @@
                                                     AlternationCount="2"
                                                     Background="Transparent"
                                                     BorderThickness="0"
-                                                    ItemsSource="{Binding UsersAndPasswords}"
+                                                    ItemsSource="{Binding BruteUsernamesAndPasswords}"
                                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
                                                     <ListBox.Style>
                                                         <Style BasedOn="{StaticResource EmptyListStyle}" TargetType="ListBox">
@@ -1137,6 +1140,7 @@
                                                                     VerticalAlignment="Center"
                                                                     Background="Transparent"
                                                                     BorderThickness="0"
+                                                                    Click="BruteUsernamePasswordListItemDeleteButton_Click"
                                                                     Foreground="Red">
                                                                     <Image
                                                                         Width="15"
