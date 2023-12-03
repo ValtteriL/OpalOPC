@@ -158,6 +158,83 @@ public class ConfigurationViewModel_Tests
         Assert.Empty(model.UserCertificateIdentifiers);
     }
 
+    // add username and password
+    [Fact]
+    public void AddUsernameAndPassword()
+    {
+        // Arrange
+        ConfigurationViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object);
+        string username = "username";
+        string password = "password";
+
+        model.Username = username;
+        model.Password = password;
+
+        // Act
+        model.AddUsernamePasswordCommand.Execute(null);
+
+        // Assert
+        Assert.True(model.Username == string.Empty);
+        Assert.True(model.Password == string.Empty);
+        Assert.True(model.UsernamesAndPasswords.Count == 1);
+        Assert.Contains((username, password), model.UsernamesAndPasswords);
+    }
+
+    // remove username and password
+    [Fact]
+    public void RemoveUsernameAndPassword()
+    {
+        // Arrange
+        ConfigurationViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object);
+        string username = "username";
+        string password = "password";
+
+        model.UsernamesAndPasswords.Add((username, password));
+
+        // Act
+        model.DeleteUsernamePassword((username, password));
+
+        // Assert
+        Assert.True(model.UsernamesAndPasswords.Count == 0);
+    }
+
+    // add usernames and passwords from file
+    [Fact]
+    public void AddUsernamesAndPasswordsFromFile()
+    {
+        // Arrange
+        string path = "path";
+        string[] lines = { "username:password", "username2:password2" };
+        _fileUtilMock.Setup(_fileUtilMock => _fileUtilMock.ReadFileToList(It.IsAny<string>()))
+            .Returns(lines.ToList());
+        ConfigurationViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object);
+
+        // Act
+        model.AddUsernamesPasswordsFromFile(path);
+
+        // Assert
+        Assert.True(model.UsernamesAndPasswords.Count == 2);
+        Assert.Contains(("username", "password"), model.UsernamesAndPasswords);
+        Assert.Contains(("username2", "password2"), model.UsernamesAndPasswords);
+    }
+
+    // add usernames and passwords from file throws exception
+    [Fact]
+    public void AddUsernamesAndPasswordsFromFile_ThrowsException()
+    {
+        // Arrange
+        string path = "path";
+        _fileUtilMock.Setup(_fileUtilMock => _fileUtilMock.ReadFileToList(It.IsAny<string>()))
+            .Throws(new Exception());
+        ConfigurationViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object);
+
+        // Act
+        model.AddUsernamesPasswordsFromFile(path);
+
+        // Assert
+        Assert.True(model.UsernamesAndPasswords.Count == 0);
+    }
+
 
 }
 #endif

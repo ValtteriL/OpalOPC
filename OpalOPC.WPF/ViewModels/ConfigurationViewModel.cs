@@ -4,7 +4,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using OpalOPC.WPF.GuiUtil;
+using OpalOPC.WPF.Logger;
 using Opc.Ua;
 using Org.BouncyCastle.Asn1.X509;
 using Util;
@@ -43,21 +45,29 @@ public partial class ConfigurationViewModel : ObservableObject
         return !string.IsNullOrEmpty(UserCertificatePath) && !string.IsNullOrEmpty(UserPrivateKeyPath);
     }
 
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddUsernamePasswordCommand))]
+    private string _username = string.Empty;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddUsernamePasswordCommand))]
+    private string _password = string.Empty;
+
+    private bool UsernamePasswordSet()
+    {
+        return !string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password);
+    }
+
     private readonly IFileUtil _fileUtil;
     private readonly IMessageBoxUtil _messageBoxUtil;
 
     [ObservableProperty] private ObservableCollection<string> _privateKeysAndCertificates;
-    [ObservableProperty] private ObservableCollection<string> _usersAndPasswords;
+    [ObservableProperty] private ObservableCollection<(string, string)> _usernamesAndPasswords = new ObservableCollection<(string, string)>();
     public ConfigurationViewModel()
     {
         PrivateKeysAndCertificates = new ObservableCollection<string>
         {
             "475da948e4ba44d9b5bc31ab4b8006113fd5f538",
-        };
-
-        UsersAndPasswords = new ObservableCollection<string>
-        {
-            "admin:secret",
         };
 
         _fileUtil = new FileUtil();
@@ -138,6 +148,35 @@ public partial class ConfigurationViewModel : ObservableObject
     public void DeleteUserCertificate(CertificateIdentifier certificateIdentifier)
     {
         UserCertificateIdentifiers.Remove(certificateIdentifier);
+    }
+
+    [RelayCommand(CanExecute = nameof(UsernamePasswordSet))]
+    private void AddUsernamePassword()
+    {
+        UsernamesAndPasswords.Add((Username,Password));
+        Username = string.Empty;
+        Password = string.Empty;
+    }
+
+    public void DeleteUsernamePassword((string, string) usernamePassword)
+    {
+        UsernamesAndPasswords.Remove(usernamePassword);
+    }
+
+    public void AddUsernamesPasswordsFromFile(string path)
+    {
+        try
+        {
+            _fileUtil.ReadFileToList(path).ToList().ForEach(line =>
+            {
+                string[] split = line.Split(':');
+                UsernamesAndPasswords.Add((split[0], split[1]));
+            });
+        }
+        catch (Exception e)
+        {
+            _messageBoxUtil.Show(e.Message);
+        }
     }
 
 }

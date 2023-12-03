@@ -454,7 +454,7 @@
                                         Padding="10,0,10,0"
                                         VerticalContentAlignment="Center"
                                         HintText="Username"
-                                        Text="{Binding OutputFileLocation}" />
+                                        Text="{Binding Username}" />
                                     <customControls:CustomTextBox
                                         Grid.Row="1"
                                         Height="50"
@@ -462,7 +462,7 @@
                                         Padding="10,0,10,0"
                                         VerticalContentAlignment="Center"
                                         HintText="Password"
-                                        Text="{Binding OutputFileLocation}" />
+                                        Text="{Binding Password}" />
                                     <Button
                                         Grid.Row="2"
                                         Width="94"
@@ -470,7 +470,7 @@
                                         Margin="0,15,0,0"
                                         HorizontalAlignment="Left"
                                         Background="{StaticResource Dark_Blue_Brush}"
-                                        Command="{Binding AddTargetCommand}"
+                                        Command="{Binding AddUsernamePasswordCommand}"
                                         Template="{StaticResource ImageButtonTemplate}">
                                         <StackPanel Orientation="Horizontal">
                                             <Image
@@ -488,7 +488,7 @@
                                     </Button>
 
                                     <Button
-                                        x:Name="DragAndDropTargetsFileButton"
+                                        x:Name="DragAndDropUsernamePasswordFileButton"
                                         Grid.Row="3"
                                         Width="200"
                                         MinWidth="150"
@@ -499,6 +499,8 @@
                                         HorizontalAlignment="Left"
                                         AllowDrop="True"
                                         Background="{StaticResource White_Brush}"
+                                        Click="DragAndDropUsernamePasswordFileButton_Click"
+                                        Drop="DragAndDropUsernamePasswordFileButton_Drop"
                                         Template="{StaticResource DragAndDropButtonTemplate}">
                                         <StackPanel
                                             Margin="10"
@@ -703,7 +705,7 @@
                                                     AlternationCount="2"
                                                     Background="Transparent"
                                                     BorderThickness="0"
-                                                    ItemsSource="{Binding UsersAndPasswords}"
+                                                    ItemsSource="{Binding UsernamesAndPasswords}"
                                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
                                                     <ListBox.Style>
                                                         <Style BasedOn="{StaticResource EmptyListStyle}" TargetType="ListBox">
@@ -746,6 +748,7 @@
                                                                     VerticalAlignment="Center"
                                                                     Background="Transparent"
                                                                     BorderThickness="0"
+                                                                    Click="UsernamePasswordListItemDeleteButton_Click"
                                                                     Foreground="Red">
                                                                     <Image
                                                                         Width="15"

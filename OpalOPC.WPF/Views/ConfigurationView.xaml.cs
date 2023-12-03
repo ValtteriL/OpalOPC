@@ -26,6 +26,8 @@ namespace OpalOPC.WPF.Views
     {
         private readonly ConfigurationViewModel _viewModel;
         private readonly OpenFileDialog _openFileDialog;
+        private readonly string _pemFilesFilter = "PEM files (*.pem)|*.pem";
+        private readonly string _allFilesFilter = "All files (*.*)|*.*";
 
         public ConfigurationView()
         {
@@ -41,18 +43,20 @@ namespace OpalOPC.WPF.Views
 
         private void BrowseApplicationCertificateButton_Click(object sender, RoutedEventArgs e)
         {
-            string path = GetFilePathFromUser();
+            string path = GetFilePathFromUser(_pemFilesFilter);
             _viewModel.SetApplicationCertificatePath(path);
         }
 
         private void BrowseApplicationPrivateKeyButton_Click(object sender, RoutedEventArgs e)
         {
-            string path = GetFilePathFromUser();
+            string path = GetFilePathFromUser(_pemFilesFilter);
             _viewModel.SetApplicationPrivateKeyPath(path);
         }
 
-        private string GetFilePathFromUser()
+        private string GetFilePathFromUser(string filter)
         {
+            _openFileDialog.Filter = filter;
+
             if (_openFileDialog.ShowDialog() == true)
             {
                 return System.IO.Path.GetFullPath(_openFileDialog.FileName);
@@ -71,13 +75,13 @@ namespace OpalOPC.WPF.Views
 
         private void BrowseUserCertificateButton_Click(object sender, RoutedEventArgs e)
         {
-            string path = GetFilePathFromUser();
+            string path = GetFilePathFromUser(_pemFilesFilter);
             _viewModel.SetUserCertificatePath(path);
         }
 
         private void BrowseUserPrivateKeyButton_Click(object sender, RoutedEventArgs e)
         {
-            string path = GetFilePathFromUser();
+            string path = GetFilePathFromUser(_pemFilesFilter);
             _viewModel.SetUserPrivateKeyPath(path);
         }
 
@@ -87,6 +91,36 @@ namespace OpalOPC.WPF.Views
 
             // Handle target deletion
             _viewModel.DeleteUserCertificate((CertificateIdentifier)btn!.DataContext);
+        }
+
+        private void UsernamePasswordListItemDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+
+            // Handle target deletion
+            _viewModel.DeleteUsernamePassword(((string, string))btn!.DataContext);
+        }
+
+        private void DragAndDropUsernamePasswordFileButton_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                HandleFileOpen(files[0]);
+            }
+        }
+
+        private void HandleFileOpen(string path)
+        {
+            // Handle target file
+            _viewModel.AddUsernamesPasswordsFromFile(path);
+        }
+
+        private void DragAndDropUsernamePasswordFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            string path = GetFilePathFromUser(_allFilesFilter);
+            _viewModel.AddUsernamesPasswordsFromFile(path);
         }
     }
 }
