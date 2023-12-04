@@ -61,7 +61,7 @@ public partial class ScanView : UserControl
         Button? btn = sender as Button;
 
         // Handle target deletion
-        _viewModel.DeleteTarget((string)btn!.DataContext);
+        _viewModel.DeleteTarget((Uri)btn!.DataContext);
     }
 
     private void TextBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -70,7 +70,7 @@ public partial class ScanView : UserControl
         TextBlock? block = sender as TextBlock;
 
         // Handle target deletion
-        _viewModel.SetTargetToAdd((string)block!.DataContext);
+        _viewModel.SetTargetToAdd((Uri)block!.DataContext);
     }
 
     private string GetFilePathFromUser()

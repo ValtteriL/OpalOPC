@@ -48,7 +48,7 @@ public class ScanViewModel_Tests
         model.AddTargetCommand.Execute(null);
 
         Assert.True(model.TargetToAdd == string.Empty);
-        Assert.Contains($"opc.tcp://{target}", model.Targets);
+        Assert.Contains(new Uri($"opc.tcp://{target}"), model.Targets);
     }
 
     // adding multiple targets
@@ -66,8 +66,8 @@ public class ScanViewModel_Tests
         model.AddTargetsFromFile(tempfile);
 
         Assert.True(model.Targets.Count == 3);
-        Assert.Contains($"opc.tcp://{target1}", model.Targets);
-        Assert.Contains($"{target2}", model.Targets);
+        Assert.Contains(new Uri($"opc.tcp://{target1}"), model.Targets);
+        Assert.Contains(new Uri($"{target2}"), model.Targets);
 
         File.Delete(tempfile);
     }
@@ -93,7 +93,7 @@ public class ScanViewModel_Tests
     public void Remove_Target()
     {
         ScanViewModel model = new();
-        string target = "opc.tcp://asdasd";
+        Uri target = new("opc.tcp://asdasd");
         model.Targets.Add(target);
 
         model.DeleteTarget(target);
@@ -106,12 +106,12 @@ public class ScanViewModel_Tests
     public void Select_Target()
     {
         ScanViewModel model = new();
-        string target = "opc.tcp://asdasd";
+        Uri target = new("opc.tcp://asdasd");
         model.Targets.Add(target);
 
-        model.SetTargetToAdd(target);
+        model.SetTargetToAdd(target.AbsoluteUri);
 
-        Assert.True(model.TargetToAdd == target);
+        Assert.True(model.TargetToAdd == target.AbsoluteUri);
     }
 
     // scanning
@@ -126,7 +126,7 @@ public class ScanViewModel_Tests
         string tempfile = Path.GetTempFileName();
         model.OutputFileLocation = tempfile;
 
-        model.ScanCommand.Execute(null);
+        model.ScanCommand.ExecuteAsync(null);
 
         Thread.Sleep(1000);
 
@@ -143,8 +143,8 @@ public class ScanViewModel_Tests
         ScanViewModel model = new();
         string tempfile = Path.GetTempFileName();
         model.OutputFileLocation = tempfile;
-        string target1 = "opc.tcp://opcuaserver.com:48010";
-        string target2 = "opc.tcp://opcuaserver.com:4840";
+        Uri target1 = new("opc.tcp://opcuaserver.com:48010");
+        Uri target2 = new("opc.tcp://opcuaserver.com:4840");
         model.Targets.Add(target1);
         model.Targets.Add(target2);
 
@@ -167,7 +167,7 @@ public class ScanViewModel_Tests
             OutputFileLocation = string.Empty
         };
 
-        model.ScanCommand.Execute(null);
+        model.ScanCommand.ExecuteAsync(null);
 
         Thread.Sleep(1000);
         Assert.True(model.ScanCompletedSuccessfully);

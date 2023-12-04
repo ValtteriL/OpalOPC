@@ -26,7 +26,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
     [ObservableProperty]
     private string _targetToAdd = string.Empty;
 
-    [ObservableProperty] private ObservableCollection<string> _targets = new();
+    [ObservableProperty] private ObservableCollection<Uri> _targets = new();
 
     [ObservableProperty]
     private string? _log = string.Empty;
@@ -78,9 +78,9 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         Verbosity = LogLevel.Trace;
     }
 
-    public void SetTargetToAdd(string target)
+    public void SetTargetToAdd(Uri target)
     {
-        TargetToAdd = target;
+        TargetToAdd = target.AbsoluteUri;
     }
 
 
@@ -93,20 +93,6 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         ILogger logger = new GUILogger(Verbosity);
 
         _scanViewModelUtil.CheckVersion(logger);
-
-        // create URI list of targets
-        List<Uri> targetUris = new();
-        foreach (string target in Targets)
-        {
-            try
-            {
-                targetUris.Add(new Uri(target));
-            }
-            catch (System.Exception)
-            {
-                logger.LogError("{Message}", $"\"{target}\" is invalid target");
-            }
-        }
 
         // check if output file specified
         // if path points to dir => use generated output filename
@@ -126,7 +112,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         {
             using Stream outputStream = _fileUtil.Create(_outputfile);
             _authenticationData = _scanViewModelUtil.GetAuthenticationData();
-            ScanController scanController = new(logger, targetUris, outputStream, generateGUICommandInReport(), _authenticationData, token);
+            ScanController scanController = new(logger, Targets, outputStream, generateGUICommandInReport(), _authenticationData, token);
 
             await Task.Run(() =>
             {
@@ -176,23 +162,25 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
             modifiedTarget = Protocol + target;
         }
 
-        if (Targets.Contains(modifiedTarget))
+        Uri uri;
+        try
         {
-            logger.LogWarning("{Message}", $"\"{modifiedTarget}\" is already a target. Skipping");
+            uri = new Uri(modifiedTarget);
+        }
+        catch (System.Exception)
+        {
+            logger.LogError("{Message}", $"\"{modifiedTarget}\" is invalid target");
+            return;
+        }
+
+
+        if (Targets.Contains(uri))
+        {
+            logger.LogWarning("{Message}", $"\"{uri}\" is already a target. Skipping");
         }
         else
         {
-            try
-            {
-                _ = new Uri(modifiedTarget);
-            }
-            catch (System.Exception)
-            {
-                logger.LogError("{Message}", $"\"{target}\" is invalid target");
-                return;
-            }
-
-            Targets.Add(modifiedTarget);
+            Targets.Add(uri);
         }
     }
 
@@ -213,7 +201,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         OutputFileLocation = fullPath;
     }
 
-    public void DeleteTarget(string target)
+    public void DeleteTarget(Uri target)
     {
         Targets.Remove(target);
         updateTargetsLabel();
