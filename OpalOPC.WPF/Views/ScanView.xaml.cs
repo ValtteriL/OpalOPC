@@ -10,10 +10,21 @@ namespace OpalOPC.WPF.Views;
 /// </summary>
 public partial class ScanView : UserControl
 {
+
+    private readonly OpenFileDialog _openFileDialog;
+    private readonly ScanViewModel _viewModel;
+
     public ScanView()
     {
         DataContext = new ScanViewModel();
+        _viewModel = (ScanViewModel)DataContext;
         InitializeComponent();
+
+        _openFileDialog = new()
+        {
+            Filter = "All files (*.*)|*.*",
+            CheckFileExists = false
+        };
     }
 
     private void DragAndDropTargetsFileButton_Drop(object sender, DragEventArgs e)
@@ -29,45 +40,19 @@ public partial class ScanView : UserControl
     private void HandleFileOpen(string path)
     {
         // Handle target file
-        ScanViewModel viewModel = (ScanViewModel)DataContext;
-        viewModel.AddTargetsFromFile(path);
+        _viewModel.AddTargetsFromFile(path);
     }
 
     private void DragAndDropTargetsFileButton_Click(object sender, RoutedEventArgs e)
     {
-        OpenFileDialog openFileDialog = new()
-        {
-            Filter = "All files (*.*)|*.*",
-            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
-        };
-
-        if (openFileDialog.ShowDialog() == true)
-        {
-            string fileName = openFileDialog.FileName;
-
-            // Handle target file
-            ScanViewModel viewModel = (ScanViewModel)DataContext;
-            viewModel.AddTargetsFromFile(System.IO.Path.GetFullPath(fileName));
-        }
+        string path = GetFilePathFromUser();
+        _viewModel.AddTargetsFromFile(path);
     }
 
     private void BrowseOutputReportFileButton_Click(object sender, RoutedEventArgs e)
     {
-        OpenFileDialog openFileDialog = new()
-        {
-            Filter = "All files (*.*)|*.*",
-            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            CheckFileExists = false
-        };
-
-        if (openFileDialog.ShowDialog() == true)
-        {
-            string path = System.IO.Path.GetFullPath(openFileDialog.FileName);
-
-            // Handle output location selection
-            ScanViewModel viewModel = (ScanViewModel)DataContext;
-            viewModel.SetOutputFileLocation(path);
-        }
+        string path = GetFilePathFromUser();
+        _viewModel.SetOutputFileLocation(path);
     }
 
 
@@ -76,8 +61,7 @@ public partial class ScanView : UserControl
         Button? btn = sender as Button;
 
         // Handle target deletion
-        ScanViewModel viewModel = (ScanViewModel)DataContext;
-        viewModel.DeleteTarget((string)btn!.DataContext);
+        _viewModel.DeleteTarget((string)btn!.DataContext);
     }
 
     private void TextBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -86,7 +70,19 @@ public partial class ScanView : UserControl
         TextBlock? block = sender as TextBlock;
 
         // Handle target deletion
-        ScanViewModel viewModel = (ScanViewModel)DataContext;
-        viewModel.SetTargetToAdd((string)block!.DataContext);
+        _viewModel.SetTargetToAdd((string)block!.DataContext);
+    }
+
+    private string GetFilePathFromUser()
+    {
+        string filename = _openFileDialog.FileName;
+        _openFileDialog.FileName = string.Empty;
+
+        if (_openFileDialog.ShowDialog() == true)
+        {
+            return System.IO.Path.GetFullPath(filename);
+        }
+
+        return string.Empty;
     }
 }

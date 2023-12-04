@@ -55,11 +55,13 @@ namespace OpalOPC.WPF.Views
 
         private string GetFilePathFromUser(string filter)
         {
+            string filename = _openFileDialog.FileName;
+            _openFileDialog.FileName = string.Empty;
             _openFileDialog.Filter = filter;
 
             if (_openFileDialog.ShowDialog() == true)
             {
-                return System.IO.Path.GetFullPath(_openFileDialog.FileName);
+                return System.IO.Path.GetFullPath(filename);
             }
 
             return string.Empty;
