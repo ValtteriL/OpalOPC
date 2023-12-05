@@ -254,14 +254,24 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
                 throw new NotImplementedException();
         }
 
+        string userCertificates = FormatList(_authenticationData.userCertificates);
+        string loginCredentials = FormatList(_authenticationData.loginCredentials);
+        string applicationCertificates = FormatList(_authenticationData.applicationCertificates);
+        string bruteForceCredentials = FormatList(_authenticationData.bruteForceCredentials);
+
         return $"Launched via GUI with following settings: (" +
             $"Verbosity: {verbosityInReport} " +
             $"| Output: {OutputFileLocation} " +
             $"| Targets: {string.Join(", ", Targets)} " +
-            $"| User authentication certificates: {_authenticationData.userCertificates} " +
-            $"| User authentication credentials: {_authenticationData.loginCredentials} " +
-            $"| Application authentication: {_authenticationData.applicationCertificates} " +
-            $"| Brute force credentials: {_authenticationData.bruteForceCredentials} " +
+            $"| User authentication certificates: {userCertificates} " +
+            $"| User authentication credentials: {loginCredentials} " +
+            $"| Application authentication: {applicationCertificates} " +
+            $"| Brute force credentials: {bruteForceCredentials} " +
             $")";
+    }
+
+    private static string FormatList<T>(IEnumerable<T> list)
+    {
+        return string.Join(", ", list);
     }
 }
