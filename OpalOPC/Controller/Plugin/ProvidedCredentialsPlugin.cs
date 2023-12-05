@@ -32,7 +32,7 @@ namespace Plugin
 
         public override (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint)
         {
-            _logger.LogTrace("{Message}", $"Trying to authenticate to {endpoint.EndpointUrl} with provided user credentials");
+            _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for provided credentials");
 
             List<ISecurityTestSession> sessions = new();
             List<(string username, string password)> validUsernamePasswords = new();
