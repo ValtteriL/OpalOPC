@@ -3,6 +3,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.Xsl;
 using Model;
+using HandlebarsDotNet;
+using System.Text.Json;
 
 namespace View
 {
@@ -17,37 +19,28 @@ namespace View
 
         public Reporter(Stream outputStream)
         {
-            this._outputStream = outputStream;
+            _outputStream = outputStream;
         }
 
         public void PrintXHTMLReport(Report report)
         {
-            // serialize report to stream
-            MemoryStream stream = new();
-            using XmlWriter tempXmlWriter = XmlWriter.Create(stream);
-            XmlSerializer serializer = new(report.GetType());
-            serializer.Serialize(tempXmlWriter, report);
+            RegisterHelpers();
+            HandlebarsTemplate<object, object> template = Handlebars.Compile(getHtmlTemplate());
 
-            // read XSLT, and use its settings to create XmlWriter to outputStream
-            XslCompiledTransform xslCompiledTransform = getXSLT();
-            using XmlWriter finalXmlWriter = XmlWriter.Create(_outputStream, xslCompiledTransform.OutputSettings);
+            string html = template(report);
 
-            // transform report to xhtml with XSLT
-            // and write to outputStream
-            stream.Seek(0, SeekOrigin.Begin);
-            xslCompiledTransform.Transform(XmlReader.Create(stream, new XmlReaderSettings() { DtdProcessing = DtdProcessing.Parse }), finalXmlWriter);
+            // Write to output stream
+            StreamWriter writer = new(_outputStream)
+            {
+                AutoFlush = true
+            };
+            writer.Write(html);
         }
 
-        private static XslCompiledTransform getXSLT()
+        private static string getHtmlTemplate()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            using Stream? stream = assembly.GetManifestResourceStream(Util.XmlResources.StylesheetLocation);
-
-            if (stream == null)
-            {
-                throw new FileNotFoundException($"Cannot find XSL stylesheet {Util.XmlResources.StylesheetLocation}");
-            }
-
+            using Stream? stream = assembly.GetManifestResourceStream(Util.XmlResources.HtmlTemplateLocation) ?? throw new FileNotFoundException($"Cannot find HTML template {Util.XmlResources.HtmlTemplateLocation}");
             Stream finalstream = stream;
 
 #if !DEBUG
@@ -69,11 +62,106 @@ namespace View
             finalstream = ms;
 #endif
 
+            StreamReader finalReader = new(finalstream);
+            return finalReader.ReadToEnd();
+        }
 
-            XslCompiledTransform xslCompiledTransform = new();
-            xslCompiledTransform.Load(XmlReader.Create(finalstream));
+        static void RegisterHelpers()
+        {
+            HandlebarsDotNet.Handlebars.RegisterHelper("ifCond", (output, options, context, arguments) =>
+            {
+                if (arguments.Length != 3)
+                {
+                    throw new HandlebarsException("{{ifCond}} helper must have three arguments");
+                }
 
-            return xslCompiledTransform;
+                string v1 = arguments.At<string>(0);
+                string @operator = arguments.At<string>(1);
+                string v2 = arguments.At<string>(2);
+
+                switch (@operator)
+                {
+                    case "==":
+                        if (v1 == v2)
+                        {
+                            options.Template(output, context);
+                        }
+                        else
+                        {
+                            options.Inverse(output, context);
+                        }
+                        break;
+
+                    case "!=":
+                        if (v1 != v2)
+                        {
+                            options.Template(output, context);
+                        }
+                        else
+                        {
+                            options.Inverse(output, context);
+                        }
+                        break;
+
+                    case "<":
+                        if (Convert.ToDouble(v1) < Convert.ToDouble(v2))
+                        {
+                            options.Template(output, context);
+                        }
+                        else
+                        {
+                            options.Inverse(output, context);
+                        }
+                        break;
+
+                    case "<=":
+                        if (Convert.ToDouble(v1) <= Convert.ToDouble(v2))
+                        {
+                            options.Template(output, context);
+                        }
+                        else
+                        {
+                            options.Inverse(output, context);
+                        }
+                        break;
+
+                    case ">":
+                        if (Convert.ToDouble(v1) > Convert.ToDouble(v2))
+                        {
+                            options.Template(output, context);
+                        }
+                        else
+                        {
+                            options.Inverse(output, context);
+                        }
+                        break;
+
+                    case ">=":
+                        if (Convert.ToDouble(v1) >= Convert.ToDouble(v2))
+                        {
+                            options.Template(output, context);
+                        }
+                        else
+                        {
+                            options.Inverse(output, context);
+                        }
+                        break;
+
+                    case "&&":
+                        if (Convert.ToBoolean(v1) && Convert.ToBoolean(v2))
+                            options.Template(output, context);
+                        else
+                            options.Inverse(output, context);
+                        break;
+
+                    case "||":
+                        if (Convert.ToBoolean(v1) || Convert.ToBoolean(v2))
+                            options.Template(output, context);
+                        else
+                            options.Inverse(output, context);
+                        break;
+                }
+            });
         }
     }
 }

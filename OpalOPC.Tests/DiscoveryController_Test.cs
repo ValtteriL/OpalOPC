@@ -49,7 +49,7 @@ public class DiscoveryControllerTest
     public void ReturnsCorrectNumberOfTargetsAndEndpoints()
     {
         // arrange
-        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new IPAddress(new byte[] { 127, 0, 0, 1 }) });
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new(new byte[] { 127, 0, 0, 1 }) });
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
@@ -152,7 +152,7 @@ public class DiscoveryControllerTest
     public void DiscoverApplicationsServiceResultExceptionReturnsEmptyTargets()
     {
         // arrange
-        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new IPAddress(new byte[] { 127, 0, 0, 1 }) });
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new(new byte[] { 127, 0, 0, 1 }) });
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Throws<ServiceResultException>();
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
@@ -169,7 +169,7 @@ public class DiscoveryControllerTest
     public void DiscoverApplicationsExceptionReturnsInExceptionThrown()
     {
         // arrange
-        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new IPAddress(new byte[] { 127, 0, 0, 1 }) });
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new(new byte[] { 127, 0, 0, 1 }) });
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Throws<Exception>();
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
@@ -183,7 +183,7 @@ public class DiscoveryControllerTest
     public void DiscoverEndpointsServiceResultExceptionReturnsSingleTargetNoEndpoints()
     {
         // arrange
-        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new IPAddress(new byte[] { 127, 0, 0, 1 }) });
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new(new byte[] { 127, 0, 0, 1 }) });
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Throws<ServiceResultException>();
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
 
@@ -194,14 +194,14 @@ public class DiscoveryControllerTest
 
         // assert
         Assert.True(targets.Count == 1);
-        Assert.Empty(targets.First().Servers.First().Endpoints);
+        Assert.Empty(targets.First().Servers.First().EndpointDescriptions);
     }
 
     [Fact]
     public void DiscoverEndpointsExceptionResultsInExceptionThrown()
     {
         // arrange
-        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new IPAddress(new byte[] { 127, 0, 0, 1 }) });
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new(new byte[] { 127, 0, 0, 1 }) });
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Throws<Exception>();
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
 

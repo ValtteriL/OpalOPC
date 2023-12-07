@@ -20,24 +20,6 @@ public class Reporter_printXHTMLReportShould
     }
 
     [Fact]
-    public void printXHTMLReport_NullReportCausesNullReferenceException()
-    {
-        Report? report = null;
-
-        try
-        {
-            _reporter.PrintXHTMLReport(report!);
-        }
-        catch (System.NullReferenceException)
-        {
-            Assert.True(true);
-            return;
-        }
-
-        Assert.True(false);
-    }
-
-    [Fact]
     public void printXHTMLReport_NonNullReportSucceeds()
     {
         Report report = new(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);

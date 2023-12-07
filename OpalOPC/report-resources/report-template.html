@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OpalOPC Report</title>
+    <meta name="generator" content="OpalOPC">
+    <link rel="icon" href="http://localhost:8000/OpalOPC/report-resources/assets/images/favicon.png" type="image/png" sizes="16x16">
+    <link href="http://localhost:8000/OpalOPC/report-resources/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <link href="http://localhost:8000/OpalOPC/report-resources/assets/scss/style.css" rel="stylesheet">
+  </head>
+  <body dir="ltr"><header><div class="container">
+        <div class="logo"><img src="http://localhost:8000/OpalOPC/report-resources/assets/images/logo.svg" alt=""></div>
+        <div class="headings">
+          <h1>OpalOPC Report <span>{{ StartTime }}</span></h1>
+        </div>
+      </div></header><div class="container">
+      <hr class="separator">
+    </div><main><section class="opal-summary"><div class="container">
+          <div class="headings">
+            <h2>Scan summary</h2>
+          </div>
+          <div class="scan-summary-box">
+            <div class="paragraph">
+              <p>OpalOPC {{ Version }} was initialized at {{ StartTime }} with these arguments: <br>{{ Command }}</p>
+              <p class="mb-0">{{ RunStatus }}</p>
+            </div>
+          </div>
+        </div></section><section class="opal-summary"><div class="container">
+          <div class="headings">
+            <h2>Application summary</h2>
+          </div>
+          <div class="opal-summary-table">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th class="w-20">Application Name</th>
+                  <th>Application type</th>
+                  <th>Discovery URLs</th>
+                  <th>Issues</th>
+                  <th>Errors</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{ #each Targets }}
+                <tr>
+                  <td><a href="#{{@index}}">{{@index}}</a></td>
+                  <td>{{ ApplicationName }}</td>
+                  <td>{{ Type }}</td>
+                  <td>{{ Servers.Count }}</td>
+                  <td>{{ Issues.Count }}</td>
+                  <td>{{ Errors.Count }}</td>
+                </tr>
+                {{ /each }}
+              </tbody>
+            </table>
+          </div>
+        </div></section><div style="page-break-before:always"></div><section class="opal-summary"><div class="container">
+          <div class="headings">
+            <h2>Results Summary <span>({{ Targets.Count }}
+    Applications found )</span></h2>
+          </div>
+          <div class="opal-summary-table">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td class="bg-severity">Severity levels</td>
+                  <td class="p-0 border-0">
+                    <table class="table mb-0">
+                      <thead class="results-bar">
+                        <tr>
+                          <th>
+                            <div class="row">
+                              <div class="col">
+                                <div class="results info"><span></span><span></span><span></span><span></span><span></span></div>
+                              </div>
+                              <div class="col p-0 justify-content-start">Info</div>
+                            </div>
+                          </th>
+                          <th>
+                            <div class="row">
+                              <div class="col">
+                                <div class="results low"><span class="active"></span><span class="active"></span><span></span><span></span><span></span></div>
+                              </div>
+                              <div class="col p-0">Low</div>
+                            </div>
+                          </th>
+                          <th>
+                            <div class="row">
+                              <div class="col">
+                                <div class="results medium"><span class="active"></span><span class="active"></span><span class="active"></span><span></span><span></span></div>
+                              </div>
+                              <div class="col p-0">Medium</div>
+                            </div>
+                          </th>
+                          <th>
+                            <div class="row">
+                              <div class="col">
+                                <div class="results high"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span></span></div>
+                              </div>
+                              <div class="col p-0">High</div>
+                            </div>
+                          </th>
+                          <th>
+                            <div class="row">
+                              <div class="col">
+                                <div class="results critical"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+                              </div>
+                              <div class="col p-0">Critical</div>
+                            </div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td>0</td>
+                          <td>[0,1-3,9]</td>
+                          <td>[4,0-6,9]</td>
+                          <td>[7,0-8,9]</td>
+                          <td>[9,0-10,0]</td>
+                        </tr>
+                      </thead>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div></section><section class="opal-summary"><div class="container">
+          <div class="opal-summary-table opal-summary-detail">
+            {{ #each Targets }}
+
+            <table id="{{@index}}" class="table mb-4">
+              <tbody>
+                <tr>
+                  <td class="col-numbering bg-01 border-0">{{@index}}</td>
+                  <td class="bg-results p-5 border-0">
+                    <table class="table table-striped mb-5">
+                      <tbody>
+                        <tr>
+                          <td class="w-25">Application name</td>
+                          <td class="text-start">{{ ApplicationName }}</td>
+                        </tr>
+                        <tr>
+                          <td>Application type</td>
+                          <td class="text-start">{{ Type }}</td>
+                        </tr>
+                        <tr>
+                          <td>Application URI</td>
+                          <td class="text-start">{{ ApplicationUri }}</td>
+                        </tr>
+                        <tr>
+                          <td>Product URI</td>
+                          <td class="text-start">{{ ProductUri }}</td>
+                        </tr>
+                        <tr>
+                          <td>Errors</td>
+                          <td class="text-start">{{ Errors.Count }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table class="table discovery mb-0">
+                      <thead>
+                        <tr>
+                          <th class="w-25">Discovery URL</th>
+                          <th>Issue type</th>
+                          <th>Plugin Id</th>
+                          <th>Severity</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {{ #each Servers }}
+                        <tr class="discoveryurl">
+                            <td
+                                {{ #if @last }}
+                                class="text-start br-rb"
+                                {{ else }}
+                                class="text-start br-b0"
+                                {{ /if }}
+
+                                {{ #ifCond Errors.Count '==' 0 '&&' Issues.Count '==' 0 }}
+                                rowspan="2"
+                                {{ else }}
+                                rowspan="{{Endpoints.Count + Issues.Count + 1}}"
+                                {{ /ifCond }}
+                                >
+                                {{ DiscoveryUrl }}
+                            </td>
+                          </tr>
+                        {{ #each Issues }}
+                        <tr>
+                          <td class="text-start">{{ Name }}</td>
+                          <td><a href="https://opalopc.com/docs/plugin-{{ PluginId }}" target=" _blank ">{{ PluginId }}</a></td>
+                          {{ #ifCond Severity '>=' 9 }}
+                          <td>
+                            <div class="row">
+                              <div class="col pe-0 text-start">Critical ({{ Severity }})</div>
+                              <div class="col">
+                                <div class="results critical">
+                                  <span></span>
+                                  <span></span>
+                                  <span></span>
+                                  <span></span>
+                                  <span></span>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          {{ else ifCond Severity '>=' 7 }}
+                          <td>
+                            <div class="row">
+                              <div class="col pe-0 text-start">High ({{ Severity }})</div>
+                              <div class="col">
+                                <div class="results high">
+                                  <span class="active"></span>
+                                  <span class="active"></span>
+                                  <span class="active"></span>
+                                  <span class="active"></span>
+                                  <span></span>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          {{ else ifCond Severity '>=' 4 }}
+                          <td>
+                            <div class="row">
+                              <div class="col pe-0 text-start">Medium ({{ Severity }})</div>
+                              <div class="col">
+                                <div class="results medium">
+                                  <span class="active"></span>
+                                  <span class="active"></span>
+                                  <span class="active"></span>
+                                  <span class="active"></span>
+                                  <span></span>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          {{ else ifCond Severity '>=' 0.1 }}
+                          <td>
+                            <div class="row">
+                              <div class="col pe-0 text-start">Low ({{ Severity }})</div>
+                              <div class="col">
+                                <div class="results low">
+                                  <span></span>
+                                  <span></span>
+                                  <span></span>
+                                  <span></span>
+                                  <span></span>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          {{ else }}
+                          <td>
+                            <div class="row">
+                              <div class="col pe-0 text-start">Info ({{ Severity }})</div>
+                              <div class="col">
+                                <div class="results info">
+                                  <span></span>
+                                  <span></span>
+                                  <span></span>
+                                  <span></span>
+                                  <span></span>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          {{ /ifCond }}
+                        </tr>
+                        {{ /each }}
+                        {{ #each Errors }}
+                        <tr>
+                          <td class="text-start" colspan="3">
+                            <ul class="error">
+                              <li>
+                                {{ Message }}
+                              </li>
+                            </ul>
+                          </td>
+                        </tr>
+                        {{ /each }}
+                        {{ #ifCond Errors.Count '=='' 0 '&&' Issues.Count '==' 0 }}
+                        <tr>
+                            <td class="text-start" colspan="3">
+                              <div class="no-issue-found">
+                                <p>No issues found.</p>
+                              </div>
+                            </td>
+                          </tr>
+                        {{ /ifCond }}
+                      </tbody>
+                      {{ /each }}
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            {{ /each }}
+          </div>
+        </div></section></main><footer><div class="container">
+        <div class="footer-text">
+          <div class="row">
+            <div class="col">
+              <div class="paragraph">
+                <p><a target="_blank" href="https://opalopc.com">opalopc.com</a></p>
+              </div>
+            </div>
+            <div class="col text-end">
+              <div class="paragraph">
+                <p>Missing features? Facing a bug? <a target="_blank" href="https://opalopc.com/contact-us/">Give us feedback!</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></footer><script src="http://localhost:8000/OpalOPC/report-resources/assets/js/popper.min.js"></script><script src="http://localhost:8000/OpalOPC/report-resources/assets/js/bootstrap.min.js"></script><script src="http://localhost:8000/OpalOPC/report-resources/assets/js/jquery.min.js"></script></body>
+</html>

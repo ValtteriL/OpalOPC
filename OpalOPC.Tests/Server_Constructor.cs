@@ -14,12 +14,10 @@ public class Server_Constructor
         Server server = new(discoveryUrl, edc);
 
         Assert.True(server.DiscoveryUrl == discoveryUrl);
-        foreach (EndpointDescription ed in edc)
-        {
-            Assert.Contains(new Endpoint(ed), server.SeparatedEndpoints);
-        }
-        Assert.True(server.Endpoints != null);
+        Assert.True(server.EndpointDescriptions == edc);
         Assert.True(server.Errors != null);
         Assert.True(server.Errors.Count == 0);
+        Assert.True(server.Issues != null);
+        Assert.True(server.Issues.Count == 0);
     }
 }

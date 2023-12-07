@@ -31,33 +31,15 @@ namespace Model
             Servers = new List<Server>();
         }
 
-        public ICollection<Endpoint> GetEndpoints()
-        {
-            List<Endpoint> endpoints = new();
-
-            foreach (ICollection<Endpoint> serverEndpointList in Servers.Select(s => s.SeparatedEndpoints))
-            {
-                endpoints.AddRange(serverEndpointList);
-            }
-
-            return endpoints;
-        }
-
         public void AddServer(Server server)
         {
             Servers.Add(server);
         }
 
-        // Merge endpoints with identical URI, add up their findings
-        public void MergeEndpoints()
+        public void SortServersByIssueSeverity()
         {
-            foreach (Server server in Servers)
-            {
-                server.MergeEndpoints();
-            }
-
             // sort servers within target by issue severity
-            Servers = Servers.OrderByDescending(s => s.Endpoints.Max(e => e.Issues.Max(i => i.Severity))).ToList();
+            Servers = Servers.OrderByDescending(s => s.Issues.Max(i => i.Severity)).ToList();
         }
     }
 }
