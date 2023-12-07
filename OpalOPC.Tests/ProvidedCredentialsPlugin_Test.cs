@@ -16,9 +16,10 @@ public class ProvidedCredentialsPluginTest
     private readonly Mock<IConnectionUtil> _mockConnectionUtil;
     private readonly Mock<ISecurityTestSession> _mockSession;
     private readonly Mock<ISecurityTestSession> _mockSessionSuccess;
-    private readonly Endpoint _endpoint;
     private readonly int _expectedConnectionAttemptsWithAppCert;
     private readonly int _expectedConnectionAttempts;
+    private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
+    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
     private readonly AuthenticationData _authenticationData = new()
     {
         loginCredentials = new List<(string, string)> {
@@ -48,12 +49,16 @@ public class ProvidedCredentialsPluginTest
         _mockSessionSuccess = new Mock<ISecurityTestSession>();
         _mockSessionSuccess.Setup(session => session.Session.Connected).Returns(true);
 
-        EndpointDescription endpointDescription = new()
+        _endpointDescriptions.Add(new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
-            SecurityMode = MessageSecurityMode.None
-        };
-        _endpoint = new(endpointDescription);
+            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName), new(UserTokenType.Certificate) }),
+            SecurityPolicyUri = SecurityPolicies.None
+        });
+        _endpointDescriptions.Add(new()
+        {
+            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName), new(UserTokenType.Certificate) }),
+            SecurityPolicyUri = SecurityPolicies.Basic128Rsa15
+        });
 
         _expectedConnectionAttempts = _authenticationData.loginCredentials.Count + _authenticationData.userCertificates.Count;
         _expectedConnectionAttemptsWithAppCert = (_authenticationData.loginCredentials.Count + _authenticationData.userCertificates.Count) * _authenticationData.applicationCertificates.Count;
@@ -69,7 +74,7 @@ public class ProvidedCredentialsPluginTest
         ProvidedCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
@@ -93,7 +98,7 @@ public class ProvidedCredentialsPluginTest
         ProvidedCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
@@ -116,7 +121,7 @@ public class ProvidedCredentialsPluginTest
         ProvidedCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));

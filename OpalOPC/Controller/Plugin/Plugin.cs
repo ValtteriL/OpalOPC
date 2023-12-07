@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Model;
+using Opc.Ua;
 using Opc.Ua.Client;
 
 namespace Plugin
@@ -44,7 +45,7 @@ namespace Plugin
 
     public interface IPreAuthPlugin : IPlugin
     {
-        public (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint);
+        public (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions);
     }
 
     public abstract class PreAuthPlugin : Plugin, IPreAuthPlugin
@@ -55,7 +56,7 @@ namespace Plugin
 
         public virtual Plugintype Type => Plugintype.PreAuthPlugin;
 
-        public abstract (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint);
+        public abstract (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions);
     }
 
     public interface IPostAuthPlugin : IPlugin

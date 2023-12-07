@@ -18,15 +18,15 @@ namespace Plugin
 
         public SecurityPolicyBasic256Plugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity) { }
 
-        public override (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
-            _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for Security Policy Basic256");
+            _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for Security Policy Basic256");
 
             List<ISecurityTestSession> sessions = new();
 
-            if (endpoint.SecurityPolicyUri == SecurityPolicies.Basic256)
+            if (endpointDescriptions.Find(d => d.SecurityPolicyUri == SecurityPolicies.Basic256) != null)
             {
-                _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} uses Basic256");
+                _logger.LogTrace("{Message}", $"Endpoint {discoveryUrl} uses Basic256");
                 return (CreateIssue(), sessions);
             }
 

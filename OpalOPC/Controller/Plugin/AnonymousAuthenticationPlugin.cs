@@ -32,19 +32,23 @@ namespace Plugin
             _authenticationData = authenticationData;
         }
 
-        public override (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
-            _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for anonymous access");
+            _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for anonymous access");
+
+            List<EndpointDescription> anonymousEndpoints = endpointDescriptions.FindAll(e => e.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.Anonymous));
+            EndpointDescription? anonymousEndpointNoApplicationAuthentication = anonymousEndpoints.Find(e => e.SecurityPolicyUri == SecurityPolicies.None);
+            EndpointDescription? anonymousEndpointWithApplicationAuthentication = anonymousEndpoints.Find(e => e.SecurityPolicyUri != SecurityPolicies.None);
 
             List<ISecurityTestSession> sessions = new();
 
-            if (endpoint.UserTokenTypes.Contains(UserTokenType.Anonymous))
+            if (anonymousEndpointNoApplicationAuthentication != null)
             {
                 // try with self-signed cert, if not working, try application certificates one by one until one works or they run out
                 // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                 try
                 {
-                    ISecurityTestSession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
+                    ISecurityTestSession session = _connectionUtil.StartSession(anonymousEndpointNoApplicationAuthentication, new UserIdentity()).Result;
                     sessions.Add(session);
                     return (CreateIssue(), sessions);
                 }
@@ -53,12 +57,17 @@ namespace Plugin
 
                 }
 
+                return (CreateIssue(), sessions);
+            }
+
+            if (anonymousEndpointWithApplicationAuthentication != null)
+            {
                 foreach (Opc.Ua.CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
                 {
                     // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                     try
                     {
-                        ISecurityTestSession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity(), applicationCertificate).Result;
+                        ISecurityTestSession session = _connectionUtil.StartSession(anonymousEndpointWithApplicationAuthentication, new UserIdentity(), applicationCertificate).Result;
                         sessions.Add(session);
                         return (CreateIssue(), sessions);
                     }

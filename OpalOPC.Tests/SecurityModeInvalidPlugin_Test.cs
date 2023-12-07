@@ -11,6 +11,8 @@ public class SecurityModeInvalidPluginTest
 {
     private readonly ILogger _logger;
     private readonly SecurityModeInvalidPlugin _plugin;
+    private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
+    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
     public SecurityModeInvalidPluginTest()
     {
         _logger = LoggerFactory.Create(builder => { }).CreateLogger<SecurityModeInvalidPluginTest>();
@@ -27,11 +29,11 @@ public class SecurityModeInvalidPluginTest
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Certificate) }),
             SecurityMode = MessageSecurityMode.None
         };
-        Endpoint endpoint = new(endpointDescription);
+        _endpointDescriptions.Add(endpointDescription);
 
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         Assert.True(issue == null);
@@ -47,10 +49,10 @@ public class SecurityModeInvalidPluginTest
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
             SecurityMode = MessageSecurityMode.Invalid
         };
-        Endpoint endpoint = new(endpointDescription);
+        _endpointDescriptions.Add(endpointDescription);
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         Assert.True(issue != null);

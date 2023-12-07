@@ -19,15 +19,15 @@ namespace Plugin
 
         public SecurityModeInvalidPlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity) { }
 
-        public override (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
-            _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for Message Security Mode Invalid");
+            _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for Message Security Mode Invalid");
 
             List<ISecurityTestSession> sessions = new();
 
-            if (endpoint.SecurityMode == MessageSecurityMode.Invalid)
+            if (endpointDescriptions.Find(d => d.SecurityMode == MessageSecurityMode.Invalid) != null)
             {
-                _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} has invalid security mode");
+                _logger.LogTrace("{Message}", $"Endpoint {discoveryUrl} has invalid security mode");
                 return (CreateIssue(), sessions);
             }
 

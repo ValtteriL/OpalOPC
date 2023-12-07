@@ -109,14 +109,14 @@ public class ScanViewModel_Tests
         Uri target = new("opc.tcp://asdasd");
         model.Targets.Add(target);
 
-        model.SetTargetToAdd(target.AbsoluteUri);
+        model.SetTargetToAdd(target);
 
         Assert.True(model.TargetToAdd == target.AbsoluteUri);
     }
 
     // scanning
     [Fact]
-    public void Scan()
+    public async void Scan()
     {
         _scanViewModelUtilMock.Setup(x => x.GetAuthenticationData()).Returns(new AuthenticationData());
         _scanViewModelUtilMock.Setup(x => x.CheckVersion(It.IsAny<ILogger>()));
@@ -126,9 +126,7 @@ public class ScanViewModel_Tests
         string tempfile = Path.GetTempFileName();
         model.OutputFileLocation = tempfile;
 
-        model.ScanCommand.ExecuteAsync(null);
-
-        Thread.Sleep(1000);
+        await model.ScanCommand.ExecuteAsync(null);
 
         Assert.True(model.ScanCompletedSuccessfully);
         Assert.True(File.Exists(tempfile));
@@ -156,7 +154,7 @@ public class ScanViewModel_Tests
 
     // scanning with empty output
     [Fact]
-    public void ScanWithEmptyOutputFilePath()
+    public async void ScanWithEmptyOutputFilePath()
     {
         _scanViewModelUtilMock.Setup(x => x.GetAuthenticationData()).Returns(new AuthenticationData());
         _scanViewModelUtilMock.Setup(x => x.CheckVersion(It.IsAny<ILogger>()));
@@ -167,9 +165,8 @@ public class ScanViewModel_Tests
             OutputFileLocation = string.Empty
         };
 
-        model.ScanCommand.ExecuteAsync(null);
+        await model.ScanCommand.ExecuteAsync(null);
 
-        Thread.Sleep(1000);
         Assert.True(model.ScanCompletedSuccessfully);
     }
 

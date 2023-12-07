@@ -6,11 +6,17 @@ namespace Model
     public class Server
     {
 
-        public string? DiscoveryUrl { get; set; }
-        public List<Error> Errors { get; set; } = new List<Error>();
+        public string DiscoveryUrl { get; private set; } = string.Empty;
+        public List<Error> Errors { get; private set; } = new List<Error>();
+        public ICollection<Issue> Issues { get; private set; } = new List<Issue>();
 
         [JsonIgnore]
         public ICollection<Endpoint> SeparatedEndpoints { get; } = new List<Endpoint>();
+        [JsonIgnore]
+        public ICollection<ISecurityTestSession> securityTestSessions { get; private set; } = new List<ISecurityTestSession>();
+
+        [JsonIgnore]
+        public EndpointDescriptionCollection EndpointDescriptions { get; private set; } = new EndpointDescriptionCollection();
 
         [XmlArrayItem("Endpoint")]
         public List<EndpointSummary> Endpoints { get; private set; } = new List<EndpointSummary>();
@@ -22,6 +28,7 @@ namespace Model
         public Server(string DiscoveryUrl, EndpointDescriptionCollection edc)
         {
             this.DiscoveryUrl = DiscoveryUrl;
+            EndpointDescriptions = edc;
             foreach (EndpointDescription e in edc)
             {
                 SeparatedEndpoints.Add(new Endpoint(e));
@@ -33,6 +40,11 @@ namespace Model
             Errors.Add(error);
         }
 
+        public void AddIssue(Issue issue)
+        {
+            Issues.Add(issue);
+        }
+
         // Merge SeparatedEndpoints into Endpointsummaries by endpointUrls
         public void MergeEndpoints()
         {
@@ -40,9 +52,9 @@ namespace Model
 
             foreach (Endpoint endpoint in SeparatedEndpoints)
             {
-                if (endpointDictionary.ContainsKey(endpoint.EndpointUrl))
+                if (endpointDictionary.TryGetValue(endpoint.EndpointUrl, out EndpointSummary? value))
                 {
-                    endpointDictionary[endpoint.EndpointUrl].MergeEndpoint(endpoint);
+                    value.MergeEndpoint(endpoint);
                     continue;
                 }
 
@@ -51,6 +63,11 @@ namespace Model
 
             // sort endpoints within server by issue severity
             Endpoints = endpointDictionary.Values.OrderByDescending(e => e.Issues.Max(i => i.Severity)).ToList();
+        }
+
+        public void AddSecurityTestSession(ISecurityTestSession securityTestSession)
+        {
+            securityTestSessions.Add(securityTestSession);
         }
 
     }

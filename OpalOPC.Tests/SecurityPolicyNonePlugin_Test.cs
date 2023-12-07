@@ -11,6 +11,8 @@ public class SecurityPolicyNonePluginTest
 {
     private readonly ILogger _logger;
     private readonly SecurityPolicyNonePlugin _plugin;
+    private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
+    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
 
     public SecurityPolicyNonePluginTest()
     {
@@ -27,10 +29,10 @@ public class SecurityPolicyNonePluginTest
         {
             SecurityPolicyUri = new Uri(SecurityPolicies.Aes128_Sha256_RsaOaep).ToString(),
         };
-        Endpoint endpoint = new(endpointDescription);
+        _endpointDescriptions.Add(endpointDescription);
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         Assert.True(issue == null);
@@ -45,10 +47,10 @@ public class SecurityPolicyNonePluginTest
         {
             SecurityPolicyUri = new Uri(SecurityPolicies.None).ToString(),
         };
-        Endpoint endpoint = new(endpointDescription);
+        _endpointDescriptions.Add(endpointDescription);
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         Assert.True(issue != null);

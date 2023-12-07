@@ -30,27 +30,27 @@ namespace Plugin
             _authenticationData = authenticationData;
         }
 
-        public override (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
-            _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for common credentials");
+            _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for common credentials");
 
             List<ISecurityTestSession> sessions = new();
 
-            if (!endpoint.IsBruteable())
-            {
-                return (null, sessions);
-            }
+            List<EndpointDescription> usernameEndpoints = endpointDescriptions.FindAll(e => e.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.UserName));
+            EndpointDescription? usernameEndpointsNoApplicationAuthentication = usernameEndpoints.Find(e => e.SecurityPolicyUri == SecurityPolicies.None);
+            EndpointDescription? usernameEndpointWithApplicationAuthentication = usernameEndpoints.Find(e => e.SecurityPolicyUri != SecurityPolicies.None);
 
             List<(string username, string password)> validCredentials = new();
 
-            AttempLoginWithUsernamesPasswords(sessions, validCredentials, endpoint);
-
-            if (!validCredentials.Any())
+            if(usernameEndpointsNoApplicationAuthentication != null)
             {
-                // no valid credentials found, try again with different application certificates
+                AttempLoginWithUsernamesPasswords(sessions, validCredentials, new Endpoint(usernameEndpointsNoApplicationAuthentication));
+            }
+            else if (usernameEndpointWithApplicationAuthentication != null)
+            {
                 foreach (CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
                 {
-                    AttempLoginWithUsernamesPasswords(sessions, validCredentials, endpoint, applicationCertificate);
+                    AttempLoginWithUsernamesPasswords(sessions, validCredentials, new Endpoint(usernameEndpointWithApplicationAuthentication), applicationCertificate);
                 }
             }
 

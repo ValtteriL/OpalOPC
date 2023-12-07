@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
@@ -30,31 +31,43 @@ namespace Plugin
             _authenticationData = authenticationData;
         }
 
-        public override (Issue?, ICollection<ISecurityTestSession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
-            _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for provided credentials");
+            _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for provided credentials");
 
             List<ISecurityTestSession> sessions = new();
             List<(string username, string password)> validUsernamePasswords = new();
             List<CertificateIdentifier> validCertificates = new();
 
-            if (endpoint.IsBruteable())
+            List<EndpointDescription> usernameEndpoints = endpointDescriptions.FindAll(d => d.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.UserName));
+            EndpointDescription? usernameEndpointNoApplicationAuthentication = usernameEndpoints.Find(e => e.SecurityPolicyUri == SecurityPolicies.None);
+            EndpointDescription? usernameEndpointWithApplicationAuthentication = usernameEndpoints.Find(e => e.SecurityPolicyUri != SecurityPolicies.None);
+            List<EndpointDescription> certificateEndpoints = endpointDescriptions.FindAll(e => e.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.Certificate));
+            EndpointDescription? certificateEndpointNoApplicationAuthentication = certificateEndpoints.Find(e => e.SecurityPolicyUri == SecurityPolicies.None);
+            EndpointDescription? certificateEndpointWithApplicationAuthentication = certificateEndpoints.Find(e => e.SecurityPolicyUri != SecurityPolicies.None);
+
+            if (usernameEndpointNoApplicationAuthentication != null)
             {
-                AttempLoginWithUsernamesPasswords(sessions, validUsernamePasswords, endpoint);
+                AttempLoginWithUsernamesPasswords(sessions, validUsernamePasswords, new Endpoint(usernameEndpointNoApplicationAuthentication));
             }
-            AttempLoginWithUserCertificates(sessions, validCertificates, endpoint);
+            if (certificateEndpointNoApplicationAuthentication != null)
+            {
+                AttempLoginWithUserCertificates(sessions, validCertificates, new Endpoint(certificateEndpointNoApplicationAuthentication));
+            }
 
             if (!validUsernamePasswords.Any() && !validCertificates.Any())
             {
                 // no valid credentials found, try again with different application certificates
                 foreach (CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
                 {
-                    if (endpoint.IsBruteable())
+                    if (usernameEndpointWithApplicationAuthentication != null)
                     {
-                        AttempLoginWithUsernamesPasswords(sessions, validUsernamePasswords, endpoint, applicationCertificate);
+                        AttempLoginWithUsernamesPasswords(sessions, validUsernamePasswords, new Endpoint(usernameEndpointWithApplicationAuthentication), applicationCertificate);
                     }
-
-                    AttempLoginWithUserCertificates(sessions, validCertificates, endpoint, applicationCertificate);
+                    if (certificateEndpointWithApplicationAuthentication != null)
+                    {
+                        AttempLoginWithUserCertificates(sessions, validCertificates, new Endpoint(certificateEndpointWithApplicationAuthentication), applicationCertificate);
+                    }
                 }
             }
 

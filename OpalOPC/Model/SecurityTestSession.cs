@@ -9,6 +9,7 @@ namespace Model
         SessionCredential Credential { get; }
 
         string EndpointUrl { get; }
+        public void Dispose();
     }
 
     public class SecurityTestSession : ISecurityTestSession, IDisposable

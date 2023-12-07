@@ -6,13 +6,13 @@ namespace Model
     public class Target
     {
 
-        private readonly ApplicationDescription? _applicationDescription;
-        public List<Server> Servers { get; set; } = new();
+        private readonly ApplicationDescription _applicationDescription = new();
+        public List<Server> Servers { get; private set; } = new();
 
-        public ApplicationType? Type { get; set; }
-        public string? ApplicationName { get; set; }
-        public string? ApplicationUri { get; set; }
-        public string? ProductUri { get; set; }
+        public ApplicationType? Type { get; private set; }
+        public string? ApplicationName { get; private set; }
+        public string? ApplicationUri { get; private set; }
+        public string? ProductUri { get; private set; }
 
 
         // parameterless constructor for XML serializer

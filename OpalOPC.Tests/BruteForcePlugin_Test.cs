@@ -18,6 +18,8 @@ public class BruteForcePluginTest
     private readonly Mock<ISecurityTestSession> _mockSessionSuccess;
     private readonly int _expectedConnectionAttempts;
     private readonly int _expectedConnectionAttemptsWithAppCerts;
+    private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
+    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
     private readonly AuthenticationData _authenticationData = new()
     {
         bruteForceCredentials = new List<(string, string)> {
@@ -56,12 +58,16 @@ public class BruteForcePluginTest
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        EndpointDescription endpointDescription = new()
+        _endpointDescriptions.Add(new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
-            SecurityMode = MessageSecurityMode.None
-        };
-        Endpoint endpoint = new(endpointDescription);
+            SecurityPolicyUri = SecurityPolicies.None,
+        });
+        _endpointDescriptions.Add(new()
+        {
+            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
+            SecurityPolicyUri = SecurityPolicies.Basic128Rsa15
+        });
 
         // StartSession returns only closed sessions
         _mockSession.Setup(session => session.Session.Connected).Returns(false);
@@ -70,7 +76,7 @@ public class BruteForcePluginTest
         BruteForcePlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
@@ -86,9 +92,10 @@ public class BruteForcePluginTest
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
-            SecurityMode = MessageSecurityMode.None
+            SecurityPolicyUri = SecurityPolicies.None,
         };
         Endpoint endpoint = new(endpointDescription);
+        _endpointDescriptions.Add(endpointDescription);
 
         // StartSession should return a dummy session
         // StartSession returns single open session, then closed sessions
@@ -97,7 +104,7 @@ public class BruteForcePluginTest
         BruteForcePlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));
@@ -111,12 +118,16 @@ public class BruteForcePluginTest
     public void ApplicationCertificatesTriedIfNoSessionsWithout()
     {
         // arrange
-        EndpointDescription endpointDescription = new()
+        _endpointDescriptions.Add(new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
-            SecurityMode = MessageSecurityMode.None
-        };
-        Endpoint endpoint = new(endpointDescription);
+            SecurityPolicyUri = SecurityPolicies.None,
+        });
+        _endpointDescriptions.Add(new()
+        {
+            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
+            SecurityPolicyUri = SecurityPolicies.Basic128Rsa15,
+        });
 
         // StartSession should return a dummy session
         // StartSession returns single open session, then closed sessions
@@ -128,7 +139,7 @@ public class BruteForcePluginTest
         BruteForcePlugin plugin = new(_logger, _mockConnectionUtil.Object, _authenticationData);
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(_expectedConnectionAttempts));

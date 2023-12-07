@@ -84,7 +84,7 @@ namespace Tests
             var opcTargets = new List<Target> { _target, _target, _target };
 
             var mockPreAuthPlugin = new Mock<IPreAuthPlugin>();
-            mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<Endpoint>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
+            mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
             mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
             SecurityTestController securityTestController = new(_loggerMock.Object, new List<IPlugin> { mockPreAuthPlugin.Object });
 
@@ -92,14 +92,14 @@ namespace Tests
             securityTestController.TestTargetSecurity(opcTargets);
 
             // assert
-            mockPreAuthPlugin.Verify(plugin => plugin.Run(It.IsAny<Endpoint>()), Times.Exactly(opcTargets.Count));
+            mockPreAuthPlugin.Verify(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>()), Times.Exactly(opcTargets.Count));
         }
 
         [Fact]
         public void TestNoPluginsRunIfNoTargets()
         {
             // arrange
-            _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<Endpoint>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
+            _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
             _mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
             SecurityTestController securityTestController = new(_loggerMock.Object, new List<IPlugin> { _mockPreAuthPlugin.Object });
 
@@ -107,7 +107,7 @@ namespace Tests
             securityTestController.TestTargetSecurity(new List<Target>());
 
             // assert
-            _mockPreAuthPlugin.Verify(plugin => plugin.Run(It.IsAny<Endpoint>()), Times.Never);
+            _mockPreAuthPlugin.Verify(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>()), Times.Never);
         }
 
         [Fact]
@@ -116,7 +116,7 @@ namespace Tests
             // arrange
             var opcTargets = new List<Target> { _target };
 
-            _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<Endpoint>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>() { _mockSecurityTestSession.Object }));
+            _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>() { _mockSecurityTestSession.Object }));
             _mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
 
             _mockPostAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<ISession>())).Returns((new Issue(2, "test", 2)));
@@ -128,9 +128,9 @@ namespace Tests
             securityTestController.TestTargetSecurity(opcTargets);
 
             // assert
-            _mockPreAuthPlugin.Verify(plugin => plugin.Run(It.IsAny<Endpoint>()), Times.Once);
+            _mockPreAuthPlugin.Verify(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>()), Times.Once);
             _mockPostAuthPlugin.Verify(plugin => plugin.Run(It.IsAny<ISession>()), Times.Once);
-            Assert.True(opcTargets.First().Servers.First().SeparatedEndpoints.First().Issues.Count == 2);
+            Assert.True(opcTargets.First().Servers.First().Issues.Count == 2);
         }
 
         [Fact]
@@ -139,7 +139,7 @@ namespace Tests
             // arrange
             var opcTargets = new List<Target> { _target };
 
-            _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<Endpoint>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
+            _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
             _mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
 
             _mockPostAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<ISession>())).Returns((new Issue(2, "test", 2)));
@@ -151,9 +151,9 @@ namespace Tests
             securityTestController.TestTargetSecurity(opcTargets);
 
             // assert
-            _mockPreAuthPlugin.Verify(plugin => plugin.Run(It.IsAny<Endpoint>()), Times.Once);
+            _mockPreAuthPlugin.Verify(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>()), Times.Once);
             _mockPostAuthPlugin.Verify(plugin => plugin.Run(It.IsAny<ISession>()), Times.Never);
-            Assert.True(opcTargets.First().Servers.First().SeparatedEndpoints.First().Issues.Count == 1);
+            Assert.True(opcTargets.First().Servers.First().Issues.Count == 1);
         }
     }
 }

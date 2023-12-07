@@ -15,6 +15,8 @@ public class CommonCredentialsPluginTest
     private readonly Mock<IConnectionUtil> _mockConnectionUtil;
     private readonly Mock<ISecurityTestSession> _mockSession;
     private readonly Mock<ISecurityTestSession> _mockSessionSuccess;
+    private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
+    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
 
     public CommonCredentialsPluginTest()
     {
@@ -36,9 +38,10 @@ public class CommonCredentialsPluginTest
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
-            SecurityMode = MessageSecurityMode.None
+            SecurityPolicyUri = SecurityPolicies.None
         };
         Endpoint endpoint = new(endpointDescription);
+        _endpointDescriptions.Add(endpointDescription);
 
         // StartSession returns only closed sessions
         _mockSession.Setup(session => session.Session.Connected).Returns(false);
@@ -47,7 +50,7 @@ public class CommonCredentialsPluginTest
         CommonCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, new AuthenticationData());
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
@@ -63,9 +66,10 @@ public class CommonCredentialsPluginTest
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
-            SecurityMode = MessageSecurityMode.None
+            SecurityPolicyUri = SecurityPolicies.None
         };
         Endpoint endpoint = new(endpointDescription);
+        _endpointDescriptions.Add(endpointDescription);
 
         // StartSession should return a dummy session
         // StartSession returns single open session, then closed sessions
@@ -74,44 +78,11 @@ public class CommonCredentialsPluginTest
         CommonCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, new AuthenticationData());
 
         // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
         _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Never);
-        Assert.True(issue != null);
-        Assert.NotEmpty(sessions);
-        Assert.True(sessions.Count == 1);
-    }
-
-    [Fact]
-    public void ApplicationCertificatesTriedIfNoSessionsWithout()
-    {
-        // arrange
-        EndpointDescription endpointDescription = new()
-        {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
-            SecurityMode = MessageSecurityMode.None
-        };
-        Endpoint endpoint = new(endpointDescription);
-
-        // StartSession should return a dummy session
-        // StartSession returns single open session, then closed sessions
-        _mockConnectionUtil.SetupSequence(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>())).Returns(_mockSession.Object).Returns(_mockSession.Object); // return closed session if no app certificate
-        _mockConnectionUtil.SetupSequence(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>())).Returns(_mockSession.Object).Returns(_mockSessionSuccess.Object); // return successful session for app certificate
-
-        var MockCertificateIdentifier = new Mock<CertificateIdentifier>();
-        AuthenticationData authenticationData = new();
-        authenticationData.applicationCertificates.Add(MockCertificateIdentifier.Object);
-
-        CommonCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, authenticationData);
-
-        // act
-        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(endpoint);
-
-        // assert
-        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
-        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
         Assert.True(issue != null);
         Assert.NotEmpty(sessions);
         Assert.True(sessions.Count == 1);
