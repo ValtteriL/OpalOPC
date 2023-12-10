@@ -75,7 +75,10 @@ namespace Controller
                 server.AddSecurityTestSession(session);
             }
 
-            TestEndpointPostAuth(server);
+            if (server.securityTestSessions.Any())
+            {
+                TestEndpointPostAuth(server);
+            }
 
             _logger.LogTrace("{Message}", $"Closing sessions");
             foreach (ISecurityTestSession securityTestSession in server.securityTestSessions)
