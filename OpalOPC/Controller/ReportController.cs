@@ -9,7 +9,7 @@ namespace Controller
 
         readonly ILogger _logger;
         readonly IReporter _reporter;
-        public Report? report { get; set; }
+        public Report? report { get; private set; }
 
         public ReportController(ILogger logger, IReporter reporter)
         {
@@ -18,15 +18,18 @@ namespace Controller
         }
 
         // Reporter and targets, generate report
-        public void GenerateReport(ICollection<Target> targets, DateTime Start, DateTime End, string commandLine)
+        public void GenerateReport(ICollection<Target> targets, DateTime Start, DateTime End, string commandLine, string runStatus)
         {
             _logger.LogDebug("{Message}", "Generating report");
-            report = new Report(targets, Start, End, commandLine);
+            report = new Report(targets, Start, End, commandLine, runStatus);
         }
 
-        public void WriteReport(string runStatus)
+        public void WriteReport()
         {
-            report!.RunStatus = runStatus;
+            if (report == null)
+            {
+                throw new NullReferenceException("Report is null");
+            }
             _reporter.PrintXHTMLReport(report!);
         }
 

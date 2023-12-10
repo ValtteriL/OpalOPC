@@ -12,12 +12,13 @@ public class Report_Constructor
         DateTime stop = DateTime.MaxValue;
         List<Target> targets = new();
         string commandLine = string.Empty;
+        string runStatus = string.Empty;
 
-        Report report = new(targets, start, stop, commandLine);
+        Report report = new(targets, start, stop, commandLine, runStatus);
 
         Assert.True(report.Targets.Count == targets.Count);
-        Assert.True(report.RunStatus == null);
-        Assert.True(report.Command != null);
+        Assert.True(report.RunStatus == runStatus);
+        Assert.True(report.Command == commandLine);
         Assert.True(report.Version != null);
         Assert.True(report.StartTime != null);
         Assert.True(report.EndTime != null);

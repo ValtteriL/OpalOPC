@@ -71,13 +71,13 @@ namespace Controller
             ReportController reportController = new(_logger, reporter);
 
             DateTime end = DateTime.Now;
-            reportController.GenerateReport(testedTargets, start, end, _commandLine);
 
             TimeSpan ts = (end - start);
-            string runStatus = $"OpalOPC done: {_targets.Count} Discovery URLs ({reportController.report!.Targets.Count} applications found) scanned in {Math.Round(ts.TotalSeconds, 2)} seconds";
+            string runStatus = $"OpalOPC done: {_targets.Count} Discovery URLs ({targets.Count} applications found) scanned in {Math.Round(ts.TotalSeconds, 2)} seconds";
             _logger.LogInformation("{Message}", runStatus);
 
-            reportController.WriteReport(runStatus);
+            reportController.GenerateReport(testedTargets, start, end, _commandLine, runStatus);
+            reportController.WriteReport();
         }
     }
 }

@@ -1,5 +1,4 @@
 using Opc.Ua;
-using Org.BouncyCastle.Asn1.X509;
 
 namespace Model
 {
@@ -9,15 +8,11 @@ namespace Model
         private readonly ApplicationDescription _applicationDescription = new();
         public List<Server> Servers { get; private set; } = new();
 
-        public ApplicationType? Type { get; private set; }
-        public string? ApplicationName { get; private set; }
-        public string? ApplicationUri { get; private set; }
-        public string? ProductUri { get; private set; }
+        public ApplicationType Type { get; private set; }
+        public string ApplicationName { get; private set; }
+        public string ApplicationUri { get; private set; }
+        public string ProductUri { get; private set; }
 
-
-        // parameterless constructor for XML serializer
-        internal Target()
-        { }
 
         public Target(ApplicationDescription ad)
         {
@@ -38,8 +33,8 @@ namespace Model
 
         public void SortServersByIssueSeverity()
         {
-            // sort servers within target by issue severity
-            Servers = Servers.OrderByDescending(s => s.Issues.Max(i => i.Severity)).ToList();
+            // sort servers within target by issue severity even if issues is empty
+            Servers = Servers.OrderByDescending(s => s.Issues.Any() ? s.Issues.Max(i => i.Severity) : 0).ToList();
         }
     }
 }

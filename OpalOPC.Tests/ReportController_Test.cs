@@ -42,10 +42,9 @@ public class ReportControllerTest
     {
         // Arrange
 
-
         // Act
-        _reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
-        _reportController.WriteReport(string.Empty);
+        _reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        _reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
@@ -59,8 +58,8 @@ public class ReportControllerTest
         // Arrange
 
         // Act
-        _reportController.GenerateReport(new List<Target>() { new(_applicationDescription) }, DateTime.Now, DateTime.Now, string.Empty);
-        _reportController.WriteReport(string.Empty);
+        _reportController.GenerateReport(new List<Target>() { new(_applicationDescription) }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        _reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
@@ -88,8 +87,8 @@ public class ReportControllerTest
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty);
-        _reportController.WriteReport(string.Empty);
+        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        _reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
@@ -117,8 +116,8 @@ public class ReportControllerTest
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty);
-        _reportController.WriteReport(string.Empty);
+        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        _reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
@@ -146,8 +145,8 @@ public class ReportControllerTest
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty);
-        _reportController.WriteReport(string.Empty);
+        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        _reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
@@ -179,8 +178,8 @@ public class ReportControllerTest
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty);
-        _reportController.WriteReport(string.Empty);
+        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        _reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);

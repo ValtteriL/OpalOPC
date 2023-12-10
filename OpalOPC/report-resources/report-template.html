@@ -172,126 +172,123 @@
                         </tr>
                       </thead>
                       <tbody>
-                        {{ #each Servers }}
-                        <tr class="discoveryurl">
-                            <td
-                                {{ #if @last }}
-                                class="text-start br-rb"
-                                {{ else }}
-                                class="text-start br-b0"
-                                {{ /if }}
-
-                                {{ #ifCond Errors.Count '==' 0 '&&' Issues.Count '==' 0 }}
-                                rowspan="2"
-                                {{ else }}
-                                rowspan="{{Endpoints.Count + Issues.Count + 1}}"
-                                {{ /ifCond }}
-                                >
-                                {{ DiscoveryUrl }}
-                            </td>
+                          {{ #each Servers }}
+                          <tr class="discoveryurl">
+                              <td {{ #if @last }}
+                                  class="text-start br-rb"
+                                  {{ else }}
+                                  class="text-start br-b0"
+                                  {{ /if }}
+                                  {{ #if ([Boolean.And] ([Math.Equal] Errors.Count 0) ([Math.Equal] Issues.Count 0)) }}
+                                  rowspan="2"
+                                  {{ else }}
+                                  rowspan="{{[Math.Add] 1 ([Math.Add] Errors.Count Issues.Count)}}"
+                                  {{ /if }}>
+                                  {{ DiscoveryUrl }}
+                              </td>
                           </tr>
-                        {{ #each Issues }}
-                        <tr>
-                          <td class="text-start">{{ Name }}</td>
-                          <td><a href="https://opalopc.com/docs/plugin-{{ PluginId }}" target=" _blank ">{{ PluginId }}</a></td>
-                          {{ #ifCond Severity '>=' 9 }}
-                          <td>
-                            <div class="row">
-                              <div class="col pe-0 text-start">Critical ({{ Severity }})</div>
-                              <div class="col">
-                                <div class="results critical">
-                                  <span></span>
-                                  <span></span>
-                                  <span></span>
-                                  <span></span>
-                                  <span></span>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          {{ else ifCond Severity '>=' 7 }}
-                          <td>
-                            <div class="row">
-                              <div class="col pe-0 text-start">High ({{ Severity }})</div>
-                              <div class="col">
-                                <div class="results high">
-                                  <span class="active"></span>
-                                  <span class="active"></span>
-                                  <span class="active"></span>
-                                  <span class="active"></span>
-                                  <span></span>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          {{ else ifCond Severity '>=' 4 }}
-                          <td>
-                            <div class="row">
-                              <div class="col pe-0 text-start">Medium ({{ Severity }})</div>
-                              <div class="col">
-                                <div class="results medium">
-                                  <span class="active"></span>
-                                  <span class="active"></span>
-                                  <span class="active"></span>
-                                  <span class="active"></span>
-                                  <span></span>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          {{ else ifCond Severity '>=' 0.1 }}
-                          <td>
-                            <div class="row">
-                              <div class="col pe-0 text-start">Low ({{ Severity }})</div>
-                              <div class="col">
-                                <div class="results low">
-                                  <span></span>
-                                  <span></span>
-                                  <span></span>
-                                  <span></span>
-                                  <span></span>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          {{ else }}
-                          <td>
-                            <div class="row">
-                              <div class="col pe-0 text-start">Info ({{ Severity }})</div>
-                              <div class="col">
-                                <div class="results info">
-                                  <span></span>
-                                  <span></span>
-                                  <span></span>
-                                  <span></span>
-                                  <span></span>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          {{ /ifCond }}
-                        </tr>
-                        {{ /each }}
-                        {{ #each Errors }}
-                        <tr>
-                          <td class="text-start" colspan="3">
-                            <ul class="error">
-                              <li>
-                                {{ Message }}
-                              </li>
-                            </ul>
-                          </td>
-                        </tr>
-                        {{ /each }}
-                        {{ #ifCond Errors.Count '=='' 0 '&&' Issues.Count '==' 0 }}
-                        <tr>
-                            <td class="text-start" colspan="3">
-                              <div class="no-issue-found">
-                                <p>No issues found.</p>
-                              </div>
-                            </td>
+                          {{ #each Issues }}
+                          <tr>
+                              <td class="text-start">{{ Name }}</td>
+                              <td><a href="https://opalopc.com/docs/plugin-{{ PluginId }}" target=" _blank ">{{ PluginId }}</a></td>
+                              {{ #if ([Math.GreaterThanEqual] Severity 9) }}
+                              <td>
+                                  <div class="row">
+                                      <div class="col pe-0 text-start">Critical ({{ Severity }})</div>
+                                      <div class="col">
+                                          <div class="results critical">
+                                              <span></span>
+                                              <span></span>
+                                              <span></span>
+                                              <span></span>
+                                              <span></span>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </td>
+                              {{ else if ([Math.GreaterThanEqual] Severity 7) }}
+                              <td>
+                                  <div class="row">
+                                      <div class="col pe-0 text-start">High ({{ Severity }})</div>
+                                      <div class="col">
+                                          <div class="results high">
+                                              <span class="active"></span>
+                                              <span class="active"></span>
+                                              <span class="active"></span>
+                                              <span class="active"></span>
+                                              <span></span>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </td>
+                              {{ else if ([Math.GreaterThanEqual] Severity 4) }}
+                              <td>
+                                  <div class="row">
+                                      <div class="col pe-0 text-start">Medium ({{ Severity }})</div>
+                                      <div class="col">
+                                          <div class="results medium">
+                                              <span class="active"></span>
+                                              <span class="active"></span>
+                                              <span class="active"></span>
+                                              <span class="active"></span>
+                                              <span></span>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </td>
+                              {{ else if ([Math.GreaterThanEqual] Severity 0,1) }}
+                              <td>
+                                  <div class="row">
+                                      <div class="col pe-0 text-start">Low ({{ Severity }})</div>
+                                      <div class="col">
+                                          <div class="results low">
+                                              <span></span>
+                                              <span></span>
+                                              <span></span>
+                                              <span></span>
+                                              <span></span>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </td>
+                              {{ else }}
+                              <td>
+                                  <div class="row">
+                                      <div class="col pe-0 text-start">Info ({{ Severity }})</div>
+                                      <div class="col">
+                                          <div class="results info">
+                                              <span></span>
+                                              <span></span>
+                                              <span></span>
+                                              <span></span>
+                                              <span></span>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </td>
+                              {{ /if }}
                           </tr>
-                        {{ /ifCond }}
+                          {{ /each }}
+                          {{ #each Errors }}
+                          <tr>
+                              <td class="text-start" colspan="3">
+                                  <ul class="error">
+                                      <li>
+                                          {{ Message }}
+                                      </li>
+                                  </ul>
+                              </td>
+                          </tr>
+                          {{ /each }}
+                          {{ #if ([Boolean.And] ([Math.Equal] Errors.Count 0) ([Math.Equal] Issues.Count 0)) }}
+                          <tr>
+                              <td class="text-start" colspan="3">
+                                  <div class="no-issue-found">
+                                      <p>No issues found.</p>
+                                  </div>
+                              </td>
+                          </tr>
+                          {{ /if }}
                       </tbody>
                       {{ /each }}
                     </table>

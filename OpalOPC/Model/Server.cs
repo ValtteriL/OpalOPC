@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-using System.Xml.Serialization;
 using Opc.Ua;
 namespace Model
 {
@@ -12,10 +10,6 @@ namespace Model
         public ICollection<ISecurityTestSession> securityTestSessions { get; private set; } = new List<ISecurityTestSession>();
         public EndpointDescriptionCollection EndpointDescriptions { get; private set; } = new EndpointDescriptionCollection();
 
-
-        // parameterless constructor for XML serializer
-        internal Server()
-        { }
 
         public Server(string DiscoveryUrl, EndpointDescriptionCollection edc)
         {

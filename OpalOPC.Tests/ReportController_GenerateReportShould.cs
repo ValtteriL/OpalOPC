@@ -18,11 +18,12 @@ public class ReportController_generateReportShould
         };
         Reporter reporter = new(sw.BaseStream);
         ReportController reportController = new(logger, reporter);
-        string commandLine = string.Empty;
+        string commandLine = "commandline";
+        string runStatus = "rustatus";
 
         Assert.True(reportController.report == null);
 
-        reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, commandLine);
+        reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, commandLine, runStatus);
 
         Assert.True(reportController.report != null);
     }
