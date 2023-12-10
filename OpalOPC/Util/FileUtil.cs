@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Security.Cryptography.X509Certificates;
 using Opc.Ua;
 
 namespace Util
@@ -9,6 +8,8 @@ namespace Util
         public ICollection<string> ReadFileToList(string path);
         public CertificateIdentifier CreateCertificateIdentifierFromPemFile(string certPath, string privkeyPath);
         public Stream Create(string path);
+        public void WriteCertificateToDisk(CertificateIdentifier certificate, string path);
+        public CertificateIdentifier CreateCertificateIdentifierFromPfxFile(string path);
     }
 
     public class FileUtil : IFileUtil
@@ -26,6 +27,16 @@ namespace Util
         public Stream Create(string path)
         {
             return File.Create(path);
+        }
+
+        public async void WriteCertificateToDisk(CertificateIdentifier certificate, string path)
+        {
+            await File.WriteAllBytesAsync(path, certificate.Certificate.Export(X509ContentType.Pfx));
+        }
+
+        public CertificateIdentifier CreateCertificateIdentifierFromPfxFile(string path)
+        {
+            return new CertificateIdentifier(new X509Certificate2(path));
         }
     }
 }

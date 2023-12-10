@@ -1,8 +1,6 @@
-using System.Net;
 using Model;
 using Opc.Ua;
 using Opc.Ua.Client;
-using Opc.Ua.Security.Certificates;
 
 namespace Util
 {
@@ -16,35 +14,29 @@ namespace Util
 
     public class ConnectionUtil : IConnectionUtil
     {
-        private const string Subject = "CN=Test Cert Subject, C=FI, S=Uusimaa, O=Molemmat Oy";
-
         private readonly ApplicationConfiguration _applicationConfiguration;
         private readonly CertificateIdentifier _certificateIdentifier;
+        private readonly ISelfSignedCertificateUtil _selfSignedCertificateUtil;
 
         public ConnectionUtil()
         {
+            // Generate self-signed certificate for client
+            _selfSignedCertificateUtil = new SelfSignedCertificateUtil();
+            _certificateIdentifier = _selfSignedCertificateUtil.GetCertificate();
+
             _applicationConfiguration = new ApplicationConfiguration
             {
                 ApplicationName = "OpalOPC@host",
-                ApplicationUri = "urn:host:OPCUA:OpalOPC",
+                ApplicationUri = "urn:OPCUA:OpalOPC",
                 ApplicationType = ApplicationType.Server,
                 ClientConfiguration = new ClientConfiguration(),
-                SecurityConfiguration = new SecurityConfiguration()
-            };
+                SecurityConfiguration = new SecurityConfiguration(),
 
-            // Generate self-signed certificate for client
-            _certificateIdentifier = new CertificateIdentifier(
-                CertificateBuilder
-                    .Create(Subject)
-                    .AddExtension(
-                        new X509SubjectAltNameExtension("urn:opalopc.com:host",
-                        new string[] { "host", "host.opalopc.com", "192.168.1.100" }))
-                    .CreateForRSA());
-
-            // accept any server certificates
-            _applicationConfiguration.CertificateValidator = new CertificateValidator
-            {
-                AutoAcceptUntrustedCertificates = true
+                // accept any server certificates
+                CertificateValidator = new CertificateValidator
+                {
+                    AutoAcceptUntrustedCertificates = true
+                }
             };
 
         }
