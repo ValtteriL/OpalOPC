@@ -12,6 +12,8 @@ namespace Plugin
         SecurityPolicyBasic128Rsa15 = 10007,
         SecurityPolicyBasic256 = 10008,
         SecurityPolicyNone = 10009,
-        SelfSignedCertificate = 10010
+        SelfSignedCertificate = 10010,
+        ProvidedCredentials = 10011,
+        BruteForce = 10012,
     }
 }

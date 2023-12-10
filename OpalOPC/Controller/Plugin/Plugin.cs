@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Model;
+using Opc.Ua;
 using Opc.Ua.Client;
 
 namespace Plugin
@@ -8,6 +9,7 @@ namespace Plugin
     {
         PreAuthPlugin = 1,
         PostAuthPlugin = 2,
+        SessionCredentialPlugin = 3,
     }
 
     public interface IPlugin
@@ -43,7 +45,7 @@ namespace Plugin
 
     public interface IPreAuthPlugin : IPlugin
     {
-        public (Issue?, ICollection<ISession>) Run(Endpoint endpoint);
+        public (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions);
     }
 
     public abstract class PreAuthPlugin : Plugin, IPreAuthPlugin
@@ -52,9 +54,9 @@ namespace Plugin
         {
         }
 
-        public Plugintype Type => Plugintype.PreAuthPlugin;
+        public virtual Plugintype Type => Plugintype.PreAuthPlugin;
 
-        public abstract (Issue?, ICollection<ISession>) Run(Endpoint endpoint);
+        public abstract (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions);
     }
 
     public interface IPostAuthPlugin : IPlugin
@@ -70,5 +72,20 @@ namespace Plugin
 
         public Plugintype Type => Plugintype.PostAuthPlugin;
         public abstract Issue? Run(ISession session);
+    }
+
+    public interface ISessionCredentialPlugin : IPlugin
+    {
+        public Issue? Run(ICollection<ISecurityTestSession> sessionsAndCredentials);
+    }
+
+    public abstract class SessionCredentialPlugin : Plugin, ISessionCredentialPlugin
+    {
+        public SessionCredentialPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : base(logger, pluginId, category, name, severity)
+        {
+        }
+
+        public Plugintype Type => Plugintype.SessionCredentialPlugin;
+        public abstract Issue? Run(ICollection<ISecurityTestSession> sessionsAndCredentials);
     }
 }

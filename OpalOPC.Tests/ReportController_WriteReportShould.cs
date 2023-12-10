@@ -18,11 +18,10 @@ public class ReportController_WriteReportShould
         };
         Reporter reporter = new(sw.BaseStream);
         ReportController reportController = new(logger, reporter);
-        string runStatus = "hello";
 
         try
         {
-            reportController.WriteReport(runStatus);
+            reportController.WriteReport();
         }
         catch (System.NullReferenceException)
         {
@@ -45,11 +44,12 @@ public class ReportController_WriteReportShould
         Reporter reporter = new(sw.BaseStream);
         ReportController reportController = new(logger, reporter);
         string runStatus = "hello";
-        string commandLine = string.Empty;
+        string commandLine = "commandline";
 
-        reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, commandLine);
-        reportController.WriteReport(runStatus);
+        reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, commandLine, runStatus);
+        reportController.WriteReport();
 
         Assert.True(reportController.report!.RunStatus == runStatus);
+        Assert.True(reportController.report!.Command == commandLine);
     }
 }

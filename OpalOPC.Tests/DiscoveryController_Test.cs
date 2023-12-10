@@ -31,40 +31,32 @@ public class DiscoveryControllerTest
         }
     };
 
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
+    private readonly ILogger _logger;
+    private readonly List<Uri> _discoveryUris = new()
     {
-        // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
-        DiscoveryUtil discoveryUtil = new();
+        new Uri("opc.tcp://asd.com"),
+    };
+    private readonly Mock<IDiscoveryUtil> _mockDiscoveryUtil;
 
-        // act
-        DiscoveryController controller = new(logger, discoveryUtil);
-
-        // assert
-        Assert.True(controller != null);
+    public DiscoveryControllerTest()
+    {
+        _logger = LoggerFactory.Create(builder => { }).CreateLogger<DiscoveryControllerTest>();
+        _mockDiscoveryUtil = new Mock<IDiscoveryUtil>();
     }
+
 
     [Fact]
     public void ReturnsCorrectNumberOfTargetsAndEndpoints()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
-        List<Uri> discoveryUris = new() {
-            new Uri("opc.tcp://asd.com"),
-        };
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new(new byte[] { 127, 0, 0, 1 }) });
+        _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
+        _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
-        var mockDiscoveryUtil = new Mock<IDiscoveryUtil>();
-        mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new IPAddress(new byte[] { 127, 0, 0, 1 }) });
-        mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
-        mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
-
-        DiscoveryController controller = new(logger, mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
 
         // act
-        ICollection<Target> targets = controller.DiscoverTargets(discoveryUris);
+        ICollection<Target> targets = controller.DiscoverTargets(_discoveryUris);
 
         // assert
         Assert.NotEmpty(targets);
@@ -78,10 +70,8 @@ public class DiscoveryControllerTest
     public void EmptyDiscoveryUrisReturnEmptyTargets()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
         DiscoveryUtil discoveryUtil = new();
-        DiscoveryController controller = new(logger, discoveryUtil);
+        DiscoveryController controller = new(_logger, discoveryUtil);
         List<Uri> discoveryUris = new();
 
         // act
@@ -95,10 +85,7 @@ public class DiscoveryControllerTest
     public void HttpsDiscoveryUriReturnsEmptyTargets()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
-        DiscoveryUtil discoveryUtil = new();
-        DiscoveryController controller = new(logger, discoveryUtil);
+        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
         List<Uri> discoveryUris = new() {
             new Uri("https://test.com")
         };
@@ -114,21 +101,14 @@ public class DiscoveryControllerTest
     public void SocketExceptionReturnsEmptyTargets()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
-        List<Uri> discoveryUris = new() {
-            new Uri("opc.tcp://asd.com"),
-        };
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Throws<SocketException>();
+        _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
+        _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
-        var mockDiscoveryUtil = new Mock<IDiscoveryUtil>();
-        mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Throws<SocketException>();
-        mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
-        mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
-
-        DiscoveryController controller = new(logger, mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
 
         // act
-        ICollection<Target> targets = controller.DiscoverTargets(discoveryUris);
+        ICollection<Target> targets = controller.DiscoverTargets(_discoveryUris);
 
         // assert
         Assert.Empty(targets);
@@ -138,21 +118,14 @@ public class DiscoveryControllerTest
     public void ExceptionReturnsEmptyTargets()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
-        List<Uri> discoveryUris = new() {
-            new Uri("opc.tcp://asd.com"),
-        };
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Throws<Exception>();
+        _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
+        _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
-        var mockDiscoveryUtil = new Mock<IDiscoveryUtil>();
-        mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Throws<Exception>();
-        mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
-        mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
-
-        DiscoveryController controller = new(logger, mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
 
         // act
-        ICollection<Target> targets = controller.DiscoverTargets(discoveryUris);
+        ICollection<Target> targets = controller.DiscoverTargets(_discoveryUris);
 
         // assert
         Assert.Empty(targets);
@@ -162,21 +135,14 @@ public class DiscoveryControllerTest
     public void ResolvesToZeroAddresses()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
-        List<Uri> discoveryUris = new() {
-            new Uri("opc.tcp://asd.com"),
-        };
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(Array.Empty<IPAddress>());
+        _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
+        _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
-        var mockDiscoveryUtil = new Mock<IDiscoveryUtil>();
-        mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(Array.Empty<IPAddress>());
-        mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
-        mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
-
-        DiscoveryController controller = new(logger, mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
 
         // act
-        ICollection<Target> targets = controller.DiscoverTargets(discoveryUris);
+        ICollection<Target> targets = controller.DiscoverTargets(_discoveryUris);
 
         // assert
         Assert.Empty(targets);
@@ -186,21 +152,14 @@ public class DiscoveryControllerTest
     public void DiscoverApplicationsServiceResultExceptionReturnsEmptyTargets()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
-        List<Uri> discoveryUris = new() {
-            new Uri("opc.tcp://asd.com"),
-        };
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new(new byte[] { 127, 0, 0, 1 }) });
+        _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Throws<ServiceResultException>();
+        _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
-        var mockDiscoveryUtil = new Mock<IDiscoveryUtil>();
-        mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new IPAddress(new byte[] { 127, 0, 0, 1 }) });
-        mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Throws<ServiceResultException>();
-        mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
-
-        DiscoveryController controller = new(logger, mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
 
         // act
-        ICollection<Target> targets = controller.DiscoverTargets(discoveryUris);
+        ICollection<Target> targets = controller.DiscoverTargets(_discoveryUris);
 
         // assert
         Assert.Empty(targets);
@@ -210,67 +169,46 @@ public class DiscoveryControllerTest
     public void DiscoverApplicationsExceptionReturnsInExceptionThrown()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
-        List<Uri> discoveryUris = new() {
-            new Uri("opc.tcp://asd.com"),
-        };
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new(new byte[] { 127, 0, 0, 1 }) });
+        _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Throws<Exception>();
+        _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
-        var mockDiscoveryUtil = new Mock<IDiscoveryUtil>();
-        mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new IPAddress(new byte[] { 127, 0, 0, 1 }) });
-        mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Throws<Exception>();
-        mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
-
-        DiscoveryController controller = new(logger, mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
 
         // act & assert
-        Assert.Throws<Exception>(() => controller.DiscoverTargets(discoveryUris));
+        Assert.Throws<Exception>(() => controller.DiscoverTargets(_discoveryUris));
     }
 
     [Fact]
     public void DiscoverEndpointsServiceResultExceptionReturnsSingleTargetNoEndpoints()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
-        List<Uri> discoveryUris = new() {
-            new Uri("opc.tcp://asd.com"),
-        };
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new(new byte[] { 127, 0, 0, 1 }) });
+        _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Throws<ServiceResultException>();
+        _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
 
-        var mockDiscoveryUtil = new Mock<IDiscoveryUtil>();
-        mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new IPAddress(new byte[] { 127, 0, 0, 1 }) });
-        mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Throws<ServiceResultException>();
-        mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
-
-        DiscoveryController controller = new(logger, mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
 
         // act
-        ICollection<Target> targets = controller.DiscoverTargets(discoveryUris);
+        ICollection<Target> targets = controller.DiscoverTargets(_discoveryUris);
 
         // assert
         Assert.True(targets.Count == 1);
-        Assert.Empty(targets.First().Servers.First().Endpoints);
+        Assert.Empty(targets.First().Servers.First().EndpointDescriptions);
     }
 
     [Fact]
     public void DiscoverEndpointsExceptionResultsInExceptionThrown()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<DiscoveryControllerTest>();
-        List<Uri> discoveryUris = new() {
-            new Uri("opc.tcp://asd.com"),
-        };
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new(new byte[] { 127, 0, 0, 1 }) });
+        _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Throws<Exception>();
+        _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
 
-        var mockDiscoveryUtil = new Mock<IDiscoveryUtil>();
-        mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(new IPAddress[] { new IPAddress(new byte[] { 127, 0, 0, 1 }) });
-        mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Throws<Exception>();
-        mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
-
-        DiscoveryController controller = new(logger, mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
 
         // act & assert
-        Assert.Throws<Exception>(() => controller.DiscoverTargets(discoveryUris));
+        Assert.Throws<Exception>(() => controller.DiscoverTargets(_discoveryUris));
     }
 
 }

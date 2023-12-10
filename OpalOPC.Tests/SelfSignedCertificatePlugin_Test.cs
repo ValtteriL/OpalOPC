@@ -11,72 +11,50 @@ using Xunit;
 namespace Tests;
 public class SelfSignedCertificatePluginTest
 {
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
+    private readonly ILogger _logger;
+    private readonly Mock<ISecurityTestSession> _mockSecurityTestSession;
+    private readonly Mock<CertificateIdentifier> _mockCertificateIdentifier;
+    private readonly SelfSignedCertificatePlugin _plugin;
+
+    public SelfSignedCertificatePluginTest()
     {
-        // arrange
         ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
-
-        // act
-        SelfSignedCertificatePlugin plugin = new(logger);
-
-        // assert
-        Assert.True(plugin != null);
+        _logger = loggerFactory.CreateLogger<SelfSignedCertificatePluginTest>();
+        _mockSecurityTestSession = new Mock<ISecurityTestSession>();
+        _mockCertificateIdentifier = new Mock<CertificateIdentifier>();
+        _plugin = new SelfSignedCertificatePlugin(_logger);
     }
+
 
     [Fact]
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
-
-        EndpointDescription endpointDescription = new()
-        {
-            SecurityPolicyUri = new Uri(SecurityPolicies.Aes128_Sha256_RsaOaep).ToString(),
-        };
-        Endpoint endpoint = new(endpointDescription);
-
-        var mockConnectionUtil = new Mock<IConnectionUtil>();
-        var mockSession = new Mock<ISession>();
-        mockConnectionUtil.Setup(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Throws<ServiceResultException>();
-
-        SelfSignedCertificatePlugin plugin = new(logger, mockConnectionUtil.Object);
+        SessionCredential sessionCredential = new(new UserIdentity(), _mockCertificateIdentifier.Object);
+        _mockSecurityTestSession.Setup(session => session.Credential).Returns(sessionCredential);
+        _mockSecurityTestSession.Setup(session => session.EndpointUrl).Returns("test");
 
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        Issue? issue = _plugin.Run(new List<ISecurityTestSession> { _mockSecurityTestSession.Object });
 
         // assert
         Assert.True(issue == null);
-        Assert.Empty(sessions);
     }
 
     [Fact]
     public void ReportsIssues()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
-        EndpointDescription endpointDescription = new()
-        {
-            SecurityPolicyUri = new Uri(SecurityPolicies.None).ToString(),
-        };
-        Endpoint endpoint = new(endpointDescription);
-
-        var mockConnectionUtil = new Mock<IConnectionUtil>();
-        var mockSession = new Mock<ISession>();
-        mockConnectionUtil.Setup(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Returns(mockSession.Object);
-
-        SelfSignedCertificatePlugin plugin = new(logger, mockConnectionUtil.Object);
+        SessionCredential sessionCredential = new(new UserIdentity(), _mockCertificateIdentifier.Object, true);
+        _mockSecurityTestSession.Setup(session => session.Credential).Returns(sessionCredential);
+        _mockSecurityTestSession.Setup(session => session.EndpointUrl).Returns("test");
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        Issue? issue = _plugin.Run(new List<ISecurityTestSession> { _mockSecurityTestSession.Object });
 
         // assert
         Assert.True(issue != null);
-        Assert.Empty(sessions);
     }
 
 }

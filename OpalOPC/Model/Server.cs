@@ -1,31 +1,20 @@
-using System.Text.Json.Serialization;
-using System.Xml.Serialization;
 using Opc.Ua;
 namespace Model
 {
     public class Server
     {
 
-        public string? DiscoveryUrl { get; set; }
-        public List<Error> Errors { get; set; } = new List<Error>();
+        public string DiscoveryUrl { get; private set; } = string.Empty;
+        public List<Error> Errors { get; private set; } = new List<Error>();
+        public ICollection<Issue> Issues { get; private set; } = new List<Issue>();
+        public ICollection<ISecurityTestSession> securityTestSessions { get; private set; } = new List<ISecurityTestSession>();
+        public EndpointDescriptionCollection EndpointDescriptions { get; private set; } = new EndpointDescriptionCollection();
 
-        [JsonIgnore]
-        public ICollection<Endpoint> SeparatedEndpoints { get; } = new List<Endpoint>();
-
-        [XmlArrayItem("Endpoint")]
-        public List<EndpointSummary> Endpoints { get; private set; } = new List<EndpointSummary>();
-
-        // parameterless constructor for XML serializer
-        internal Server()
-        { }
 
         public Server(string DiscoveryUrl, EndpointDescriptionCollection edc)
         {
             this.DiscoveryUrl = DiscoveryUrl;
-            foreach (EndpointDescription e in edc)
-            {
-                SeparatedEndpoints.Add(new Endpoint(e));
-            }
+            EndpointDescriptions = edc;
         }
 
         public void AddError(Error error)
@@ -33,24 +22,15 @@ namespace Model
             Errors.Add(error);
         }
 
-        // Merge SeparatedEndpoints into Endpointsummaries by endpointUrls
-        public void MergeEndpoints()
+        public void AddIssue(Issue issue)
         {
-            Dictionary<string, EndpointSummary> endpointDictionary = new();
+            Issues.Add(issue);
+            Issues = Issues.OrderByDescending(i => i.Severity).ToList();
+        }
 
-            foreach (Endpoint endpoint in SeparatedEndpoints)
-            {
-                if (endpointDictionary.ContainsKey(endpoint.EndpointUrl))
-                {
-                    endpointDictionary[endpoint.EndpointUrl].MergeEndpoint(endpoint);
-                    continue;
-                }
-
-                endpointDictionary.Add(endpoint.EndpointUrl, new EndpointSummary(endpoint));
-            }
-
-            // sort endpoints within server by issue severity
-            Endpoints = endpointDictionary.Values.OrderByDescending(e => e.Issues.Max(i => i.Severity)).ToList();
+        public void AddSecurityTestSession(ISecurityTestSession securityTestSession)
+        {
+            securityTestSessions.Add(securityTestSession);
         }
 
     }

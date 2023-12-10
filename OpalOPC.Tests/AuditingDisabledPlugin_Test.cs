@@ -10,27 +10,22 @@ using Xunit;
 namespace Tests;
 public class AuditingDisabledPluginTest
 {
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
+
+    private readonly ILogger _logger;
+    private readonly AuditingDisabledPlugin _plugin;
+    private readonly Mock<ISession> _mockSession;
+
+    public AuditingDisabledPluginTest()
     {
-        // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
-
-        // act
-        AuditingDisabledPlugin plugin = new(logger);
-
-        // assert
-        Assert.True(plugin != null);
+        _logger = LoggerFactory.Create(builder => { }).CreateLogger<AuditingDisabledPluginTest>();
+        _plugin = new AuditingDisabledPlugin(_logger);
+        _mockSession = new Mock<ISession>();
     }
 
     [Fact]
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
-
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Certificate) }),
@@ -38,15 +33,12 @@ public class AuditingDisabledPluginTest
         };
         Endpoint endpoint = new(endpointDescription);
 
-        AuditingDisabledPlugin plugin = new(logger);
-
         // session should return true to session.ReadValue(Util.WellKnownNodes.Server_Auditing)
-        var mockSession = new Mock<ISession>();
-        mockSession.Setup(session => session.ReadValue(Util.WellKnownNodes.Server_Auditing)).Returns(new DataValue(new Variant(true)));
-        mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
+        _mockSession.Setup(session => session.ReadValue(Util.WellKnownNodes.Server_Auditing)).Returns(new DataValue(new Variant(true)));
+        _mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
 
         // act
-        Issue? issue = plugin.Run(mockSession.Object);
+        Issue? issue = _plugin.Run(_mockSession.Object);
 
         // assert
         Assert.True(issue == null);
@@ -56,8 +48,6 @@ public class AuditingDisabledPluginTest
     public void ReportsIssues()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
@@ -66,14 +56,11 @@ public class AuditingDisabledPluginTest
         Endpoint endpoint = new(endpointDescription);
 
         // session should return false to session.ReadValue(Util.WellKnownNodes.Server_Auditing)
-        var mockSession = new Mock<ISession>();
-        mockSession.Setup(session => session.ReadValue(Util.WellKnownNodes.Server_Auditing)).Returns(new DataValue(new Variant(false)));
-        mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
-
-        AuditingDisabledPlugin plugin = new(logger);
+        _mockSession.Setup(session => session.ReadValue(Util.WellKnownNodes.Server_Auditing)).Returns(new DataValue(new Variant(false)));
+        _mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
 
         // act
-        Issue? issue = plugin.Run(mockSession.Object);
+        Issue? issue = _plugin.Run(_mockSession.Object);
 
         // assert
         Assert.True(issue != null);

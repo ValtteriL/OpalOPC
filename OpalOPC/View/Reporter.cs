@@ -3,6 +3,9 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.Xsl;
 using Model;
+using HandlebarsDotNet;
+using System.Text.Json;
+using HandlebarsDotNet.Helpers;
 
 namespace View
 {
@@ -13,67 +16,44 @@ namespace View
 
     public class Reporter : IReporter
     {
-        private readonly Stream outputStream;
+        private readonly Stream _outputStream;
 
         public Reporter(Stream outputStream)
         {
-            this.outputStream = outputStream;
+            _outputStream = outputStream;
         }
 
         public void PrintXHTMLReport(Report report)
         {
-            // serialize report to stream
-            MemoryStream stream = new();
-            using XmlWriter tempXmlWriter = XmlWriter.Create(stream);
-            XmlSerializer serializer = new(report.GetType());
-            serializer.Serialize(tempXmlWriter, report);
+            // register helpers
+            IHandlebars handlebarsContext = Handlebars.Create();
+            HandlebarsHelpers.Register(handlebarsContext);
 
-            // read XSLT, and use its settings to create XmlWriter to outputStream
-            XslCompiledTransform xslCompiledTransform = getXSLT();
-            using XmlWriter finalXmlWriter = XmlWriter.Create(outputStream, xslCompiledTransform.OutputSettings);
+            HandlebarsTemplate<object, object> template = handlebarsContext.Compile(getHtmlTemplate());
 
-            // transform report to xhtml with XSLT
-            // and write to outputStream
-            stream.Seek(0, SeekOrigin.Begin);
-            xslCompiledTransform.Transform(XmlReader.Create(stream, new XmlReaderSettings() { DtdProcessing = DtdProcessing.Parse }), finalXmlWriter);
-        }
-
-        private XslCompiledTransform getXSLT()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            using Stream? stream = assembly.GetManifestResourceStream(Util.XmlResources.StylesheetLocation);
-
-            if (stream == null)
-            {
-                throw new FileNotFoundException($"Cannot find XSL stylesheet {Util.XmlResources.StylesheetLocation}");
-            }
-
-            Stream finalstream = stream;
+            string html = template(report);
 
 #if !DEBUG
             // Replace debug paths in XSLT
-            StreamReader reader = new(stream);
-            string xsltString = reader.ReadToEnd();
-            xsltString = xsltString.Replace(Util.XmlResources.DebugResourcePath, Util.XmlResources.ProdResourcePath);
+            html = html.Replace(Util.XmlResources.DebugResourcePath, Util.XmlResources.ProdResourcePath);
+#endif
 
-            // Write corrected XSLT
-            // and adjust stream for reader
-            MemoryStream ms = new();
-            StreamWriter writer = new(ms)
+            // Write to output stream
+            StreamWriter writer = new(_outputStream)
             {
                 AutoFlush = true
             };
-            writer.Write(xsltString);
-
-            ms.Seek(0, SeekOrigin.Begin);
-            finalstream = ms;
-#endif
-
-
-            XslCompiledTransform xslCompiledTransform = new();
-            xslCompiledTransform.Load(XmlReader.Create(finalstream));
-
-            return xslCompiledTransform;
+            writer.Write(html);
         }
+
+        private static string getHtmlTemplate()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using Stream? stream = assembly.GetManifestResourceStream(Util.XmlResources.HtmlTemplateLocation) ?? throw new FileNotFoundException($"Cannot find HTML template {Util.XmlResources.HtmlTemplateLocation}");
+            StreamReader finalReader = new(stream);
+            return finalReader.ReadToEnd();
+        }
+
+
     }
 }

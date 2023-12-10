@@ -36,17 +36,15 @@ namespace Controller
 
                 try
                 {
-                    int nSessions = 0;
-
-                    foreach (Endpoint endpoint in GetAllTargetEndpoints(target))
+                    foreach (Server server in target.Servers)
                     {
-                        _logger.LogTrace("{Message}", $"Testing endpoint {endpoint.EndpointUrl} of {target.ApplicationName} ({endpoint.EndpointDescription.SecurityPolicyUri})");
-                        nSessions += TestEndpointSecurity(endpoint);
-                    }
+                        _logger.LogTrace("{Message}", $"Testing endpoint {server.DiscoveryUrl} of {target.ApplicationName}");
+                        TestEndpointSecurity(server);
 
-                    if (nSessions == 0)
-                    {
-                        _logger.LogWarning("{Message}", $"Cannot authenticate to {target.ApplicationName}. Skipping post-authentication tests");
+                        if (!server.securityTestSessions.Any())
+                        {
+                            _logger.LogWarning("{Message}", $"Cannot authenticate to {target.ApplicationName}. Skipping post-authentication tests");
+                        }
                     }
                 }
                 catch (Exception e)
@@ -64,71 +62,77 @@ namespace Controller
             return opcTargets;
         }
 
-        private static ICollection<Endpoint> GetAllTargetEndpoints(Target target)
-        {
-            List<Endpoint> endpoints = new();
-
-            foreach (ICollection<Endpoint> serverEndpointList in target.Servers.Select(s => s.SeparatedEndpoints))
-            {
-                endpoints.AddRange(serverEndpointList);
-            }
-
-            return endpoints;
-        }
-
-        private int TestEndpointSecurity(Endpoint endpoint)
+        private void TestEndpointSecurity(Server server)
         {
             // run first pre-auth plugins, and save opened sessions
             // run then post-auth plugins
             // finally close sessions
             // return number of sessions
 
-            ICollection<ISession> sessions = TestEndpointPreauth(endpoint);
-
-            if (!sessions.Any())
+            ICollection<ISecurityTestSession> securityTestSessions = TestEndpointPreauth(server);
+            foreach (ISecurityTestSession session in securityTestSessions)
             {
-                return sessions.Count;
+                server.AddSecurityTestSession(session);
             }
 
-            TestEndpointPostAuth(endpoint, sessions);
+            if (server.securityTestSessions.Any())
+            {
+                TestEndpointPostAuth(server);
+            }
 
             _logger.LogTrace("{Message}", $"Closing sessions");
-            foreach (ISession session in sessions)
+            foreach (ISecurityTestSession securityTestSession in server.securityTestSessions)
             {
-                session.Dispose();
+                securityTestSession.Dispose();
             }
-
-            return sessions.Count;
         }
 
-        private ICollection<ISession> TestEndpointPreauth(Endpoint endpoint)
+        private ICollection<ISecurityTestSession> TestEndpointPreauth(Server server)
         {
-            List<ISession> sessions = new();
+            List<ISecurityTestSession> securityTestSessions = new();
 
             _logger.LogTrace("{Message}", $"Starting pre-authentication tests");
-            foreach (IPreAuthPlugin preauthPlugin in _securityTestPlugins.Where(p => p.Type == Plugintype.PreAuthPlugin).Cast<IPreAuthPlugin>())
+            foreach (IPreAuthPlugin preauthPlugin in GetPluginsByType(Plugintype.PreAuthPlugin).Cast<IPreAuthPlugin>())
             {
                 TaskUtil.CheckForCancellation(_token);
-                (Issue? preauthissue, ICollection<ISession> preauthsessions) = preauthPlugin.Run(endpoint);
+                (Issue? preauthissue, ICollection<ISecurityTestSession> preauthsessions) = preauthPlugin.Run(server.DiscoveryUrl, server.EndpointDescriptions);
 
-                sessions.AddRange(preauthsessions);
-                if (preauthissue != null) endpoint.Issues.Add(preauthissue);
+                securityTestSessions.AddRange(preauthsessions);
+                if (preauthissue != null) server.AddIssue(preauthissue);
             }
             _logger.LogTrace("{Message}", $"Finished pre-authentication tests");
 
-            return sessions;
+            return securityTestSessions;
         }
 
-        private void TestEndpointPostAuth(Endpoint endpoint, ICollection<ISession> sessions)
+        private void TestEndpointPostAuth(Server server)
         {
             _logger.LogTrace("{Message}", $"Starting post-authentication tests");
-            foreach (IPostAuthPlugin postAuthPlugin in _securityTestPlugins.Where(p => p.Type == Plugintype.PostAuthPlugin).Cast<IPostAuthPlugin>())
+
+            TestEndpointSessionCredentials(server);
+
+            foreach (IPostAuthPlugin postAuthPlugin in GetPluginsByType(Plugintype.PostAuthPlugin).Cast<IPostAuthPlugin>())
             {
                 TaskUtil.CheckForCancellation(_token);
-                Issue? postauthIssue = postAuthPlugin.Run(sessions.First());
-                if (postauthIssue != null) endpoint.Issues.Add(postauthIssue);
+                Issue? postauthIssue = postAuthPlugin.Run(server.securityTestSessions.First().Session);
+                if (postauthIssue != null) server.AddIssue(postauthIssue);
             }
             _logger.LogTrace("{Message}", $"Finished post-authentication tests");
+        }
+
+        private void TestEndpointSessionCredentials(Server server)
+        {
+            foreach (ISessionCredentialPlugin sessionCredentialPlugin in GetPluginsByType(Plugintype.SessionCredentialPlugin).Cast<ISessionCredentialPlugin>())
+            {
+                TaskUtil.CheckForCancellation(_token);
+                Issue? postauthIssue = sessionCredentialPlugin.Run(server.securityTestSessions);
+                if (postauthIssue != null) server.AddIssue(postauthIssue);
+            }
+        }
+
+        private ICollection<IPlugin> GetPluginsByType(Plugintype plugintype)
+        {
+            return _securityTestPlugins.Where(p => p.Type == plugintype).ToList();
         }
     }
 }

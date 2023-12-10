@@ -5,18 +5,17 @@ namespace Model
     public class Target
     {
 
-        private readonly ApplicationDescription? _applicationDescription;
-        public List<Server> Servers { get; set; } = new();
+        private readonly ApplicationDescription _applicationDescription = new();
+        public List<Server> Servers { get; private set; } = new();
 
-        public ApplicationType? Type { get; set; }
-        public string? ApplicationName { get; set; }
-        public string? ApplicationUri { get; set; }
-        public string? ProductUri { get; set; }
+        public ApplicationType Type { get; private set; }
+        public string ApplicationName { get; private set; }
+        public string ApplicationUri { get; private set; }
+        public string ProductUri { get; private set; }
 
+        public int IssuesCount => Servers.Sum(s => s.Issues.Count);
+        public int ErrorsCount => Servers.Sum(s => s.Errors.Count);
 
-        // parameterless constructor for XML serializer
-        internal Target()
-        { }
 
         public Target(ApplicationDescription ad)
         {
@@ -35,16 +34,10 @@ namespace Model
             Servers.Add(server);
         }
 
-        // Merge endpoints with identical URI, add up their findings
-        public void MergeEndpoints()
+        public void SortServersByIssueSeverity()
         {
-            foreach (Server server in Servers)
-            {
-                server.MergeEndpoints();
-            }
-
-            // sort servers within target by issue severity
-            Servers = Servers.OrderByDescending(s => s.Endpoints.Max(e => e.Issues.Max(i => i.Severity))).ToList();
+            // sort servers within target by issue severity even if issues is empty
+            Servers = Servers.OrderByDescending(s => s.Issues.Any() ? s.Issues.Max(i => i.Severity) : 0).ToList();
         }
     }
 }

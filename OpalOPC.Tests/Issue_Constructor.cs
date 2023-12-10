@@ -5,20 +5,6 @@ namespace Tests;
 public class Issue_Constructor
 {
     [Fact]
-    public void constructor_DoesNotReturnNull()
-    {
-        int pluginId = 0;
-        string name = "a";
-        double severity = 0;
-
-        Issue issue = new(
-                pluginId, name, severity
-            );
-
-        Assert.True(issue != null);
-    }
-
-    [Fact]
     public void constructor_SetsProperties()
     {
         int pluginId = 0;

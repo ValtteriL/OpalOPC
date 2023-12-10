@@ -13,14 +13,16 @@ namespace Controller
         readonly Stream _reportOutputStream;
         readonly string _commandLine;
         readonly CancellationToken? _token;
+        readonly AuthenticationData _authenticationData;
 
-        public ScanController(ILogger logger, ICollection<Uri> targets, Stream reportOutputStream, string commandLine, CancellationToken? token = null)
+        public ScanController(ILogger logger, ICollection<Uri> targets, Stream reportOutputStream, string commandLine, AuthenticationData authenticationData, CancellationToken? token = null)
         {
             _logger = logger;
             _targets = targets;
             _reportOutputStream = reportOutputStream;
             _commandLine = commandLine;
             _token = token;
+            _authenticationData = authenticationData;
         }
 
         public void Scan()
@@ -51,10 +53,12 @@ namespace Controller
             new SecurityPolicyBasic256Plugin(_logger),
             new SecurityPolicyNonePlugin(_logger),
 
-            new AnonymousAuthenticationPlugin(_logger),
+            new AnonymousAuthenticationPlugin(_logger, _authenticationData),
             new SelfSignedCertificatePlugin(_logger),
 
-            new CommonCredentialsPlugin(_logger),
+            new ProvidedCredentialsPlugin(_logger, _authenticationData),
+            new CommonCredentialsPlugin(_logger, _authenticationData),
+            new BruteForcePlugin(_logger, _authenticationData),
             new RBACNotSupportedPlugin(_logger),
             new AuditingDisabledPlugin(_logger),
         };
@@ -67,13 +71,13 @@ namespace Controller
             ReportController reportController = new(_logger, reporter);
 
             DateTime end = DateTime.Now;
-            reportController.GenerateReport(testedTargets, start, end, _commandLine);
 
             TimeSpan ts = (end - start);
-            string runStatus = $"OpalOPC done: {_targets.Count} Discovery URLs ({reportController.report!.Targets.Count} applications found) scanned in {Math.Round(ts.TotalSeconds, 2)} seconds";
+            string runStatus = $"OpalOPC done: {_targets.Count} Discovery URLs ({targets.Count} applications found) scanned in {Math.Round(ts.TotalSeconds, 2)} seconds";
             _logger.LogInformation("{Message}", runStatus);
 
-            reportController.WriteReport(runStatus);
+            reportController.GenerateReport(testedTargets, start, end, _commandLine, runStatus);
+            reportController.WriteReport();
         }
     }
 }

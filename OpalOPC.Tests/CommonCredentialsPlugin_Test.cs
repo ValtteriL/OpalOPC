@@ -11,47 +11,50 @@ using Xunit;
 namespace Tests;
 public class CommonCredentialsPluginTest
 {
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
+    private readonly ILogger _logger;
+    private readonly Mock<IConnectionUtil> _mockConnectionUtil;
+    private readonly Mock<ISecurityTestSession> _mockSession;
+    private readonly Mock<ISecurityTestSession> _mockSessionSuccess;
+    private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
+    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
+
+    public CommonCredentialsPluginTest()
     {
-        // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<CommonCredentialsPluginTest>();
+        _logger = LoggerFactory.Create(builder => { }).CreateLogger<CommonCredentialsPluginTest>();
+        _mockConnectionUtil = new Mock<IConnectionUtil>();
 
-        // act
-        CommonCredentialsPlugin plugin = new(logger);
+        _mockSession = new Mock<ISecurityTestSession>();
+        _mockSession.Setup(session => session.Session.Connected).Returns(false);
 
-        // assert
-        Assert.True(plugin != null);
+        _mockSessionSuccess = new Mock<ISecurityTestSession>();
+        _mockSessionSuccess.Setup(session => session.Session.Connected).Returns(true);
     }
+
 
     [Fact]
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityModeInvalidPluginTest>();
-
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
-            SecurityMode = MessageSecurityMode.None
+            SecurityPolicyUri = SecurityPolicies.None
         };
         Endpoint endpoint = new(endpointDescription);
+        _endpointDescriptions.Add(endpointDescription);
 
         // StartSession returns only closed sessions
-        var mockConnectionUtil = new Mock<IConnectionUtil>();
-        var mockSession = new Mock<ISession>();
-        mockSession.Setup(session => session.Connected).Returns(false);
-        mockConnectionUtil.Setup(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Returns(mockSession.Object);
+        _mockSession.Setup(session => session.Session.Connected).Returns(false);
+        _mockConnectionUtil.Setup(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>())).Returns(_mockSession.Object);
 
-        CommonCredentialsPlugin plugin = new(logger, mockConnectionUtil.Object);
+        CommonCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, new AuthenticationData());
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
-        mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Never);
         Assert.True(issue == null);
         Assert.Empty(sessions);
     }
@@ -60,31 +63,26 @@ public class CommonCredentialsPluginTest
     public void ReportsIssues()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityModeInvalidPluginTest>();
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
-            SecurityMode = MessageSecurityMode.None
+            SecurityPolicyUri = SecurityPolicies.None
         };
         Endpoint endpoint = new(endpointDescription);
+        _endpointDescriptions.Add(endpointDescription);
 
         // StartSession should return a dummy session
         // StartSession returns single open session, then closed sessions
-        var mockConnectionUtil = new Mock<IConnectionUtil>();
-        var mockSessionSuccess = new Mock<ISession>();
-        mockSessionSuccess.Setup(session => session.Connected).Returns(true);
-        var mockSession = new Mock<ISession>();
-        mockSession.Setup(session => session.Connected).Returns(false);
-        mockConnectionUtil.SetupSequence(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()).Result).Returns(mockSessionSuccess.Object).Returns(mockSession.Object);
+        _mockConnectionUtil.SetupSequence(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>())).Returns(_mockSessionSuccess.Object).Returns(_mockSession.Object);
 
-        CommonCredentialsPlugin plugin = new(logger, mockConnectionUtil.Object);
+        CommonCredentialsPlugin plugin = new(_logger, _mockConnectionUtil.Object, new AuthenticationData());
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
-        mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>()), Times.Exactly(Util.Credentials.CommonCredentials.Count));
+        _mockConnectionUtil.Verify(conn => conn.AttemptLogin(It.IsAny<Endpoint>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Never);
         Assert.True(issue != null);
         Assert.NotEmpty(sessions);
         Assert.True(sessions.Count == 1);

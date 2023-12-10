@@ -16,41 +16,41 @@ namespace Plugin
         private static readonly double s_severity = 7.3;
 
         private readonly IConnectionUtil _connectionUtil;
+        private readonly AuthenticationData _authenticationData;
 
-        public CommonCredentialsPlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
+        public CommonCredentialsPlugin(ILogger logger, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
         {
             _connectionUtil = new ConnectionUtil();
+            _authenticationData = authenticationData;
         }
 
-        public CommonCredentialsPlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
+        public CommonCredentialsPlugin(ILogger logger, IConnectionUtil connectionUtil, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
         {
             _connectionUtil = connectionUtil;
+            _authenticationData = authenticationData;
         }
 
-
-
-        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
-            _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for common credentials");
+            _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for common credentials");
 
-            List<ISession> sessions = new();
+            List<ISecurityTestSession> sessions = new();
 
-            if (!IsBruteable(endpoint))
-            {
-                return (null, sessions);
-            }
+            List<EndpointDescription> usernameEndpoints = endpointDescriptions.FindAll(e => e.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.UserName));
+            EndpointDescription? usernameEndpointsNoApplicationAuthentication = usernameEndpoints.Find(e => e.SecurityPolicyUri == SecurityPolicies.None);
+            EndpointDescription? usernameEndpointWithApplicationAuthentication = usernameEndpoints.Find(e => e.SecurityPolicyUri != SecurityPolicies.None);
 
             List<(string username, string password)> validCredentials = new();
 
-            foreach ((string username, string password) in Util.Credentials.CommonCredentials)
+            if(usernameEndpointsNoApplicationAuthentication != null)
             {
-                ISession? session = IdentityCanLogin(endpoint.EndpointDescription, new UserIdentity(username, password));
-
-                if (session != null && session.Connected)
+                AttempLoginWithUsernamesPasswords(sessions, validCredentials, new Endpoint(usernameEndpointsNoApplicationAuthentication));
+            }
+            else if (usernameEndpointWithApplicationAuthentication != null)
+            {
+                foreach (CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
                 {
-                    _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
-                    sessions.Add(session);
-                    validCredentials.Add((username, password));
+                    AttempLoginWithUsernamesPasswords(sessions, validCredentials, new Endpoint(usernameEndpointWithApplicationAuthentication), applicationCertificate);
                 }
             }
 
@@ -58,30 +58,29 @@ namespace Plugin
             {
                 IEnumerable<string> credpairs = validCredentials.Select(c => $"{c.username}:{c.password}");
                 s_issueTitle = $"Common credentials in use ({string.Join(", ", credpairs)})";
-                return (new CommonCredentialsIssue((int)s_pluginId, s_issueTitle, s_severity, validCredentials), sessions);
+                return (new CredentialsIssue((int)s_pluginId, s_issueTitle, s_severity, validCredentials), sessions);
             }
 
             return (null, sessions);
         }
 
-        // Check if endpoint is bruteable = username + application authentication is disabled OR self-signed certificates accepted
-        private bool IsBruteable(Endpoint endpoint)
+        private void AttempLoginWithUsernamesPasswords(List<ISecurityTestSession> sessions, List<(string, string)> validUsernamePasswords, Endpoint endpoint, CertificateIdentifier? certificateIdentifier = null)
         {
-            return endpoint.UserTokenTypes.Contains(UserTokenType.UserName)
-                && (endpoint.SecurityMode == MessageSecurityMode.None
-                    || SelfSignedCertificatePlugin.SelfSignedCertAccepted(endpoint.EndpointDescription, _connectionUtil).Result);
-        }
+            foreach ((string username, string password) in Util.Credentials.CommonCredentials)
+            {
+                ISecurityTestSession? session;
 
-        private ISession? IdentityCanLogin(EndpointDescription endpointDescription, UserIdentity userIdentity)
-        {
-            try
-            {
-                ISession session = _connectionUtil.StartSession(endpointDescription, userIdentity).Result;
-                return session;
-            }
-            catch (Exception)
-            {
-                return null;
+                if (certificateIdentifier == null)
+                    session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password));
+                else
+                    session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password), certificateIdentifier);
+
+                if (session != null && session.Session.Connected)
+                {
+                    _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} uses common credentials ({username}:{password})");
+                    sessions.Add(session);
+                    validUsernamePasswords.Add((username, password));
+                }
             }
         }
 

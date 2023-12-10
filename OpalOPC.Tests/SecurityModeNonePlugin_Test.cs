@@ -9,39 +9,32 @@ using Xunit;
 namespace Tests;
 public class SecurityModeNonePluginTest
 {
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
+
+    private readonly ILogger _logger;
+    private readonly SecurityModeNonePlugin _plugin;
+    private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
+    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
+    public SecurityModeNonePluginTest()
     {
-        // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityModeNonePluginTest>();
-
-        // act
-        SecurityModeNonePlugin plugin = new(logger);
-
-        // assert
-        Assert.True(plugin != null);
+        _logger = LoggerFactory.Create(builder => { }).CreateLogger<SecurityModeNonePluginTest>();
+        _plugin = new SecurityModeNonePlugin(_logger);
     }
 
     [Fact]
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityModeNonePluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Certificate) }),
             SecurityMode = MessageSecurityMode.SignAndEncrypt
         };
-        Endpoint endpoint = new(endpointDescription);
-
-        SecurityModeNonePlugin plugin = new(logger);
+        _endpointDescriptions.Add(endpointDescription);
 
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         Assert.True(issue == null);
@@ -52,19 +45,15 @@ public class SecurityModeNonePluginTest
     public void ReportsIssues()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityModeNonePluginTest>();
         EndpointDescription endpointDescription = new()
         {
             UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
             SecurityMode = MessageSecurityMode.None
         };
-        Endpoint endpoint = new(endpointDescription);
-
-        SecurityModeNonePlugin plugin = new(logger);
+        _endpointDescriptions.Add(endpointDescription);
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         Assert.True(issue != null);

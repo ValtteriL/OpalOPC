@@ -9,38 +9,30 @@ using Xunit;
 namespace Tests;
 public class SecurityPolicyNonePluginTest
 {
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
+    private readonly ILogger _logger;
+    private readonly SecurityPolicyNonePlugin _plugin;
+    private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
+    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
+
+    public SecurityPolicyNonePluginTest()
     {
-        // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
-
-        // act
-        SecurityPolicyNonePlugin plugin = new(logger);
-
-        // assert
-        Assert.True(plugin != null);
+        _logger = LoggerFactory.Create(builder => { }).CreateLogger<SecurityPolicyNonePluginTest>();
+        _plugin = new SecurityPolicyNonePlugin(_logger);
     }
+
 
     [Fact]
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
-
         EndpointDescription endpointDescription = new()
         {
             SecurityPolicyUri = new Uri(SecurityPolicies.Aes128_Sha256_RsaOaep).ToString(),
         };
-        Endpoint endpoint = new(endpointDescription);
-
-        SecurityPolicyNonePlugin plugin = new(logger);
-
+        _endpointDescriptions.Add(endpointDescription);
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         Assert.True(issue == null);
@@ -51,18 +43,14 @@ public class SecurityPolicyNonePluginTest
     public void ReportsIssues()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<AuditingDisabledPluginTest>();
         EndpointDescription endpointDescription = new()
         {
             SecurityPolicyUri = new Uri(SecurityPolicies.None).ToString(),
         };
-        Endpoint endpoint = new(endpointDescription);
-
-        SecurityPolicyNonePlugin plugin = new(logger);
+        _endpointDescriptions.Add(endpointDescription);
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         Assert.True(issue != null);

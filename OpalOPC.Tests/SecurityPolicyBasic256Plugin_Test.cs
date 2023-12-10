@@ -9,38 +9,31 @@ using Xunit;
 namespace Tests;
 public class SecurityPolicyBasic256PluginTest
 {
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
+    private readonly ILogger _logger;
+    private readonly SecurityPolicyBasic256Plugin _plugin;
+    private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
+    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
+    public SecurityPolicyBasic256PluginTest()
     {
-        // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityPolicyBasic256PluginTest>();
-
-        // act
-        SecurityPolicyBasic256Plugin plugin = new(logger);
-
-        // assert
-        Assert.True(plugin != null);
+        _logger = LoggerFactory.Create(builder => { }).CreateLogger<SecurityPolicyBasic256PluginTest>();
+        _plugin = new SecurityPolicyBasic256Plugin(_logger);
     }
+
 
     [Fact]
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityPolicyBasic256PluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
             SecurityPolicyUri = new Uri(SecurityPolicies.Aes128_Sha256_RsaOaep).ToString(),
         };
-        Endpoint endpoint = new(endpointDescription);
-
-        SecurityPolicyBasic256Plugin plugin = new(logger);
+        _endpointDescriptions.Add(endpointDescription);
 
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         Assert.True(issue == null);
@@ -51,18 +44,15 @@ public class SecurityPolicyBasic256PluginTest
     public void ReportsIssues()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityPolicyBasic256PluginTest>();
         EndpointDescription endpointDescription = new()
         {
             SecurityPolicyUri = new Uri(SecurityPolicies.Basic256).ToString(),
         };
-        Endpoint endpoint = new(endpointDescription);
+        _endpointDescriptions.Add(endpointDescription);
 
-        SecurityPolicyBasic256Plugin plugin = new(logger);
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         Assert.True(issue != null);

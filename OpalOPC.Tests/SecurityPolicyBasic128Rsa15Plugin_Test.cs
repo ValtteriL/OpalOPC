@@ -9,38 +9,31 @@ using Xunit;
 namespace Tests;
 public class SecurityPolicyBasic128Rsa15PluginTest
 {
-    [Fact]
-    public void ConstructorDoesNotReturnNull()
+    private readonly ILogger _logger;
+    private readonly SecurityPolicyBasic128Rsa15Plugin _plugin;
+    private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
+    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
+
+    public SecurityPolicyBasic128Rsa15PluginTest()
     {
-        // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityPolicyBasic128Rsa15PluginTest>();
-
-        // act
-        SecurityPolicyBasic128Rsa15Plugin plugin = new(logger);
-
-        // assert
-        Assert.True(plugin != null);
+        _logger = LoggerFactory.Create(builder => { }).CreateLogger<SecurityPolicyBasic128Rsa15PluginTest>();
+        _plugin = new SecurityPolicyBasic128Rsa15Plugin(_logger);
     }
 
     [Fact]
     public void DoesNotReportFalsePositive()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityPolicyBasic128Rsa15PluginTest>();
 
         EndpointDescription endpointDescription = new()
         {
             SecurityPolicyUri = new Uri(SecurityPolicies.Basic256).ToString(),
         };
-        Endpoint endpoint = new(endpointDescription);
-
-        SecurityPolicyBasic128Rsa15Plugin plugin = new(logger);
+        _endpointDescriptions.Add(endpointDescription);
 
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         Assert.True(issue == null);
@@ -51,18 +44,14 @@ public class SecurityPolicyBasic128Rsa15PluginTest
     public void ReportsIssues()
     {
         // arrange
-        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
-        ILogger logger = loggerFactory.CreateLogger<SecurityPolicyBasic128Rsa15PluginTest>();
         EndpointDescription endpointDescription = new()
         {
             SecurityPolicyUri = new Uri(SecurityPolicies.Basic128Rsa15).ToString(),
         };
-        Endpoint endpoint = new(endpointDescription);
-
-        SecurityPolicyBasic128Rsa15Plugin plugin = new(logger);
+        _endpointDescriptions.Add(endpointDescription);
 
         // act
-        (Issue? issue, ICollection<ISession> sessions) = plugin.Run(endpoint);
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
         Assert.True(issue != null);

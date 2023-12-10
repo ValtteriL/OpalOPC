@@ -1,28 +1,140 @@
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Logging;
 using Model;
 using Mono.Options;
+using Opc.Ua;
+using Org.BouncyCastle.Asn1.IsisMtt.Ocsp;
+using Util;
 
 namespace View
 {
     public class Argparser
     {
         private readonly string[] _args;
-        private readonly OptionSet _optionSet;
+        private readonly Mono.Options.OptionSet _optionSet;
         private Options _options = new();
         private readonly string _programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+        private readonly IFileUtil _fileUtil;
 
         public Argparser(string[] args)
         {
-            _optionSet = new OptionSet {
+            _optionSet = new Mono.Options.OptionSet {
                 { "i|input-file=", "input targets from list of discovery uris", il => _options = readTargetFile(il) },
                 { "o|output=", "output XHTML report filename", ox => _options = setOutputFile(ox) },
                 { "v", "increase verbosity (can be specified up to 2 times)", v => _options.logLevel = (v == null) ? _options.logLevel : _options.logLevel == LogLevel.Information ? LogLevel.Debug : LogLevel.Trace },
                 { "h|help", "show this message and exit", h => _options.shouldShowHelp = h != null },
                 { "s", "silence output (useful with -o -)", s => _options.logLevel = (s == null) ? _options.logLevel : LogLevel.None },
+                { "l|login-credential=", "username:password for user authentication", l => _options = addLoginCredential(l) },
+                { "b|brute-force-credential=", "username:password for brute force attack", b => _options = addBruteForceCredential(b) },
+                { "L|login-credential-file=", "input username:password pairs for authentication from list", l => _options = addLoginCredentialsFromFile(l) },
+                { "B|brute-force-credential-file=", "input username:password pairs for brute force attack from list", b => _options = addBruteForceCredentialsFromFile(b) },
+                { "c|user-certificate-and-privatekey=", "certificate and private key for user authentication", c => _options = addUserCertificatePrivatekey(c) },
+                { "a|application-certificate-and-privatekey=", "certificate and private key for application authentication", a => _options = addAppCertificatePrivatekey(a) },
                 { "version", "show version and exit", ver => _options.shouldShowVersion = ver != null },
             };
 
             _args = args;
+            _fileUtil = new FileUtil();
+        }
+
+        // constructor for tests 
+        public Argparser(string[] args, IFileUtil fileUtil) : this(args)
+        {
+            _fileUtil = fileUtil;
+        }
+
+        private static (string, string) splitStringToTwoByColon(string usernamePassword)
+        {
+            string[] splitLine = usernamePassword.Split(':', 2);
+            if (splitLine.Length == 2)
+            {
+                return (splitLine[0], splitLine[1]);
+            }
+            else
+            {
+                throw new OptionException($"\"{usernamePassword}\" is invalid user authentication credential", "");
+            }
+        }
+
+        private ICollection<string> readFileToList(string path)
+        {
+            List<string> lines;
+
+            try
+            {
+                lines = _fileUtil.ReadFileToList(path).ToList();
+
+            }
+            catch (System.Exception e)
+            {
+                throw new OptionException(e.Message, "");
+            }
+
+            return lines;
+        }
+
+        private CertificateIdentifier readCertificate(string certPath, string privkeyPath)
+        {
+            CertificateIdentifier cert;
+            try
+            {
+                cert = _fileUtil.CreateCertificateIdentifierFromPemFile(certPath, privkeyPath);
+            }
+            catch (Exception)
+            {
+                throw new OptionException($"Unable to process certificate {certPath} with private key {privkeyPath}", "");
+            }
+
+            return cert;
+        }
+
+        private Options addAppCertificatePrivatekey(string paths)
+        {
+            (string certpath, string privkeypath) = splitStringToTwoByColon(paths);
+            _options.authenticationData.AddApplicationCertificate(readCertificate(certpath, privkeypath));
+            return _options;
+        }
+
+        private Options addUserCertificatePrivatekey(string paths)
+        {
+            (string certpath, string privkeypath) = splitStringToTwoByColon(paths);
+            _options.authenticationData.AddUserCertificate(readCertificate(certpath, privkeypath));
+            return _options;
+        }
+
+        private Options addBruteForceCredentialsFromFile(string path)
+        {
+            foreach (string line in readFileToList(path))
+            {
+                addBruteForceCredential(line);
+            }
+
+            return _options;
+        }
+
+        private Options addLoginCredentialsFromFile(string path)
+        {
+            foreach (string line in readFileToList(path))
+            {
+                addLoginCredential(line);
+            }
+
+            return _options;
+        }
+
+        private Options addLoginCredential(string credential)
+        {
+            (string username, string password) = splitStringToTwoByColon(credential);
+            _options.authenticationData.AddLoginCredential(username, password);
+            return _options;
+        }
+
+        private Options addBruteForceCredential(string credential)
+        {
+            (string username, string password) = splitStringToTwoByColon(credential);
+            _options.authenticationData.AddBruteForceCredential(username, password);
+            return _options;
         }
 
         private Options setOutputFile(string path)
@@ -71,7 +183,7 @@ namespace View
                 }
                 else
                 {
-                    lines = File.ReadAllLines(path).ToList();
+                    lines = _fileUtil.ReadFileToList(path).ToList();
                 }
             }
             catch (System.Exception e)
@@ -156,7 +268,8 @@ namespace View
                 deleteReportIfCreatedAlready();
                 printHelp();
                 _options.exitCode = Util.ExitCodes.Success;
-            } else if (_options.shouldShowVersion)
+            }
+            else if (_options.shouldShowVersion)
             {
                 deleteReportIfCreatedAlready();
                 printVersion();

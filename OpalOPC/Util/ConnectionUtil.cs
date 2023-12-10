@@ -1,3 +1,5 @@
+using System.Net;
+using Model;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Opc.Ua.Security.Certificates;
@@ -6,20 +8,22 @@ namespace Util
 {
     public interface IConnectionUtil
     {
-        public Task<ISession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity);
-
+        public Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity);
+        public Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity, CertificateIdentifier identifier);
+        public ISecurityTestSession? AttemptLogin(Endpoint endpoint, UserIdentity identity, CertificateIdentifier certificateIdentifier);
+        public ISecurityTestSession? AttemptLogin(Endpoint endpoint, UserIdentity identity);
     }
 
     public class ConnectionUtil : IConnectionUtil
     {
         private const string Subject = "CN=Test Cert Subject, C=FI, S=Uusimaa, O=Molemmat Oy";
 
-        private readonly ApplicationConfiguration applicationConfiguration;
-        private readonly EndpointConfiguration endpointConfiguration;
+        private readonly ApplicationConfiguration _applicationConfiguration;
+        private readonly CertificateIdentifier _certificateIdentifier;
 
         public ConnectionUtil()
         {
-            applicationConfiguration = new ApplicationConfiguration
+            _applicationConfiguration = new ApplicationConfiguration
             {
                 ApplicationName = "OpalOPC@host",
                 ApplicationUri = "urn:host:OPCUA:OpalOPC",
@@ -28,8 +32,8 @@ namespace Util
                 SecurityConfiguration = new SecurityConfiguration()
             };
 
-            // Use self-signed certificate to connect
-            applicationConfiguration.SecurityConfiguration.ApplicationCertificate = new CertificateIdentifier(
+            // Generate self-signed certificate for client
+            _certificateIdentifier = new CertificateIdentifier(
                 CertificateBuilder
                     .Create(Subject)
                     .AddExtension(
@@ -38,33 +42,76 @@ namespace Util
                     .CreateForRSA());
 
             // accept any server certificates
-            applicationConfiguration.CertificateValidator = new CertificateValidator
+            _applicationConfiguration.CertificateValidator = new CertificateValidator
             {
                 AutoAcceptUntrustedCertificates = true
             };
 
-            endpointConfiguration = EndpointConfiguration.Create(applicationConfiguration);
         }
 
         // Authenticate with OPC UA server and start a session
-        public async Task<ISession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity)
+        public async Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity)
         {
+            SessionCredential credential = new(userIdentity, _certificateIdentifier, true);
+            return await StartSession(endpointDescription, credential);
+        }
+
+        public async Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity, CertificateIdentifier identifier)
+        {
+            SessionCredential credential = new(userIdentity, identifier);
+            return await StartSession(endpointDescription, credential);
+        }
+
+        private async Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, SessionCredential sessionCredential)
+        {
+            // Prepare application and endpoint configurations
+            _applicationConfiguration.SecurityConfiguration.ApplicationCertificate = sessionCredential.applicationCertificate;
+            EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(_applicationConfiguration);
+
             ConfiguredEndpoint endpoint = new(null, endpointDescription, endpointConfiguration);
 
             ISessionFactory sessionFactory = new DefaultSessionFactory();
 
             ISession session = await sessionFactory.CreateAsync(
-                applicationConfiguration,
+                _applicationConfiguration,
                 endpoint,
                 false,
                 false,
-                applicationConfiguration.ApplicationName,
+                _applicationConfiguration.ApplicationName,
                 30 * 1000,
-                userIdentity,
+                sessionCredential.identity,
                 null
             ).ConfigureAwait(false);
 
-            return session;
+            return new SecurityTestSession(session, sessionCredential);
         }
+
+        public ISecurityTestSession? AttemptLogin(Endpoint endpoint, UserIdentity identity, CertificateIdentifier? certificateIdentifier = null)
+        {
+            try
+            {
+                ISecurityTestSession session;
+
+                if (certificateIdentifier == null)
+                {
+                    session = StartSession(endpoint.EndpointDescription, identity).Result;
+                }
+                else
+                {
+                    session = StartSession(endpoint.EndpointDescription, identity, certificateIdentifier).Result;
+                }
+
+                if (session != null && session.Session.Connected)
+                {
+                    return session;
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return null;
+        }
+
+        public ISecurityTestSession? AttemptLogin(Endpoint endpoint, UserIdentity identity) => AttemptLogin(endpoint, identity, null);
     }
 }

@@ -18,15 +18,15 @@ namespace Plugin
 
         public SecurityPolicyBasic128Rsa15Plugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity) { }
 
-        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
-            _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for Security Policy Basic128Rsa15");
+            _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for Security Policy Basic128Rsa15");
 
-            List<ISession> sessions = new();
+            List<ISecurityTestSession> sessions = new();
 
-            if (endpoint.SecurityPolicyUri == SecurityPolicies.Basic128Rsa15)
+            if (endpointDescriptions.Find(d => d.SecurityPolicyUri == SecurityPolicies.Basic128Rsa15) != null)
             {
-                _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} uses Basic128Rsa15");
+                _logger.LogTrace("{Message}", $"Endpoint {discoveryUrl} has security policy Basic128Rsa15");
                 return (CreateIssue(), sessions);
             }
 

@@ -19,34 +19,62 @@ namespace Plugin
         private static readonly double s_severity = 7.3;
 
         private readonly IConnectionUtil _connectionUtil;
+        private readonly AuthenticationData _authenticationData;
 
-        public AnonymousAuthenticationPlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
+        public AnonymousAuthenticationPlugin(ILogger logger, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
         {
             _connectionUtil = new ConnectionUtil();
+            _authenticationData = authenticationData;
         }
-        public AnonymousAuthenticationPlugin(ILogger logger, IConnectionUtil connectionUtil) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
+        public AnonymousAuthenticationPlugin(ILogger logger, IConnectionUtil connectionUtil, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
         {
             _connectionUtil = connectionUtil;
+            _authenticationData = authenticationData;
         }
 
-        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
-            _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for anonymous access");
+            _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for anonymous access");
 
-            List<ISession> sessions = new();
+            List<EndpointDescription> anonymousEndpoints = endpointDescriptions.FindAll(e => e.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.Anonymous));
+            EndpointDescription? anonymousEndpointNoApplicationAuthentication = anonymousEndpoints.Find(e => e.SecurityPolicyUri == SecurityPolicies.None);
+            EndpointDescription? anonymousEndpointWithApplicationAuthentication = anonymousEndpoints.Find(e => e.SecurityPolicyUri != SecurityPolicies.None);
 
-            if (endpoint.UserTokenTypes.Contains(UserTokenType.Anonymous))
+            List<ISecurityTestSession> sessions = new();
+
+            if (anonymousEndpointNoApplicationAuthentication != null)
             {
-
+                // try with self-signed cert, if not working, try application certificates one by one until one works or they run out
                 // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                 try
                 {
-                    ISession session = _connectionUtil.StartSession(endpoint.EndpointDescription, new UserIdentity()).Result;
+                    ISecurityTestSession session = _connectionUtil.StartSession(anonymousEndpointNoApplicationAuthentication, new UserIdentity()).Result;
                     sessions.Add(session);
+                    return (CreateIssue(), sessions);
                 }
                 catch (Exception)
                 {
 
+                }
+
+                return (CreateIssue(), sessions);
+            }
+
+            if (anonymousEndpointWithApplicationAuthentication != null)
+            {
+                foreach (Opc.Ua.CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
+                {
+                    // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
+                    try
+                    {
+                        ISecurityTestSession session = _connectionUtil.StartSession(anonymousEndpointWithApplicationAuthentication, new UserIdentity(), applicationCertificate).Result;
+                        sessions.Add(session);
+                        return (CreateIssue(), sessions);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
 
                 return (CreateIssue(), sessions);

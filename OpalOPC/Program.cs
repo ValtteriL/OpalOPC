@@ -33,7 +33,7 @@ class OpalOPC
         VersionCheckController versionCheckController = new(logger);
         versionCheckController.CheckVersion();
 
-        ScanController scanController = new(logger, options.targets, options.xmlOutputStream!, Environment.CommandLine);
+        ScanController scanController = new(logger, options.targets, options.xmlOutputStream!, Environment.CommandLine, options.authenticationData);
         scanController.Scan();
 
         if (options.xmlOutputReportName != null)

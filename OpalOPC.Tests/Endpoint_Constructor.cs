@@ -4,14 +4,6 @@ using Xunit;
 namespace Tests;
 public class Endpoint_Constructor
 {
-    [Fact]
-    public void constructor_DoesNotReturnNull()
-    {
-        Opc.Ua.EndpointDescription description = new();
-        Endpoint endpoint = new(description);
-
-        Assert.True(endpoint != null);
-    }
 
     [Fact]
     public void constructor_SetsProperties()

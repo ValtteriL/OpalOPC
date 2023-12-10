@@ -19,15 +19,15 @@ namespace Plugin
 
         public SecurityPolicyNonePlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity) { }
 
-        public override (Issue?, ICollection<ISession>) Run(Endpoint endpoint)
+        public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
-            _logger.LogTrace("{Message}", $"Testing {endpoint.EndpointUrl} for Security Policy None");
+            _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for Security Policy None");
 
-            List<ISession> sessions = new();
+            List<ISecurityTestSession> sessions = new();
 
-            if (endpoint.SecurityPolicyUri == SecurityPolicies.None)
+            if (endpointDescriptions.Find(d => d.SecurityPolicyUri == SecurityPolicies.None) != null)
             {
-                _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} has security policy None");
+                _logger.LogTrace("{Message}", $"Endpoint {discoveryUrl} has security policy None");
                 return (CreateIssue(), sessions);
             }
 

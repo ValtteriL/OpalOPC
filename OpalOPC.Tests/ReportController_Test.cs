@@ -17,7 +17,6 @@ public class ReportControllerTest
         SecurityMode = MessageSecurityMode.None,
         EndpointUrl = "opc.tcp://localhost:4840",
     };
-    private readonly Server _server;
     private readonly ApplicationDescription _applicationDescription = new()
     {
         ApplicationType = ApplicationType.Server,
@@ -27,12 +26,14 @@ public class ReportControllerTest
     };
 
     private readonly Mock<IReporter> _reporterMock;
+    private readonly ReportController _reportController;
 
     public ReportControllerTest()
     {
         _loggerMock = new Mock<ILogger>();
         _reporterMock = new Mock<IReporter>();
-        _server = new("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription });
+        _reporterMock.Setup(r => r.PrintXHTMLReport(It.IsAny<Report>())).Verifiable();
+        _reportController = new ReportController(_loggerMock.Object, _reporterMock.Object);
     }
 
     // add test to check if targets are sorted by server issue severity
@@ -40,36 +41,31 @@ public class ReportControllerTest
     public void TestReportingWorksWithEmptyTargets()
     {
         // Arrange
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object);
-        _reporterMock.Setup(r => r.PrintXHTMLReport(It.IsAny<Report>())).Verifiable();
-
 
         // Act
-        reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty);
-        reportController.WriteReport(string.Empty);
+        _reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        _reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
-        Assert.NotNull(reportController.report);
-        Assert.Empty(reportController.report.Targets);
+        Assert.NotNull(_reportController.report);
+        Assert.Empty(_reportController.report.Targets);
     }
 
     [Fact]
     public void TestReportingWorksWithSingleTarget()
     {
         // Arrange
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object);
-        _reporterMock.Setup(r => r.PrintXHTMLReport(It.IsAny<Report>())).Verifiable();
 
         // Act
-        reportController.GenerateReport(new List<Target>() { new(_applicationDescription) }, DateTime.Now, DateTime.Now, string.Empty);
-        reportController.WriteReport(string.Empty);
+        _reportController.GenerateReport(new List<Target>() { new(_applicationDescription) }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        _reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
-        Assert.NotNull(reportController.report);
-        Assert.NotEmpty(reportController.report.Targets);
-        Assert.True(reportController.report.Targets.Count == 1);
+        Assert.NotNull(_reportController.report);
+        Assert.NotEmpty(_reportController.report.Targets);
+        Assert.True(_reportController.report.Targets.Count == 1);
     }
 
     // add test to check if targets are sorted by server issue severity
@@ -77,32 +73,30 @@ public class ReportControllerTest
     public void TestTargetServerEndpointSortingWorks()
     {
         // Arrange
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object);
-        _reporterMock.Setup(r => r.PrintXHTMLReport(It.IsAny<Report>())).Verifiable();
 
         var target1 = new Target(_applicationDescription);
         target1.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
-        target1.Servers.First().SeparatedEndpoints.First().Issues.Add(new Issue(1, "description", 0.1));
+        target1.Servers.First().Issues.Add(new Issue(1, "description", 0.1));
 
         var target2 = new Target(_applicationDescription);
         target2.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
-        target2.Servers.First().SeparatedEndpoints.First().Issues.Add(new Issue(1, "description", 0.2));
+        target2.Servers.First().Issues.Add(new Issue(1, "description", 0.2));
 
         var target3 = new Target(_applicationDescription);
         target3.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
-        target3.Servers.First().SeparatedEndpoints.First().Issues.Add(new Issue(1, "description", 0.3));
+        target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty);
-        reportController.WriteReport(string.Empty);
+        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        _reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
-        Assert.NotNull(reportController.report);
-        Assert.NotEmpty(reportController.report.Targets);
-        Assert.True(reportController.report.Targets.Count == 3);
-        Assert.True(reportController.report.Targets.First().Servers.First().Endpoints.First().Issues.First().Severity == 0.3);
-        Assert.True(reportController.report.Targets.Last().Servers.First().Endpoints.First().Issues.First().Severity == 0.1);
+        Assert.NotNull(_reportController.report);
+        Assert.NotEmpty(_reportController.report.Targets);
+        Assert.True(_reportController.report.Targets.Count == 3);
+        Assert.True(_reportController.report.Targets.First().Servers.First().Issues.First().Severity == 0.3);
+        Assert.True(_reportController.report.Targets.Last().Servers.First().Issues.First().Severity == 0.1);
     }
 
     // test that report is generated correctly when not all targets have servers
@@ -110,29 +104,27 @@ public class ReportControllerTest
     public void TestReportingWorksWhenNotAllTargetsHaveServers()
     {
         // Arrange
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object);
-        _reporterMock.Setup(r => r.PrintXHTMLReport(It.IsAny<Report>())).Verifiable();
 
         var target1 = new Target(_applicationDescription);
         target1.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
-        target1.Servers.First().SeparatedEndpoints.First().Issues.Add(new Issue(1, "description", 0.1));
+        target1.Servers.First().Issues.Add(new Issue(1, "description", 0.1));
 
         var target2 = new Target(_applicationDescription);
 
         var target3 = new Target(_applicationDescription);
         target3.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
-        target3.Servers.First().SeparatedEndpoints.First().Issues.Add(new Issue(1, "description", 0.3));
+        target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty);
-        reportController.WriteReport(string.Empty);
+        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        _reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
-        Assert.NotNull(reportController.report);
-        Assert.NotEmpty(reportController.report.Targets);
-        Assert.True(reportController.report.Targets.Count == 3);
-        Assert.True(reportController.report.Targets.First().Servers.First().Endpoints.First().Issues.First().Severity == 0.3);
+        Assert.NotNull(_reportController.report);
+        Assert.NotEmpty(_reportController.report.Targets);
+        Assert.True(_reportController.report.Targets.Count == 3);
+        Assert.True(_reportController.report.Targets.First().Servers.First().Issues.First().Severity == 0.3);
     }
 
     // test that report is generated correctly when not all servers have endpoints
@@ -140,30 +132,28 @@ public class ReportControllerTest
     public void TestReportingWorksWhenNotAllServersHaveEndpoints()
     {
         // Arrange
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object);
-        _reporterMock.Setup(r => r.PrintXHTMLReport(It.IsAny<Report>())).Verifiable();
 
         var target1 = new Target(_applicationDescription);
         target1.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
-        target1.Servers.First().SeparatedEndpoints.First().Issues.Add(new Issue(1, "description", 0.1));
+        target1.Servers.First().Issues.Add(new Issue(1, "description", 0.1));
 
         var target2 = new Target(_applicationDescription);
         target2.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { }));
 
         var target3 = new Target(_applicationDescription);
         target3.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
-        target3.Servers.First().SeparatedEndpoints.First().Issues.Add(new Issue(1, "description", 0.3));
+        target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty);
-        reportController.WriteReport(string.Empty);
+        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        _reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
-        Assert.NotNull(reportController.report);
-        Assert.NotEmpty(reportController.report.Targets);
-        Assert.True(reportController.report.Targets.Count == 3);
-        Assert.True(reportController.report.Targets.First().Servers.First().Endpoints.First().Issues.First().Severity == 0.3);
+        Assert.NotNull(_reportController.report);
+        Assert.NotEmpty(_reportController.report.Targets);
+        Assert.True(_reportController.report.Targets.Count == 3);
+        Assert.True(_reportController.report.Targets.First().Servers.First().Issues.First().Severity == 0.3);
     }
 
     // test that report is generated correctly when not all endpoints have issues
@@ -171,14 +161,12 @@ public class ReportControllerTest
     public void TestReportingWorksWhenNotAllEndpointHaveIssues()
     {
         // Arrange
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object);
-        _reporterMock.Setup(r => r.PrintXHTMLReport(It.IsAny<Report>())).Verifiable();
 
         var target1 = new Target(_applicationDescription);
         target1.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
-        target1.Servers.First().SeparatedEndpoints.First().Issues.Add(new Issue(1, "description", 0.1));
-        target1.Servers.First().SeparatedEndpoints.First().Issues.Add(new Issue(2, "description", 0.1));
-        target1.Servers.First().SeparatedEndpoints.First().Issues.Add(new Issue(3, "description", 0.1));
+        target1.Servers.First().Issues.Add(new Issue(1, "description", 0.1));
+        target1.Servers.First().Issues.Add(new Issue(2, "description", 0.1));
+        target1.Servers.First().Issues.Add(new Issue(3, "description", 0.1));
 
         var target2 = new Target(_applicationDescription);
         target2.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
@@ -187,18 +175,18 @@ public class ReportControllerTest
 
         var target3 = new Target(_applicationDescription);
         target3.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
-        target3.Servers.First().SeparatedEndpoints.First().Issues.Add(new Issue(1, "description", 0.3));
+        target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty);
-        reportController.WriteReport(string.Empty);
+        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        _reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
-        Assert.NotNull(reportController.report);
-        Assert.NotEmpty(reportController.report.Targets);
-        Assert.True(reportController.report.Targets.Count == 3);
-        Assert.True(reportController.report.Targets.First().Servers.First().Endpoints.First().Issues.First().Severity == 0.3);
+        Assert.NotNull(_reportController.report);
+        Assert.NotEmpty(_reportController.report.Targets);
+        Assert.True(_reportController.report.Targets.Count == 3);
+        Assert.True(_reportController.report.Targets.First().Servers.First().Issues.First().Severity == 0.3);
     }
 
 }

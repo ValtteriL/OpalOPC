@@ -31,5 +31,13 @@ namespace Model
                 UserTokenTypes.Add(utp.TokenType);
             }
         }
+
+        // Check if endpoint is bruteable = username + application authentication is disabled OR self-signed certificates accepted
+        // we can only test if username authentication is enabled - we can't test if self-signed certificates are accepted
+        // this means that we may try to brute a non-bruteable endpoint, but we will not miss any bruteable endpoints
+        public bool IsBruteable()
+        {
+            return UserTokenTypes.Contains(UserTokenType.UserName);
+        }
     }
 }
