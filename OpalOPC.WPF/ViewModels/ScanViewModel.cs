@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Model;
 using OpalOPC.WPF.GuiUtil;
 using OpalOPC.WPF.Logger;
-using OpalOPC.WPF.Models;
 using Util;
 
 

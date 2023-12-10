@@ -18,7 +18,7 @@ public class RBACNotSupportedPluginTest
     public RBACNotSupportedPluginTest()
     {
         _logger = LoggerFactory.Create(builder => { }).CreateLogger<RBACNotSupportedPluginTest>();
-        _mockSession  = new Mock<ISession>();
+        _mockSession = new Mock<ISession>();
         _plugin = new RBACNotSupportedPlugin(_logger);
     }
 

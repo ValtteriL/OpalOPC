@@ -1,11 +1,7 @@
 using System.Reflection;
-using System.Xml;
-using System.Xml.Serialization;
-using System.Xml.Xsl;
-using Model;
 using HandlebarsDotNet;
-using System.Text.Json;
 using HandlebarsDotNet.Helpers;
+using Model;
 
 namespace View
 {

@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Hosting.Server;
 using Model;
 using Opc.Ua;
-using Plugin;
 using View;
 using Xunit;
 

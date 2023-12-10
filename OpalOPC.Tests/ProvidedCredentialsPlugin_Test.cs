@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Model;
 using Moq;
 using Opc.Ua;
-using Opc.Ua.Client;
 using Opc.Ua.Security.Certificates;
 using Plugin;
 using Util;

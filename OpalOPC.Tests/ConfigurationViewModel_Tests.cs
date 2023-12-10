@@ -1,8 +1,5 @@
 #if BUILT_FOR_WINDOWS
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.Extensions.Logging;
 using Moq;
-using OpalOPC.WPF;
 using OpalOPC.WPF.GuiUtil;
 using OpalOPC.WPF.ViewModels;
 using Opc.Ua;

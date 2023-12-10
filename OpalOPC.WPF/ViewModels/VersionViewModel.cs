@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Windows.Automation.Provider;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 

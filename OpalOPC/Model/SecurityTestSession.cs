@@ -1,4 +1,3 @@
-using Opc.Ua;
 using Opc.Ua.Client;
 
 namespace Model

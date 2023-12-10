@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
-using Opc.Ua.Client;
 using Plugin;
 using Xunit;
 

@@ -1,5 +1,3 @@
-using System.Xml.Serialization;
-
 namespace Model
 {
     public class Report

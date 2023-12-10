@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
-using Opc.Ua.Client;
 using Util;
 
 namespace Plugin
@@ -109,7 +107,7 @@ namespace Plugin
                     session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password));
                 else
                     session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password), certificateIdentifier);
-                
+
                 if (session != null && session.Session.Connected)
                 {
                     _logger.LogTrace("{Message}", $"Endpoint {endpoint.EndpointUrl} uses provided username:password ({username}:{password})");

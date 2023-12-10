@@ -1,6 +1,6 @@
-﻿using Microsoft.Win32;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Win32;
 using OpalOPC.WPF.ViewModels;
 
 namespace OpalOPC.WPF.Views;

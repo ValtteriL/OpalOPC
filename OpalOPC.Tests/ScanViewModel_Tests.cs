@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Moq;
-using OpalOPC.WPF;
 using OpalOPC.WPF.GuiUtil;
 using OpalOPC.WPF.ViewModels;
 using Util;
@@ -35,7 +34,7 @@ public class ScanViewModel_Tests
         Assert.True(model.Log != null);
         Assert.True(model.Verbosity == LogLevel.Information);
         Assert.True(model.ScanCompletedSuccessfully == false);
-}
+    }
 
     // adding single target
     [Fact]
