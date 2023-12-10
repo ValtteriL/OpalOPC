@@ -30,7 +30,9 @@ namespace Util
 
             // create directory if it doesn't exist - this is cross platform
             // see https://developers.redhat.com/blog/2018/11/07/dotnet-special-folder-api-linux#
-            _certPath = Path.Combine(GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.Create), _dirName, _certFilename);
+            string certDir = Path.Combine(GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.Create), _dirName);
+            Directory.CreateDirectory(certDir);
+            _certPath = Path.Combine(certDir, _certFilename);
         }
 
         public CertificateIdentifier GetCertificate()
