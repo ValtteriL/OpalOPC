@@ -55,7 +55,7 @@ namespace Controller
             if (latestVersion != thisVersion)
             {
                 IsUpToDate = false;
-                _logger.LogWarning("{Message}",$"Using outdated OpalOPC version {thisVersion} (the latest is {latestVersion})");
+                _logger.LogWarning("{Message}", $"Using outdated OpalOPC version {thisVersion} (the latest is {latestVersion})");
                 return;
             }
 

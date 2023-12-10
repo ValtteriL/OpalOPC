@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
-using Opc.Ua.Client;
 using Util;
 
 namespace Plugin
@@ -42,7 +41,7 @@ namespace Plugin
 
             List<(string username, string password)> validCredentials = new();
 
-            if(usernameEndpointsNoApplicationAuthentication != null)
+            if (usernameEndpointsNoApplicationAuthentication != null)
             {
                 AttempLoginWithUsernamesPasswords(sessions, validCredentials, new Endpoint(usernameEndpointsNoApplicationAuthentication));
             }
