@@ -17,6 +17,7 @@ namespace Util
         private readonly ApplicationConfiguration _applicationConfiguration;
         private readonly CertificateIdentifier _certificateIdentifier;
         private readonly ISelfSignedCertificateUtil _selfSignedCertificateUtil;
+        private readonly string _sessionName = "OpalOPC Security Check";
 
         public ConnectionUtil()
         {
@@ -69,7 +70,7 @@ namespace Util
                 endpoint,
                 false,
                 false,
-                _applicationConfiguration.ApplicationName,
+                _sessionName,
                 30 * 1000,
                 sessionCredential.identity,
                 null
