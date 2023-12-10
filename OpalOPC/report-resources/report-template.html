@@ -53,8 +53,8 @@
                   <td>{{ ApplicationName }}</td>
                   <td>{{ Type }}</td>
                   <td>{{ Servers.Count }}</td>
-                  <td>{{ Issues.Count }}</td>
-                  <td>{{ Errors.Count }}</td>
+                  <td>{{ IssuesCount }}</td>
+                  <td>{{ ErrorsCount }}</td>
                 </tr>
                 {{ /each }}
               </tbody>
@@ -158,7 +158,7 @@
                         </tr>
                         <tr>
                           <td>Errors</td>
-                          <td class="text-start">{{ Errors.Count }}</td>
+                          <td class="text-start">{{ ErrorsCount }}</td>
                         </tr>
                       </tbody>
                     </table>

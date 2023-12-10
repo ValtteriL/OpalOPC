@@ -13,6 +13,9 @@ namespace Model
         public string ApplicationUri { get; private set; }
         public string ProductUri { get; private set; }
 
+        public int IssuesCount => Servers.Sum(s => s.Issues.Count);
+        public int ErrorsCount => Servers.Sum(s => s.Errors.Count);
+
 
         public Target(ApplicationDescription ad)
         {
