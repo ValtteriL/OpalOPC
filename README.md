@@ -25,9 +25,7 @@ make server
 make test
 
 # e2e tests
-make run-opcuaserver.com-demo
-make run-opcuaserver.com-lds
-make run-opcuaserver.com-weather
+make run-e2e-tests
 
 # test install.sh
 make run-linux-mac-installer

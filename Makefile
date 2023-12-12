@@ -70,14 +70,3 @@ publish-all:
 		--inventory ron, \
 		deploy/playbooks/publish.yaml
 
-
-# Metrics
-VAULT_PASSWORD_FILE := "deploy/vault_password"
-NUMBER_DAYS := 1
-
-.PHONY: daily-metrics
-daily-metrics:
-	@ansible-playbook \
-		--vault-password-file $(VAULT_PASSWORD_FILE) \
-		-e @deploy/playbooks/vault/dailymetrics-vault.yml -e "number_days=$(NUMBER_DAYS)" \
-		deploy/playbooks/dailymetrics.yaml
