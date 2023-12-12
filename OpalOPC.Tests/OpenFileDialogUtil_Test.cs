@@ -1,3 +1,4 @@
+#if BUILT_FOR_WINDOWS
 using Microsoft.Extensions.Logging;
 using Model;
 using Moq;
@@ -98,3 +99,4 @@ public class OpenFileDialogUtilTest
     }
 
 }
+#endif
