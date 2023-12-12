@@ -24,10 +24,10 @@ namespace View
                 { "s", "silence output (useful with -o -)", s => _options.logLevel = (s == null) ? _options.logLevel : LogLevel.None },
                 { "l|login-credential=", "username:password for user authentication", l => _options = addLoginCredential(l) },
                 { "b|brute-force-credential=", "username:password for brute force attack", b => _options = addBruteForceCredential(b) },
-                { "L|login-credential-file=", "input username:password pairs for authentication from list", l => _options = addLoginCredentialsFromFile(l) },
-                { "B|brute-force-credential-file=", "input username:password pairs for brute force attack from list", b => _options = addBruteForceCredentialsFromFile(b) },
-                { "c|user-certificate-and-privatekey=", "certificate and private key for user authentication", c => _options = addUserCertificatePrivatekey(c) },
-                { "a|application-certificate-and-privatekey=", "certificate and private key for application authentication", a => _options = addAppCertificatePrivatekey(a) },
+                { "L|login-credential-file=", "import list of username:password for authentication from file", l => _options = addLoginCredentialsFromFile(l) },
+                { "B|brute-force-credential-file=", "import list of username:password for brute force attack from file", b => _options = addBruteForceCredentialsFromFile(b) },
+                { "c|user-certificate-and-privatekey=", "path-to-certificate:path-to-privatekey for user authentication", c => _options = addUserCertificatePrivatekey(c) },
+                { "a|application-certificate-and-privatekey=", "path-to-certificate:path-to-privatekey for application authentication", a => _options = addAppCertificatePrivatekey(a) },
                 { "version", "show version and exit", ver => _options.shouldShowVersion = ver != null },
             };
 
@@ -78,9 +78,9 @@ namespace View
             {
                 cert = _fileUtil.CreateCertificateIdentifierFromPemFile(certPath, privkeyPath);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new OptionException($"Unable to process certificate {certPath} with private key {privkeyPath}", "");
+                throw new OptionException($"Unable to process certificate {certPath} with private key {privkeyPath}: {e.Message}", "");
             }
 
             return cert;
