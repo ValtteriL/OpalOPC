@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Win32;
+using OpalOPC.WPF.GuiUtil;
+using OpalOPC.WPF.Models;
 using OpalOPC.WPF.ViewModels;
 using Opc.Ua;
 
@@ -12,7 +13,8 @@ namespace OpalOPC.WPF.Views
     public partial class ConfigurationView : UserControl
     {
         private readonly ConfigurationViewModel _viewModel;
-        private readonly OpenFileDialog _openFileDialog;
+        private readonly MyOpenFileDialog _openFileDialog;
+        private readonly OpenFileDialogUtil _openFileDialogUtil = new();
         private readonly string _pemFilesFilter = "PEM files (*.pem)|*.pem";
         private readonly string _allFilesFilter = "All files (*.*)|*.*";
 
@@ -30,28 +32,14 @@ namespace OpalOPC.WPF.Views
 
         private void BrowseApplicationCertificateButton_Click(object sender, RoutedEventArgs e)
         {
-            string path = GetFilePathFromUser(_pemFilesFilter);
+            string path = _openFileDialogUtil.GetFilePathFromUser(_openFileDialog, _pemFilesFilter);
             _viewModel.SetApplicationCertificatePath(path);
         }
 
         private void BrowseApplicationPrivateKeyButton_Click(object sender, RoutedEventArgs e)
         {
-            string path = GetFilePathFromUser(_pemFilesFilter);
+            string path = _openFileDialogUtil.GetFilePathFromUser(_openFileDialog, _pemFilesFilter);
             _viewModel.SetApplicationPrivateKeyPath(path);
-        }
-
-        private string GetFilePathFromUser(string filter)
-        {
-            string filename = _openFileDialog.FileName;
-            _openFileDialog.FileName = string.Empty;
-            _openFileDialog.Filter = filter;
-
-            if (_openFileDialog.ShowDialog() == true)
-            {
-                return System.IO.Path.GetFullPath(filename);
-            }
-
-            return string.Empty;
         }
 
         private void ApplicationCertificatesListItemDeleteButton_Click(object sender, RoutedEventArgs e)
@@ -64,13 +52,13 @@ namespace OpalOPC.WPF.Views
 
         private void BrowseUserCertificateButton_Click(object sender, RoutedEventArgs e)
         {
-            string path = GetFilePathFromUser(_pemFilesFilter);
+            string path = _openFileDialogUtil.GetFilePathFromUser(_openFileDialog, _pemFilesFilter);
             _viewModel.SetUserCertificatePath(path);
         }
 
         private void BrowseUserPrivateKeyButton_Click(object sender, RoutedEventArgs e)
         {
-            string path = GetFilePathFromUser(_pemFilesFilter);
+            string path = _openFileDialogUtil.GetFilePathFromUser(_openFileDialog, _pemFilesFilter);
             _viewModel.SetUserPrivateKeyPath(path);
         }
 
@@ -102,7 +90,7 @@ namespace OpalOPC.WPF.Views
 
         private void DragAndDropUsernamePasswordFileButton_Click(object sender, RoutedEventArgs e)
         {
-            string path = GetFilePathFromUser(_allFilesFilter);
+            string path = _openFileDialogUtil.GetFilePathFromUser(_openFileDialog, _allFilesFilter);
             _viewModel.AddUsernamesPasswordsFromFile(path);
         }
 
@@ -118,7 +106,7 @@ namespace OpalOPC.WPF.Views
 
         private void DragAndDropBruteUsernamePasswordFileButton_Click(object sender, RoutedEventArgs e)
         {
-            string path = GetFilePathFromUser(_allFilesFilter);
+            string path = _openFileDialogUtil.GetFilePathFromUser(_openFileDialog, _allFilesFilter);
             _viewModel.AddBruteUsernamesPasswordsFromFile(path);
         }
 

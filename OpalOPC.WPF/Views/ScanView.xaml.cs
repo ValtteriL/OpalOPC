@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
+using OpalOPC.WPF.GuiUtil;
+using OpalOPC.WPF.Models;
 using OpalOPC.WPF.ViewModels;
 
 namespace OpalOPC.WPF.Views;
@@ -11,8 +13,9 @@ namespace OpalOPC.WPF.Views;
 public partial class ScanView : UserControl
 {
 
-    private readonly OpenFileDialog _openFileDialog;
+    private readonly MyOpenFileDialog _openFileDialog;
     private readonly ScanViewModel _viewModel;
+    private readonly OpenFileDialogUtil _openFileDialogUtil = new();
 
     public ScanView()
     {
@@ -45,13 +48,13 @@ public partial class ScanView : UserControl
 
     private void DragAndDropTargetsFileButton_Click(object sender, RoutedEventArgs e)
     {
-        string path = GetFilePathFromUser();
+        string path = _openFileDialogUtil.GetFilePathFromUser(_openFileDialog, _openFileDialog.Filter);
         _viewModel.AddTargetsFromFile(path);
     }
 
     private void BrowseOutputReportFileButton_Click(object sender, RoutedEventArgs e)
     {
-        string path = GetFilePathFromUser();
+        string path = _openFileDialogUtil.GetFilePathFromUser(_openFileDialog, _openFileDialog.Filter);
         _viewModel.SetOutputFileLocation(path);
     }
 
@@ -71,18 +74,5 @@ public partial class ScanView : UserControl
 
         // Handle target deletion
         _viewModel.SetTargetToAdd((Uri)block!.DataContext);
-    }
-
-    private string GetFilePathFromUser()
-    {
-        string filename = _openFileDialog.FileName;
-        _openFileDialog.FileName = string.Empty;
-
-        if (_openFileDialog.ShowDialog() == true)
-        {
-            return System.IO.Path.GetFullPath(filename);
-        }
-
-        return string.Empty;
     }
 }
