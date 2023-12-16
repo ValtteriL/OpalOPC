@@ -1,6 +1,7 @@
 using Controller;
 using Microsoft.Extensions.Logging;
 using Model;
+using Util;
 using View;
 
 
@@ -8,7 +9,7 @@ class OpalOPC
 {
     public static int Main(string[] args)
     {
-
+        TelemetryUtil.TrackEvent("CLI started");
         Options options = new Argparser(args).parseArgs();
 
         if (options.exitCode.HasValue)

@@ -27,6 +27,7 @@ namespace Controller
 
         public void Scan()
         {
+            TelemetryUtil.TrackEvent("Scan started");
             DateTime start = DateTime.Now;
             _logger.LogInformation("{Message}", $"Starting OpalOPC {Util.VersionUtil.AppAssemblyVersion} ( https://opalopc.com )");
 

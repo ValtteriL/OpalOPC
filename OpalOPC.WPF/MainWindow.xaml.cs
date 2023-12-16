@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Util;
 
 namespace OpalOPC.WPF
 {
@@ -9,6 +10,7 @@ namespace OpalOPC.WPF
     {
         public MainWindow()
         {
+            TelemetryUtil.TrackEvent("GUI started");
             DataContext = new ViewModels.MainWindowViewModel();
             InitializeComponent();
         }
