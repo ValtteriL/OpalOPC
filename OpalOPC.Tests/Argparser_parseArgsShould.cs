@@ -52,8 +52,8 @@ public class Argparser_parseArgsShould
 
         Options options = argparser.parseArgs();
 
-        Assert.True(options.xmlOutputReportName == filename);
-        Assert.True(options.xmlOutputStream!.CanWrite);
+        Assert.True(options.OutputReportName == filename);
+        Assert.True(options.OutputStream!.CanWrite);
         Assert.True(options.exitCode == null);
     }
 

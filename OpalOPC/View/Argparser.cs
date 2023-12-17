@@ -63,7 +63,7 @@ namespace View
                 lines = _fileUtil.ReadFileToList(path).ToList();
 
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 throw new OptionException(e.Message, "");
             }
@@ -139,16 +139,16 @@ namespace View
             if (path == "-")
             {
                 // stdout
-                _options.xmlOutputStream = Console.OpenStandardOutput();
+                _options.OutputStream = Console.OpenStandardOutput();
             }
             else
             {
                 // the path
-                _options.xmlOutputReportName = path;
+                _options.OutputReportName = path;
 
                 try
                 {
-                    _options.xmlOutputStream = File.Create(path);
+                    _options.OutputStream = File.Create(path);
                 }
                 catch (UnauthorizedAccessException)
                 {
@@ -183,7 +183,7 @@ namespace View
                     lines = _fileUtil.ReadFileToList(path).ToList();
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 throw new OptionException(e.Message, "");
             }
@@ -204,7 +204,7 @@ namespace View
             {
                 uri = new Uri(target);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 throw new OptionException($"\"{target}\" is invalid target", "");
             }
@@ -214,21 +214,21 @@ namespace View
 
         private void printHelp()
         {
-            Console.WriteLine($"Opal OPC {Util.VersionUtil.AppAssemblyVersion} ( https://opalopc.com )");
+            Console.WriteLine($"Opal OPC {VersionUtil.AppAssemblyVersion} ( https://opalopc.com )");
             Console.WriteLine($"Usage: {_programName} [Options] [Target ...]");
             _optionSet.WriteOptionDescriptions(Console.Out);
         }
         private static void printVersion()
         {
-            Console.WriteLine(Util.VersionUtil.AppAssemblyVersion);
+            Console.WriteLine(VersionUtil.AppAssemblyVersion);
         }
 
         private void deleteReportIfCreatedAlready()
         {
-            if (_options.xmlOutputReportName != null)
+            if (_options.OutputReportName != null)
             {
-                _options.xmlOutputStream!.Close();
-                File.Delete(_options.xmlOutputReportName);
+                _options.OutputStream!.Dispose();
+                File.Delete(_options.OutputReportName);
             }
         }
 
@@ -239,10 +239,10 @@ namespace View
                 // parse the command line
                 List<string> extra = _optionSet.Parse(_args);
                 extra.ForEach(e => appendTarget(e));
-                if (_options.xmlOutputStream == null)
+                if (_options.OutputStream == null)
                 {
-                    _options.xmlOutputReportName = Util.ArgUtil.DefaultReportName();
-                    setOutputFile(_options.xmlOutputReportName);
+                    _options.OutputReportName = ArgUtil.DefaultReportName();
+                    setOutputFile(_options.OutputReportName);
                 }
             }
             catch (OptionException e)
@@ -251,7 +251,7 @@ namespace View
                 Console.Write($"{_programName}: ");
                 Console.WriteLine(e.Message);
                 Console.WriteLine($"Try `{_programName} --help' for more information.");
-                _options.exitCode = Util.ExitCodes.Error;
+                _options.exitCode = ExitCodes.Error;
             }
 
             // no arguments at all - show help
@@ -264,13 +264,13 @@ namespace View
             {
                 deleteReportIfCreatedAlready();
                 printHelp();
-                _options.exitCode = Util.ExitCodes.Success;
+                _options.exitCode = ExitCodes.Success;
             }
             else if (_options.shouldShowVersion)
             {
                 deleteReportIfCreatedAlready();
                 printVersion();
-                _options.exitCode = Util.ExitCodes.Success;
+                _options.exitCode = ExitCodes.Success;
             }
 
             return _options;
