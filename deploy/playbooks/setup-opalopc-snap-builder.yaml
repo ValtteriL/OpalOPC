@@ -1,0 +1,34 @@
+---
+
+- name: Setup opalopc-snap-builder
+  hosts: opalopc-snap-builder
+
+  tasks:
+
+  - name: Disable SSH password auth
+    lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
+    notify: Restart sshd
+
+  - name: Install basic tools
+    become: true
+    ansible.builtin.apt:
+      pkg:
+        - tmux
+        - vim
+        - ufw
+
+  # https://snapcraft.io/docs/create-a-new-snap#heading--build-environment
+  - name: Install Snapcraft build environment
+    ansible.builtin.shell:
+      cmd: |
+        sudo snap install snapcraft --classic
+        sudo snap install lxd
+        sudo usermod -a -G lxd $USER
+        lxd init --minimal
+
+  - name: Login to snap
+    ansible.builtin.shell:
+      cmd: |
+        snapcraft login
+      environment:
+        SNAPCRAFT_STORE_CREDENTIALS: "{{ SNAPCRAFT_STORE_CREDENTIALS | mandatory }}"

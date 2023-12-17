@@ -1,0 +1,22 @@
+name: opalopc
+version: "{{ version | mandatory }}"
+summary: OPC UA Security Scanner
+description: |
+  OpalOPC scans OPC UA servers for security issues
+  and helps you fix them. It finds vulnerabilities
+  and misconfigurations that can be exploited by
+  hackers. Where are your weak spots? Scan them now
+  to find out.
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: devmode
+base: core18
+
+parts:
+  opalopc:
+    plugin: dump
+    source: "{{ remote_linux_build | mandatory }}"
+    source-type: local
+
+apps:
+  opalopc:
+    command: opalopc

@@ -1,3 +1,4 @@
+VAULT_PASSWORD_FILE := "vault_password"
 
 # E2E tests
 .PHONY: run-e2e-tests
@@ -67,6 +68,20 @@ test:
 publish-all:
 	@export DOTNET_CLI_ENABLE_PUBLISH_RELEASE_FOR_SOLUTIONS=1
 	@ansible-playbook \
+		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
 		--inventory ron, \
 		deploy/playbooks/publish.yaml
 
+.PHONY: setup-snap-builder
+setup-snap-builder:
+	@ansible-playbook \
+		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
+		--inventory deploy/inventory.yaml \
+		deploy/playbooks/setup-snap-builder.yaml
+
+.PHONY: build-snap
+build-snap:
+	@ansible-playbook \
+		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
+		--inventory deploy/inventory.yaml \
+		deploy/playbooks/build-snap.yaml

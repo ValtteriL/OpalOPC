@@ -1,0 +1,55 @@
+---
+
+# Build snap
+
+- name: Build snap
+  hosts: opalopc-snap-builder
+
+  vars:
+    local_linux_build: "{{ repo_root.stdout }}/build/linux/opalopc"
+    remote_linux_build: "/tmp/opalopc"
+    snap_build_folder: /tmp/opalopc-snap-build
+    version: "2.0.2.0"
+    channel: "latest/edge"
+
+  tasks:
+
+    - name: Get repo root path
+      local_action:
+        module: ansible.builtin.shell
+        cmd: >
+          git rev-parse --show-toplevel
+      register: repo_root
+
+    - name: Copy opalopc build over
+      ansible.builtin.copy:
+        src: "{{ local_linux_build }}"
+        dest: "{{ remote_linux_build }}"
+
+    - name: Build snap
+      block:
+
+        - name: Create empty directory for build
+          ansible.builtin.file:
+            path: "{{ snap_build_folder }}"
+            state: directory
+    
+        - name: Move snapcraft file to build directory
+          ansible.builtin.template:
+            src: snapcraft.yaml.j2
+            dest: "{{ snap_build_folder }}/snapcraft.yaml"
+        
+        - name: Build snap
+          ansible.builtin.shell:
+            cmd: >
+              snapcraft
+            chdir: "{{ snap_build_folder }}"
+        
+        - name: Publish snap
+          ansible.builtin.shell:
+            cmd: >
+              snapcraft upload --release={{ channel }} <file>.snap
+            chdir: "{{ snap_build_folder }}"
+
+        # TODO: remove snap directory
+
