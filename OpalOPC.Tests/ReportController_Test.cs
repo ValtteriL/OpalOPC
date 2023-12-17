@@ -25,14 +25,12 @@ public class ReportControllerTest
     };
 
     private readonly Mock<IReporter> _reporterMock;
-    private readonly ReportController _reportController;
 
     public ReportControllerTest()
     {
         _loggerMock = new Mock<ILogger>();
         _reporterMock = new Mock<IReporter>();
         _reporterMock.Setup(r => r.PrintXHTMLReport(It.IsAny<Report>())).Verifiable();
-        _reportController = new ReportController(_loggerMock.Object, _reporterMock.Object);
     }
 
     // add test to check if targets are sorted by server issue severity
@@ -42,13 +40,13 @@ public class ReportControllerTest
         // Arrange
 
         // Act
-        _reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, string.Empty, string.Empty);
-        _reportController.WriteReport();
+        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, new List<Target>(), DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
-        Assert.NotNull(_reportController.report);
-        Assert.Empty(_reportController.report.Targets);
+        Assert.NotNull(reportController.report);
+        Assert.Empty(reportController.report.Targets);
     }
 
     [Fact]
@@ -57,14 +55,14 @@ public class ReportControllerTest
         // Arrange
 
         // Act
-        _reportController.GenerateReport(new List<Target>() { new(_applicationDescription) }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
-        _reportController.WriteReport();
+        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, new List<Target>() { new(_applicationDescription) }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
-        Assert.NotNull(_reportController.report);
-        Assert.NotEmpty(_reportController.report.Targets);
-        Assert.True(_reportController.report.Targets.Count == 1);
+        Assert.NotNull(reportController.report);
+        Assert.NotEmpty(reportController.report.Targets);
+        Assert.True(reportController.report.Targets.Count == 1);
     }
 
     // add test to check if targets are sorted by server issue severity
@@ -86,16 +84,16 @@ public class ReportControllerTest
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
-        _reportController.WriteReport();
+        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
-        Assert.NotNull(_reportController.report);
-        Assert.NotEmpty(_reportController.report.Targets);
-        Assert.True(_reportController.report.Targets.Count == 3);
-        Assert.True(_reportController.report.Targets.First().Servers.First().Issues.First().Severity == 0.3);
-        Assert.True(_reportController.report.Targets.Last().Servers.First().Issues.First().Severity == 0.1);
+        Assert.NotNull(reportController.report);
+        Assert.NotEmpty(reportController.report.Targets);
+        Assert.True(reportController.report.Targets.Count == 3);
+        Assert.True(reportController.report.Targets.First().Servers.First().Issues.First().Severity == 0.3);
+        Assert.True(reportController.report.Targets.Last().Servers.First().Issues.First().Severity == 0.1);
     }
 
     // test that report is generated correctly when not all targets have servers
@@ -115,15 +113,15 @@ public class ReportControllerTest
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
-        _reportController.WriteReport();
+        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
-        Assert.NotNull(_reportController.report);
-        Assert.NotEmpty(_reportController.report.Targets);
-        Assert.True(_reportController.report.Targets.Count == 3);
-        Assert.True(_reportController.report.Targets.First().Servers.First().Issues.First().Severity == 0.3);
+        Assert.NotNull(reportController.report);
+        Assert.NotEmpty(reportController.report.Targets);
+        Assert.True(reportController.report.Targets.Count == 3);
+        Assert.True(reportController.report.Targets.First().Servers.First().Issues.First().Severity == 0.3);
     }
 
     // test that report is generated correctly when not all servers have endpoints
@@ -144,15 +142,15 @@ public class ReportControllerTest
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
-        _reportController.WriteReport();
+        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
-        Assert.NotNull(_reportController.report);
-        Assert.NotEmpty(_reportController.report.Targets);
-        Assert.True(_reportController.report.Targets.Count == 3);
-        Assert.True(_reportController.report.Targets.First().Servers.First().Issues.First().Severity == 0.3);
+        Assert.NotNull(reportController.report);
+        Assert.NotEmpty(reportController.report.Targets);
+        Assert.True(reportController.report.Targets.Count == 3);
+        Assert.True(reportController.report.Targets.First().Servers.First().Issues.First().Severity == 0.3);
     }
 
     // test that report is generated correctly when not all endpoints have issues
@@ -177,15 +175,15 @@ public class ReportControllerTest
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        _reportController.GenerateReport(new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
-        _reportController.WriteReport();
+        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        reportController.WriteReport();
 
         // Assert
         _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>()), Times.Once);
-        Assert.NotNull(_reportController.report);
-        Assert.NotEmpty(_reportController.report.Targets);
-        Assert.True(_reportController.report.Targets.Count == 3);
-        Assert.True(_reportController.report.Targets.First().Servers.First().Issues.First().Severity == 0.3);
+        Assert.NotNull(reportController.report);
+        Assert.NotEmpty(reportController.report.Targets);
+        Assert.True(reportController.report.Targets.Count == 3);
+        Assert.True(reportController.report.Targets.First().Servers.First().Issues.First().Severity == 0.3);
     }
 
 }

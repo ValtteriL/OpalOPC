@@ -99,7 +99,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         // if neither => try to create new file
         if (Directory.Exists(OutputFileLocation) || OutputFileLocation == string.Empty)
         {
-            _outputfile = System.IO.Path.Combine(OutputFileLocation, Util.ArgUtil.DefaultReportName());
+            _outputfile = Path.Combine(OutputFileLocation, Util.ArgUtil.DefaultReportName());
         }
         else
         {

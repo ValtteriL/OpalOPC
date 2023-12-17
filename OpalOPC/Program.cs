@@ -10,7 +10,7 @@ class OpalOPC
     public static int Main(string[] args)
     {
         TelemetryUtil.TrackEvent("CLI started");
-        Options options = new Argparser(args).parseArgs();
+        using Options options = new Argparser(args).parseArgs();
 
         if (options.exitCode.HasValue)
         {
@@ -34,16 +34,16 @@ class OpalOPC
         VersionCheckController versionCheckController = new(logger);
         versionCheckController.CheckVersion();
 
-        ScanController scanController = new(logger, options.targets, options.xmlOutputStream!, Environment.CommandLine, options.authenticationData);
+        ScanController scanController = new(logger, options.targets, options.OutputStream!, Environment.CommandLine, options.authenticationData);
         scanController.Scan();
 
-        if (options.xmlOutputReportName != null)
+        if (options.OutputReportName != null)
         {
-            logger.LogInformation("{Message}", $"Report saved to {options.xmlOutputReportName} (Use browser to view it)");
+            logger.LogInformation("{Message}", $"Report saved to {options.OutputReportName} (Use browser to view it)");
         }
 
 #if DEBUG
-        logger.LogInformation("{Message}", $"Access report directly: http://localhost:8000/{options.xmlOutputReportName}");
+        logger.LogInformation("{Message}", $"Access report directly: http://localhost:8000/{options.OutputReportName}");
 #endif
 
         return 0;
