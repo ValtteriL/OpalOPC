@@ -77,7 +77,7 @@ setup-snap-builder:
 	@ansible-playbook \
 		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
 		--inventory deploy/inventory.yaml \
-		deploy/playbooks/setup-snap-builder.yaml
+		deploy/playbooks/setup-opalopc-snap-builder.yaml
 
 .PHONY: build-snap
 build-snap:

@@ -14,7 +14,7 @@ base: core18
 parts:
   opalopc:
     plugin: dump
-    source: "{{ remote_linux_build | mandatory }}"
+    source: "{{ build_folder_bin | mandatory }}"
     source-type: local
 
 apps:
