@@ -9,6 +9,7 @@
     local_linux_build: "{{ repo_root.stdout }}/build/linux/opalopc"
     remote_linux_build: "{{ remote_linux_build_folder }}/opalopc"
     remote_linux_build_folder: "{{ snap_build_folder }}/{{ build_folder_bin }}"
+    local_logo: "{{ repo_root.stdout }}/snapcraft-resources/logo-256-256.png"
     build_folder_bin: "bin"
     snap_build_folder: opalopc-snap-build
     version: "2.0.2.0"
@@ -36,6 +37,11 @@
         src: "{{ local_linux_build }}"
         dest: "{{ remote_linux_build }}"
         mode: '0775'
+
+    - name: Copy icon build over
+      ansible.builtin.copy:
+        src: "{{ local_logo }}"
+        dest: "{{ snap_build_folder }}/"
 
     - name: Build snap
       block:
