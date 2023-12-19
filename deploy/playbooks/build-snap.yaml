@@ -37,10 +37,6 @@
         dest: "{{ remote_linux_build }}"
         mode: '0775'
 
-    - name: Make opalopc executable
-      ansible.builtin.shell:
-        cmd: "chmod +x {{ remote_linux_build }}"
-
     - name: Build snap
       block:
     
