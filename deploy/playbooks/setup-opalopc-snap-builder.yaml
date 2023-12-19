@@ -16,6 +16,7 @@
         - tmux
         - vim
         - ufw
+        - gnome-keyring
 
   # https://snapcraft.io/docs/create-a-new-snap#heading--build-environment
   - name: Install Snapcraft build environment
@@ -26,9 +27,10 @@
         sudo usermod -a -G lxd $USER
         lxd init --minimal
 
+  # this will not succeed - just login interactively with creds
   - name: Login to snap
     ansible.builtin.shell:
       cmd: |
         snapcraft login
-      environment:
-        SNAPCRAFT_STORE_CREDENTIALS: "{{ SNAPCRAFT_STORE_CREDENTIALS | mandatory }}"
+    environment:
+      SNAPCRAFT_STORE_CREDENTIALS: "{{ SNAPCRAFT_STORE_CREDENTIALS | mandatory }}"
