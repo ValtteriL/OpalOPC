@@ -15,7 +15,7 @@ issues:
 license: Proprietary
 icon: logo-256-256.png
 grade: stable # must be 'stable' to release into candidate/stable channels
-confinement: devmode
+confinement: strict
 base: core22
 
 parts:
@@ -29,3 +29,7 @@ parts:
 apps:
   opalopc:
     command: opalopc
+    plugs:
+      - network
+      - network-status
+      - home
