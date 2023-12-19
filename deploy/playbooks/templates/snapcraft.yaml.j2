@@ -9,13 +9,15 @@ description: |
   to find out.
 grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: devmode
-base: core18
+base: core22
 
 parts:
   opalopc:
     plugin: dump
     source: "{{ build_folder_bin | mandatory }}"
     source-type: local
+    stage-packages:
+      - libicu70
 
 apps:
   opalopc:
