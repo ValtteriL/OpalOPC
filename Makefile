@@ -2,11 +2,7 @@ VAULT_PASSWORD_FILE := "vault_password"
 
 # E2E tests
 .PHONY: run-e2e-tests
-run-e2e-tests: run-linux-mac-installer-test run-all-known verify-no-fail-on-echo-golf-india
-
-.PHONY: run-linux-mac-installer-test
-run-linux-mac-installer-test:
-	@cat OpalOPC/installers/install.sh | sudo ACCEPT_EULA=1 bash
+run-e2e-tests: run-all-known verify-no-fail-on-echo-golf-india
 
 .PHONY: run-all-known
 run-all-known:
@@ -23,10 +19,6 @@ run-all-known:
 		opc.tcp://google.com:443 \
 		-vv \
 		--output opalopc-report-all-known.html
-
-# Install locally
-run-linux-mac-installer:
-	@cat OpalOPC/installers/install.sh | sudo bash
 
 # Lint (fix format)
 .PHONY: lint
@@ -78,10 +70,3 @@ setup-snap-builder:
 		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
 		--inventory deploy/inventory.yaml \
 		deploy/playbooks/setup-opalopc-snap-builder.yaml
-
-.PHONY: build-snap
-build-snap:
-	@ansible-playbook \
-		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
-		--inventory deploy/inventory.yaml \
-		deploy/playbooks/build-snap.yaml
