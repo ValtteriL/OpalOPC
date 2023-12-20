@@ -10,53 +10,63 @@ class OpalOPC
     public static int Main(string[] args)
     {
         TelemetryUtil.TrackEvent("CLI started");
-        using Options options = new Argparser(args).parseArgs();
 
-        // prompt to accept EULA if not already accepted before
-        EulaPrompter eulaPrompter = new();
-        if (options.acceptEula)
+        try
         {
-            eulaPrompter.PersistAcceptChoice();
-        }
-        else if (!eulaPrompter.PromptUserForEulaAcceptance())
-        {
-            options.exitCode = ExitCodes.Error;
-        }
+            using Options options = new Argparser(args).parseArgs();
 
-        if (options.exitCode.HasValue)
-        {
-            Environment.Exit((int)options.exitCode);
-        }
+            // prompt to accept EULA if not already accepted before
+            EulaPrompter eulaPrompter = new();
+            if (options.acceptEula)
+            {
+                eulaPrompter.PersistAcceptChoice();
+            }
+            else if (!eulaPrompter.PromptUserForEulaAcceptance())
+            {
+                options.exitCode = ExitCodes.Error;
+            }
 
-        using ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-        {
-            builder
-                .SetMinimumLevel(options.logLevel)
-                .AddSimpleConsole(options =>
-                {
-                    options.IncludeScopes = false;
-                    options.TimestampFormat = "HH:mm:ss ";
-                    options.SingleLine = true;
-                });
-        });
+            if (options.exitCode.HasValue)
+            {
+                Environment.Exit((int)options.exitCode);
+            }
 
-        ILogger logger = loggerFactory.CreateLogger<OpalOPC>();
+            using ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder
+                    .SetMinimumLevel(options.logLevel)
+                    .AddSimpleConsole(options =>
+                    {
+                        options.IncludeScopes = false;
+                        options.TimestampFormat = "HH:mm:ss ";
+                        options.SingleLine = true;
+                    });
+            });
 
-        VersionCheckController versionCheckController = new(logger);
-        versionCheckController.CheckVersion();
+            ILogger logger = loggerFactory.CreateLogger<OpalOPC>();
 
-        ScanController scanController = new(logger, options.targets, options.OutputStream!, Environment.CommandLine, options.authenticationData);
-        scanController.Scan();
+            VersionCheckController versionCheckController = new(logger);
+            versionCheckController.CheckVersion();
 
-        if (options.OutputReportName != null)
-        {
-            logger.LogInformation("{Message}", $"Report saved to {options.OutputReportName} (Use browser to view it)");
-        }
+            ScanController scanController = new(logger, options.targets, options.OutputStream!, Environment.CommandLine, options.authenticationData);
+            scanController.Scan();
+
+            if (options.OutputReportName != null)
+            {
+                logger.LogInformation("{Message}", $"Report saved to {options.OutputReportName} (Use browser to view it)");
+            }
 
 #if DEBUG
-        logger.LogInformation("{Message}", $"Access report directly: http://localhost:8000/{options.OutputReportName}");
+            logger.LogInformation("{Message}", $"Access report directly: http://localhost:8000/{options.OutputReportName}");
 #endif
 
-        return 0;
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            TelemetryUtil.TrackException(ex);
+            Console.Error.WriteLine(ex.Message);
+            return (int)ExitCodes.Error;
+        }
     }
 }
