@@ -161,7 +161,7 @@
             prompt: "Make sure to submit Windows package to Microsoft Store (Version {{ version }} in {{ win_packages_path }})"
 
     - name: Update resources on webserver
-      delegate_to: opalopc-webserver
+      delegate_to: ron
       block:
         - name: Transfer report resources to webserver
           become: true
