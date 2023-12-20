@@ -7,6 +7,7 @@ run-e2e-tests: run-all-known verify-no-fail-on-echo-golf-india
 .PHONY: run-all-known
 run-all-known:
 	@dotnet run \
+        --accepteula \
 		--runtime linux-x64 \
 		--project OpalOPC -- \
 		opc.tcp://echo:53530 \
@@ -38,12 +39,12 @@ build:
 # Run locally
 .PHONY: run
 run:
-	@dotnet run --runtime linux-x64 --project OpalOPC -- opc.tcp://echo:53530
+	@dotnet run --runtime linux-x64 --project OpalOPC -- --accepteula opc.tcp://echo:53530
 
 # Run locally
 .PHONY: verify-no-fail-on-echo-golf-india
 verify-no-fail-on-echo-golf-india:
-	@! dotnet run --runtime linux-x64 --project OpalOPC -- -vvv opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 | grep -i -e "fail"
+	@! dotnet run --runtime linux-x64 --project OpalOPC -- -vvv --accepteula opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 | grep -i -e "fail"
 
 # Server for serving XSL on localhost, for development (with run)
 .PHONY: server
