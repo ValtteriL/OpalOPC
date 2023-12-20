@@ -29,6 +29,7 @@ namespace View
                 { "c|user-certificate-and-privatekey=", "path-to-certificate:path-to-privatekey for user authentication", c => _options = addUserCertificatePrivatekey(c) },
                 { "a|application-certificate-and-privatekey=", "path-to-certificate:path-to-privatekey for application authentication", a => _options = addAppCertificatePrivatekey(a) },
                 { "version", "show version and exit", ver => _options.shouldShowVersion = ver != null },
+                { "accepteula", "suppress the display of the license dialog", ae => _options.acceptEula = ae != null },
             };
 
             _args = args;

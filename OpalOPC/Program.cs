@@ -12,6 +12,17 @@ class OpalOPC
         TelemetryUtil.TrackEvent("CLI started");
         using Options options = new Argparser(args).parseArgs();
 
+        // prompt to accept EULA if not already accepted before
+        EulaPrompter eulaPrompter = new();
+        if (options.acceptEula)
+        {
+            eulaPrompter.PersistAcceptChoice();
+        }
+        else if (!eulaPrompter.PromptUserForEulaAcceptance())
+        {
+            options.exitCode = ExitCodes.Error;
+        }
+
         if (options.exitCode.HasValue)
         {
             Environment.Exit((int)options.exitCode);
