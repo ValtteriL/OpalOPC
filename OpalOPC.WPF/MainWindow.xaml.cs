@@ -11,8 +11,16 @@ namespace OpalOPC.WPF
         public MainWindow()
         {
             TelemetryUtil.TrackEvent("GUI started");
-            DataContext = new ViewModels.MainWindowViewModel();
-            InitializeComponent();
+            try
+            {
+                DataContext = new ViewModels.MainWindowViewModel();
+                InitializeComponent();
+            }
+            catch (Exception ex)
+            {
+                TelemetryUtil.TrackException(ex);
+                throw;
+            }
         }
 
         private void Navbar_About_Click(object sender, RoutedEventArgs e)

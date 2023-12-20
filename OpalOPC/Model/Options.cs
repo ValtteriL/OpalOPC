@@ -12,6 +12,7 @@ namespace Model
         public int? exitCode;
         public bool shouldShowVersion;
         public AuthenticationData authenticationData = new();
+        public bool acceptEula = false;
 
         public void Dispose()
         {

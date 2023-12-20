@@ -1,15 +1,13 @@
+VAULT_PASSWORD_FILE := "vault_password"
 
 # E2E tests
 .PHONY: run-e2e-tests
-run-e2e-tests: run-linux-mac-installer-test run-all-known verify-no-fail-on-echo-golf-india
-
-.PHONY: run-linux-mac-installer-test
-run-linux-mac-installer-test:
-	@cat OpalOPC/installers/install.sh | sudo ACCEPT_EULA=1 bash
+run-e2e-tests: run-all-known verify-no-fail-on-echo-golf-india
 
 .PHONY: run-all-known
 run-all-known:
 	@dotnet run \
+        --accepteula \
 		--runtime linux-x64 \
 		--project OpalOPC -- \
 		opc.tcp://echo:53530 \
@@ -22,10 +20,6 @@ run-all-known:
 		opc.tcp://google.com:443 \
 		-vv \
 		--output opalopc-report-all-known.html
-
-# Install locally
-run-linux-mac-installer:
-	@cat OpalOPC/installers/install.sh | sudo bash
 
 # Lint (fix format)
 .PHONY: lint
@@ -45,12 +39,12 @@ build:
 # Run locally
 .PHONY: run
 run:
-	@dotnet run --runtime linux-x64 --project OpalOPC -- opc.tcp://echo:53530
+	@dotnet run --runtime linux-x64 --project OpalOPC -- --accepteula opc.tcp://echo:53530
 
 # Run locally
 .PHONY: verify-no-fail-on-echo-golf-india
 verify-no-fail-on-echo-golf-india:
-	@! dotnet run --runtime linux-x64 --project OpalOPC -- -vvv opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 | grep -i -e "fail"
+	@! dotnet run --runtime linux-x64 --project OpalOPC -- -vvv --accepteula opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 | grep -i -e "fail"
 
 # Server for serving XSL on localhost, for development (with run)
 .PHONY: server
@@ -67,6 +61,13 @@ test:
 publish-all:
 	@export DOTNET_CLI_ENABLE_PUBLISH_RELEASE_FOR_SOLUTIONS=1
 	@ansible-playbook \
+		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
 		--inventory ron, \
 		deploy/playbooks/publish.yaml
 
+.PHONY: setup-snap-builder
+setup-snap-builder:
+	@ansible-playbook \
+		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
+		--inventory deploy/inventory.yaml \
+		deploy/playbooks/setup-opalopc-snap-builder.yaml

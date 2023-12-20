@@ -41,7 +41,7 @@ Professional License is available for purchase on https://opalopc.com/buy.
 
 6. Privacy Notices
 
-The Software automatically communicates with its server to check for updates.
+The Software automatically communicates with its server to check for updates and send telemetry.
 If you would like to learn more about the specific information we send, please visit https://opalopc.com/privacy-policy.
 
 7. Intellectual Property Notices

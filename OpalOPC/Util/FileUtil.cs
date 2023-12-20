@@ -10,6 +10,7 @@ namespace Util
         public Stream Create(string path);
         public void WriteCertificateToDisk(CertificateIdentifier certificate, string path);
         public CertificateIdentifier CreateCertificateIdentifierFromPfxFile(string path);
+        public bool FileExists(string path);
     }
 
     public class FileUtil : IFileUtil
@@ -37,6 +38,11 @@ namespace Util
         public CertificateIdentifier CreateCertificateIdentifierFromPfxFile(string path)
         {
             return new CertificateIdentifier(new X509Certificate2(path));
+        }
+
+        public bool FileExists(string path)
+        {
+            return File.Exists(path);
         }
     }
 }

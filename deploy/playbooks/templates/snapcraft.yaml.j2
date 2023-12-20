@@ -1,0 +1,35 @@
+name: opalopc
+title: OpalOPC
+version: "{{ version | mandatory }}"
+summary: OPC UA Security Scanner
+description: |
+  OpalOPC scans OPC UA servers for security issues
+  and helps you fix them. It finds vulnerabilities
+  and misconfigurations that can be exploited by
+  hackers. Where are your weak spots? Scan them now
+  to find out.
+website: https://opalopc.com
+contact: info@opalopc.com
+issues:
+  - https://opalopc.com/contact-us/
+license: Proprietary
+icon: logo-256-256.png
+grade: stable # must be 'stable' to release into candidate/stable channels
+confinement: strict
+base: core22
+
+parts:
+  opalopc:
+    plugin: dump
+    source: "{{ build_folder_bin | mandatory }}"
+    source-type: local
+    stage-packages:
+      - libicu70
+
+apps:
+  opalopc:
+    command: opalopc
+    plugs:
+      - network
+      - network-status
+      - home

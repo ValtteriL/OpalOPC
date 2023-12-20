@@ -13,74 +13,116 @@
   vars:
     linux_build: "{{ repo_root.stdout }}/build/linux/opalopc"
     win_packages_path: "{{ repo_root.stdout }}/build/win/"
-    osx_build: "{{ repo_root.stdout }}/build/osx/opalopc"
     report_resources: "{{ repo_root.stdout }}/OpalOPC/report-resources"
     version_txt_web_path: /var/www/opalopc.com/VERSION.txt
-    release_web_path: /var/www/opalopc.com/releases
     report_resources_web_path: "/var/www/opalopc.com/report-resources/{{ version | mandatory }}"
     debug_report_resource_path_regex: 'http:\/\/localhost:8000\/OpalOPC\/report-resources'
     final_report_resource_path: "https://opalopc.com/report-resources/{{ version | mandatory }}"
-    installer_path: "{{ repo_root.stdout }}/OpalOPC/installers/install.sh"
-    installer_web_path: /var/www/opalopc.com/install.sh
     eula_path: "{{ repo_root.stdout }}/OpalOPC/EULA.txt"
     eula_web_path: /var/www/opalopc.com/EULA.txt
+
+    snap_build_folder: opalopc-snap-build
+    snap_channel: "latest/edge"
+    remote_linux_build: "{{ remote_linux_build_folder }}/opalopc"
+    remote_linux_build_folder: "{{ snap_build_folder }}/{{ build_folder_bin }}"
+    local_logo: "{{ repo_root.stdout }}/snapcraft-resources/logo-256-256.png"
+    build_folder_bin: "bin"
+
     windows_temp_build_folder: /mnt/c/Users/valtteri/AppData/Local/Temp/opalopc-build
     version_update_script: |
       [xml]$manifest= get-content "./WindowsPackaging/Package.appxmanifest"; $manifest.Package.Identity.Version = "{{ version | mandatory }}"; $manifest.save("./WindowsPackaging/Package.appxmanifest")
 
   tasks:
 
-    - name: Check tag does not exist
-      local_action:
-        module: ansible.builtin.shell
-        cmd: >
-          if [ ! $(git tag -l "{{ version | mandatory }}") ]; then
-            echo "Tag does not exists yet"
-          else
-            echo "Tag with this version already exists"
-            exit 1
-          fi
+    - name: Local preparations
+      delegate_to: localhost
+      block:
+        - name: Check tag does not exist
+          local_action:
+            module: ansible.builtin.shell
+            cmd: >
+              if [ ! $(git tag -l "{{ version | mandatory }}") ]; then
+                echo "Tag does not exists yet"
+              else
+                echo "Tag with this version already exists"
+                exit 1
+              fi
 
-    - name: Get repo root path
-      local_action:
-        module: ansible.builtin.shell
-        cmd: >
-          git rev-parse --show-toplevel
-      register: repo_root
+        - name: Get repo root path
+          local_action:
+            module: ansible.builtin.shell
+            cmd: >
+              git rev-parse --show-toplevel
+          register: repo_root
 
-    - name: Build CLI applications
-      local_action: 
-        module: ansible.builtin.shell
-        cmd: >
-          dotnet publish OpalOPC
-          --runtime "{{ item.runtime }}"
-          --self-contained
-          --output {{ item.output }}
-          /p:AssemblyVersion="{{ version | mandatory }}"
-        chdir: "{{ repo_root.stdout }}"
-      loop:
-        - { runtime: linux-x64, output: build/linux }
-        - { runtime: osx-x64, output: build/osx }
+        - name: Build CLI applications
+          local_action: 
+            module: ansible.builtin.shell
+            cmd: >
+              dotnet publish OpalOPC
+              --runtime "{{ item.runtime }}"
+              --self-contained
+              --output {{ item.output }}
+              /p:AssemblyVersion="{{ version | mandatory }}"
+            chdir: "{{ repo_root.stdout }}"
+          loop:
+            - { runtime: linux-x64, output: build/linux }
+
+    - name: Build & publish snap
+      delegate_to: opalopc-snap-builder
+      block:
+        - name: Create directories for build
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: directory
+          with_items:
+            - "{{ snap_build_folder }}"
+            - "{{ remote_linux_build_folder }}"
+
+        - name: Copy opalopc build over
+          ansible.builtin.copy:
+            src: "{{ linux_build }}"
+            dest: "{{ remote_linux_build }}"
+            mode: '0775'
+
+        - name: Copy icon build over
+          ansible.builtin.copy:
+            src: "{{ local_logo }}"
+            dest: "{{ snap_build_folder }}/"
+
+        - name: Move snapcraft file to build directory
+          ansible.builtin.template:
+            src: snapcraft.yaml.j2
+            dest: "{{ snap_build_folder }}/snapcraft.yaml"
+
+        - name: Build snap
+          ansible.builtin.shell:
+            cmd: >
+              snapcraft
+            chdir: "{{ snap_build_folder }}"
+
+        - name: Publish snap
+          ansible.builtin.shell:
+            cmd: "snapcraft upload --release={{ snap_channel }} opalopc_{{ version }}_amd64.snap"
+            chdir: "{{ snap_build_folder }}"
 
     - name: Build and package Windows applications (CLI and GUI)
+      delegate_to: localhost
       block:
         - name: Create windows temp build folder
-          local_action:
-            module: ansible.builtin.file
+          ansible.builtin.file:
             path: "{{ windows_temp_build_folder }}"
             state: directory
 
         - name: Copy repo to temp folder on Windows side
-          local_action:
-            module: ansible.builtin.shell
+          ansible.builtin.shell:
             cmd: >
               git archive --format=tar HEAD | (cd {{windows_temp_build_folder}} && tar xf -)
             chdir: "{{ repo_root.stdout }}"
 
         # Update appxmanifest. This must be done before the build.
         - name: Version Package Manifest
-          local_action:
-            module: ansible.builtin.shell
+          ansible.builtin.shell:
             cmd: >
               powershell.exe -encodedCommand "{{ version_update_script | b64encode(encoding='utf-16-le') }}"
             chdir: "{{ windows_temp_build_folder }}"
@@ -89,8 +131,7 @@
           register: result
           until: result.rc == 0
           retries: 1
-          local_action:
-            module: ansible.builtin.shell
+          ansible.builtin.shell:
             cmd: >
               powershell.exe
               MSBuild.exe ./WindowsPackaging/WindowsPackaging.wapproj
@@ -106,122 +147,62 @@
             chdir: "{{ windows_temp_build_folder }}"
 
         - name: Copy built package to linux side
-          local_action:
-            module: ansible.builtin.copy
+          ansible.builtin.copy:
             src: "{{ windows_temp_build_folder }}/WindowsPackaging/build/"
             dest: "{{ win_packages_path }}"
 
         - name: delete windows temp build folder
-          local_action:
-            module: ansible.builtin.file
+          ansible.builtin.file:
             path: "{{ windows_temp_build_folder }}"
             state: absent
 
-    - name: Sign *nix applications
-      local_action:
-        module: ansible.builtin.shell
-        cmd: >
-          gpg
-          --local-user C2AB7F2AF5FAFEF5A84DB87C6DBD4E9ECDF59BC5
-          --pinentry-mode loopback
-          --yes --detach-sign
-          --armor
-          "{{ item }}"
-        chdir: "{{ repo_root.stdout }}"
-      loop:
-        - build/linux/opalopc
-        - build/osx/opalopc
+        - name: A helpful reminder to submit updated Windows package to Microsoft Store
+          ansible.builtin.pause:
+            prompt: "Make sure to submit Windows package to Microsoft Store (Version {{ version }} in {{ win_packages_path }})"
 
-    - name: Create releases directory
-      become: true
-      ansible.builtin.file:
-        path: "{{ release_web_path }}"
-        owner: root
-        group: root
-        state: directory
+    - name: Update resources on webserver
+      delegate_to: opalopc-webserver
+      block:
+        - name: Transfer report resources to webserver
+          become: true
+          ansible.builtin.copy:
+            src: "{{ report_resources }}/"
+            dest: "{{ report_resources_web_path }}/"
+            owner: root
+            group: root
+            force: false
 
-    # create directory for version with subdir per OS
-    # dont replace if already exists (for safety measure)
-    - name: Transfer *nix applications to webserver (version subdir)
-      become: true
-      ansible.builtin.copy:
-        src: "{{ item.build }}"
-        dest: "{{ item.directory }}/{{ item.subdir }}/"
-        owner: root
-        group: root
-        force: false
-      loop:
-        - { build: "{{ linux_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'linux'}
-        - { build: "{{ osx_build }}", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'osx'}
-        - { build: "{{ linux_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'linux'}
-        - { build: "{{ osx_build }}.asc", directory: "{{ release_web_path }}/{{ version | mandatory }}", subdir: 'osx'}
+        - name: Translate debug report resource references to production
+          become: true
+          ansible.builtin.replace:
+            path: "{{ report_resources_web_path }}/stylesheet.xsl"
+            regexp: "{{ debug_report_resource_path_regex }}"
+            replace: "{{ final_report_resource_path }}"
 
-    # move builds to latest with subdir per OS
-    - name: Copy *nix applications to latest subdir
-      become: true
-      ansible.builtin.copy:
-        remote_src: true
-        src: "{{ release_web_path }}/{{ version | mandatory }}/{{ item.subdir }}/"
-        dest: "{{ release_web_path }}/latest/{{ item.subdir }}/"
-        owner: root
-        group: root
-      loop:
-        - { subdir: 'linux'}
-        - { subdir: 'osx'}
+        - name: Deploy EULA.txt
+          become: true
+          ansible.builtin.copy:
+            src: "{{ eula_path | mandatory }}"
+            dest: "{{ eula_web_path | mandatory }}"
+            owner: root
+            group: root
 
-    - name: Transfer report resources to webserver
-      become: true
-      ansible.builtin.copy:
-        src: "{{ report_resources }}/"
-        dest: "{{ report_resources_web_path }}/"
-        owner: root
-        group: root
-        force: false
+        - name: Update VERSION.txt
+          become: true
+          ansible.builtin.copy:
+            dest: "{{ version_txt_web_path }}"
+            content: "{{ version | mandatory }}"
+            owner: root
+            group: root
 
-    - name: Translate debug report resource references to production
-      become: true
-      ansible.builtin.replace:
-        path: "/var/www/opalopc.com/report-resources/{{ version | mandatory }}/stylesheet.xsl"
-        regexp: "{{ debug_report_resource_path_regex }}"
-        replace: "{{ final_report_resource_path }}"
-
-    - name: Deploy linux-mac installer
-      become: true
-      ansible.builtin.copy:
-        src: "{{ installer_path | mandatory }}"
-        dest: "{{ installer_web_path | mandatory }}"
-        owner: root
-        group: root
-
-    - name: Ensure linux-mac installer got unix file endings
-      become: true
-      shell: dos2unix "{{ installer_web_path | mandatory }}"
-
-    - name: A helpful reminder to submit updated Windows package to Microsoft Store
-      ansible.builtin.pause:
-        prompt: "Make sure to submit Windows package to Microsoft Store (Version {{ version }} in {{ win_packages_path }})"
-
-    - name: Deploy EULA.txt
-      become: true
-      ansible.builtin.copy:
-        src: "{{ eula_path | mandatory }}"
-        dest: "{{ eula_web_path | mandatory }}"
-        owner: root
-        group: root
-
-    - name: Update VERSION.txt
-      become: true
-      ansible.builtin.copy:
-        dest: "{{ version_txt_web_path }}"
-        content: "{{ version | mandatory }}"
-        owner: root
-        group: root
-
-    - name: Tag repository with version
-      local_action:
-        module: ansible.builtin.shell
-        cmd: >
-          if [ ! $(git tag -l "{{ version | mandatory }}") ]; then
-            git tag "{{ version | mandatory }}"
-            git push origin "{{ version | mandatory }}"
-          fi
+    - name: Local finishing touches
+      delegate_to: localhost
+      block:
+        - name: Tag repository with version
+          local_action:
+            module: ansible.builtin.shell
+            cmd: >
+              if [ ! $(git tag -l "{{ version | mandatory }}") ]; then
+                git tag "{{ version | mandatory }}"
+                git push origin "{{ version | mandatory }}"
+              fi
