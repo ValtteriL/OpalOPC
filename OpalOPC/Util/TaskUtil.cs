@@ -1,9 +1,16 @@
 ﻿
 namespace Util
 {
-    public class TaskUtil
+    public interface ITaskUtil
     {
-        public static void CheckForCancellation(CancellationToken? token)
+        public void CheckForCancellation();
+    }
+
+    public class TaskUtil : ITaskUtil
+    {
+        public CancellationToken? token { private get; set; } = null;
+
+        public void CheckForCancellation()
         {
             if (token.HasValue)
             {
