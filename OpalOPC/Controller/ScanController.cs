@@ -32,26 +32,7 @@ namespace Controller
 
             taskUtil.CheckForCancellation();
 
-            // Initialize security testing plugins
-            ICollection<IPlugin> securityTestPlugins = new List<IPlugin> {
-            new SecurityModeInvalidPlugin(logger),
-            new SecurityModeNonePlugin(logger),
-
-            new SecurityPolicyBasic128Rsa15Plugin(logger),
-            new SecurityPolicyBasic256Plugin(logger),
-            new SecurityPolicyNonePlugin(logger),
-
-            new AnonymousAuthenticationPlugin(logger, authenticationData),
-            new SelfSignedCertificatePlugin(logger),
-
-            new ProvidedCredentialsPlugin(logger, authenticationData),
-            new CommonCredentialsPlugin(logger, authenticationData),
-            new BruteForcePlugin(logger, authenticationData),
-            new RBACNotSupportedPlugin(logger),
-            new AuditingDisabledPlugin(logger),
-        };
-
-            ICollection<Target> testedTargets = securityTestController.TestTargetSecurity(securityTestPlugins, targets);
+            ICollection<Target> testedTargets = securityTestController.TestTargetSecurity(targets, authenticationData);
 
             taskUtil.CheckForCancellation();
 

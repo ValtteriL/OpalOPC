@@ -1,12 +1,7 @@
 namespace Model
 {
-    public class Error
+    public class Error(string Message)
     {
-        public string Message { get; set; }
-
-        public Error(string Message)
-        {
-            this.Message = Message;
-        }
+        public string Message { get; set; } = Message;
     }
 }

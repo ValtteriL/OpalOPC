@@ -18,7 +18,7 @@ namespace Application
         public void Run(Options options)
         {
             versionCheckController.CheckVersion();
-            scanController.Scan(options.targets, Environment.CommandLine, options.authenticationData, options.OutputStream);
+            scanController.Scan(options.targets, Environment.CommandLine, options.authenticationData, options.OutputStream!);
 
             if (options.OutputReportName != null)
             {

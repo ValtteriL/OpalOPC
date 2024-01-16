@@ -1,6 +1,6 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Model;
-using Org.BouncyCastle.Tsp;
 using Plugin;
 using Util;
 
@@ -9,17 +9,21 @@ namespace Controller
 
     public interface ISecurityTestController
     {
-        ICollection<Target> TestTargetSecurity(ICollection<IPlugin> SecurityTestPlugins, ICollection<Target> opcTargets);
+        ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets, AuthenticationData authenticationData);
     }
 
     public class SecurityTestController(ILogger<SecurityTestController> logger, ITaskUtil taskUtil) : ISecurityTestController
     {
+        private ICollection<IPlugin> _securityTestPlugins = [];
+
 
         // Run all security tests and return result-populated opcTarget
-        public ICollection<Target> TestTargetSecurity(ICollection<IPlugin> securityTestPlugins, ICollection < Target> opcTargets)
+        public ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets, AuthenticationData authenticationData)
         {
-            logger.LogTrace("{Message}", $"Loaded {securityTestPlugins.Count} security test plugins");
-            logger.LogTrace("{Message}", $"Plugins: {string.Join(", ", securityTestPlugins.Select(p => (int)p.pluginId))}");
+            InitializePlugins(authenticationData);
+
+            logger.LogTrace("{Message}", $"Loaded {_securityTestPlugins.Count} security test plugins");
+            logger.LogTrace("{Message}", $"Plugins: {string.Join(", ", _securityTestPlugins.Select(p => (int)p.pluginId))}");
 
             logger.LogDebug("{Message}", $"Starting security tests of {opcTargets.Count} targets");
 
@@ -53,6 +57,28 @@ namespace Controller
             });
 
             return opcTargets;
+        }
+
+        private void InitializePlugins(AuthenticationData authenticationData)
+        {
+            _securityTestPlugins = new List<IPlugin>()
+            {
+            new SecurityModeInvalidPlugin(logger),
+            new SecurityModeNonePlugin(logger),
+
+            new SecurityPolicyBasic128Rsa15Plugin(logger),
+            new SecurityPolicyBasic256Plugin(logger),
+            new SecurityPolicyNonePlugin(logger),
+
+            new AnonymousAuthenticationPlugin(logger, authenticationData),
+            new SelfSignedCertificatePlugin(logger),
+
+            new ProvidedCredentialsPlugin(logger, authenticationData),
+            new CommonCredentialsPlugin(logger, authenticationData),
+            new BruteForcePlugin(logger, authenticationData),
+            new RBACNotSupportedPlugin(logger),
+            new AuditingDisabledPlugin(logger),
+            };
         }
 
         private void TestEndpointSecurity(Server server)
@@ -123,9 +149,6 @@ namespace Controller
             }
         }
 
-        private ICollection<IPlugin> GetPluginsByType(Plugintype plugintype)
-        {
-            return securityTestPlugins.Where(p => p.Type == plugintype).ToList();
-        }
+        private List<IPlugin> GetPluginsByType(Plugintype plugintype) => _securityTestPlugins.Where(p => p.Type == plugintype).ToList();
     }
 }
