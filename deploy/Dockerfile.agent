@@ -20,4 +20,4 @@ RUN apt-get update && apt-get install -y \
 RUN add-apt-repository --yes --update ppa:ansible/ansible && apt-get install -y ansible
 
 # install dotnet
-RUN apt-get -y install dotnet7
+RUN apt-get -y install dotnet8
