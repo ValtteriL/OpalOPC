@@ -13,7 +13,7 @@ public class AnonymousAuthenticationPluginTest
     private readonly Mock<IConnectionUtil> _mockConnectionUtil;
     private readonly Mock<ISecurityTestSession> _mockSession;
     private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
-    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
+    private readonly EndpointDescriptionCollection _endpointDescriptions = [];
 
     public AnonymousAuthenticationPluginTest()
     {

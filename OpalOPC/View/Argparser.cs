@@ -166,7 +166,7 @@ namespace View
 
         private Options readTargetFile(string path)
         {
-            List<string> lines = new();
+            List<string> lines = [];
 
             try
             {

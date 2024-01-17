@@ -12,30 +12,30 @@ using Xunit;
 namespace Tests;
 public class DiscoveryControllerTest
 {
-    private readonly ApplicationDescriptionCollection _validApplicationDescriptionCollection = new() { new ApplicationDescription()
+    private readonly ApplicationDescriptionCollection _validApplicationDescriptionCollection = [ new ApplicationDescription()
     {
         ApplicationName = "test",
         ApplicationType = ApplicationType.Server,
         ApplicationUri = "asd",
         ProductUri = "asd",
-        DiscoveryUrls = new StringCollection()
-            {
+        DiscoveryUrls =
+            [
                 "opc.tcp://example.com:53530"
-            }
-    } };
-    private readonly EndpointDescriptionCollection _validEndpointDescriptionCollection = new()
-    {
+            ]
+    } ];
+    private readonly EndpointDescriptionCollection _validEndpointDescriptionCollection =
+    [
         new EndpointDescription()
         {
             EndpointUrl = "asd"
         }
-    };
+    ];
 
     private readonly ILogger _logger;
-    private readonly List<Uri> _discoveryUris = new()
-    {
+    private readonly List<Uri> _discoveryUris =
+    [
         new Uri("opc.tcp://asd.com"),
-    };
+    ];
     private readonly Mock<IDiscoveryUtil> _mockDiscoveryUtil;
 
     public DiscoveryControllerTest()
@@ -72,7 +72,7 @@ public class DiscoveryControllerTest
         // arrange
         DiscoveryUtil discoveryUtil = new();
         DiscoveryController controller = new(_logger, discoveryUtil);
-        List<Uri> discoveryUris = new();
+        List<Uri> discoveryUris = [];
 
         // act
         ICollection<Target> targets = controller.DiscoverTargets(discoveryUris);
@@ -86,9 +86,9 @@ public class DiscoveryControllerTest
     {
         // arrange
         DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
-        List<Uri> discoveryUris = new() {
+        List<Uri> discoveryUris = [
             new Uri("https://test.com")
-        };
+        ];
 
         // act
         ICollection<Target> targets = controller.DiscoverTargets(discoveryUris);
@@ -135,7 +135,7 @@ public class DiscoveryControllerTest
     public void ResolvesToZeroAddresses()
     {
         // arrange
-        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns(Array.Empty<IPAddress>());
+        _mockDiscoveryUtil.Setup(util => util.ResolveIPv4Addresses(It.IsAny<string>())).Returns([]);
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 

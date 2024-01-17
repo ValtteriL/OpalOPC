@@ -12,7 +12,7 @@ public class SecurityModeNonePluginTest
     private readonly ILogger _logger;
     private readonly SecurityModeNonePlugin _plugin;
     private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
-    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
+    private readonly EndpointDescriptionCollection _endpointDescriptions = [];
     public SecurityModeNonePluginTest()
     {
         _logger = LoggerFactory.Create(builder => { }).CreateLogger<SecurityModeNonePluginTest>();

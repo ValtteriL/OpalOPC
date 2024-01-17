@@ -30,7 +30,7 @@ public class Reporter_printXHTMLReportShould
             ApplicationUri = "applicationUri 1042111",
             ProductUri = "productUri 1014123211"
         });
-        Server server = new("opc.tcp://discoveryuri", new EndpointDescriptionCollection());
+        Server server = new("opc.tcp://discoveryuri", []);
         server.AddError(new Error("error message 1"));
         server.AddError(new Error("error message 2"));
         server.AddError(new Error("error message 3"));
@@ -39,7 +39,7 @@ public class Reporter_printXHTMLReportShould
         server.AddIssue(new Issue(3, "issue name 3", 9.2));
         _target.AddServer(server);
 
-        _targets = new List<Target>() { _target };
+        _targets = [_target];
     }
 
     [Fact]

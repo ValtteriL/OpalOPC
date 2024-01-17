@@ -1,10 +1,9 @@
-using Application;
 using Controller;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Model;
+using ScannerApplication;
 using Util;
 using View;
 
@@ -24,33 +23,9 @@ class OpalOPC
                 Environment.Exit((int)options.exitCode);
             }
 
+            options.commandLine = Environment.CommandLine;
 
-            IHost _host = Host.CreateDefaultBuilder()
-                .ConfigureServices((_, services) =>
-                {
-                    services.AddSingleton<IWorker, Worker>();
-                    services.AddSingleton<IVersionCheckController, VersionCheckController>();
-                    services.AddSingleton<IScanController, ScanController>();
-                    services.AddSingleton<IReporter, Reporter>();
-                    services.AddSingleton<IReportController, ReportController>();
-                    services.AddSingleton<IDiscoveryController, DiscoveryController>();
-                    services.AddSingleton<IDiscoveryUtil, DiscoveryUtil>();
-                    services.AddSingleton<ISecurityTestController, SecurityTestController>();
-                    services.AddSingleton<ITaskUtil, TaskUtil>();
-                })
-                .ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
-                    logging.SetMinimumLevel(options.logLevel);
-                    logging.AddSimpleConsole(options =>
-                    {
-                        options.IncludeScopes = false;
-                        options.TimestampFormat = "HH:mm:ss ";
-                        options.SingleLine = true;
-                    });
-                })
-                .Build();
-
+            IHost _host = AppConfigurer.ConfigureApplication(options);
             IWorker worker = _host.Services.GetRequiredService<IWorker>();
             worker.Run(options);
             return (int)ExitCodes.Success;

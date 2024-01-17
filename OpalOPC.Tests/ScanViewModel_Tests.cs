@@ -57,7 +57,7 @@ public class ScanViewModel_Tests
         ScanViewModel model = new();
         string target1 = "asd";
         string target2 = "opc.tcp://eee";
-        string[] targets = { target1, target2, "" };
+        string[] targets = [target1, target2, ""];
 
         string tempfile = Path.GetTempFileName();
         File.WriteAllLines(tempfile, targets);

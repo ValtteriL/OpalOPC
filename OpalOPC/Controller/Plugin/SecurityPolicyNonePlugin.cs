@@ -22,7 +22,7 @@ namespace Plugin
         {
             _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for Security Policy None");
 
-            List<ISecurityTestSession> sessions = new();
+            List<ISecurityTestSession> sessions = [];
 
             if (endpointDescriptions.Find(d => d.SecurityPolicyUri == SecurityPolicies.None) != null)
             {

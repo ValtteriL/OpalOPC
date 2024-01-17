@@ -11,7 +11,7 @@ public class Endpoint_Constructor
         Opc.Ua.EndpointDescription description = new();
         string endpointUrl = "endpointUrl";
         string securityPolicyUrl = "securityPolicyUrl";
-        byte[] serverCertificate = new byte[] { 1 };
+        byte[] serverCertificate = [1];
         description.EndpointUrl = endpointUrl;
         description.SecurityPolicyUri = securityPolicyUrl;
         description.SecurityMode = Opc.Ua.MessageSecurityMode.None;

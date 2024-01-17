@@ -19,7 +19,7 @@ public class ReportController_WriteReportShould
         Reporter reporter = new(sw.BaseStream);
         string runStatus = "hello";
         string commandLine = "commandline";
-        ReportController reportController = new(logger, reporter, new List<Target>(), DateTime.Now, DateTime.Now, commandLine, runStatus);
+        ReportController reportController = new(logger, reporter, [], DateTime.Now, DateTime.Now, commandLine, runStatus);
         reportController.WriteReport();
 
         Assert.True(reportController.report!.RunStatus == runStatus);

@@ -11,8 +11,8 @@ public class CredentialsIssue_Constructor
         int pluginId = 0;
         string name = "a";
         double severity = 0;
-        List<(string, string)> usernamesPasswords = new() { ("username", "password") };
-        List<CertificateIdentifier> userCertificates = new() { new CertificateIdentifier() };
+        List<(string, string)> usernamesPasswords = [("username", "password")];
+        List<CertificateIdentifier> userCertificates = [new CertificateIdentifier()];
         CredentialsIssue CredentialsIssue = new(
                 pluginId, name, severity, usernamesPasswords, userCertificates
             );

@@ -10,7 +10,7 @@ public class Report_Constructor
     {
         DateTime start = DateTime.Now;
         DateTime stop = DateTime.MaxValue;
-        List<Target> targets = new();
+        List<Target> targets = [];
         string commandLine = string.Empty;
         string runStatus = string.Empty;
 

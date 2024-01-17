@@ -13,6 +13,7 @@ namespace Model
         bool shouldShowVersion { get; set; }
         AuthenticationData authenticationData { get; set; }
         bool acceptEula { get; set; }
+        string commandLine { get; set; }
     }
 
     public class Options : IDisposable, IOptions
@@ -26,7 +27,7 @@ namespace Model
         public bool shouldShowVersion { get; set; }
         public AuthenticationData authenticationData { get; set; } = new();
         public bool acceptEula { get; set; } = false;
-
+        public string commandLine { get; set; } = string.Empty;
 
         public void Dispose()
         {

@@ -4,6 +4,7 @@ namespace Util
     public interface ITaskUtil
     {
         public void CheckForCancellation();
+        public CancellationToken? token { set; }
     }
 
     public class TaskUtil : ITaskUtil

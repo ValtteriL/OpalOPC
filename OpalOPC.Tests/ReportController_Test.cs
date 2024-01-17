@@ -40,7 +40,7 @@ public class ReportControllerTest
         // Arrange
 
         // Act
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, new List<Target>(), DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, [], DateTime.Now, DateTime.Now, string.Empty, string.Empty);
         reportController.WriteReport();
 
         // Assert
@@ -55,7 +55,7 @@ public class ReportControllerTest
         // Arrange
 
         // Act
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, new List<Target>() { new(_applicationDescription) }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, [new(_applicationDescription)], DateTime.Now, DateTime.Now, string.Empty, string.Empty);
         reportController.WriteReport();
 
         // Assert
@@ -72,19 +72,19 @@ public class ReportControllerTest
         // Arrange
 
         var target1 = new Target(_applicationDescription);
-        target1.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
+        target1.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
         target1.Servers.First().Issues.Add(new Issue(1, "description", 0.1));
 
         var target2 = new Target(_applicationDescription);
-        target2.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
+        target2.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
         target2.Servers.First().Issues.Add(new Issue(1, "description", 0.2));
 
         var target3 = new Target(_applicationDescription);
-        target3.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
+        target3.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, [target1, target2, target3], DateTime.Now, DateTime.Now, string.Empty, string.Empty);
         reportController.WriteReport();
 
         // Assert
@@ -103,17 +103,17 @@ public class ReportControllerTest
         // Arrange
 
         var target1 = new Target(_applicationDescription);
-        target1.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
+        target1.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
         target1.Servers.First().Issues.Add(new Issue(1, "description", 0.1));
 
         var target2 = new Target(_applicationDescription);
 
         var target3 = new Target(_applicationDescription);
-        target3.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
+        target3.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, [target1, target2, target3], DateTime.Now, DateTime.Now, string.Empty, string.Empty);
         reportController.WriteReport();
 
         // Assert
@@ -131,18 +131,18 @@ public class ReportControllerTest
         // Arrange
 
         var target1 = new Target(_applicationDescription);
-        target1.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
+        target1.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
         target1.Servers.First().Issues.Add(new Issue(1, "description", 0.1));
 
         var target2 = new Target(_applicationDescription);
-        target2.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { }));
+        target2.AddServer(new Server("opc.tcp://discoveryuri", []));
 
         var target3 = new Target(_applicationDescription);
-        target3.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
+        target3.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, [target1, target2, target3], DateTime.Now, DateTime.Now, string.Empty, string.Empty);
         reportController.WriteReport();
 
         // Assert
@@ -160,22 +160,22 @@ public class ReportControllerTest
         // Arrange
 
         var target1 = new Target(_applicationDescription);
-        target1.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
+        target1.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
         target1.Servers.First().Issues.Add(new Issue(1, "description", 0.1));
         target1.Servers.First().Issues.Add(new Issue(2, "description", 0.1));
         target1.Servers.First().Issues.Add(new Issue(3, "description", 0.1));
 
         var target2 = new Target(_applicationDescription);
-        target2.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
-        target2.AddServer(new Server("opc.tcp://discoveryuri2", new EndpointDescriptionCollection() { _endpointDescription }));
-        target2.AddServer(new Server("opc.tcp://discoveryuri3", new EndpointDescriptionCollection() { _endpointDescription }));
+        target2.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
+        target2.AddServer(new Server("opc.tcp://discoveryuri2", [_endpointDescription]));
+        target2.AddServer(new Server("opc.tcp://discoveryuri3", [_endpointDescription]));
 
         var target3 = new Target(_applicationDescription);
-        target3.AddServer(new Server("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription }));
+        target3.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, new List<Target>() { target1, target2, target3 }, DateTime.Now, DateTime.Now, string.Empty, string.Empty);
+        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object, [target1, target2, target3], DateTime.Now, DateTime.Now, string.Empty, string.Empty);
         reportController.WriteReport();
 
         // Assert

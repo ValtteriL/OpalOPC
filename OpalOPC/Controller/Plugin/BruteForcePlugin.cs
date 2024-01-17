@@ -33,13 +33,13 @@ namespace Plugin
         {
             _logger.LogTrace("{Message}", $"Brute forcing credentials for {discoveryUrl}");
 
-            List<ISecurityTestSession> sessions = new();
+            List<ISecurityTestSession> sessions = [];
 
             List<EndpointDescription> usernameEndpoints = endpointDescriptions.FindAll(e => e.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.UserName));
             EndpointDescription? usernameEndpointsNoApplicationAuthentication = usernameEndpoints.Find(e => e.SecurityPolicyUri == SecurityPolicies.None);
             EndpointDescription? usernameEndpointWithApplicationAuthentication = usernameEndpoints.Find(e => e.SecurityPolicyUri != SecurityPolicies.None);
 
-            List<(string username, string password)> validUsernamePasswords = new();
+            List<(string username, string password)> validUsernamePasswords = [];
 
             if (usernameEndpointsNoApplicationAuthentication != null)
             {

@@ -9,7 +9,7 @@ public class Server_AddError
     public void AddError_InputErrorIsAddedToErrors()
     {
         string discoveryUrl = "a";
-        EndpointDescriptionCollection edc = new();
+        EndpointDescriptionCollection edc = [];
         Server server = new(discoveryUrl, edc);
         Error error = new("");
 

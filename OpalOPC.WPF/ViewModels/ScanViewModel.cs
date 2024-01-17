@@ -5,11 +5,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Controller;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ScannerApplication;
 using Model;
 using OpalOPC.WPF.GuiUtil;
 using OpalOPC.WPF.Logger;
 using Util;
+using Microsoft.Extensions.DependencyInjection;
 
 
 namespace OpalOPC.WPF.ViewModels;
@@ -25,7 +28,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
     [ObservableProperty]
     private string _targetToAdd = string.Empty;
 
-    [ObservableProperty] private ObservableCollection<Uri> _targets = new();
+    [ObservableProperty] private ObservableCollection<Uri> _targets = [];
 
     [ObservableProperty]
     private string? _log = string.Empty;
@@ -89,9 +92,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         Log = string.Empty;
 
         ScanCompletedSuccessfully = false;
-        ILogger logger = new GUILogger(Verbosity);
-
-        _scanViewModelUtil.CheckVersion(logger);
+        GUILoggerProvider loggerProvider = new(Verbosity);
 
         // check if output file specified
         // if path points to dir => use generated output filename
@@ -111,27 +112,44 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         {
             using Stream outputStream = _fileUtil.Create(_outputfile);
             _authenticationData = _scanViewModelUtil.GetAuthenticationData();
-            ScanController scanController = new(logger, Targets, outputStream, generateGUICommandInReport(), _authenticationData, token);
+
+            Options options = new()
+            {
+                authenticationData = _authenticationData,
+                OutputStream = outputStream,
+                targets = [.. Targets],
+                OutputReportName = _outputfile,
+                commandLine = generateGUICommandInReport(),
+            };
 
             await Task.Run(() =>
             {
-                scanController.Scan();
-                logger.LogInformation("{Message}", $"Report saved to {_outputfile} (Use browser to view it)");
+
+                IHost _host = AppConfigurer.ConfigureApplication(options, loggerProvider);
+
+                // set token for cancellation
+                ITaskUtil taskUtil = _host.Services.GetRequiredService<ITaskUtil>();
+                taskUtil.token = token;
+
+                // run
+                IWorker worker = _host.Services.GetRequiredService<IWorker>();
+                worker.Run(options);
+
             }, token);
 
             ScanCompletedSuccessfully = true;
         }
         catch (Exception e) when (e is UnauthorizedAccessException || e is IOException || e is PathTooLongException || e is DirectoryNotFoundException)
         {
-            logger.LogError("{Message}", $"Error opening report file for writing: {e.Message}");
+            loggerProvider.CreateLogger(string.Empty).LogError("{Message}", $"Error opening report file for writing: {e.Message}");
         }
         catch (OperationCanceledException)
         {
-            logger.LogWarning("{Message}", $"Scan canceled");
+            loggerProvider.CreateLogger(string.Empty).LogWarning("{Message}", $"Scan canceled");
         }
         catch (Exception ex)
         {
-            logger.LogCritical("{Message}", $"Unhandled exception: {ex}");
+            loggerProvider.CreateLogger(string.Empty).LogCritical("{Message}", $"Unhandled exception: {ex}");
         }
     }
 

@@ -35,7 +35,7 @@ namespace Tests
         public SecurityTestControllerTest()
         {
             _loggerMock = new Mock<ILogger>();
-            _server = new("opc.tcp://discoveryuri", new EndpointDescriptionCollection() { _endpointDescription });
+            _server = new("opc.tcp://discoveryuri", [_endpointDescription]);
             _target = new(_applicationDescription);
             _target.AddServer(_server);
             _mockSecurityTestSession = new Mock<ISecurityTestSession>();

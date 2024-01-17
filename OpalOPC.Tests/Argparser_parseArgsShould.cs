@@ -24,8 +24,8 @@ public class Argparser_parseArgsShould
     private readonly List<string> _loginFileLines;
     public Argparser_parseArgsShould()
     {
-        _loginFileLinesSingle = new List<string> { $"{_username}:{_password}" };
-        _loginFileLines = new List<string> { $"{_username}:{_password}", $"{_username2}:{_password2}" };
+        _loginFileLinesSingle = [$"{_username}:{_password}"];
+        _loginFileLines = [$"{_username}:{_password}", $"{_username2}:{_password2}"];
         _loginCredential = (_username, _password);
         _loginCredential2 = (_username2, _password2);
     }
@@ -33,7 +33,7 @@ public class Argparser_parseArgsShould
     [Fact]
     public void ParseArgs_NoTargets_ResultsInNoTargets()
     {
-        string[] args = { "-v" };
+        string[] args = ["-v"];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -47,7 +47,7 @@ public class Argparser_parseArgsShould
     [InlineData("--output", "b")]
     public void ParseArgs_InputOutputFileNameMatchesOptionsReportName(string flag, string filename)
     {
-        string[] args = { flag, filename };
+        string[] args = [flag, filename];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -62,7 +62,7 @@ public class Argparser_parseArgsShould
     [InlineData("--output", "this/path/does/not/exist2")]
     public void ParseArgs_InputInvalidOutputFileNameCausesTermination(string flag, string filename)
     {
-        string[] args = { flag, filename };
+        string[] args = [flag, filename];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -73,7 +73,7 @@ public class Argparser_parseArgsShould
     [Fact]
     public void ParseArgs_IncreaseVerbosity1()
     {
-        string[] args = { "-v" };
+        string[] args = ["-v"];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -85,7 +85,7 @@ public class Argparser_parseArgsShould
     [Fact]
     public void ParseArgs_IncreaseVerbosity2()
     {
-        string[] args = { "-v", "-v" };
+        string[] args = ["-v", "-v"];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -97,7 +97,7 @@ public class Argparser_parseArgsShould
     [Fact]
     public void ParseArgs_SilenceLogging()
     {
-        string[] args = { "-s" };
+        string[] args = ["-s"];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -109,7 +109,7 @@ public class Argparser_parseArgsShould
     [Fact]
     public void ParseArgs_NoTargets_ResultsInHelp()
     {
-        string[] args = Array.Empty<string>();
+        string[] args = [];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -122,7 +122,7 @@ public class Argparser_parseArgsShould
     [InlineData("--help")]
     public void ParseArgs_Help_ResultsInHelp(string flag)
     {
-        string[] args = { flag };
+        string[] args = [flag];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -134,7 +134,7 @@ public class Argparser_parseArgsShould
     [InlineData("--version")]
     public void ParseArgs_Version_ResultsInVersion(string flag)
     {
-        string[] args = { flag };
+        string[] args = [flag];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -148,7 +148,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_InvalidInputFile_ResultsInError(string flag)
     {
         string filename = "ahfoihfsa";
-        string[] args = { flag, filename };
+        string[] args = [flag, filename];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -162,7 +162,7 @@ public class Argparser_parseArgsShould
     [InlineData("--login-credential")]
     public void ParseArgs_LoginIsAddedToAuthdata(string flag)
     {
-        string[] args = { flag, $"{_loginCredential.Item1}:{_loginCredential.Item2}" };
+        string[] args = [flag, $"{_loginCredential.Item1}:{_loginCredential.Item2}"];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -177,7 +177,7 @@ public class Argparser_parseArgsShould
     [InlineData("--login-credential")]
     public void ParseArgs_LoginIsAddedToAuthdataMultiple(string flag)
     {
-        string[] args = { flag, $"{_loginCredential.Item1}:{_loginCredential.Item2}", flag, $"{_loginCredential2.Item1}:{_loginCredential2.Item2}" };
+        string[] args = [flag, $"{_loginCredential.Item1}:{_loginCredential.Item2}", flag, $"{_loginCredential2.Item1}:{_loginCredential2.Item2}"];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -194,7 +194,7 @@ public class Argparser_parseArgsShould
     [InlineData("--brute-force-credential")]
     public void ParseArgs_BruteIsAddedToAuthdata(string flag)
     {
-        string[] args = { flag, $"{_loginCredential.Item1}:{_loginCredential.Item2}" };
+        string[] args = [flag, $"{_loginCredential.Item1}:{_loginCredential.Item2}"];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -209,7 +209,7 @@ public class Argparser_parseArgsShould
     [InlineData("--brute-force-credential")]
     public void ParseArgs_BruteIsAddedToAuthdataMultiple(string flag)
     {
-        string[] args = { flag, $"{_loginCredential.Item1}:{_loginCredential.Item2}", flag, $"{_loginCredential2.Item1}:{_loginCredential2.Item2}" };
+        string[] args = [flag, $"{_loginCredential.Item1}:{_loginCredential.Item2}", flag, $"{_loginCredential2.Item1}:{_loginCredential2.Item2}"];
         Argparser argparser = new(args);
 
         Options options = argparser.parseArgs();
@@ -226,7 +226,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_LoginIsAddedToAuthdataFromFile(string flag)
     {
         // arrange
-        string[] args = { flag, _path };
+        string[] args = [flag, _path];
 
         _fileUtilMock.Setup(x => x.ReadFileToList(_path)).Returns(_loginFileLinesSingle);
         Argparser argparser = new(args, _fileUtilMock.Object);
@@ -250,7 +250,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_LoginIsAddedToAuthdataFromFileMultiple(string flag)
     {
         // arrange
-        string[] args = { flag, _path };
+        string[] args = [flag, _path];
 
         _fileUtilMock.Setup(x => x.ReadFileToList(_path)).Returns(_loginFileLines);
         Argparser argparser = new(args, _fileUtilMock.Object);
@@ -274,7 +274,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_LoginFileException_ResultsInError(string flag)
     {
         // arrange
-        string[] args = { flag, _path };
+        string[] args = [flag, _path];
 
         _fileUtilMock.Setup(x => x.ReadFileToList(_path)).Throws(new System.Exception());
         Argparser argparser = new(args, _fileUtilMock.Object);
@@ -292,7 +292,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_LoginFileWithInvalidLine_ResultsInError(string flag)
     {
         // arrange
-        string[] args = { flag, _path };
+        string[] args = [flag, _path];
         string invalidLine = "asddasdasda";
 
         _fileUtilMock.Setup(x => x.ReadFileToList(_path)).Returns(new List<string> { invalidLine });
@@ -311,7 +311,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_BruteIsAddedToAuthdataFromFile(string flag)
     {
         // arrange
-        string[] args = { flag, _path };
+        string[] args = [flag, _path];
 
         _fileUtilMock.Setup(x => x.ReadFileToList(_path)).Returns(_loginFileLinesSingle);
         Argparser argparser = new(args, _fileUtilMock.Object);
@@ -335,7 +335,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_BruteIsAddedToAuthdataFromFileMultiple(string flag)
     {
         // arrange
-        string[] args = { flag, _path };
+        string[] args = [flag, _path];
 
         _fileUtilMock.Setup(x => x.ReadFileToList(_path)).Returns(_loginFileLines);
         Argparser argparser = new(args, _fileUtilMock.Object);
@@ -359,7 +359,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_BruteFileException_ResultsInError(string flag)
     {
         // arrange
-        string[] args = { flag, _path };
+        string[] args = [flag, _path];
 
         _fileUtilMock.Setup(x => x.ReadFileToList(_path)).Throws(new System.Exception());
         Argparser argparser = new(args, _fileUtilMock.Object);
@@ -377,7 +377,7 @@ public class Argparser_parseArgsShould
     public void ParseArgs_BruteFileWithInvalidLine_ResultsInError(string flag)
     {
         // arrange
-        string[] args = { flag, _path };
+        string[] args = [flag, _path];
         string invalidLine = "asddasdasda";
 
         _fileUtilMock.Setup(x => x.ReadFileToList(_path)).Returns(new List<string> { invalidLine });
@@ -407,7 +407,7 @@ public class Argparser_parseArgsShould
         string certpath = "certpath";
         string privkeypath = "privkeypath";
         string patharg = $"{certpath}:{privkeypath}";
-        string[] args = { flag, patharg };
+        string[] args = [flag, patharg];
         X509Certificate2 cert = CertificateBuilder.Create("CN=Root CA").CreateForRSA();
         CertificateIdentifier certificateIdentifier = new(cert);
 
@@ -446,7 +446,7 @@ public class Argparser_parseArgsShould
         string certpath = "certpath";
         string privkeypath = "privkeypath";
         string patharg = $"{certpath}:{privkeypath}";
-        string[] args = { flag, patharg, flag, patharg };
+        string[] args = [flag, patharg, flag, patharg];
         X509Certificate2 cert = CertificateBuilder.Create("CN=Root CA").CreateForRSA();
         CertificateIdentifier certificateIdentifier = new(cert);
 
@@ -487,7 +487,7 @@ public class Argparser_parseArgsShould
         string certpath = "certpath";
         string privkeypath = "privkeypath";
         string patharg = $"{certpath}:{privkeypath}";
-        string[] args = { flag, patharg };
+        string[] args = [flag, patharg];
         X509Certificate2 cert = CertificateBuilder.Create("CN=Root CA").CreateForRSA();
 
         _fileUtilMock.Setup(x => x.CreateCertificateIdentifierFromPemFile(certpath, privkeypath)).Throws(new CryptographicException());
