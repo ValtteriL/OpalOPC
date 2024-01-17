@@ -54,3 +54,7 @@ setup-snap-builder:
 		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
 		--inventory deploy/inventory.yaml \
 		deploy/playbooks/setup-opalopc-snap-builder.yaml
+
+.PHONY: docs
+docs:
+	@cd opalopc-docs && npx docusaurus start
