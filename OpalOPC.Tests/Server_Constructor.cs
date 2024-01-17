@@ -10,7 +10,7 @@ public class Server_Constructor
     public void constructor_SetsProperties()
     {
         string discoveryUrl = "a";
-        EndpointDescriptionCollection edc = new();
+        EndpointDescriptionCollection edc = [];
         Server server = new(discoveryUrl, edc);
 
         Assert.True(server.DiscoveryUrl == discoveryUrl);

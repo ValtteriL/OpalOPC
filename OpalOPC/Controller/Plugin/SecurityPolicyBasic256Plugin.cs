@@ -21,7 +21,7 @@ namespace Plugin
         {
             _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for Security Policy Basic256");
 
-            List<ISecurityTestSession> sessions = new();
+            List<ISecurityTestSession> sessions = [];
 
             if (endpointDescriptions.Find(d => d.SecurityPolicyUri == SecurityPolicies.Basic256) != null)
             {

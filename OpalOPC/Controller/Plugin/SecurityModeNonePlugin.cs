@@ -22,7 +22,7 @@ namespace Plugin
         {
             _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for Message Security Mode None");
 
-            List<ISecurityTestSession> sessions = new();
+            List<ISecurityTestSession> sessions = [];
 
             if (endpointDescriptions.Find(d => d.SecurityMode == MessageSecurityMode.None) != null)
             {

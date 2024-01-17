@@ -57,7 +57,7 @@ public class ScanViewModel_Tests
         ScanViewModel model = new();
         string target1 = "asd";
         string target2 = "opc.tcp://eee";
-        string[] targets = { target1, target2, "" };
+        string[] targets = [target1, target2, ""];
 
         string tempfile = Path.GetTempFileName();
         File.WriteAllLines(tempfile, targets);
@@ -118,7 +118,6 @@ public class ScanViewModel_Tests
     public async void Scan()
     {
         _scanViewModelUtilMock.Setup(x => x.GetAuthenticationData()).Returns(new AuthenticationData());
-        _scanViewModelUtilMock.Setup(x => x.CheckVersion(It.IsAny<ILogger>()));
         _fileUtilMock.Setup(x => x.Create(It.IsAny<string>())).Returns(new MemoryStream());
 
         ScanViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object, _scanViewModelUtilMock.Object);
@@ -156,7 +155,6 @@ public class ScanViewModel_Tests
     public async void ScanWithEmptyOutputFilePath()
     {
         _scanViewModelUtilMock.Setup(x => x.GetAuthenticationData()).Returns(new AuthenticationData());
-        _scanViewModelUtilMock.Setup(x => x.CheckVersion(It.IsAny<ILogger>()));
         _fileUtilMock.Setup(x => x.Create(It.IsAny<string>())).Returns(new MemoryStream());
 
         ScanViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object, _scanViewModelUtilMock.Object)

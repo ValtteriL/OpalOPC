@@ -14,7 +14,7 @@ namespace Util
     {
         private readonly string _subject = "CN=OpalOPC Security Scanner, C=FI, S=Uusimaa, O=Molemmat Oy";
         private readonly string _applicationUri = "urn:opalopc.com";
-        private readonly string[] _domainNames = { "opalopc.com" };
+        private readonly string[] _domainNames = ["opalopc.com"];
         private readonly string _dirName = "OpalOPC";
         private readonly string _certFilename = "cert.pfx";
         private readonly string _certPath;

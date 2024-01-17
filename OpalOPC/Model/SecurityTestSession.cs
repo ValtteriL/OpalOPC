@@ -11,18 +11,12 @@ namespace Model
         public void Dispose();
     }
 
-    public class SecurityTestSession : ISecurityTestSession, IDisposable
+    public class SecurityTestSession(ISession Session, SessionCredential Credential) : ISecurityTestSession, IDisposable
     {
-        public ISession Session { get; private set; }
-        public SessionCredential Credential { get; private set; }
+        public ISession Session { get; private set; } = Session;
+        public SessionCredential Credential { get; private set; } = Credential;
 
         public string EndpointUrl => Session.Endpoint.EndpointUrl;
-
-        public SecurityTestSession(ISession session, SessionCredential credential)
-        {
-            Session = session;
-            Credential = credential;
-        }
 
         public void Dispose()
         {

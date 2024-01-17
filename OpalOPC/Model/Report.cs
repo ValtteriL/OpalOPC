@@ -2,7 +2,7 @@ namespace Model
 {
     public class Report
     {
-        public List<Target> Targets { get; private set; } = new();
+        public List<Target> Targets { get; private set; } = [];
         public string StartTime { get; private set; }
         public string EndTime { get; private set; }
         public string Version { get; private set; } = Util.VersionUtil.AppAssemblyVersion!.ToString();
@@ -20,7 +20,10 @@ namespace Model
             }
 
             // sort targets by highest server issue severity
-            Targets = opcTargets.OrderByDescending(t => t.Servers.Any() ? t.Servers.Max(s => s.Issues.Any() ? s.Issues.Max(i => i.Severity) : 0) : 0).ToList();
+            Targets =
+            [
+                .. opcTargets.OrderByDescending(t => t.Servers.Count != 0 ? t.Servers.Max(s => s.Issues.Count != 0 ? s.Issues.Max(i => i.Severity) : 0) : 0),
+            ];
 
             StartTime = Start.ToString(Dateformat);
             EndTime = End.ToString(Dateformat);

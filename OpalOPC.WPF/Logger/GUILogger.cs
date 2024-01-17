@@ -4,20 +4,15 @@ using OpalOPC.WPF.ViewModels;
 
 namespace OpalOPC.WPF.Logger
 {
-    public class GUILogger : ILogger
+    public class GUILogger(LogLevel minimumLogLevel) : ILogger
     {
-        private readonly LogLevel minimumLogLevel;
-
-        public GUILogger(LogLevel _minimumLogLevel)
-        {
-            minimumLogLevel = _minimumLogLevel;
-        }
+        private readonly LogLevel _minimumLogLevel = minimumLogLevel;
 
         public IDisposable? BeginScope<TState>(TState state) where TState : notnull => default!;
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            return minimumLogLevel <= logLevel;
+            return _minimumLogLevel <= logLevel;
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
@@ -32,7 +27,7 @@ namespace OpalOPC.WPF.Logger
             WeakReferenceMessenger.Default.Send(new LogMessage(message));
         }
 
-        private string GetTimestamp()
+        private static string GetTimestamp()
         {
             return DateTime.Now.ToString("HH:mm:ss").Replace(".", ":");
         }

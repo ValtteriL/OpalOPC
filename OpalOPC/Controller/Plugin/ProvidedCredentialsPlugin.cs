@@ -33,9 +33,9 @@ namespace Plugin
         {
             _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for provided credentials");
 
-            List<ISecurityTestSession> sessions = new();
-            List<(string username, string password)> validUsernamePasswords = new();
-            List<CertificateIdentifier> validCertificates = new();
+            List<ISecurityTestSession> sessions = [];
+            List<(string username, string password)> validUsernamePasswords = [];
+            List<CertificateIdentifier> validCertificates = [];
 
             List<EndpointDescription> usernameEndpoints = endpointDescriptions.FindAll(d => d.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.UserName));
             EndpointDescription? usernameEndpointNoApplicationAuthentication = usernameEndpoints.Find(e => e.SecurityPolicyUri == SecurityPolicies.None);
@@ -53,7 +53,7 @@ namespace Plugin
                 AttempLoginWithUserCertificates(sessions, validCertificates, new Endpoint(certificateEndpointNoApplicationAuthentication));
             }
 
-            if (!validUsernamePasswords.Any() && !validCertificates.Any())
+            if (validUsernamePasswords.Count == 0 && validCertificates.Count == 0)
             {
                 // no valid credentials found, try again with different application certificates
                 foreach (CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
@@ -69,7 +69,7 @@ namespace Plugin
                 }
             }
 
-            if (validUsernamePasswords.Any() || validCertificates.Any())
+            if (validUsernamePasswords.Count != 0 || validCertificates.Count != 0)
             {
                 IEnumerable<string> credpairs = validUsernamePasswords.Select(c => $"{c.username}:{c.password}").Concat(validCertificates.Select(c => $"certificate:{c.Thumbprint}"));
                 s_issueTitle = $"Provided credentials in use ({string.Join(", ", credpairs)})";

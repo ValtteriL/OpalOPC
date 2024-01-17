@@ -201,7 +201,7 @@ public class ConfigurationViewModel_Tests
     {
         // Arrange
         string path = "path";
-        string[] lines = { "username:password", "username2:password2" };
+        string[] lines = ["username:password", "username2:password2"];
         _fileUtilMock.Setup(_fileUtilMock => _fileUtilMock.ReadFileToList(It.IsAny<string>()))
             .Returns(lines.ToList());
         ConfigurationViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object);
@@ -278,7 +278,7 @@ public class ConfigurationViewModel_Tests
     {
         // Arrange
         string path = "path";
-        string[] lines = { "username:password", "username2:password2" };
+        string[] lines = ["username:password", "username2:password2"];
         _fileUtilMock.Setup(_fileUtilMock => _fileUtilMock.ReadFileToList(It.IsAny<string>()))
             .Returns(lines.ToList());
         ConfigurationViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object);

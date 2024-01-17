@@ -1,16 +1,9 @@
 namespace Model
 {
-    public class Issue
+    public class Issue(int pluginId, string name, double severity)
     {
-        public int PluginId { get; set; }
-        public string Name { get; set; }
-        public double Severity { get; set; }
-
-        public Issue(int pluginId, string name, double severity)
-        {
-            PluginId = pluginId;
-            Name = name;
-            Severity = severity;
-        }
+        public int PluginId { get; set; } = pluginId;
+        public string Name { get; set; } = name;
+        public double Severity { get; set; } = severity;
     }
 }

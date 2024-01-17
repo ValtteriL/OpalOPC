@@ -39,7 +39,7 @@ namespace Plugin
             EndpointDescription? anonymousEndpointNoApplicationAuthentication = anonymousEndpoints.Find(e => e.SecurityPolicyUri == SecurityPolicies.None);
             EndpointDescription? anonymousEndpointWithApplicationAuthentication = anonymousEndpoints.Find(e => e.SecurityPolicyUri != SecurityPolicies.None);
 
-            List<ISecurityTestSession> sessions = new();
+            List<ISecurityTestSession> sessions = [];
 
             if (anonymousEndpointNoApplicationAuthentication != null)
             {

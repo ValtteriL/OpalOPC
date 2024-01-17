@@ -33,13 +33,13 @@ namespace Plugin
         {
             _logger.LogTrace("{Message}", $"Testing {discoveryUrl} for common credentials");
 
-            List<ISecurityTestSession> sessions = new();
+            List<ISecurityTestSession> sessions = [];
 
             List<EndpointDescription> usernameEndpoints = endpointDescriptions.FindAll(e => e.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.UserName));
             EndpointDescription? usernameEndpointsNoApplicationAuthentication = usernameEndpoints.Find(e => e.SecurityPolicyUri == SecurityPolicies.None);
             EndpointDescription? usernameEndpointWithApplicationAuthentication = usernameEndpoints.Find(e => e.SecurityPolicyUri != SecurityPolicies.None);
 
-            List<(string username, string password)> validCredentials = new();
+            List<(string username, string password)> validCredentials = [];
 
             if (usernameEndpointsNoApplicationAuthentication != null)
             {

@@ -5,18 +5,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Controller
 {
-    public class VersionCheckController
+    public interface IVersionCheckController
+    {
+        bool IsUpToDate { get; }
+        void CheckVersion();
+    }
+
+    public class VersionCheckController(ILogger<VersionCheckController> logger) : IVersionCheckController
     {
 
-        readonly ILogger _logger;
         private readonly Uri _versionUri = new("https://opalopc.com/VERSION.txt");
-        public bool IsUpToDate { get; private set; }
-
-        public VersionCheckController(ILogger logger)
-        {
-            _logger = logger;
-            IsUpToDate = true;
-        }
+        public bool IsUpToDate { get; private set; } = true;
 
         // Check what is the latest version, if not same as the current version, warn
         // if no network connection - just generate trace message
@@ -46,7 +45,7 @@ namespace Controller
             }
             catch (System.Exception)
             {
-                _logger.LogWarning("Unable to check latest OpalOPC version");
+                logger.LogWarning("Unable to check latest OpalOPC version");
                 return;
             }
 
@@ -55,11 +54,11 @@ namespace Controller
             if (latestVersion != thisVersion)
             {
                 IsUpToDate = false;
-                _logger.LogWarning("{Message}", $"Using outdated OpalOPC version {thisVersion} (the latest is {latestVersion})");
+                logger.LogWarning("{Message}", $"Using outdated OpalOPC version {thisVersion} (the latest is {latestVersion})");
                 return;
             }
 
-            _logger.LogTrace("Using latest version");
+            logger.LogTrace("Using latest version");
         }
 
         private static string GetOSString()

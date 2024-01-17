@@ -1,6 +1,9 @@
 using Controller;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Model;
+using ScannerApplication;
 using Util;
 using View;
 
@@ -15,52 +18,17 @@ class OpalOPC
         {
             using Options options = new Argparser(args).parseArgs();
 
-            // prompt to accept EULA if not already accepted before
-            EulaPrompter eulaPrompter = new();
-            if (options.acceptEula)
-            {
-                eulaPrompter.PersistAcceptChoice();
-            }
-            else if (!eulaPrompter.PromptUserForEulaAcceptance())
-            {
-                options.exitCode = ExitCodes.Error;
-            }
-
             if (options.exitCode.HasValue)
             {
                 Environment.Exit((int)options.exitCode);
             }
 
-            using ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder
-                    .SetMinimumLevel(options.logLevel)
-                    .AddSimpleConsole(options =>
-                    {
-                        options.IncludeScopes = false;
-                        options.TimestampFormat = "HH:mm:ss ";
-                        options.SingleLine = true;
-                    });
-            });
+            options.commandLine = Environment.CommandLine;
 
-            ILogger logger = loggerFactory.CreateLogger<OpalOPC>();
-
-            VersionCheckController versionCheckController = new(logger);
-            versionCheckController.CheckVersion();
-
-            ScanController scanController = new(logger, options.targets, options.OutputStream!, Environment.CommandLine, options.authenticationData);
-            scanController.Scan();
-
-            if (options.OutputReportName != null)
-            {
-                logger.LogInformation("{Message}", $"Report saved to {options.OutputReportName} (Use browser to view it)");
-            }
-
-#if DEBUG
-            logger.LogInformation("{Message}", $"Access report directly: http://localhost:8000/{options.OutputReportName}");
-#endif
-
-            return 0;
+            IHost _host = AppConfigurer.ConfigureApplication(options);
+            IWorker worker = _host.Services.GetRequiredService<IWorker>();
+            worker.Run(options);
+            return (int)ExitCodes.Success;
         }
         catch (Exception ex)
         {

@@ -18,23 +18,23 @@ public class ProvidedCredentialsPluginTest
     private readonly int _expectedConnectionAttemptsWithAppCert;
     private readonly int _expectedConnectionAttempts;
     private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
-    private readonly EndpointDescriptionCollection _endpointDescriptions = new();
+    private readonly EndpointDescriptionCollection _endpointDescriptions = [];
     private readonly AuthenticationData _authenticationData = new()
     {
-        loginCredentials = new List<(string, string)> {
+        loginCredentials = [
                 ("username", "password"),
                 ("username2", "password2")
-            },
-        applicationCertificates = new List<CertificateIdentifier>
-        {
+            ],
+        applicationCertificates =
+        [
                 new(CertificateBuilder.Create("CN=Test").CreateForRSA()),
                 new(CertificateBuilder.Create("CN=Test").CreateForRSA())
-        },
-        userCertificates = new List<CertificateIdentifier>
-        {
+        ],
+        userCertificates =
+        [
                 new(CertificateBuilder.Create("CN=Test").CreateForRSA()),
                 new(CertificateBuilder.Create("CN=Test").CreateForRSA())
-        }
+        ]
     };
 
     public ProvidedCredentialsPluginTest()

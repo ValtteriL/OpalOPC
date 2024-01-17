@@ -37,7 +37,7 @@ public partial class ConfigurationViewModel : ObservableObject
     [NotifyCanExecuteChangedFor(nameof(AddApplicationCertificateCommand))]
     private string _applicationPrivateKeyPath = string.Empty;
 
-    [ObservableProperty] private ObservableCollection<CertificateIdentifier> _applicationCertificateIdentifiers = new();
+    [ObservableProperty] private ObservableCollection<CertificateIdentifier> _applicationCertificateIdentifiers = [];
 
     private bool ApplicationCertificatePrivateKeyPathsSet()
     {
@@ -52,7 +52,7 @@ public partial class ConfigurationViewModel : ObservableObject
     [NotifyCanExecuteChangedFor(nameof(AddUserCertificateCommand))]
     private string _userPrivateKeyPath = string.Empty;
 
-    [ObservableProperty] private ObservableCollection<CertificateIdentifier> _userCertificateIdentifiers = new();
+    [ObservableProperty] private ObservableCollection<CertificateIdentifier> _userCertificateIdentifiers = [];
 
     private bool UserCertificatePrivateKeyPathsSet()
     {
@@ -89,8 +89,8 @@ public partial class ConfigurationViewModel : ObservableObject
     private readonly IFileUtil _fileUtil;
     private readonly IMessageBoxUtil _messageBoxUtil;
 
-    [ObservableProperty] private ObservableCollection<(string, string)> _usernamesAndPasswords = new();
-    [ObservableProperty] private ObservableCollection<(string, string)> _bruteUsernamesAndPasswords = new();
+    [ObservableProperty] private ObservableCollection<(string, string)> _usernamesAndPasswords = [];
+    [ObservableProperty] private ObservableCollection<(string, string)> _bruteUsernamesAndPasswords = [];
 
     public void SetApplicationCertificatePath(string fullPath)
     {

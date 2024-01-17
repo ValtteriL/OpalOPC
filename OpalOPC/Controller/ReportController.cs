@@ -4,28 +4,23 @@ using View;
 
 namespace Controller
 {
-    public class ReportController
+    public interface IReportController
     {
+        Report GenerateReport(ICollection<Target> targets, DateTime Start, DateTime End, string commandLine, string runStatus);
+        void WriteReport(Report report, Stream outputStream);
+    }
 
-        readonly ILogger _logger;
-        readonly IReporter _reporter;
-        public Report report { get; private set; }
-
-        public ReportController(ILogger logger, IReporter reporter, ICollection<Target> targets, DateTime Start, DateTime End, string commandLine, string runStatus)
+    public class ReportController(ILogger<IReportController> logger, IReporter reporter) : IReportController
+    {
+        public Report GenerateReport(ICollection<Target> targets, DateTime Start, DateTime End, string commandLine, string runStatus)
         {
-            _reporter = reporter;
-            _logger = logger;
-            _logger.LogDebug("{Message}", "Generating report");
-            report = new Report(targets, Start, End, commandLine, runStatus);
+            return new(targets, Start, End, commandLine, runStatus);
         }
 
-        public void WriteReport()
+        public void WriteReport(Report report, Stream outputStream)
         {
-            if (report == null)
-            {
-                throw new NullReferenceException("Report is null");
-            }
-            _reporter.PrintXHTMLReport(report!);
+            logger.LogDebug("{Message}", "Generating report");
+            reporter.PrintXHTMLReport(report, outputStream);
         }
 
     }

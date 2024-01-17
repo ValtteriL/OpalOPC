@@ -7,19 +7,12 @@ namespace View
 {
     public interface IReporter
     {
-        public void PrintXHTMLReport(Report report);
+        public void PrintXHTMLReport(Report report, Stream outputStream);
     }
 
     public class Reporter : IReporter
     {
-        private readonly Stream _outputStream;
-
-        public Reporter(Stream outputStream)
-        {
-            _outputStream = outputStream;
-        }
-
-        public void PrintXHTMLReport(Report report)
+        public void PrintXHTMLReport(Report report, Stream outputStream)
         {
             // register helpers
             IHandlebars handlebarsContext = Handlebars.Create();
@@ -35,7 +28,7 @@ namespace View
 #endif
 
             // Write to output stream
-            StreamWriter writer = new(_outputStream)
+            StreamWriter writer = new(outputStream)
             {
                 AutoFlush = true
             };

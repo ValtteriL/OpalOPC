@@ -2,8 +2,8 @@ namespace Util
 {
     public class Credentials
     {
-        public static readonly List<(string username, string password)> CommonCredentials = new()
-        {
+        public static readonly List<(string username, string password)> CommonCredentials =
+        [
                 // from https://github.com/COMSYS/msf-opcua/blob/master/credentials/opcua_credentials_sources.txt
                 (username: "HTTPS", password: "password"), // Turck TBEN-L4/5
                 (username: "User", password: "Siemens.1"), // SIMATIC S7-1500
@@ -31,7 +31,7 @@ namespace Util
                 (username: "user1", password: "password1"), // node-opcua
                 (username: "user2", password: "password2"),
                 (username: "admin", password: "pass"), // python-opcua
-            };
+            ];
 
     }
 }
