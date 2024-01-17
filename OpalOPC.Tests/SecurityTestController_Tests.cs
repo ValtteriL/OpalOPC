@@ -33,6 +33,7 @@ namespace Tests
         private readonly Mock<IPreAuthPlugin> _mockPreAuthPlugin;
         private readonly Mock<IPostAuthPlugin> _mockPostAuthPlugin;
         private readonly AuthenticationData _authenticationData = new();
+        private readonly Mock<IPluginRepository> _pluginRepositoryMock;
 
 
         public SecurityTestControllerTest()
@@ -45,6 +46,7 @@ namespace Tests
             _mockPreAuthPlugin = new Mock<IPreAuthPlugin>();
             _mockPostAuthPlugin = new Mock<IPostAuthPlugin>();
             _taskUtilMock = new Mock<ITaskUtil>();
+            _pluginRepositoryMock = new Mock<IPluginRepository>();
         }
 
 
@@ -53,7 +55,8 @@ namespace Tests
         {
             // arrange
             var opcTargets = new List<Target> { _target };
-            SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object);
+            _pluginRepositoryMock.Setup(repository => repository.GetAll(It.IsAny<AuthenticationData>())).Returns([]);
+            SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object, _pluginRepositoryMock.Object);
 
             // act
             ICollection<Target> newTargets = securityTestController.TestTargetSecurity(opcTargets, _authenticationData);
@@ -71,7 +74,9 @@ namespace Tests
             var mockPostAuthPlugin = new Mock<IPostAuthPlugin>();
             mockPostAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PostAuthPlugin);
 
-            SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object);
+            _pluginRepositoryMock.Setup(repository => repository.GetAll(It.IsAny<AuthenticationData>())).Returns([mockPostAuthPlugin.Object]);
+
+            SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object, _pluginRepositoryMock.Object);
 
             // act
             securityTestController.TestTargetSecurity(opcTargets, _authenticationData);
@@ -90,7 +95,10 @@ namespace Tests
             var mockPreAuthPlugin = new Mock<IPreAuthPlugin>();
             mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
             mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
-            SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object);
+
+            _pluginRepositoryMock.Setup(repository => repository.GetAll(It.IsAny<AuthenticationData>())).Returns([mockPreAuthPlugin.Object]);
+
+            SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object, _pluginRepositoryMock.Object);
 
             // act
             securityTestController.TestTargetSecurity(opcTargets, _authenticationData);
@@ -105,7 +113,8 @@ namespace Tests
             // arrange
             _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
             _mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
-            SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object);
+            _pluginRepositoryMock.Setup(repository => repository.GetAll(It.IsAny<AuthenticationData>())).Returns([_mockPreAuthPlugin.Object]);
+            SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object, _pluginRepositoryMock.Object);
 
             // act
             securityTestController.TestTargetSecurity(new List<Target>(), _authenticationData);
@@ -126,7 +135,9 @@ namespace Tests
             _mockPostAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<ISession>())).Returns((new Issue(2, "test", 2)));
             _mockPostAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PostAuthPlugin);
 
-            SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object);
+            _pluginRepositoryMock.Setup(repository => repository.GetAll(It.IsAny<AuthenticationData>())).Returns([_mockPreAuthPlugin.Object, _mockPostAuthPlugin.Object]);
+
+            SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object, _pluginRepositoryMock.Object);
 
             // act
             securityTestController.TestTargetSecurity(opcTargets, _authenticationData);
@@ -149,7 +160,9 @@ namespace Tests
             _mockPostAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<ISession>())).Returns((new Issue(2, "test", 2)));
             _mockPostAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PostAuthPlugin);
 
-            SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object);
+            _pluginRepositoryMock.Setup(repository => repository.GetAll(It.IsAny<AuthenticationData>())).Returns([_mockPreAuthPlugin.Object, _mockPostAuthPlugin.Object]);
+
+            SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object, _pluginRepositoryMock.Object);
 
             // act
             securityTestController.TestTargetSecurity(opcTargets, _authenticationData);

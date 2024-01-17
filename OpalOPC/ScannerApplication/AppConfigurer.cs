@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Model;
+using Plugin;
 using Util;
 using View;
 
@@ -24,6 +25,7 @@ namespace ScannerApplication
                     services.AddSingleton<IDiscoveryUtil, DiscoveryUtil>();
                     services.AddSingleton<ISecurityTestController, SecurityTestController>();
                     services.AddSingleton<ITaskUtil, TaskUtil>();
+                    services.AddSingleton<IPluginRepository, PluginRepository>();
                 })
                 .ConfigureLogging(logging =>
                 {

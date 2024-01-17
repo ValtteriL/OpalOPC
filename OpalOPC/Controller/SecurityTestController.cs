@@ -12,7 +12,7 @@ namespace Controller
         ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets, AuthenticationData authenticationData);
     }
 
-    public class SecurityTestController(ILogger<ISecurityTestController> logger, ITaskUtil taskUtil) : ISecurityTestController
+    public class SecurityTestController(ILogger<ISecurityTestController> logger, ITaskUtil taskUtil, IPluginRepository pluginRepository) : ISecurityTestController
     {
         private ICollection<IPlugin> _securityTestPlugins = [];
 
@@ -20,7 +20,7 @@ namespace Controller
         // Run all security tests and return result-populated opcTarget
         public ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets, AuthenticationData authenticationData)
         {
-            InitializePlugins(authenticationData);
+            _securityTestPlugins = pluginRepository.GetAll(authenticationData);
 
             logger.LogTrace("{Message}", $"Loaded {_securityTestPlugins.Count} security test plugins");
             logger.LogTrace("{Message}", $"Plugins: {string.Join(", ", _securityTestPlugins.Select(p => (int)p.pluginId))}");
@@ -57,28 +57,6 @@ namespace Controller
             });
 
             return opcTargets;
-        }
-
-        private void InitializePlugins(AuthenticationData authenticationData)
-        {
-            _securityTestPlugins = new List<IPlugin>()
-            {
-            new SecurityModeInvalidPlugin(logger),
-            new SecurityModeNonePlugin(logger),
-
-            new SecurityPolicyBasic128Rsa15Plugin(logger),
-            new SecurityPolicyBasic256Plugin(logger),
-            new SecurityPolicyNonePlugin(logger),
-
-            new AnonymousAuthenticationPlugin(logger, authenticationData),
-            new SelfSignedCertificatePlugin(logger),
-
-            new ProvidedCredentialsPlugin(logger, authenticationData),
-            new CommonCredentialsPlugin(logger, authenticationData),
-            new BruteForcePlugin(logger, authenticationData),
-            new RBACNotSupportedPlugin(logger),
-            new AuditingDisabledPlugin(logger),
-            };
         }
 
         private void TestEndpointSecurity(Server server)

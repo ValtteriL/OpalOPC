@@ -23,7 +23,7 @@ public class ReportController_WriteReportShould
         string runStatus = "hello";
         string commandLine = "commandline";
         ReportController reportController = new(_loggerMock.Object, reporter);
-        Report report = reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, runStatus, commandLine);
+        Report report = reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, commandLine, runStatus);
         reportController.WriteReport(report, new MemoryStream());
 
         Assert.True(report.RunStatus == runStatus);
