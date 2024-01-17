@@ -31,17 +31,19 @@ public class DiscoveryControllerTest
         }
     ];
 
-    private readonly ILogger _logger;
     private readonly List<Uri> _discoveryUris =
     [
         new Uri("opc.tcp://asd.com"),
     ];
     private readonly Mock<IDiscoveryUtil> _mockDiscoveryUtil;
+    private readonly Mock<ITaskUtil> _mockTaskUtil;
+    private readonly Mock<ILogger<DiscoveryController>> _loggerMock;
 
     public DiscoveryControllerTest()
     {
-        _logger = LoggerFactory.Create(builder => { }).CreateLogger<DiscoveryControllerTest>();
+        _loggerMock = new Mock<ILogger<DiscoveryController>>();
         _mockDiscoveryUtil = new Mock<IDiscoveryUtil>();
+        _mockTaskUtil = new Mock<ITaskUtil>();
     }
 
 
@@ -53,7 +55,7 @@ public class DiscoveryControllerTest
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
-        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockTaskUtil.Object);
 
         // act
         ICollection<Target> targets = controller.DiscoverTargets(_discoveryUris);
@@ -71,7 +73,7 @@ public class DiscoveryControllerTest
     {
         // arrange
         DiscoveryUtil discoveryUtil = new();
-        DiscoveryController controller = new(_logger, discoveryUtil);
+        DiscoveryController controller = new(_loggerMock.Object, discoveryUtil, _mockTaskUtil.Object);
         List<Uri> discoveryUris = [];
 
         // act
@@ -85,7 +87,7 @@ public class DiscoveryControllerTest
     public void HttpsDiscoveryUriReturnsEmptyTargets()
     {
         // arrange
-        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockTaskUtil.Object);
         List<Uri> discoveryUris = [
             new Uri("https://test.com")
         ];
@@ -105,7 +107,7 @@ public class DiscoveryControllerTest
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
-        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockTaskUtil.Object);
 
         // act
         ICollection<Target> targets = controller.DiscoverTargets(_discoveryUris);
@@ -122,7 +124,7 @@ public class DiscoveryControllerTest
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
-        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockTaskUtil.Object);
 
         // act
         ICollection<Target> targets = controller.DiscoverTargets(_discoveryUris);
@@ -139,7 +141,7 @@ public class DiscoveryControllerTest
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
-        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockTaskUtil.Object);
 
         // act
         ICollection<Target> targets = controller.DiscoverTargets(_discoveryUris);
@@ -156,7 +158,7 @@ public class DiscoveryControllerTest
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Throws<ServiceResultException>();
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
-        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockTaskUtil.Object);
 
         // act
         ICollection<Target> targets = controller.DiscoverTargets(_discoveryUris);
@@ -173,7 +175,7 @@ public class DiscoveryControllerTest
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Throws<Exception>();
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Returns(_validEndpointDescriptionCollection);
 
-        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockTaskUtil.Object);
 
         // act & assert
         Assert.Throws<Exception>(() => controller.DiscoverTargets(_discoveryUris));
@@ -187,7 +189,7 @@ public class DiscoveryControllerTest
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Throws<ServiceResultException>();
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
 
-        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockTaskUtil.Object);
 
         // act
         ICollection<Target> targets = controller.DiscoverTargets(_discoveryUris);
@@ -205,7 +207,7 @@ public class DiscoveryControllerTest
         _mockDiscoveryUtil.Setup(util => util.DiscoverEndpoints(It.IsAny<Uri>())).Throws<Exception>();
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns(_validApplicationDescriptionCollection);
 
-        DiscoveryController controller = new(_logger, _mockDiscoveryUtil.Object);
+        DiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockTaskUtil.Object);
 
         // act & assert
         Assert.Throws<Exception>(() => controller.DiscoverTargets(_discoveryUris));

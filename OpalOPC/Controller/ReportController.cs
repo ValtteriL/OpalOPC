@@ -10,7 +10,7 @@ namespace Controller
         void WriteReport(Report report, Stream outputStream);
     }
 
-    public class ReportController(ILogger<ReportController> logger, IReporter reporter) : IReportController
+    public class ReportController(ILogger<IReportController> logger, IReporter reporter) : IReportController
     {
         public Report GenerateReport(ICollection<Target> targets, DateTime Start, DateTime End, string commandLine, string runStatus)
         {

@@ -6,6 +6,7 @@ using Xunit;
 namespace Tests;
 public class Reporter_printXHTMLReportShould
 {
+    private readonly Stream _outputStream = new MemoryStream();
     private readonly Reporter _reporter;
     private readonly MemoryStream _memoryStream;
     private readonly string _commandLine = "commandline";
@@ -21,7 +22,7 @@ public class Reporter_printXHTMLReportShould
         {
             AutoFlush = true
         };
-        _reporter = new(sw.BaseStream);
+        _reporter = new();
 
         _target = new(new ApplicationDescription()
         {
@@ -47,7 +48,7 @@ public class Reporter_printXHTMLReportShould
     {
         Report report = new(new List<Target>(), DateTime.Now, DateTime.Now, _commandLine, _runStatus);
 
-        _reporter.PrintXHTMLReport(report);
+        _reporter.PrintXHTMLReport(report, _outputStream);
     }
 
     [Fact]
@@ -55,7 +56,7 @@ public class Reporter_printXHTMLReportShould
     {
         Report report = new(_targets, DateTime.Now, DateTime.Now, _commandLine, _runStatus);
 
-        _reporter.PrintXHTMLReport(report);
+        _reporter.PrintXHTMLReport(report, _outputStream);
 
         _memoryStream.Seek(0, SeekOrigin.Begin);
         StreamReader reader = new(_memoryStream);

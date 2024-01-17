@@ -12,7 +12,7 @@ namespace Controller
         ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets, AuthenticationData authenticationData);
     }
 
-    public class SecurityTestController(ILogger<SecurityTestController> logger, ITaskUtil taskUtil) : ISecurityTestController
+    public class SecurityTestController(ILogger<ISecurityTestController> logger, ITaskUtil taskUtil) : ISecurityTestController
     {
         private ICollection<IPlugin> _securityTestPlugins = [];
 
