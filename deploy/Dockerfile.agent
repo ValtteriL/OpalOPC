@@ -1,6 +1,6 @@
 # Image used as the build agent by Jenkins
 
-FROM ubuntu:lunar
+FROM ubuntu:23.10
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -20,4 +20,4 @@ RUN apt-get update && apt-get install -y \
 RUN add-apt-repository --yes --update ppa:ansible/ansible && apt-get install -y ansible
 
 # install dotnet
-RUN apt-get -y install dotnet-sdk-8.0
+RUN apt-get -y install dotnet8
