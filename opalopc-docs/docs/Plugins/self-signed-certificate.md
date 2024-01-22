@@ -3,7 +3,7 @@ id: 10010
 title: Self signed certificate
 description: My document description
 slug: /plugin-10010
-tags: [authentication]
+tags: [plugin, authentication]
 ---
 
 ## Plugin details

@@ -3,7 +3,7 @@ id: 10012
 title: Brute Force
 description: My document description
 slug: /plugin-10012
-tags: [authentication]
+tags: [plugin, authentication]
 ---
 
 ## Plugin details

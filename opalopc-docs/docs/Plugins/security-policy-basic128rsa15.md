@@ -3,7 +3,7 @@ id: 10007
 title: Security policy Basic128Rsa15
 description: My document description
 slug: /plugin-10007
-tags: [transport-security]
+tags: [plugin, transport-security]
 ---
 
 ## Plugin details

@@ -3,7 +3,7 @@ id: 10008
 title: Security policy Basic256
 description: My document description
 slug: /plugin-10008
-tags: [transport-security]
+tags: [plugin, transport-security]
 ---
 
 ## Plugin details

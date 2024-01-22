@@ -3,7 +3,7 @@ id: 10003
 title: Common credentials
 description: My document description
 slug: /plugin-10003
-tags: [authentication]
+tags: [plugin, authentication]
 ---
 
 ## Plugin details

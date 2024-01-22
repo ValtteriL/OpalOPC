@@ -3,7 +3,7 @@ id: 10002
 title: Auditing disabled
 description: My document description
 slug: /plugin-10002
-tags: [accounting]
+tags: [plugin, accounting]
 ---
 
 ## Plugin details

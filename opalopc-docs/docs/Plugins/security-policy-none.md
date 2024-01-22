@@ -3,7 +3,7 @@ id: 10009
 title: Security policy None
 description: My document description
 slug: /plugin-10009
-tags: [transport-security]
+tags: [plugin, transport-security]
 ---
 
 ## Plugin details

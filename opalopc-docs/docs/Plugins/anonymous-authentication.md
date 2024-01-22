@@ -3,7 +3,7 @@ id: 10001
 title: Anonymous authentication
 description: My document description
 slug: /plugin-10001
-tags: [authentication]
+tags: [plugin, authentication]
 ---
 
 ## Plugin details

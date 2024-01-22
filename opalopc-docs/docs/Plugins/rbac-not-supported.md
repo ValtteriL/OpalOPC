@@ -3,7 +3,7 @@ id: 10004
 title: RBAC not supported
 description: My document description
 slug: /plugin-10004
-tags: [authorization]
+tags: [plugin, authorization]
 ---
 
 ## Plugin details

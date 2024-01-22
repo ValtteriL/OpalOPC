@@ -3,7 +3,7 @@ id: 10006
 title: Security mode none
 description: My document description
 slug: /plugin-10006
-tags: [transport-security]
+tags: [plugin, transport-security]
 ---
 
 ## Plugin details

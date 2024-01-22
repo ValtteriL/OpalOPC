@@ -3,7 +3,7 @@ id: 10005
 title: Security mode invalid
 description: My document description
 slug: /plugin-10005
-tags: [transport-security]
+tags: [plugin, transport-security]
 ---
 
 ## Plugin details

@@ -3,7 +3,7 @@ id: 10011
 title: User-provided credentials
 description: My document description
 slug: /plugin-10011
-tags: [authentication]
+tags: [plugin, authentication]
 ---
 
 ## Plugin details
