@@ -25,9 +25,3 @@ On a high level, OpalOPC works as follows:
 
 ![How it works](/img/how-it-works.png)
 
-### What kind of tests are run?
-
-What OpalOPC probes in each application is based on plugins. Take a look at [plugins](/docs/category/plugins) to see what kind of checks it does.
-
-Plugins include tests to authenticate to the target application through weak configuration and vulnerabilities. Plugins requiring successful authentication are run only if a way in is found.
-
