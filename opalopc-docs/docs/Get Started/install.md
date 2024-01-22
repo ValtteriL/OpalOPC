@@ -1,5 +1,5 @@
 ---
-title: Overview
+title: Install
 description: My document description
-sidebar_position: 1
+sidebar_position: 2
 ---
