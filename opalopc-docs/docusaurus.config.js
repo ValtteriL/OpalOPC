@@ -131,7 +131,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} OpalOPC · EULA · Privacy`,
+        copyright: `Copyright © ${new Date().getFullYear()} OpalOPC · <a href="#">EULA</a> · <a href="/privacy-policy">Privacy</a>`,
       },
       prism: {
         theme: prismThemes.github,
