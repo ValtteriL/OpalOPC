@@ -83,16 +83,16 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Tutorials',
-                to: '/docs/intro',
+                label: 'Quickstart',
+                to: '/docs/get-started/quick-start',
               },
               {
-                label: 'Tooling reference',
-                to: '/docs/intro',
+                label: 'GUI Reference',
+                to: '/docs/usage-gui',
               },
               {
-                label: 'Plugins',
-                to: '/docs/category/plugins',
+                label: 'CLI Command Reference',
+                to: '/docs/usage-cli',
               },
             ],
           },
@@ -101,15 +101,15 @@ const config = {
             items: [
               {
                 label: 'How it works',
+                to: '/docs#how-it-works',
+              },
+              {
+                label: 'Blog',
                 to: '/blog',
               },
               {
                 label: 'YouTube',
                 href: 'https://www.youtube.com/playlist?list=PL0CpXbWypOUn3QcYLOMghfV2bh5nGWut6',
-              },
-              {
-                label: 'Blog',
-                to: '/blog',
               },
             ],
           },
@@ -117,21 +117,21 @@ const config = {
             title: 'Help',
             items: [
               {
+                label: 'FAQ',
+                to: '/docs/faq',
+              },
+              {
+                label: 'Changelog',
+                to: '/docs/changelog',
+              },
+              {
                 label: 'Contact us',
-                href: 'mailto:info@opalopc.com',
-              },
-              {
-                label: 'EULA',
-                href: 'mailto:info@opalopc.com',
-              },
-              {
-                label: 'Privacy Statement',
                 href: 'mailto:info@opalopc.com',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} OpalOPC`,
+        copyright: `Copyright © ${new Date().getFullYear()} OpalOPC · EULA · Privacy`,
       },
       prism: {
         theme: prismThemes.github,
