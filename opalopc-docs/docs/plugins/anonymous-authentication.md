@@ -1,7 +1,7 @@
 ---
 id: 10001
 title: Anonymous authentication
-description: My document description
+description: Information on the issue detected by Anonymous authentication security testing plugin.
 slug: /plugin-10001
 tags: [plugin, authentication]
 ---

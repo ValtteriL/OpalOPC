@@ -1,7 +1,7 @@
 ---
 id: 10010
 title: Self signed certificate
-description: My document description
+description: Information on the issue detected by Self signed certificate security testing plugin.
 slug: /plugin-10010
 tags: [plugin, authentication]
 ---

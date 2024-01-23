@@ -1,6 +1,6 @@
 ---
 title: FAQ
-description: My document description
+description: The FAQ answers the most frequently asked questions.
 sidebar_position: 8
 ---
 

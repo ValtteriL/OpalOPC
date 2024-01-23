@@ -1,7 +1,7 @@
 ---
 id: 10004
 title: RBAC not supported
-description: My document description
+description: Information on the issue detected by RBAC not supported security testing plugin.
 slug: /plugin-10004
 tags: [plugin, authorization]
 ---

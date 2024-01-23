@@ -1,7 +1,7 @@
 ---
 id: 10007
 title: Security policy Basic128Rsa15
-description: My document description
+description: Information on the issue detected by Security policy Basic128Rsa15 security testing plugin.
 slug: /plugin-10007
 tags: [plugin, transport-security]
 ---

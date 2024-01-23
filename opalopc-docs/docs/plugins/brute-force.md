@@ -1,7 +1,7 @@
 ---
 id: 10012
 title: Brute Force
-description: My document description
+description: Information on the issue detected by Brute Force security testing plugin.
 slug: /plugin-10012
 tags: [plugin, authentication]
 ---

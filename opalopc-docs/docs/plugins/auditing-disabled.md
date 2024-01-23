@@ -1,7 +1,7 @@
 ---
 id: 10002
 title: Auditing disabled
-description: My document description
+description: Information on the issue detected by Auditing disabled security testing plugin.
 slug: /plugin-10002
 tags: [plugin, accounting]
 ---

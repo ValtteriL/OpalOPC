@@ -1,6 +1,6 @@
 ---
 title: Test Drive
-description: My document description
+description: Information on a test OPC UA target that you can scan with security scanners.
 sidebar_position: 3
 ---
 

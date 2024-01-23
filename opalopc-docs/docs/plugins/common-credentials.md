@@ -1,7 +1,7 @@
 ---
 id: 10003
 title: Common credentials
-description: My document description
+description: Information on the issue detected by Common credentials security testing plugin.
 slug: /plugin-10003
 tags: [plugin, authentication]
 ---

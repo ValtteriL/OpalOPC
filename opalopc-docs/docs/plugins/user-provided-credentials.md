@@ -1,7 +1,7 @@
 ---
 id: 10011
 title: User-provided credentials
-description: My document description
+description: Information on the issue detected by User-provided credentials security testing plugin.
 slug: /plugin-10011
 tags: [plugin, authentication]
 ---

@@ -1,6 +1,6 @@
 ---
 title: Changelog
-description: My document description
+description: The changelog shows OpalOPC release dates and what kind of changes were included in each release.
 sidebar_position: 7
 ---
 

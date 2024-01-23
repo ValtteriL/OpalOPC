@@ -1,6 +1,6 @@
 ---
 title: Overview
-description: My document description
+description: This is the documentation index, which contains an overview of OpalOPC, including how it works.
 sidebar_position: 1
 ---
 

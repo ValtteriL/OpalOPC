@@ -1,7 +1,7 @@
 ---
 id: 10005
 title: Security mode invalid
-description: My document description
+description: Information on the issue detected by Security mode invalid security testing plugin.
 slug: /plugin-10005
 tags: [plugin, transport-security]
 ---

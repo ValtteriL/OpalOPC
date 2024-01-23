@@ -1,7 +1,7 @@
 ---
 id: 10009
 title: Security policy None
-description: My document description
+description: Information on the issue detected by Security policy None security testing plugin.
 slug: /plugin-10009
 tags: [plugin, transport-security]
 ---

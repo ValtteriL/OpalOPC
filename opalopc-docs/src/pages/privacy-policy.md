@@ -1,5 +1,5 @@
 ---
-description: my hello page description
+description: The Privacy Statement describes what kind of data we process, and how we use it.
 ---
 
 # Privacy Statement

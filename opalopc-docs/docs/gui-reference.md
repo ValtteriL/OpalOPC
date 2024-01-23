@@ -1,6 +1,6 @@
 ---
 title: GUI Reference
-description: My document description
+description: The GUI Reference provides exhaustive instructructions to the OpalOPC GUI.
 sidebar_position: 4
 slug: usage-gui
 ---

@@ -1,6 +1,6 @@
 ---
 title: Quick Start
-description: My document description
+description: Quickstart contains shortened instructions to get you from zero to hero with OPC UA security testing.
 sidebar_position: 1
 ---
 

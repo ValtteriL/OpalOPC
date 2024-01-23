@@ -1,6 +1,6 @@
 ---
 title: Install
-description: My document description
+description: The installation documentation shows how to install OpalOPC on Windows or Linux.
 sidebar_position: 2
 ---
 

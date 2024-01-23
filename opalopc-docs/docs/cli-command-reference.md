@@ -1,6 +1,6 @@
 ---
 title: CLI Command Reference
-description: My document description
+description: The CLI Command Reference shows the exhaustive set of command line arguments to the CLI version of OpalOPC, and a couple of usage examples.
 sidebar_position: 5
 slug: usage-cli
 ---

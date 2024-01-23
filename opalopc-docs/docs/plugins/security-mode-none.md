@@ -1,7 +1,7 @@
 ---
 id: 10006
 title: Security mode none
-description: My document description
+description: Information on the issue detected by Security mode none security testing plugin.
 slug: /plugin-10006
 tags: [plugin, transport-security]
 ---

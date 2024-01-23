@@ -1,7 +1,7 @@
 ---
 id: 10008
 title: Security policy Basic256
-description: My document description
+description: Information on the issue detected by Security policy Basic256 security testing plugin.
 slug: /plugin-10008
 tags: [plugin, transport-security]
 ---
