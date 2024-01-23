@@ -7,6 +7,15 @@ tags: [release, 2.0.0.0]
 
 ![Release 2.0.0.0](release-2.0.0.0.png)
 
+* Support for user-provided credentials
+* New plugin: Brute force
+* Improved performance
+* Improved certificate handling
+* Version flag
+* Multiple bugfixes
+
+<!-- truncate -->
+
 ## Support for user-provided credentials
 
 User can now configure credentials for OpalOPC to use when authenticating to target servers. This ensures that security checks requiring authentication are run even if OpalOPC is unable to bypass authentication. It also allows you to quickly check where certain credentials allow access.
