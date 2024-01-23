@@ -5,7 +5,7 @@ authors: [valtteri]
 tags: [misc, linux, snap, 2.0.3.0]
 ---
 
-![Snapcraft logo](img/Snapcraft-logo-bird.png)
+![Snapcraft logo](Snapcraft-logo-bird.png)
 
 Starting from OpalOPC 2.0.3.0, the Linux installer has been replaced by [Snap](https://snapcraft.io/opalopc). This makes it easy for Linux users to install and keep the scanner up-to-date. Furthermore, the security features of Snap protect our customers when installing, updating, or using our product.
 

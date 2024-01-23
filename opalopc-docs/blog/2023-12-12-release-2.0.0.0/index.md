@@ -5,7 +5,7 @@ authors: [valtteri]
 tags: [release, 2.0.0.0]
 ---
 
-![Release 2.0.0.0](img/release-2.0.0.0.png)
+![Release 2.0.0.0](release-2.0.0.0.png)
 
 ## Support for user-provided credentials
 
@@ -15,9 +15,9 @@ OpalOPC supports configuring application certificate, user certificate, as well 
 
 User can configure credentials in “Configuration” tab. Application certificates are set in Application authentication section. User certificates and username-password combinations are set in User authentication section.
 
-![Application and User authentication configuration](img/gui-configuration-tab-provided-credentials-screenshot.png)
+![Application and User authentication configuration](gui-configuration-tab-provided-credentials-screenshot.png)
 
-![Credentials can be specified also on CLI](img/2.0.0.0-cli-help.png)
+![Credentials can be specified also on CLI](2.0.0.0-cli-help.png)
 
 ## New plugin: Brute force
 
@@ -29,7 +29,7 @@ The difference between guessing usernames and passwords in Brute force and by se
 
 User can configure username-password combinations in Brute force section in the “Settings” tab.
 
-![Brute force configuration](img/gui-configuration-tab-brute-force-screenshot.png)
+![Brute force configuration](gui-configuration-tab-brute-force-screenshot.png)
 
 ## Improved performance
 
@@ -47,4 +47,4 @@ This improvement was thanks to feedback from [Jouni Aro](https://fi.linkedin.com
 
 It is now possible to check the OpalOPC version on CLI with `--version` flag.
 
-![Version flag output](img/version-flag.png)
+![Version flag output](version-flag.png)
