@@ -138,6 +138,22 @@ const config = {
         darkTheme: prismThemes.dracula,
       },
     }),
+
+    // plugin config
+    plugins: [
+      [
+        '@docusaurus/plugin-client-redirects', // https://docusaurus.io/docs/api/plugins/@docusaurus/plugin-client-redirects
+        {
+          redirects: [
+            // How to pentest OPC UA presentation link to mailchimp landing page
+            {
+              from: '/how-to-hack-opc-ua-report',
+              to: 'https://mailchi.mp/opalopc/how-to-hack-opc-ua',
+            },
+          ],
+        },
+      ],
+    ],
 };
 
 export default config;
