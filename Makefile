@@ -58,3 +58,10 @@ setup-snap-builder:
 .PHONY: docs
 docs:
 	@cd opalopc-docs && npx docusaurus start
+
+
+.PHONY: deploy-website
+deploy-website:
+	@ansible-playbook \
+		--inventory deploy/inventory.yaml \
+		deploy/playbooks/deploy-website.yaml
