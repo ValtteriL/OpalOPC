@@ -59,9 +59,12 @@ setup-snap-builder:
 docs:
 	@cd opalopc-docs && npx docusaurus start
 
-
 .PHONY: deploy-website
 deploy-website:
 	@ansible-playbook \
 		--inventory deploy/inventory.yaml \
 		deploy/playbooks/deploy-website.yaml
+
+.PHONY: list-website-deployments
+list-website-deployments:
+	@npx wrangler pages deployment list --project-name opalopc
