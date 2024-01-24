@@ -14,12 +14,6 @@
     linux_build: "{{ repo_root.stdout }}/build/linux/opalopc"
     win_packages_path: "{{ repo_root.stdout }}/build/win/"
     report_resources: "{{ repo_root.stdout }}/OpalOPC/report-resources"
-    version_txt_web_path: /var/www/opalopc.com/VERSION.txt
-    report_resources_web_path: "/var/www/opalopc.com/report-resources/{{ version | mandatory }}"
-    debug_report_resource_path_regex: 'http:\/\/localhost:8000\/OpalOPC\/report-resources'
-    final_report_resource_path: "https://opalopc.com/report-resources/{{ version | mandatory }}"
-    eula_path: "{{ repo_root.stdout }}/OpalOPC/EULA.txt"
-    eula_web_path: /var/www/opalopc.com/EULA.txt
 
     snap_build_folder: opalopc-snap-build
     snap_channel: "latest/edge"
@@ -160,40 +154,9 @@
           ansible.builtin.pause:
             prompt: "Make sure to submit Windows package to Microsoft Store (Version {{ version }} in {{ win_packages_path }})"
 
-    - name: Update resources on webserver
-      delegate_to: ron
-      block:
-        - name: Transfer report resources to webserver
-          become: true
-          ansible.builtin.copy:
-            src: "{{ report_resources }}/"
-            dest: "{{ report_resources_web_path }}/"
-            owner: root
-            group: root
-            force: false
-
-        - name: Translate debug report resource references to production
-          become: true
-          ansible.builtin.replace:
-            path: "{{ report_resources_web_path }}/stylesheet.xsl"
-            regexp: "{{ debug_report_resource_path_regex }}"
-            replace: "{{ final_report_resource_path }}"
-
-        - name: Deploy EULA.txt
-          become: true
-          ansible.builtin.copy:
-            src: "{{ eula_path | mandatory }}"
-            dest: "{{ eula_web_path | mandatory }}"
-            owner: root
-            group: root
-
-        - name: Update VERSION.txt
-          become: true
-          ansible.builtin.copy:
-            dest: "{{ version_txt_web_path }}"
-            content: "{{ version | mandatory }}"
-            owner: root
-            group: root
+    - name: A helpful reminder to deploy the website
+      ansible.builtin.pause:
+        prompt: "Make sure to deploy the website"
 
     - name: Local finishing touches
       delegate_to: localhost
