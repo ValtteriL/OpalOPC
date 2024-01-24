@@ -12,7 +12,7 @@ In this statement, we explain how we process the personal data of our customers 
 
 **Contact information for checking data and exercising other data protection rights:** [info@molemmat.fi](mailto:info@molemmat.fi)
 
-**Supervisory authority:** The Finnish Data Protection Ombudsman, [www.tietosuoja.fi](www.tietosuoja.fi)
+**Supervisory authority:** The Finnish Data Protection Ombudsman, [www.tietosuoja.fi](https://www.tietosuoja.fi)
 
 :::
 
@@ -199,7 +199,7 @@ You have the right to make a complaint to the Data Protection Ombudsman, if you 
 
 ### Office of the Data Protection Ombudsman
 
-**Website:** [www.tietosuoja.fi/en/home](www.tietosuoja.fi/en/home)
+**Website:** [www.tietosuoja.fi/en/home](https://www.tietosuoja.fi/en/home)
 
 **Visiting Address:** Lintulahdenkuja 4, 00530 Helsinki, Finland
 
