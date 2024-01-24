@@ -25,7 +25,8 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.1.0",
-    "@docusaurus/types": "3.1.0"
+    "@docusaurus/types": "3.1.0",
+    "wrangler": "^3.24.0"
   },
   "browserslist": {
     "production": [
