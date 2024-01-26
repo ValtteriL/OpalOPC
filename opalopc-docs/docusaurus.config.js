@@ -150,6 +150,30 @@ const config = {
               from: '/how-to-hack-opc-ua-report',
               to: 'https://mailchi.mp/opalopc/how-to-hack-opc-ua',
             },
+            {
+              from: '/how-to-hack-opc-ua',
+              to: '/blog/how-to-hack-opc-ua',
+            },
+            {
+              from: '/embed',
+              to: '/',
+            },
+            {
+              from: '/how-to-run-your-first-vulnerability-scan-with-opalopc',
+              to: '/docs/tutorials/first-vulnerability-scan',
+            },
+            {
+              from: '/linux-installer-moves-to-snap',
+              to: '/blog/linux-installer-moves-to-snap',
+            },
+            {
+              from: '/release-2000',
+              to: '/blog/release-2000',
+            },
+            {
+              from: '/buy',
+              to: '/',
+            },
           ],
         },
       ],
