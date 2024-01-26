@@ -1,0 +1,431 @@
+/* VARIBLES */
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body,
+* {
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  transition: all 0.5s ease;
+}
+
+p {
+  font-family: "Inter", sans-serif;
+}
+
+ul,
+ol,
+li {
+  font-family: "Inter", sans-serif;
+  list-style: none;
+}
+
+body {
+  transition: all 0.5s ease;
+}
+
+.headings h1,
+.headings h2,
+.headings h3,
+.headings h4,
+.headings h5,
+.headings h6 {
+  color: #1E2D37;
+  margin: 0;
+  letter-spacing: 0;
+  font-family: "Inter", sans-serif;
+  text-transform: capitalize;
+}
+.headings h1 span,
+.headings h2 span,
+.headings h3 span,
+.headings h4 span,
+.headings h5 span,
+.headings h6 span {
+  color: #1E2D37;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.01em;
+}
+.headings.white h1,
+.headings.white h2,
+.headings.white h3,
+.headings.white h4,
+.headings.white h5,
+.headings.white h6 {
+  color: #ffffff;
+}
+.headings h1 {
+  font-size: 2rem;
+  line-height: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+@media (min-width: 992px) {
+  .headings h1 {
+    font-size: 2.5rem;
+    line-height: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+}
+.headings h2 {
+  font-size: 1.875rem;
+  line-height: 2.125rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+@media (min-width: 992px) {
+  .headings h2 {
+    font-size: 1.75rem;
+    line-height: 2.308rem;
+    margin-bottom: 1.5rem;
+  }
+}
+.headings h3 {
+  font-size: 1.25rem;
+  line-height: 1.725rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+@media (min-width: 992px) {
+  .headings h3 {
+    font-size: 1.125rem;
+    line-height: 2.363rem;
+    margin-bottom: 1.5rem;
+  }
+}
+.headings h4 {
+  font-size: 1rem;
+  line-height: 2rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+@media (min-width: 992px) {
+  .headings h4 {
+    font-size: 2rem;
+    line-height: 2.253rem;
+    margin-bottom: 1rem;
+  }
+}
+.headings h5 {
+  font-size: 0.8rem;
+  line-height: 1.063rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+@media (min-width: 992px) {
+  .headings h5 {
+    font-size: 0.8rem;
+    line-height: 1.063rem;
+    margin-bottom: 1rem;
+  }
+}
+.headings h6 {
+  font-size: 0.8rem;
+  line-height: 1.063rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+@media (min-width: 992px) {
+  .headings h6 {
+    font-size: 0.8rem;
+    line-height: 1.063rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.paragraph.white p {
+  color: #1E2D37;
+}
+.paragraph.grey p {
+  color: #899197;
+}
+.paragraph p {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 19px;
+  color: #1E2D37;
+}
+.paragraph p b {
+  font-weight: 600;
+}
+@media (max-width: 991.98px) {
+  .paragraph p {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+.paragraph p a {
+  text-decoration: underline;
+  color: #4288B7;
+}
+.paragraph p a:hover {
+  text-decoration: none;
+}
+.paragraph.big p {
+  font-size: 20px;
+  line-height: 30px;
+}
+@media (max-width: 991.98px) {
+  .paragraph.big p {
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+.paragraph.medium p {
+  font-size: 18px;
+  line-height: 20px;
+}
+@media (max-width: 991.98px) {
+  .paragraph.medium p {
+    font-size: 12px;
+    line-height: 20px;
+  }
+}
+.paragraph.small p {
+  font-size: 12px;
+  line-height: 18px;
+}
+.paragraph ul li {
+  list-style: disc;
+  font-size: 14px;
+  line-height: 20px;
+}
+.paragraph ul li a {
+  text-decoration: none;
+  color: #4288B7;
+}
+.paragraph ul li a:hover {
+  text-decoration: underline;
+}
+.paragraph ol li {
+  list-style: decimal;
+  font-size: 14px;
+  line-height: 20px;
+}
+.paragraph ol li a {
+  text-decoration: none;
+  color: #4288B7;
+}
+.paragraph ol li a:hover {
+  text-decoration: underline;
+}
+
+.separator {
+  border-top: solid 1px #899197;
+}
+
+header {
+  padding: 2rem 2rem 0rem 2rem;
+  position: relative;
+  color: #ffffff;
+  text-align: center;
+}
+header .logo {
+  width: 266px;
+  margin: auto;
+  margin-top: 1rem;
+  margin-bottom: 2.5rem;
+}
+header .logo img {
+  width: 100%;
+  height: 100%;
+}
+header .headings h1 span {
+  display: block;
+  color: #899197;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 115%;
+  margin-top: 1rem;
+}
+
+.opal-summary {
+  margin-top: 3rem;
+}
+.opal-summary .scan-summary-box {
+  background: rgba(66, 136, 183, 0.06);
+  border-radius: 5px;
+  border-left: solid 8px #d9e7f1;
+  padding: 2.88rem;
+}
+.opal-summary .opal-summary-table {
+  /* Apply a border to the bottom of all but the last row */
+}
+.opal-summary .opal-summary-table table {
+  /* Change these properties */
+  --border: 1px solid $grey;
+  border-radius: 0px;
+  /* Don't change these properties */
+  border-spacing: 0;
+  border-collapse: separate;
+  border: var(--border);
+  overflow: hidden;
+}
+.opal-summary .opal-summary-table table.table-striped > tbody > tr:nth-child(2n+1) > td,
+.opal-summary .opal-summary-table table .table-striped > tbody > tr:nth-child(2n+1) > th {
+  background-color: #f7fcff;
+}
+.opal-summary .opal-summary-table table th:not(:last-child),
+.opal-summary .opal-summary-table table td:not(:last-child) {
+  border-right: var(--border);
+}
+.opal-summary .opal-summary-table table .discovery tr:first-child td:first-child {
+  border-right: 0;
+  border-bottom: solid 1px #899197 !important;
+}
+.opal-summary .opal-summary-table table .discovery tr:first-child:not(:nth-last-child(2)) td.br-b0:first-child {
+  border-bottom: 0 !important;
+}
+.opal-summary .opal-summary-table table > thead > tr:not(:last-child) > th,
+.opal-summary .opal-summary-table table > thead > tr:not(:last-child) > td,
+.opal-summary .opal-summary-table table > tbody > tr:not(:last-child) > th,
+.opal-summary .opal-summary-table table > tbody > tr:not(:last-child) > td,
+.opal-summary .opal-summary-table table > tfoot > tr:not(:last-child) > th,
+.opal-summary .opal-summary-table table > tfoot > tr:not(:last-child) > td,
+.opal-summary .opal-summary-table table > tr:not(:last-child) > td,
+.opal-summary .opal-summary-table table > tr:not(:last-child) > th,
+.opal-summary .opal-summary-table table > thead:not(:last-child),
+.opal-summary .opal-summary-table table > tbody:not(:last-child),
+.opal-summary .opal-summary-table table > tfoot:not(:last-child) {
+  border-bottom: var(--border);
+}
+.opal-summary .opal-summary-table thead tr th {
+  color: #1E2D37;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 16px;
+  background-color: #F3F4F5;
+  padding: 0.8rem;
+  text-align: center;
+  border: solid 1px #899197;
+  border-bottom: 0;
+  vertical-align: middle;
+}
+.opal-summary .opal-summary-table tbody tr td {
+  color: #1E2D37;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 115%;
+  padding: 0.8rem;
+  text-align: center;
+  border: solid 1px #899197;
+  vertical-align: middle;
+}
+.opal-summary .opal-summary-table tbody tr td:first-child {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 16px;
+}
+.opal-summary .opal-summary-table tbody tr td a {
+  color: #4288B7;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 115%;
+  text-decoration: underline;
+}
+.opal-summary .opal-summary-table tbody tr td a:hover {
+  text-decoration: none;
+}
+.opal-summary .opal-summary-table .bg-severity {
+  background-color: #d9e7f1;
+}
+.opal-summary .opal-summary-table .bg-01 {
+  background: #d9e7f1;
+}
+.opal-summary .opal-summary-table .bg-results {
+  background: rgba(66, 136, 183, 0.06);
+}
+.opal-summary .opal-summary-table .results-bar tr th {
+  text-align: left;
+  width: 20%;
+}
+.opal-summary .opal-summary-table .results {
+  border-radius: 0;
+  width: 96px;
+  display: flex;
+}
+.opal-summary .opal-summary-table .results span {
+  background: rgba(137, 145, 151, 0.3);
+  display: flex;
+  width: 18px;
+  height: 18px;
+  margin-right: 1px;
+}
+.opal-summary .opal-summary-table .results.low span.active {
+  background: rgba(66, 136, 183, 0.5);
+}
+.opal-summary .opal-summary-table .results.medium span.active {
+  background: rgba(228, 143, 81, 0.6);
+}
+.opal-summary .opal-summary-table .results.high span.active {
+  background: rgba(197, 7, 7, 0.4);
+}
+.opal-summary .opal-summary-table .results.critical span.active {
+  background: rgba(148, 9, 9, 0.6);
+}
+.opal-summary .opal-summary-table.opal-summary-detail .col-numbering {
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 115%;
+  border-radius: 5px 0px 0px 5px;
+  width: 101px;
+}
+.opal-summary .opal-summary-table.opal-summary-detail .bg-results {
+  border-radius: 0px 5px 5px 0px;
+}
+.opal-summary .opal-summary-table.opal-summary-detail .discovery tr th {
+  background-color: #E9EEF1;
+}
+.opal-summary .opal-summary-table.opal-summary-detail .discovery tr td.first {
+  border-bottom: solid 1px #899197;
+  vertical-align: top;
+}
+.opal-summary .opal-summary-table.opal-summary-detail .discovery tr td:first-child {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+  word-break: break-all;
+}
+.opal-summary .opal-summary-table.opal-summary-detail .discovery tr ul {
+  margin: 0;
+  padding: 0;
+  margin-left: 20px;
+}
+.opal-summary .opal-summary-table.opal-summary-detail .discovery tr ul li {
+  list-style: disc;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 115%;
+}
+.opal-summary .opal-summary-table.opal-summary-detail .discovery tr ul.error li {
+  color: #C50707;
+}
+.opal-summary .opal-summary-table.opal-summary-detail .discovery tr ul.error li a {
+  color: #C50707;
+}
+.opal-summary .opal-summary-table.opal-summary-detail .discovery tr .no-issue-found p {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 115%;
+  color: #899197;
+  font-style: italic;
+}
+
+footer .footer-text {
+  margin-top: 5rem;
+  padding-top: 1rem;
+  border-top: solid 1px #899197;
+}
+.br-rb{
+  border-bottom: solid 1px #899197 !important;
+  border-right: 0 !important;
+}
+/*# sourceMappingURL=style.css.map */
