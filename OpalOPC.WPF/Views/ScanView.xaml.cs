@@ -75,4 +75,9 @@ public partial class ScanView : UserControl
         // Handle target deletion
         _viewModel.SetTargetToAdd((Uri)block!.DataContext);
     }
+
+    private void NormalVerbosityRadioButton_Checked(object sender, RoutedEventArgs e)
+    {
+
+    }
 }

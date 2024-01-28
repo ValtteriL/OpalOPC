@@ -24,6 +24,7 @@
 
 
     <Style x:Key="NavigationListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="AutomationProperties.AutomationId" Value="{Binding AutomationId}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource Dark_Grey_Brush}" />
         <Setter Property="Margin" Value="0" />

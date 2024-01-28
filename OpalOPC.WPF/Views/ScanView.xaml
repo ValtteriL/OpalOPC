@@ -75,6 +75,7 @@
 
                                 <!--  customized textbox  -->
                                 <customControls:CustomTextBox
+                                    AutomationId="AddTargetsTextBox"
                                     Height="50"
                                     Margin="0,15,0,0"
                                     Padding="10,0,10,0"
@@ -84,6 +85,7 @@
 
                                 <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
                                     <Button
+                                        AutomationProperties.AutomationId="AddTargetButton"
                                         Width="94"
                                         Height="43"
                                         Margin="0,10,0,0"
@@ -227,6 +229,7 @@
                                                         MouseDown="TextBlock_MouseDown"
                                                         Text="{Binding .}" />
                                                     <Button
+                                                        AutomationProperties.AutomationId="{Binding .}"
                                                         Grid.Column="1"
                                                         Margin="0,0,5,0"
                                                         HorizontalAlignment="Right"
@@ -323,6 +326,7 @@
                                         </StackPanel.Resources>
                                         <!--  verbosity levels as radiobuttons  -->
                                         <RadioButton
+                                            AutomationProperties.AutomationId="NormalVerbosityRadioButton"
                                             x:Name="NormalVerbosityRadioButton"
                                             Width="106"
                                             Height="80"
@@ -349,6 +353,7 @@
                                         </RadioButton>
 
                                         <RadioButton
+                                            AutomationProperties.AutomationId="DebugVerbosityRadioButton"
                                             x:Name="DebugVerbosityRadioButton"
                                             Width="106"
                                             Height="80"
@@ -374,6 +379,7 @@
                                         </RadioButton>
 
                                         <RadioButton
+                                            AutomationProperties.AutomationId="TraceVerbosityRadioButton"
                                             x:Name="TraceVerbosityRadioButton"
                                             Width="106"
                                             Height="80"
@@ -437,6 +443,7 @@
 
                                     <!--  customized textbox  -->
                                     <customControls:CustomTextBox
+                                        AutomationId="OutputLocationTextBox"
                                         Height="50"
                                         Margin="0,15,5,0"
                                         Padding="10,0,10,0"
@@ -485,6 +492,7 @@
                         Margin="20,0,20,0">
                         <StackPanel Orientation="Horizontal">
                             <Button
+                                AutomationProperties.AutomationId="StartButton"
                                 x:Name="StartButton"
                                 Width="94"
                                 Height="40"
@@ -511,6 +519,7 @@
                             </Button>
 
                             <Button
+                                AutomationProperties.AutomationId="StopButton"
                                 x:Name="StopButton"
                                 Width="97"
                                 Height="40"
@@ -538,6 +547,7 @@
                             </Button>
 
                             <Button
+                                AutomationProperties.AutomationId="OpenReportButton"
                                 x:Name="OpenReportButton"
                                 Width="236"
                                 Height="40"

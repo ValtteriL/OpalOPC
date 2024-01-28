@@ -161,6 +161,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <customControls:CustomTextBox
+                                    AutomationId="ApplicationCertfileTextBox"
                                     Grid.Column="0"
                                     Height="70"
                                     Margin="0,0,5,0"
@@ -201,6 +202,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <customControls:CustomTextBox
+                                    AutomationId="ApplicationCertPrivateKeyTextBox"
                                     Grid.Column="0"
                                     Height="70"
                                     Margin="0,0,5,0"
@@ -238,6 +240,7 @@
                                 </Button>
                             </Grid>
                             <Button
+                                AutomationProperties.AutomationId="AddApplicationCertificateButton"
                                 x:Name="AddApplicationCertificateButton"
                                 Grid.Row="3"
                                 Width="94"
@@ -344,6 +347,7 @@
                                                             Foreground="{StaticResource Dark_Grey_Brush}"
                                                             Text="{Binding .}" />
                                                         <Button
+                                                            AutomationProperties.AutomationId="DeleteApplicationCertificateButton"
                                                             Grid.Column="1"
                                                             Margin="0,0,5,0"
                                                             HorizontalAlignment="Right"
@@ -457,6 +461,7 @@
                                     </Grid.RowDefinitions>
 
                                     <customControls:CustomTextBox
+                                        AutomationId="UserAuthenticationUsernameTextBox"
                                         Grid.Row="0"
                                         Height="50"
                                         Margin="0,0,0,0"
@@ -465,6 +470,7 @@
                                         HintText="Username"
                                         Text="{Binding Username}" />
                                     <customControls:CustomTextBox
+                                        AutomationId="UserAuthenticationPasswordTextBox"
                                         Grid.Row="1"
                                         Height="50"
                                         Margin="0,10,0,0"
@@ -473,6 +479,7 @@
                                         HintText="Password"
                                         Text="{Binding Password}" />
                                     <Button
+                                        AutomationProperties.AutomationId="AddUserAuthenticationButton"
                                         Grid.Row="2"
                                         Width="94"
                                         Height="43"
@@ -551,6 +558,7 @@
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <customControls:CustomTextBox
+                                            AutomationId="UserAuthenticationCertificateTextBox"
                                             Grid.Column="0"
                                             Height="70"
                                             Margin="0,0,5,0"
@@ -592,6 +600,7 @@
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <customControls:CustomTextBox
+                                            AutomationId="UserAuthenticationPrivateKeyTextBox"
                                             Grid.Column="0"
                                             Height="70"
                                             Margin="0,0,5,0"
@@ -630,6 +639,7 @@
                                     </Grid>
 
                                     <Button
+                                        AutomationProperties.AutomationId="AddUserCertificateButton"
                                         x:Name="AddUserCertificateButton"
                                         Grid.Row="7"
                                         Width="94"
@@ -760,6 +770,7 @@
                                                                     Foreground="{StaticResource Dark_Grey_Brush}"
                                                                     Text="{Binding .}" />
                                                                 <Button
+                                                                    AutomationProperties.AutomationId="DeleteUserAuthenticationCredentialsButton"
                                                                     Grid.Column="1"
                                                                     Margin="0,0,5,0"
                                                                     HorizontalAlignment="Right"
@@ -862,6 +873,7 @@
                                                                     Foreground="{StaticResource Dark_Grey_Brush}"
                                                                     Text="{Binding .}" />
                                                                 <Button
+                                                                    AutomationProperties.AutomationId="DeleteUserAuthenticationCertificateButton"
                                                                     Grid.Column="1"
                                                                     Margin="0,0,5,0"
                                                                     HorizontalAlignment="Right"
@@ -980,6 +992,7 @@
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
                                         <customControls:CustomTextBox
+                                            AutomationId="BruteforceUsernameTextBox"
                                             Grid.Column="0"
                                             Height="50"
                                             Margin="0,0,0,0"
@@ -988,6 +1001,7 @@
                                             HintText="Username"
                                             Text="{Binding BruteUsername}" />
                                         <customControls:CustomTextBox
+                                            AutomationId="BruteforcePasswordTextBox"
                                             Grid.Column="2"
                                             Height="50"
                                             Margin="0,0,0,0"
@@ -998,6 +1012,7 @@
                                     </Grid>
 
                                     <Button
+                                        AutomationProperties.AutomationId="AddBruteforceCredentialsButton"
                                         Grid.Row="1"
                                         Width="94"
                                         Height="43"
@@ -1170,6 +1185,7 @@
                                                                     Foreground="{StaticResource Dark_Grey_Brush}"
                                                                     Text="{Binding .}" />
                                                                 <Button
+                                                                    AutomationProperties.AutomationId="DeleteBruteforceCredentialsButton"
                                                                     Grid.Column="1"
                                                                     Margin="0,0,5,0"
                                                                     HorizontalAlignment="Right"

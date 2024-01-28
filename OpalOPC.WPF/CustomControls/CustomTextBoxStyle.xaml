@@ -35,6 +35,7 @@
                         </TextBlock>
 
                         <TextBox
+                            AutomationProperties.AutomationId="{TemplateBinding AutomationId}"
                             x:Name="TextBox"
                             Grid.Row="1"
                             Padding="{TemplateBinding Padding}"

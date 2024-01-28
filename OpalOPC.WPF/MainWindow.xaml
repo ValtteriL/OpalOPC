@@ -98,6 +98,7 @@
                     Style="{StaticResource NavigationListBoxStyle}" />
 
                 <Button
+                    AutomationProperties.AutomationId="NavbarAbout"
                     Width="Auto"
                     Height="62"
                     Margin="10,0,10,10"

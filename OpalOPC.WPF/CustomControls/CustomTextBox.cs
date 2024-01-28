@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 
 namespace OpalOPC.WPF.CustomControls;
@@ -23,6 +24,15 @@ public class CustomTextBox : TextBox
 
     public static readonly DependencyProperty HeaderTextProperty =
         DependencyProperty.Register(nameof(HeaderText), typeof(string), typeof(CustomTextBox), new PropertyMetadata(""));
+
+    public string AutomationId
+    {
+        get => (string)GetValue(AutomationIdProperty);
+        set => SetValue(AutomationIdProperty, value);
+    }
+
+    public static readonly DependencyProperty AutomationIdProperty =
+        DependencyProperty.Register(nameof(AutomationId), typeof(string), typeof(CustomTextBox), new PropertyMetadata(""));
 
 
     static CustomTextBox()
