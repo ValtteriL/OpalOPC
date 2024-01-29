@@ -1,4 +1,7 @@
-﻿using Xunit;
+﻿using System.Windows;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Appium.Windows;
+using Xunit;
 
 namespace Tests.GUI
 {
@@ -37,6 +40,8 @@ namespace Tests.GUI
 
         private const string AboutWindow = "AboutWindow";
 
+        private string paste = OpenQA.Selenium.Keys.Control + "v";
+
         private void AddTarget(string target)
         {
             AppSession.FindElementByAccessibilityId(AddTargetsTextBox).SendKeys(target);
@@ -52,37 +57,67 @@ namespace Tests.GUI
             AppSession.FindElementByAccessibilityId(deleteButtonAutomationId).Click();
         }
 
+        private void SetValue(WindowsElement element, string value)
+        {
+            SetClipboardText(value);
+            element.SendKeys(paste);
+        }
+
         private void AddApplicationAuthentication(string certFile, string privkeyFile)
         {
-            AppSession.FindElementByAccessibilityId(ApplicationCertfileTextBox).SendKeys(certFile);
-            AppSession.FindElementByAccessibilityId(ApplicationCertPrivateKeyTextBox).SendKeys(privkeyFile);
-            AppSession.FindElementByAccessibilityId(AddApplicationCertificateButton).Click();
+            SetValue(AppSession.FindElementByAccessibilityId(ApplicationCertfileTextBox), certFile);
+            SetValue(AppSession.FindElementByAccessibilityId(ApplicationCertPrivateKeyTextBox), privkeyFile);
+
+            WindowsElement addApplicationCertificateButton = AppSession.FindElementByAccessibilityId(AddApplicationCertificateButton);
+            addApplicationCertificateButton.Click();
+            addApplicationCertificateButton.Click();
         }
 
         private void AddUserAuthentication(string username, string password)
         {
-            AppSession.FindElementByAccessibilityId(UserAuthenticationUsernameTextBox).SendKeys(username);
-            AppSession.FindElementByAccessibilityId(UserAuthenticationPasswordTextBox).SendKeys(password);
-            AppSession.FindElementByAccessibilityId(AddUserAuthenticationButton).Click();
+            SetValue(AppSession.FindElementByAccessibilityId(UserAuthenticationUsernameTextBox), username);
+            SetValue(AppSession.FindElementByAccessibilityId(UserAuthenticationPasswordTextBox), password);
+
+            WindowsElement addUserAuthenticationButton = AppSession.FindElementByAccessibilityId(AddUserAuthenticationButton);
+            addUserAuthenticationButton.Click();
+            addUserAuthenticationButton.Click();
         }
 
         private void AddUserAuthenticationCertificate(string certFile, string privkeyFile)
         {
-            AppSession.FindElementByAccessibilityId(UserAuthenticationCertificateTextBox).SendKeys(certFile);
-            AppSession.FindElementByAccessibilityId(UserAuthenticationPrivateKeyTextBox).SendKeys(privkeyFile);
-            AppSession.FindElementByAccessibilityId(AddUserCertificateButton).Click();
+            SetValue(AppSession.FindElementByAccessibilityId(UserAuthenticationCertificateTextBox), certFile);
+            SetValue(AppSession.FindElementByAccessibilityId(UserAuthenticationPrivateKeyTextBox), privkeyFile);
+
+            WindowsElement addUserCertificateButton = AppSession.FindElementByAccessibilityId(AddUserCertificateButton);
+            addUserCertificateButton.Click();
+            addUserCertificateButton.Click();
         }
 
         private void AddBruteforceCredentials(string username, string password)
         {
-            AppSession.FindElementByAccessibilityId(BruteforceUsernameTextBox).SendKeys(username);
-            AppSession.FindElementByAccessibilityId(BruteforcePasswordTextBox).SendKeys(password);
-            AppSession.FindElementByAccessibilityId(AddBruteforceCredentialsButton).Click();
+            SetValue(AppSession.FindElementByAccessibilityId(BruteforceUsernameTextBox), username);
+            SetValue(AppSession.FindElementByAccessibilityId(BruteforcePasswordTextBox), password);
+
+            WindowsElement addBruteforceCredentialsButton = AppSession.FindElementByAccessibilityId(AddBruteforceCredentialsButton);
+            addBruteforceCredentialsButton.Click();
+            addBruteforceCredentialsButton.Click();
+        }
+
+        private void SetClipboardText(string text)
+        {
+            Thread thread = new Thread(() => Clipboard.SetText(text));
+            thread.SetApartmentState(ApartmentState.STA); //Set the thread to STA
+            thread.Start();
+            thread.Join(); //Wait for the thread to end
         }
 
         [Fact]
         public void EndToEnd()
         {
+
+            // Maximize window
+            AppSession.Keyboard.SendKeys(Keys.Command + Keys.ArrowUp + Keys.Command);
+
             // add targets
             string target = "kekekeke";
             string realTarget = "echo:53530";
@@ -97,11 +132,17 @@ namespace Tests.GUI
 
             // add report location
             string outputLocation = "opalopc-report-guitest.html";
-            AppSession.FindElementByAccessibilityId(OutputLocationTextBox).SendKeys(outputLocation);
+            SetClipboardText(outputLocation);
+            WindowsElement outputLocationTextBox = AppSession.FindElementByAccessibilityId(OutputLocationTextBox);
+            outputLocationTextBox.Clear();
+            outputLocationTextBox.SendKeys(paste);
 
             // open & close about
             AppSession.FindElementByAccessibilityId(NavbarAbout).Click();
-            AppSession.FindElementByAccessibilityId("Close").Click(); // TODO : fix this
+
+            // close about window
+            DesktopSession.FindElementByAccessibilityId(AboutWindow).SendKeys(OpenQA.Selenium.Keys.Alt + OpenQA.Selenium.Keys.F4);
+
 
             // Navigate to configuration
             AppSession.FindElementByAccessibilityId(NavbarConfiguration).Click();
@@ -138,10 +179,6 @@ namespace Tests.GUI
 
             // TODO: wait for scan to finish
             System.Threading.Thread.Sleep(10 * 1000);
-
-            // open report
-            AppSession.FindElementByAccessibilityId("OpenReportButton").Click();
-            AppSession.FindElementByAccessibilityId("Close").Click();
 
             // validate report
             Assert.True(System.IO.File.Exists(outputLocation));

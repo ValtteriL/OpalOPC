@@ -14,6 +14,7 @@ namespace Tests.GUI
         private const string DeviceName = "WindowsPC";
 
         protected WindowsDriver<WindowsElement> AppSession { get; private set; }
+        protected WindowsDriver<WindowsElement> DesktopSession { get; private set; }
 
         public GuiTestBase()
         {
@@ -22,11 +23,24 @@ namespace Tests.GUI
             appiumOptions.AddAdditionalCapability("deviceName", DeviceName);
 
             AppSession = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appiumOptions);
+
+            var desktopOptions = new AppiumOptions();
+            desktopOptions.AddAdditionalCapability("app", "Root");
+            desktopOptions.AddAdditionalCapability("deviceName", DeviceName);
+
+            DesktopSession = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), desktopOptions);
         }
 
         public void Dispose()
         {
-            // Close the session
+            // Close the desktop session
+            if (DesktopSession != null)
+            {
+                DesktopSession.Close();
+                DesktopSession.Quit();
+            }
+
+            // Close the app session
             if (AppSession != null)
             {
                 AppSession.Close();
