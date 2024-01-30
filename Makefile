@@ -3,7 +3,7 @@ VAULT_PASSWORD_FILE := "vault_password"
 # E2E tests
 .PHONY: run-e2e-tests
 run-e2e-tests:
-    @dotnet test --filter Category=E2E
+	@dotnet test --filter Category=E2E
 
 # Unit tests
 .PHONY: run-unit-tests
