@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium.Windows;
+using Tests.Helpers;
 using Xunit;
 
 namespace Tests.GUI
@@ -177,14 +178,16 @@ namespace Tests.GUI
             // run scan
             AppSession.FindElementByAccessibilityId(StartButton).Click();
 
-            // TODO: wait for scan to finish
-            System.Threading.Thread.Sleep(10 * 1000);
+            // wait for scan to finish
+            System.Threading.Thread.Sleep(5 * 1000);
 
             // validate report
             Assert.True(System.IO.File.Exists(outputLocation));
-            File.Delete(outputLocation);
+            ParsedReport parsedReport = new(System.IO.File.ReadAllText(outputLocation));
+            ExpectedTargetResult.Echo.validateWithParsedReport(parsedReport);
 
-            // TODO: parse report & validate
+            // cleanup
+            File.Delete(outputLocation);
         }
     }
 }
