@@ -31,6 +31,7 @@ namespace Tests.E2E
         }
 
         [Fact]
+        [Trait("Category", "E2E")]
         public void ScanEchoTest()
         {
             // scan echo server, validate report
@@ -54,6 +55,7 @@ namespace Tests.E2E
         }
 
         [Fact]
+        [Trait("Category", "E2E")]
         public void ScanInvalidTargetTest()
         {
             // scan opc.tcp://thisdoesnotexistsfafasfada:53530
@@ -75,6 +77,7 @@ namespace Tests.E2E
         }
 
         [Fact]
+        [Trait("Category", "E2E")]
         public void ScanMultipleTargetsTest()
         {
             // scan echo, golf, india, scanme.opalopc.com

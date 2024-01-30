@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Tests.GUI
+namespace Tests.E2E
 {
 
     public class WinAppDriverFixture : IDisposable

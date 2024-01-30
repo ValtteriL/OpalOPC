@@ -4,7 +4,7 @@ using OpenQA.Selenium.Appium.Windows;
 using Tests.Helpers;
 using Xunit;
 
-namespace Tests.GUI
+namespace Tests.E2E
 {
     public class GuiTest : GuiTestBase
     {
@@ -41,7 +41,7 @@ namespace Tests.GUI
 
         private const string AboutWindow = "AboutWindow";
 
-        private string paste = OpenQA.Selenium.Keys.Control + "v";
+        private string paste = Keys.Control + "v";
 
         private void AddTarget(string target)
         {
@@ -113,6 +113,7 @@ namespace Tests.GUI
         }
 
         [Fact]
+        [Trait("Category", "E2E")]
         public void EndToEnd()
         {
 
@@ -142,7 +143,7 @@ namespace Tests.GUI
             AppSession.FindElementByAccessibilityId(NavbarAbout).Click();
 
             // close about window
-            DesktopSession.FindElementByAccessibilityId(AboutWindow).SendKeys(OpenQA.Selenium.Keys.Alt + OpenQA.Selenium.Keys.F4);
+            DesktopSession.FindElementByAccessibilityId(AboutWindow).SendKeys(Keys.Alt + Keys.F4);
 
 
             // Navigate to configuration
@@ -179,11 +180,11 @@ namespace Tests.GUI
             AppSession.FindElementByAccessibilityId(StartButton).Click();
 
             // wait for scan to finish
-            System.Threading.Thread.Sleep(5 * 1000);
+            Thread.Sleep(5 * 1000);
 
             // validate report
-            Assert.True(System.IO.File.Exists(outputLocation));
-            ParsedReport parsedReport = new(System.IO.File.ReadAllText(outputLocation));
+            Assert.True(File.Exists(outputLocation));
+            ParsedReport parsedReport = new(File.ReadAllText(outputLocation));
             ExpectedTargetResult.Echo.validateWithParsedReport(parsedReport);
 
             // cleanup

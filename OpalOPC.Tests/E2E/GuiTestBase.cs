@@ -1,9 +1,8 @@
-﻿using System.Diagnostics;
-using OpenQA.Selenium.Appium;
+﻿using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
 using Xunit;
 
-namespace Tests.GUI
+namespace Tests.E2E
 {
     public class GuiTestBase : IDisposable, IClassFixture<WinAppDriverFixture>
     {
