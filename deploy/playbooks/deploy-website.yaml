@@ -1,21 +1,13 @@
 ---
 
-# Build Docusaurus website, add VERSION.txt, and deploy to Cloudflare Pages
+# Build Docusaurus website and deploy to Cloudflare Pages
 
 - name: Deploy OpalOPC Website
   hosts: localhost
 
-  vars_prompt:
-    - name: version
-      prompt: Version for the VERSION.txt?
-      private: false
-
   vars:
-    docusaurus_root: "{{ repo_root.stdout }}/opalopc-docs"
+    docusaurus_root: "{{ repo_root.stdout }}/website"
     build_dir: "{{ docusaurus_root | mandatory }}/build"
-    report_resources: "{{ repo_root.stdout }}/OpalOPC/report-resources"
-    docusaurus_report_resources_root: "{{ docusaurus_root | mandatory }}/static/report-resources"
-    docusaurus_report_resources: "{{ docusaurus_report_resources_root | mandatory }}/{{ version | mandatory }}"
 
   tasks:
 
@@ -29,21 +21,11 @@
         path: "{{ build_dir | mandatory }}"
         state: absent
 
-    - name: Add report resources
-      ansible.builtin.copy:
-        src: "{{ report_resources }}/"
-        dest: "{{ docusaurus_report_resources | mandatory }}/"
-
     - name: Build
       ansible.builtin.command:
         chdir: "{{ docusaurus_root | mandatory }}"
         cmd: "npx docusaurus build"
         creates: "{{ build_dir | mandatory }}"
-
-    - name: Add VERSION.txt
-      ansible.builtin.copy:
-        content: "{{ version | mandatory }}"
-        dest: "{{ build_dir | mandatory }}/VERSION.txt"
 
     - name: Deploy
       ansible.builtin.command:

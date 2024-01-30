@@ -154,10 +154,6 @@
           ansible.builtin.pause:
             prompt: "Make sure to submit Windows package to Microsoft Store (Version {{ version }} in {{ win_packages_path }})"
 
-    - name: A helpful reminder to deploy the website
-      ansible.builtin.pause:
-        prompt: "Make sure to deploy the website"
-
     - name: Local finishing touches
       delegate_to: localhost
       block:

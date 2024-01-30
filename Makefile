@@ -57,7 +57,7 @@ setup-snap-builder:
 
 .PHONY: docs
 docs:
-	@cd opalopc-docs && npx docusaurus start
+	@cd website && npx docusaurus start
 
 .PHONY: deploy-website
 deploy-website:
