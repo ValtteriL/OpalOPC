@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿#if BUILT_FOR_WINDOWS
+using System.Windows;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium.Windows;
 using Tests.Helpers;
@@ -41,7 +42,7 @@ namespace Tests.E2E
 
         private const string AboutWindow = "AboutWindow";
 
-        private string paste = Keys.Control + "v";
+        private readonly string _paste = Keys.Control + "v";
 
         private void AddTarget(string target)
         {
@@ -61,7 +62,7 @@ namespace Tests.E2E
         private void SetValue(WindowsElement element, string value)
         {
             SetClipboardText(value);
-            element.SendKeys(paste);
+            element.SendKeys(_paste);
         }
 
         private void AddApplicationAuthentication(string certFile, string privkeyFile)
@@ -104,9 +105,9 @@ namespace Tests.E2E
             addBruteforceCredentialsButton.Click();
         }
 
-        private void SetClipboardText(string text)
+        private static void SetClipboardText(string text)
         {
-            Thread thread = new Thread(() => Clipboard.SetText(text));
+            Thread thread = new(() => Clipboard.SetText(text));
             thread.SetApartmentState(ApartmentState.STA); //Set the thread to STA
             thread.Start();
             thread.Join(); //Wait for the thread to end
@@ -137,7 +138,7 @@ namespace Tests.E2E
             SetClipboardText(outputLocation);
             WindowsElement outputLocationTextBox = AppSession.FindElementByAccessibilityId(OutputLocationTextBox);
             outputLocationTextBox.Clear();
-            outputLocationTextBox.SendKeys(paste);
+            outputLocationTextBox.SendKeys(_paste);
 
             // open & close about
             AppSession.FindElementByAccessibilityId(NavbarAbout).Click();
@@ -192,3 +193,4 @@ namespace Tests.E2E
         }
     }
 }
+#endif
