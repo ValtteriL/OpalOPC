@@ -5,14 +5,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Controller;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ScannerApplication;
 using Model;
 using OpalOPC.WPF.GuiUtil;
 using OpalOPC.WPF.Logger;
+using ScannerApplication;
 using Util;
-using Microsoft.Extensions.DependencyInjection;
 
 
 namespace OpalOPC.WPF.ViewModels;

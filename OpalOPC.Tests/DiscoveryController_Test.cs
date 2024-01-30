@@ -12,7 +12,7 @@ using Xunit;
 namespace Tests;
 public class DiscoveryControllerTest
 {
-    private readonly ApplicationDescriptionCollection _validApplicationDescriptionCollection = [ new ApplicationDescription()
+    private readonly ApplicationDescriptionCollection _validApplicationDescriptionCollection = [new ApplicationDescription()
     {
         ApplicationName = "test",
         ApplicationType = ApplicationType.Server,
@@ -22,7 +22,7 @@ public class DiscoveryControllerTest
             [
                 "opc.tcp://example.com:53530"
             ]
-    } ];
+    }];
     private readonly EndpointDescriptionCollection _validEndpointDescriptionCollection =
     [
         new EndpointDescription()

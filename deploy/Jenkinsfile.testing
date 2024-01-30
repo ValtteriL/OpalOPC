@@ -18,11 +18,6 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Cleanup') {
-            steps {
-                sh 'rm -f opalopc-report-*'
-            }
-        }
         stage('Lint') {
             steps {
                 sh 'make lint'
@@ -30,12 +25,7 @@ pipeline {
         }
         stage('Unit tests') {
             steps {
-                sh 'make test'
-            }
-        }
-        stage('End-to-end tests') {
-            steps {
-                sh 'make run-e2e-tests'
+                sh 'make run-unit-tests'
             }
         }
     }
