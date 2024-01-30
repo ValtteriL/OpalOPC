@@ -18,7 +18,7 @@ namespace Model
 
     public class Options : IDisposable, IOptions
     {
-        public List<Uri> targets { get; set;  } = [];
+        public List<Uri> targets { get; set; } = [];
         public Stream? OutputStream { get; set; }
         public string? OutputReportName { get; set; }
         public LogLevel logLevel { get; set; } = LogLevel.Information;

@@ -23,17 +23,17 @@ public class ProvidedCredentialsPluginTest
     {
         loginCredentials = [
                 ("username", "password"),
-                ("username2", "password2")
+            ("username2", "password2")
             ],
         applicationCertificates =
         [
                 new(CertificateBuilder.Create("CN=Test").CreateForRSA()),
-                new(CertificateBuilder.Create("CN=Test").CreateForRSA())
+            new(CertificateBuilder.Create("CN=Test").CreateForRSA())
         ],
         userCertificates =
         [
                 new(CertificateBuilder.Create("CN=Test").CreateForRSA()),
-                new(CertificateBuilder.Create("CN=Test").CreateForRSA())
+            new(CertificateBuilder.Create("CN=Test").CreateForRSA())
         ]
     };
 
