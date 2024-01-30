@@ -4,7 +4,7 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
-import {themes as prismThemes} from 'prism-react-renderer';
+import { themes as prismThemes } from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -71,8 +71,8 @@ const config = {
           src: 'img/logo.svg',
         },
         items: [
-          {to: '/', label: 'Home', position: 'right'},
-          {to: '/docs', label: 'Docs', position: 'right'},
+          { to: '/', label: 'Home', position: 'right' },
+          { to: '/docs', label: 'Docs', position: 'right' },
           // {to: '/blog', label: 'Blog', position: 'left'},
           {
             type: 'html',
@@ -83,16 +83,16 @@ const config = {
       },
       footer: {
         style: 'dark',
-        
+
         links: [
           {
-            items:[
+            items: [
               {
-                
-              html: '<img src="/img/footer.svg" alt="footer" />',
+
+                html: '<img src="/img/footer.svg" alt="footer" />',
               }
             ]
-            
+
           },
           {
             title: 'Docs',
@@ -154,21 +154,49 @@ const config = {
       },
     }),
 
-    // plugin config
-    plugins: [
-      [
-        '@docusaurus/plugin-client-redirects', // https://docusaurus.io/docs/api/plugins/@docusaurus/plugin-client-redirects
-        {
-          redirects: [
-            // How to pentest OPC UA presentation link to mailchimp landing page
-            {
-              from: '/how-to-hack-opc-ua-report',
-              to: 'https://mailchi.mp/opalopc/how-to-hack-opc-ua',
-            },
-          ],
-        },
-      ],
+  // plugin config
+  plugins: [
+    [
+      '@docusaurus/plugin-client-redirects', // https://docusaurus.io/docs/api/plugins/@docusaurus/plugin-client-redirects
+      {
+        redirects: [
+          // How to pentest OPC UA presentation link to mailchimp landing page
+          {
+            from: '/how-to-hack-opc-ua-report',
+            to: 'https://mailchi.mp/opalopc/how-to-hack-opc-ua',
+          },
+          {
+            from: '/how-to-hack-opc-ua',
+            to: '/blog/how-to-hack-opc-ua',
+          },
+          {
+            from: '/embed',
+            to: '/',
+          },
+          {
+            from: '/how-to-run-your-first-vulnerability-scan-with-opalopc',
+            to: '/docs/tutorials/first-vulnerability-scan',
+          },
+          {
+            from: '/linux-installer-moves-to-snap',
+            to: '/blog/linux-installer-moves-to-snap',
+          },
+          {
+            from: '/release-2000',
+            to: '/blog/release-2000',
+          },
+          {
+            from: '/buy',
+            to: '/',
+          },
+          {
+            from: '/about',
+            to: '/docs/faq#who-maintains-opalopc',
+          },
+        ],
+      },
     ],
+  ],
 };
 
 export default config;
