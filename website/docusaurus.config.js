@@ -87,7 +87,7 @@ const config = {
       // disable dark mode switch
       colorMode: {
         defaultMode: 'light',
-        disableSwitch: false,
+        disableSwitch: true,
         respectPrefersColorScheme: false,
       },
       footer: {
