@@ -1,6 +1,7 @@
 ---
 title: Test Drive
 description: Information on a test OPC UA target that you can scan with security scanners.
+keywords: [scan, test]
 sidebar_position: 3
 ---
 

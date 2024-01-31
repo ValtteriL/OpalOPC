@@ -3,6 +3,7 @@ slug: linux-installer-moves-to-snap
 title: Linux installer moves to Snap
 authors: [valtteri]
 tags: [misc, linux, snap, 2.0.3.0]
+keywords: [linux, snap, version 2.0.3.0]
 ---
 
 ![Snapcraft logo](Snapcraft-logo-bird.png)

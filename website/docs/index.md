@@ -1,6 +1,7 @@
 ---
 title: Overview
 description: This is the documentation index, which contains an overview of OpalOPC, including how it works.
+keywords: [documentation, how it works]
 sidebar_position: 1
 ---
 
@@ -24,4 +25,3 @@ On a high level, OpalOPC works as follows:
 *URIs can point to a server, Local Discovery Server (LDS), or Global Discovery Server (GDS)*
 
 ![How it works](/img/how-it-works.png)
-

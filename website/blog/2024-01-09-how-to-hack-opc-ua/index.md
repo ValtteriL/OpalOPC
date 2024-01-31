@@ -3,6 +3,7 @@ slug: how-to-hack-opc-ua
 title: "From start to finish: How to hack OPC UA"
 authors: [valtteri]
 tags: [tutorial, presentation, pentest]
+keywords: [tutorial, presentation, pentest, hacking]
 ---
 
 ![Presentation front page](presentation-how-to-pentest-opc-ua.png)

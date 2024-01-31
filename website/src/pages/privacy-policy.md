@@ -1,5 +1,6 @@
 ---
 description: The Privacy Statement describes what kind of data we process, and how we use it.
+keywords: [privacy, registrar, controller, business information]
 ---
 
 # Privacy Statement

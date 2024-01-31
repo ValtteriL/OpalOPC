@@ -2,6 +2,7 @@
 id: 10005
 title: Security mode invalid
 description: Information on the issue detected by Security mode invalid security testing plugin.
+keywords: [plugin, security mode invalid, transport-security]
 slug: /plugin-10005
 tags: [plugin, transport-security]
 ---

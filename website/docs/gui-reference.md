@@ -2,6 +2,7 @@
 title: GUI Reference
 description: The GUI Reference provides exhaustive instructructions to the OpalOPC GUI.
 sidebar_position: 4
+keywords: [gui, reference]
 slug: usage-gui
 ---
 

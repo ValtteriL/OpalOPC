@@ -2,6 +2,7 @@
 id: 10007
 title: Security policy Basic128Rsa15
 description: Information on the issue detected by Security policy Basic128Rsa15 security testing plugin.
+keywords: [plugin, security policy basic128rsa15, transport-security]
 slug: /plugin-10007
 tags: [plugin, transport-security]
 ---

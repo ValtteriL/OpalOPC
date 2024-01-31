@@ -1,6 +1,7 @@
 ---
 slug: release-2000
 title: Release 2.0.0.0
+keywords: [release, version 2.0.0.0]
 authors: [valtteri]
 tags: [release, 2.0.0.0]
 ---

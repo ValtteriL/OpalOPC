@@ -2,6 +2,7 @@
 id: 10009
 title: Security policy None
 description: Information on the issue detected by Security policy None security testing plugin.
+keywords: [plugin, security policy none, transport-security]
 slug: /plugin-10009
 tags: [plugin, transport-security]
 ---

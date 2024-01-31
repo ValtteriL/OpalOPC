@@ -1,6 +1,7 @@
 ---
 title: FAQ
 description: The FAQ answers the most frequently asked questions.
+keywords: [faq]
 sidebar_position: 8
 ---
 

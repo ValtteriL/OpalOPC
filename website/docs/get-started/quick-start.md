@@ -1,6 +1,7 @@
 ---
 title: Quick Start
 description: Quickstart contains shortened instructions to get you from zero to hero with OPC UA security testing.
+keywords: [install, quick start, scan, start, test]
 sidebar_position: 1
 ---
 

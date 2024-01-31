@@ -1,6 +1,7 @@
 ---
 title: Install
 description: The installation documentation shows how to install OpalOPC on Windows or Linux.
+keywords: [install, update]
 sidebar_position: 2
 ---
 

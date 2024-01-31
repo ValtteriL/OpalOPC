@@ -2,6 +2,7 @@
 id: 10010
 title: Self signed certificate
 description: Information on the issue detected by Self signed certificate security testing plugin.
+keywords: [plugin, self-signed certificate, authentication]
 slug: /plugin-10010
 tags: [plugin, authentication]
 ---

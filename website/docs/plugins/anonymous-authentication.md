@@ -2,6 +2,7 @@
 id: 10001
 title: Anonymous authentication
 description: Information on the issue detected by Anonymous authentication security testing plugin.
+keywords: [plugin, anonymous authentication, authentication]
 slug: /plugin-10001
 tags: [plugin, authentication]
 ---
