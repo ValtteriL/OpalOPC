@@ -34,6 +34,16 @@ const config = {
     locales: ['en'],
   },
 
+  // Add scripts into <head> of HTML files.
+  // https://docusaurus.io/docs/api/docusaurus-config#scripts
+  scripts: [
+    {
+      src: 'https://static.getclicky.com/js',
+      async: true,
+      'data-id': '101427562'
+    },
+  ],
+
   presets: [
     [
       'classic',
