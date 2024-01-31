@@ -66,7 +66,8 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      // image: 'img/docusaurus-social-card.jpg',
+      image: 'img/graphical-interface-of-vulnerability-scanner-with-logo.jpg',
+      metadata: [{property: 'og:image:alt', content: 'Graphical interface of vulnerability scanner with logo on top'}],
       navbar: {
         logo: {
           alt: 'OpalOPC Logo',

@@ -41,7 +41,6 @@ function HomepageHeader() {
 // https://docusaurus.io/docs/next/docusaurus-core#head
 const MySEO = () => (
   <Head>
-    <meta property='og:image' content='/img/graphical-interface-of-vulnerability-scanner-with-logo.jpg' />
     <meta property='keywords' content='opc ua, security, automation, vulnerability scanner, application' />
   </Head>
 );
