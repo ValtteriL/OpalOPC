@@ -155,6 +155,7 @@ main{
 .main-txt ul{
   padding: 0;
   margin-bottom: 44px;
+  align-items: center;
 }
 
 .main-txt ul li{
@@ -166,8 +167,8 @@ main{
   margin: 0;
   color: #424242;
   list-style-type: none;
-  display: flex;
-  align-items: center;
+  /* make list items align left */
+  text-align: left;
 }
 
 .main-txt ul li span{
