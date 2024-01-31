@@ -83,6 +83,12 @@ const config = {
           },
         ],
       },
+      // disable dark mode switch
+      colorMode: {
+        defaultMode: 'light',
+        disableSwitch: false,
+        respectPrefersColorScheme: false,
+      },
       footer: {
         style: 'dark',
 
