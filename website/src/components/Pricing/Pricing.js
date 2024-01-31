@@ -7,25 +7,24 @@ const Price = () => {
             <div class="price-wrapper">
                 <div class="price">
                     <h2>Free</h2>
-                    <h3>0$<span>/month</span></h3>
-                    <p>(Amet minim mollit non deserunt)</p>
+                    <h3>$0<span>/month</span></h3>
+                    <p>(For non-commercial use only)</p>
                     <ul>
-                        <li>Amet minim mollit non honyiq</li>
-                        <li>Amet lorem minim hjusza non deserunt</li>
-                        <li>Amet mollit non deserunt</li>
-                        <li>Amet minim mollit njd non deserunt</li>
+                        <li>GUI and CLI scanners</li>
+                        <li>Windows and Linux support</li>
+                        <li>Latest security tests</li>
+                        <li>Automatic updates</li>
+                        <li>Access to vulnerability database</li>
                     </ul>
                     <a href="/docs/get-started/quick-start" class="secondary-btn common-btns">Get Started</a>
                 </div>
                 <div class="price paid">
                     <h2>Paid</h2>
-                    <h3>10$<span>/month</span></h3>
-                    <p>(Amet minim mollit non deserunt)</p>
+                    <h3>$239<span>/month</span></h3>
+                    <p>(For commercial use)</p>
                     <ul>
-                        <li>Amet minim mollit non honyiq</li>
-                        <li>Amet lorem minim hjusza non deserunt</li>
-                        <li>Amet mollit non deserunt</li>
-                        <li>Amet minim mollit njd non deserunt</li>
+                        <li>Everything in Free, plus:</li>
+                        <li>Priority email support</li>
                     </ul>
                     <a href="#" class="primary-btn common-btns">Get Started</a>
                 </div>

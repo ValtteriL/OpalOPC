@@ -39,7 +39,7 @@ const Critical = () => {
                     <div class="findings default">
                         <img src="/img/default.png" alt="default" />
                         <div class="findings-name">
-                            <h3>Intuituve With Powerful Defaults</h3>
+                            <h3>Intuitive With Powerful Defaults</h3>
                             <p>No tiring configuration just to get any results. The defaults are incredibly effective. Just aim at a target and fire. Configuration still available for advanced users.</p>
                         </div>
                     </div>
