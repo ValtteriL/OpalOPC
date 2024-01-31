@@ -54,3 +54,17 @@ setup-snap-builder:
 		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
 		--inventory deploy/inventory.yaml \
 		deploy/playbooks/setup-opalopc-snap-builder.yaml
+
+.PHONY: docs
+docs:
+	@cd website && npx docusaurus start
+
+.PHONY: deploy-website
+deploy-website:
+	@ansible-playbook \
+		--inventory deploy/inventory.yaml \
+		deploy/playbooks/deploy-website.yaml
+
+.PHONY: list-website-deployments
+list-website-deployments:
+	@npx wrangler pages deployment list --project-name opalopc

@@ -1,0 +1,548 @@
+/* VARIBLES */
+$primary: #1E2D37;
+$secondary: #4288B7;
+$secondary-50: #d9e7f1;
+$grey: #899197;
+$grey-bg: #F3F4F5;
+$white: #ffffff;
+$transition: all .2s ease-in-out;
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body,
+* {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  transition: all 0.5s ease;
+}
+
+p {
+  font-family: 'Inter', sans-serif;
+}
+
+ul,
+ol,
+li {
+  font-family: 'Inter', sans-serif;
+  list-style: none;
+}
+
+body {
+  transition: all 0.5s ease;
+}
+
+.headings {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: $primary;
+    margin: 0;
+    letter-spacing: 0;
+    font-family: 'Inter', sans-serif;
+    text-transform: capitalize;
+
+    span {
+      color: $primary;
+      font-weight: 600;
+      font-size: 18px;
+      letter-spacing: 0.01em;
+    }
+
+  }
+
+  &.white {
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: $white;
+    }
+
+  }
+
+
+
+  h1 {
+    font-size: 2rem;
+    line-height: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+
+    @media (min-width: 992px) {
+      font-size: 2.5rem;
+      line-height: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  h2 {
+    font-size: 1.875rem;
+    line-height: 2.125rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+
+    @media (min-width: 992px) {
+      font-size: 1.75rem;
+      line-height: 2.308rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    line-height: 1.725rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+
+    @media (min-width: 992px) {
+      font-size: 1.125rem;
+      line-height: 2.363rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  h4 {
+    font-size: 1rem;
+    line-height: 2rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+
+    @media (min-width: 992px) {
+      font-size: 2rem;
+      line-height: 2.253rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  h5 {
+    font-size: .8rem;
+    line-height: 1.063rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+
+    @media (min-width: 992px) {
+      font-size: .8rem;
+      line-height: 1.063rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  h6 {
+    font-size: .8rem;
+    line-height: 1.063rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+
+    @media (min-width: 992px) {
+      font-size: .8rem;
+      line-height: 1.063rem;
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.paragraph {
+  &.white {
+    p {
+      color: $primary;
+    }
+  }
+
+  &.grey {
+    p {
+      color: $grey;
+    }
+  }
+
+  p {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    color: $primary;
+
+    b {
+      font-weight: 600;
+    }
+
+    @media (max-width: 991.98px) {
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    a {text-decoration: underline;
+      color: $secondary;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+
+  &.big {
+    p {
+      font-size: 20px;
+      line-height: 30px;
+
+      @media (max-width: 991.98px) {
+        font-size: 16px;
+        line-height: 20px;
+      }
+    }
+  }
+
+  &.medium {
+    p {
+      font-size: 18px;
+      line-height: 20px;
+
+      @media (max-width: 991.98px) {
+        font-size: 12px;
+        line-height: 20px;
+      }
+    }
+  }
+
+  &.small {
+    p {
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
+
+  ul {
+    li {
+      list-style: disc;
+      font-size: 14px;
+      line-height: 20px;
+
+      a {
+        text-decoration: none;
+        color: $secondary;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  ol {
+    li {
+      list-style: decimal;
+      font-size: 14px;
+      line-height: 20px;
+
+      a {
+        text-decoration: none;
+        color: $secondary;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.separator {
+  border-top: solid 1px $grey;
+}
+
+header {
+  padding: 2rem 2rem 0rem 2rem;
+  position: relative;
+  color: $white;
+  text-align: center;
+
+  .logo {
+    width: 266px;
+    margin: auto;
+    margin-top: 1rem;
+    margin-bottom: 2.5rem;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .headings{
+    h1{
+      span{
+        display: block;
+        color: #899197;
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 115%;
+        margin-top: 1rem;
+      }
+    }
+  }
+}
+
+.opal-summary {
+  margin-top: 3rem;
+
+  .scan-summary-box {
+    background: rgba(66, 136, 183, 0.06);
+    border-radius: 5px;
+    border-left: solid 8px $secondary-50;
+    padding: 2.88rem;
+  }
+
+  .opal-summary-table {
+    table {
+      /* Change these properties */
+      --border: 1px solid $grey;
+      border-radius: 0px;
+
+      /* Don't change these properties */
+      border-spacing: 0;
+      border-collapse: separate;
+      border: var(--border);
+      overflow: hidden;
+
+      &.table-striped>tbody>tr:nth-child(2n+1)>td,
+      .table-striped>tbody>tr:nth-child(2n+1)>th {
+        background-color: #f7fcff;
+      }
+    }
+
+    table th:not(:last-child),
+    table td:not(:last-child) {
+      border-right: var(--border);
+    }
+
+    /* Apply a border to the bottom of all but the last row */
+    table>thead>tr:not(:last-child)>th,
+    table>thead>tr:not(:last-child)>td,
+    table>tbody>tr:not(:last-child)>th,
+    table>tbody>tr:not(:last-child)>td,
+    table>tfoot>tr:not(:last-child)>th,
+    table>tfoot>tr:not(:last-child)>td,
+    table>tr:not(:last-child)>td,
+    table>tr:not(:last-child)>th,
+    table>thead:not(:last-child),
+    table>tbody:not(:last-child),
+    table>tfoot:not(:last-child) {
+      border-bottom: var(--border);
+    }
+
+    thead {
+      tr {
+        th {
+          color: $primary;
+          font-weight: 600;
+          font-size: 14px;
+          line-height: 16px;
+          background-color: $grey-bg;
+          padding: .8rem;
+          text-align: center;
+          border: solid 1px $grey;
+          border-bottom: 0;
+          vertical-align: middle;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+
+        td {
+          color: $primary;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 115%;
+          padding: .8rem;
+          text-align: center;
+          border: solid 1px $grey;
+          vertical-align: middle;
+
+          &:first-child {
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 16px;
+          }
+
+
+          a {
+            color: $secondary;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 115%;
+            text-decoration: underline;
+
+            &:hover {
+              text-decoration: none;
+            }
+          }
+
+
+        }
+      }
+    }
+
+    .bg-severity {
+      background-color: $secondary-50;
+    }
+
+    .bg-01 {
+      background: #d9e7f1;
+    }
+
+    .bg-results {
+      background: rgba(66, 136, 183, 0.06);
+    }
+
+    .results-bar {
+      tr {
+        th {
+          text-align: left;
+          width: 20%;
+        }
+      }
+    }
+
+    .results {
+      border-radius: 0;
+      width: 96px;
+      display: flex;
+
+      span {
+        background: rgba(137, 145, 151, 0.3);
+        display: flex;
+        width: 18px;
+        height: 18px;
+        margin-right: 1px;
+      }
+
+      &.info {
+        span {
+          &.active {}
+        }
+      }
+
+      &.low {
+        span {
+          &.active {
+            background: rgba(66, 136, 183, 0.5);
+          }
+        }
+      }
+
+      &.medium {
+        span {
+          &.active {
+            background: rgba(228, 143, 81, 0.6);
+          }
+        }
+      }
+
+      &.high {
+        span {
+          &.active {
+            background: rgba(197, 7, 7, 0.4);
+          }
+        }
+      }
+
+      &.critical {
+        span {
+          &.active {
+            background: rgba(148, 9, 9, 0.6);
+          }
+        }
+      }
+    }
+
+    &.opal-summary-detail {
+      .col-numbering {
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 115%;
+        border-radius: 5px 0px 0px 5px;
+        width: 101px;
+      }
+
+      .bg-results {
+        border-radius: 0px 5px 5px 0px;
+      }
+
+      .discovery {
+        tr {
+          th {
+            background-color: #E9EEF1;
+          }
+
+          td {
+            &.first {
+              border-bottom: solid 1px $grey;
+              vertical-align: top;
+            }
+
+            &:first-child {
+              font-weight: 400;
+              font-size: 14px;
+              line-height: 16px;
+              word-break: break-all;
+            }
+          }
+
+          ul {
+            margin: 0;
+            padding: 0;
+            margin-left: 20px;
+
+            li {
+              list-style: disc;
+              font-weight: 400;
+              font-size: 14px;
+              line-height: 115%;
+            }
+
+            &.error {
+              li {
+                color: #C50707;
+                a{
+                  color: #C50707;
+                }
+              }
+            }
+          }
+
+          .no-issue-found {
+            p {
+              font-weight: 400;
+              font-size: 14px;
+              line-height: 115%;
+              color: #899197;
+              font-style: italic;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+footer {
+  .footer-text {
+    margin-top: 5rem;
+    padding-top: 1rem;
+    border-top: solid 1px $grey;
+  }
+}

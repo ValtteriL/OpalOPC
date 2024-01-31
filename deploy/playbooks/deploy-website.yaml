@@ -1,0 +1,43 @@
+---
+
+# Build Docusaurus website and deploy to Cloudflare Pages
+
+- name: Deploy OpalOPC Website
+  hosts: localhost
+
+  vars:
+    docusaurus_root: "{{ repo_root.stdout }}/website"
+    build_dir: "{{ docusaurus_root | mandatory }}/build"
+
+  tasks:
+
+    - name: Get repo root path
+      ansible.builtin.shell:
+        cmd: git rev-parse --show-toplevel
+      register: repo_root
+
+    - name: Verify build_dir does not exist
+      ansible.builtin.file:
+        path: "{{ build_dir | mandatory }}"
+        state: absent
+
+    - name: Build
+      ansible.builtin.command:
+        chdir: "{{ docusaurus_root | mandatory }}"
+        cmd: "npx docusaurus build"
+        creates: "{{ build_dir | mandatory }}"
+
+    - name: Deploy
+      ansible.builtin.command:
+        cmd: "npx wrangler pages deploy build --branch=main" # put to production (apex domain)
+        chdir: "{{ docusaurus_root | mandatory }}"
+      register: deploy_result
+
+    - name: Cleanup
+      ansible.builtin.file:
+        path: "{{ build_dir | mandatory }}"
+        state: absent
+
+    - name: Print deploy result
+      ansible.builtin.debug:
+        msg: "{{ deploy_result.stdout_lines | mandatory }}"
