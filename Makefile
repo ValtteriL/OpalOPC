@@ -34,11 +34,6 @@ build:
 run:
 	@dotnet run --runtime linux-x64 --project OpalOPC -- --accepteula opc.tcp://echo:53530
 
-# Server for serving XSL on localhost, for development (with run)
-.PHONY: server
-server:
-	@php -S localhost:8000
-
 # Deployment
 .PHONY: publish-all
 publish-all:
