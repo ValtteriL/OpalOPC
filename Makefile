@@ -32,7 +32,7 @@ build:
 # Run locally
 .PHONY: run
 run:
-	@dotnet run --runtime linux-x64 --project OpalOPC -- --accepteula opc.tcp://echo:53530
+	@dotnet run --runtime linux-x64 --project OpalOPC -- opc.tcp://echo:53530
 
 # Deployment
 .PHONY: publish-all

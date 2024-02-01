@@ -12,7 +12,6 @@ namespace Model
         int? exitCode { get; set; }
         bool shouldShowVersion { get; set; }
         AuthenticationData authenticationData { get; set; }
-        bool acceptEula { get; set; }
         string commandLine { get; set; }
     }
 
@@ -26,7 +25,6 @@ namespace Model
         public int? exitCode { get; set; }
         public bool shouldShowVersion { get; set; }
         public AuthenticationData authenticationData { get; set; } = new();
-        public bool acceptEula { get; set; } = false;
         public string commandLine { get; set; } = string.Empty;
 
         public void Dispose()
