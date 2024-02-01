@@ -9,7 +9,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'OpalOPC',
-  tagline: 'Dinosaurs are cool',
+  tagline: 'Reveal Security Issues in your Most Critical Systems.',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
