@@ -17,7 +17,6 @@ namespace ScannerApplication
                 .ConfigureServices((_, services) =>
                 {
                     services.AddSingleton<IWorker, Worker>();
-                    services.AddSingleton<IVersionCheckController, VersionCheckController>();
                     services.AddSingleton<IScanController, ScanController>();
                     services.AddSingleton<IReporter, Reporter>();
                     services.AddSingleton<IReportController, ReportController>();
