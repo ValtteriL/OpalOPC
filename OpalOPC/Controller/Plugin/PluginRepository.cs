@@ -40,6 +40,7 @@ namespace Plugin
                 new BruteForcePlugin(logger, authenticationData),
                 new RBACNotSupportedPlugin(logger),
                 new AuditingDisabledPlugin(logger),
+                new ServerStatusPlugin(logger),
             ];
         }
     }
