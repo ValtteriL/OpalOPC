@@ -22,11 +22,6 @@ namespace View
 
             string html = template(report);
 
-#if !DEBUG
-            // Replace debug paths in XSLT
-            html = html.Replace(Util.XmlResources.DebugResourcePath, Util.XmlResources.ProdResourcePath);
-#endif
-
             // Write to output stream
             StreamWriter writer = new(outputStream)
             {

@@ -50,8 +50,8 @@ public class Reporter_printXHTMLReportShould
         _reporter.PrintXHTMLReport(report, _memoryStream);
     }
 
-    [Fact]
-    public void printXHTMLReport_ReportResourcesReplacedInTestingReports()
+   [Fact]
+    public void printXHTMLReport_ReportContainsAllInfo()
     {
         Report report = new(_targets, DateTime.Now, DateTime.Now, _commandLine, _runStatus);
 
@@ -61,8 +61,6 @@ public class Reporter_printXHTMLReportShould
         StreamReader reader = new(_memoryStream);
         string reportString = reader.ReadToEnd();
 
-        Assert.Contains(Util.XmlResources.DebugResourcePath, reportString);
-        Assert.DoesNotContain(Util.XmlResources.ProdResourcePath, reportString);
         VerifyReportContainsAllInfo(report, reportString);
     }
 

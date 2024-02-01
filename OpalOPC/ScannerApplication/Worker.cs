@@ -18,10 +18,6 @@ namespace ScannerApplication
             {
                 logger.LogInformation("{Message}", $"Report saved to {options.OutputReportName} (Use browser to view it)");
             }
-
-#if DEBUG
-            logger.LogInformation("{Message}", $"Access report directly: http://localhost:8000/{options.OutputReportName}");
-#endif
         }
     }
 }
