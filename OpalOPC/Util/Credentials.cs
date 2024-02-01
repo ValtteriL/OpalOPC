@@ -31,6 +31,7 @@ namespace Util
             (username: "user1", password: "password1"), // node-opcua
             (username: "user2", password: "password2"),
             (username: "admin", password: "pass"), // python-opcua
+            (username: "Administrator", password: "1"), // https://download.beckhoff.com/download/software/ethercat/ekxxxx/ek9160/IOT_EK9160_OPC-UA_with_UaExpert_en_V1.pdf
         ];
 
     }
