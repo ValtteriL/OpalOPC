@@ -24,7 +24,14 @@ namespace Plugin
             _logger.LogTrace("{Message}", $"Checking ServerStatus on {session.Endpoint.EndpointUrl}");
 
             // check ServerStatus
-            ServerStatusDataType serverStatusDataType = (ServerStatusDataType)session.ReadValue(Util.WellKnownNodes.Server_ServerStatus, typeof(ServerStatusDataType));
+            ServerStatusDataType? serverStatusDataType = (ServerStatusDataType)session.ReadValue(Util.WellKnownNodes.Server_ServerStatus, typeof(ServerStatusDataType));
+
+            // if serverStatusDataType is null, return null
+            if (serverStatusDataType == null)
+            {
+                _logger.LogTrace("{Message}", "ServerStatus is null");
+                return null;
+            }
 
             return CreateIssue(serverStatusDataType);
         }
@@ -50,7 +57,7 @@ namespace Plugin
             public DateTime StartTime { get; set; } = serverStatusDataType.StartTime;
             public string State { get; set; } = serverStatusDataType.State.ToString();
             public uint SecondsTillShutdown { get; set; } = serverStatusDataType.SecondsTillShutdown;
-            public string ShutdownReason { get; set; } = serverStatusDataType.ShutdownReason.Text;
+            public string ShutdownReason { get; set; } = serverStatusDataType.ShutdownReason?.Text ?? "";
         }
     }
 }
