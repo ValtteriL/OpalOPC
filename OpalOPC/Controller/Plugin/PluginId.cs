@@ -16,5 +16,6 @@ namespace Plugin
         ProvidedCredentials = 10011,
         BruteForce = 10012,
         ServerStatus = 10013,
+        ServerCertificateExpired = 10014,
     }
 }

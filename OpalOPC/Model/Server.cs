@@ -1,21 +1,14 @@
 using Opc.Ua;
 namespace Model
 {
-    public class Server
+    internal class Server(string DiscoveryUrl, EndpointDescriptionCollection edc)
     {
 
-        public string DiscoveryUrl { get; private set; } = string.Empty;
+        public string DiscoveryUrl { get; private set; } = DiscoveryUrl;
         public List<Error> Errors { get; private set; } = [];
         public ICollection<Issue> Issues { get; private set; } = new List<Issue>();
         public ICollection<ISecurityTestSession> securityTestSessions { get; private set; } = new List<ISecurityTestSession>();
-        public EndpointDescriptionCollection EndpointDescriptions { get; private set; } = [];
-
-
-        public Server(string DiscoveryUrl, EndpointDescriptionCollection edc)
-        {
-            this.DiscoveryUrl = DiscoveryUrl;
-            EndpointDescriptions = edc;
-        }
+        public EndpointDescriptionCollection EndpointDescriptions { get; private set; } = edc;
 
         public void AddError(Error error)
         {
