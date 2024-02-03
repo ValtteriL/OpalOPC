@@ -1,7 +1,7 @@
 using Opc.Ua;
 namespace Model
 {
-    internal class Server(string DiscoveryUrl, EndpointDescriptionCollection edc)
+    public class Server(string DiscoveryUrl, EndpointDescriptionCollection edc)
     {
 
         public string DiscoveryUrl { get; private set; } = DiscoveryUrl;

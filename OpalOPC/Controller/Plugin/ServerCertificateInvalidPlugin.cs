@@ -8,7 +8,7 @@ namespace Plugin
 {
     public class ServerCertificateInvalidPlugin : PreAuthPlugin
     {
-        private static readonly PluginId s_pluginId = PluginId.ServerCertificateExpired;
+        private static readonly PluginId s_pluginId = PluginId.ServerCertificateInvalid;
         private static readonly string s_category = PluginCategories.TransportSecurity;
         private static readonly string s_issueTitle = "Server certificate is invalid";
 
@@ -27,12 +27,28 @@ namespace Plugin
                 X509Certificate2 certificate = new(endpointDescription.ServerCertificate);
                 if(!certificate.Verify())
                 {
-                    return (CreateIssue(), new List<ISecurityTestSession>());
+                    if(certificate.NotAfter < DateTime.Now)
+                    {
+                        return (CreateDetailedIssue("certificate has expired"), new List<ISecurityTestSession>());
+                    }
+                    else if(certificate.NotBefore > DateTime.Now)
+                    {
+                        return (CreateDetailedIssue("certificate is not yet valid"), new List<ISecurityTestSession>());
+                    }
+                    else
+                    {
+                        return (CreateDetailedIssue("certificate is not trusted"), new List<ISecurityTestSession>());
+                    }
                 }
 
             }
 
             return (null, new List<ISecurityTestSession>());
+        }
+
+        private Issue CreateDetailedIssue(string details)
+        {
+            return new Issue((int)s_pluginId, $"{s_issueTitle}: {details}", s_severity);
         }
     }
 }

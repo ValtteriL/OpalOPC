@@ -1,7 +1,9 @@
 
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
+using Opc.Ua.Security.Certificates;
 using Plugin;
 using Xunit;
 
@@ -20,14 +22,14 @@ public class ServerCertificateInvalidPluginTest
     }
 
     [Fact]
-    public void DoesNotReportFalsePositive()
+    public void ReportsIssuesNotTrusted()
     {
         // arrange
 
         EndpointDescription endpointDescription = new()
         {
-            ServerCertificate = new 
-        };
+            ServerCertificate = CertificateBuilder.Create("CN=Root CA").CreateForRSA().RawData
+    };
         _endpointDescriptions.Add(endpointDescription);
 
 
@@ -35,17 +37,20 @@ public class ServerCertificateInvalidPluginTest
         (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
-        Assert.True(issue == null);
+        Assert.True(issue != null);
+        Assert.Contains("not trusted", issue.Name);
         Assert.Empty(sessions);
     }
 
     [Fact]
-    public void ReportsIssues()
+    public void ReportsIssuesExpired()
     {
         // arrange
+        X509Certificate2 cert = CertificateBuilder.Create("CN=Root CA").SetNotAfter(DateTime.Now - TimeSpan.FromDays(1)).CreateForRSA();
+
         EndpointDescription endpointDescription = new()
         {
-            ServerCertificate = new
+            ServerCertificate = cert.RawData
         };
         _endpointDescriptions.Add(endpointDescription);
 
@@ -54,6 +59,28 @@ public class ServerCertificateInvalidPluginTest
 
         // assert
         Assert.True(issue != null);
+        Assert.Contains("expired", issue.Name);
+        Assert.Empty(sessions);
+    }
+
+    [Fact]
+    public void ReportsIssuesNotYetValid()
+    {
+        // arrange
+        X509Certificate2 cert = CertificateBuilder.Create("CN=Root CA").SetNotBefore(DateTime.Now + TimeSpan.FromDays(1)).CreateForRSA();
+
+        EndpointDescription endpointDescription = new()
+        {
+            ServerCertificate = cert.RawData
+        };
+        _endpointDescriptions.Add(endpointDescription);
+
+        // act
+        (Issue? issue, ICollection<ISecurityTestSession> sessions) = _plugin.Run(_discoveryUrl, _endpointDescriptions);
+
+        // assert
+        Assert.True(issue != null);
+        Assert.Contains("not yet valid", issue.Name);
         Assert.Empty(sessions);
     }
 

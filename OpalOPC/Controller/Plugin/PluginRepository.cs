@@ -41,7 +41,7 @@ namespace Plugin
                 new RBACNotSupportedPlugin(logger),
                 new AuditingDisabledPlugin(logger),
                 new ServerStatusPlugin(logger),
-                new ServerCertificateExpiredPlugin(logger),
+                new ServerCertificateInvalidPlugin(logger),
             ];
         }
     }
