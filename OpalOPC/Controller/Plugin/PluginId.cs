@@ -17,5 +17,6 @@ namespace Plugin
         BruteForce = 10012,
         ServerStatus = 10013,
         ServerCertificateInvalid = 10014,
+        ServerCertificate = 10015,
     }
 }

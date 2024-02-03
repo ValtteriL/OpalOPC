@@ -12,7 +12,7 @@ namespace Plugin
         private static readonly PluginId s_pluginId = PluginId.ServerStatus;
         private static readonly string s_category = PluginCategories.Reconnaissance;
         private static readonly string s_issueTitle = "ServerStatus";
-        private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true };
+        private readonly JsonSerializerOptions _jsonSerializerOptions = new() { WriteIndented = true };
 
         // Info
         private static readonly double s_severity = 0;

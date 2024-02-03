@@ -47,4 +47,4 @@ Using an invalid server certificate prevents the client from verifying the serve
 Configure server with valid certificate. The certificate should be issued by a trusted Certificate Authority (CA) and should not be expired or revoked.
 
 ## References
-
+[https://reference.opcfoundation.org/Core/Part2/v104/docs/8](https://reference.opcfoundation.org/Core/Part2/v104/docs/8)

@@ -1,7 +1,7 @@
 ---
 id: 10013
 title: ServerStatus
-description: Information on the issue detected by RBAC not supported security testing plugin.
+description: Target Server status.
 keywords: [plugin, reconnaissance]
 slug: /plugin-10013
 tags: [plugin, reconnaissance]

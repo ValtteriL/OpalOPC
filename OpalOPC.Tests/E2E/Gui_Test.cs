@@ -119,7 +119,9 @@ namespace Tests.E2E
         {
 
             // Maximize window
+#pragma warning disable CS0618 // Type or member is obsolete
             AppSession.Keyboard.SendKeys(Keys.Command + Keys.ArrowUp + Keys.Command);
+#pragma warning restore CS0618 // Type or member is obsolete
 
             // add targets
             string target = "kekekeke";

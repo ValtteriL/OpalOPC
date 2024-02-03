@@ -42,6 +42,7 @@ namespace Plugin
                 new AuditingDisabledPlugin(logger),
                 new ServerStatusPlugin(logger),
                 new ServerCertificateInvalidPlugin(logger),
+                new ServerCertificatePlugin(logger),
             ];
         }
     }

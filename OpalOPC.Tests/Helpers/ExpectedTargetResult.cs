@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Opc.Ua;
-using Tests.Helpers;
-using Xunit;
+﻿using Xunit;
 
 namespace Tests.Helpers
 {
@@ -47,7 +40,7 @@ namespace Tests.Helpers
             numberOfMediumIssues: 5,
             numberOfLowIssues: 0,
             numberOfInfoIssues: 1,
-            issueIds: [10001, 10002, 10004, 10006, 10007, 10008, 10009]
+            issueIds: [10001, 10002, 10004, 10006, 10007, 10008, 10009, 10014, 10015]
         );
 
         public static readonly ExpectedTargetResult Golf = new(
@@ -59,7 +52,7 @@ namespace Tests.Helpers
             numberOfMediumIssues: 1,
             numberOfLowIssues: 0,
             numberOfInfoIssues: 0,
-            issueIds: [10001, 10007]
+            issueIds: [10001, 10007, 10014, 10015]
             );
 
         public static readonly ExpectedTargetResult India = new(
@@ -71,7 +64,7 @@ namespace Tests.Helpers
             numberOfMediumIssues: 0,
             numberOfLowIssues: 0,
             numberOfInfoIssues: 0,
-            issueIds: [10001]
+            issueIds: [10001, 10014, 10015]
             );
 
         public static readonly ExpectedTargetResult Scanme = new(
@@ -83,7 +76,7 @@ namespace Tests.Helpers
             numberOfMediumIssues: 5,
             numberOfLowIssues: 0,
             numberOfInfoIssues: 1,
-            issueIds: [10001, 10002, 10004, 10006, 10007, 10008, 10009]
+            issueIds: [10001, 10002, 10004, 10006, 10007, 10008, 10009, 10014, 10015]
             );
 
         public static readonly ExpectedTargetResult Invalid = new(
