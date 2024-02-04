@@ -40,6 +40,10 @@ namespace Plugin
                 new BruteForcePlugin(logger, authenticationData),
                 new RBACNotSupportedPlugin(logger),
                 new AuditingDisabledPlugin(logger),
+                new ServerStatusPlugin(logger),
+                new ServerCertificateInvalidPlugin(logger),
+                new ServerCertificatePlugin(logger),
+                new SelfSignedUserCertificatePlugin(logger, authenticationData),
             ];
         }
     }

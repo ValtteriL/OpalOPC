@@ -14,7 +14,6 @@ namespace Plugin
 
     public interface IPlugin
     {
-        public Issue CreateIssue();
         public PluginId pluginId { get; }
 
         public Plugintype Type { get; }
@@ -24,9 +23,9 @@ namespace Plugin
     {
         public ILogger _logger;
         public PluginId pluginId { get; }
-        private readonly double _severity;
-        private readonly string _category;
-        private readonly string _name;
+        protected readonly double _severity;
+        protected readonly string _category;
+        protected readonly string _name;
 
         public Plugin(ILogger logger, PluginId pluginId, string category, string name, double severity)
         {
@@ -37,7 +36,7 @@ namespace Plugin
             _severity = severity;
         }
 
-        public Issue CreateIssue()
+        protected virtual Issue CreateIssue()
         {
             return new Issue((int)pluginId, _name, _severity);
         }

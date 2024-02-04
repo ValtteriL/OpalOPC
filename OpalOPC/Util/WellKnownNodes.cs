@@ -8,5 +8,6 @@ namespace Util
     {
         public static readonly uint Server_Auditing = 2994;
         public static readonly uint Server_ServerCapabilities_ServerProfileArray = 2269;
+        public static readonly uint Server_ServerStatus = 2256;
     }
 }

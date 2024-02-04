@@ -15,5 +15,9 @@ namespace Plugin
         SelfSignedCertificate = 10010,
         ProvidedCredentials = 10011,
         BruteForce = 10012,
+        ServerStatus = 10013,
+        ServerCertificateInvalid = 10014,
+        ServerCertificate = 10015,
+        SelfSignedUserCertificate = 10016,
     }
 }
