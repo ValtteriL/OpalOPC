@@ -43,6 +43,7 @@ namespace Plugin
                 new ServerStatusPlugin(logger),
                 new ServerCertificateInvalidPlugin(logger),
                 new ServerCertificatePlugin(logger),
+                new SelfSignedUserCertificatePlugin(logger, authenticationData),
             ];
         }
     }

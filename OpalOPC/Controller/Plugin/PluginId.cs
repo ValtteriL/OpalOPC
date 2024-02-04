@@ -18,5 +18,6 @@ namespace Plugin
         ServerStatus = 10013,
         ServerCertificateInvalid = 10014,
         ServerCertificate = 10015,
+        SelfSignedUserCertificate = 10016,
     }
 }
