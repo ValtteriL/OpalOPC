@@ -24,6 +24,7 @@ namespace Model
         public bool shouldShowHelp { get; set; }
         public int? exitCode { get; set; }
         public bool shouldShowVersion { get; set; }
+        public bool shouldDiscoverAndExit { get; set; }
         public AuthenticationData authenticationData { get; set; } = new();
         public string commandLine { get; set; } = string.Empty;
 
