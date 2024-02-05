@@ -25,6 +25,7 @@ namespace ScannerApplication
                     services.AddSingleton<ISecurityTestController, SecurityTestController>();
                     services.AddSingleton<ITaskUtil, TaskUtil>();
                     services.AddSingleton<IPluginRepository, PluginRepository>();
+                    services.AddSingleton<INetworkDiscoveryController, NetworkDiscoveryController>();
                 })
                 .ConfigureLogging(logging =>
                 {

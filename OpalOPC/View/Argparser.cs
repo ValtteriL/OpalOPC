@@ -1,4 +1,3 @@
-using Controller;
 using Microsoft.Extensions.Logging;
 using Model;
 using Mono.Options;
@@ -234,13 +233,6 @@ namespace View
             }
         }
 
-        private void discoverAndPrintTargets()
-        {
-            List<Uri> targets = new NetworkDiscoveryController().MulticastDiscoverTargets();
-            Console.WriteLine("Discovered targets:");
-            targets.ForEach(t => Console.WriteLine(t));
-        }
-
         public Options parseArgs()
         {
             try
@@ -279,12 +271,6 @@ namespace View
             {
                 deleteReportIfCreatedAlready();
                 printVersion();
-                _options.exitCode = ExitCodes.Success;
-            }
-            else if (_options.shouldDiscoverAndExit)
-            {
-                deleteReportIfCreatedAlready();
-                discoverAndPrintTargets();
                 _options.exitCode = ExitCodes.Success;
             }
 

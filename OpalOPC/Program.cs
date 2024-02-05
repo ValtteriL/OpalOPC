@@ -1,3 +1,4 @@
+using Controller;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Model;
@@ -23,8 +24,21 @@ class OpalOPC
 
             options.commandLine = Environment.CommandLine;
 
+            // configure application
             IHost _host = AppConfigurer.ConfigureApplication(options);
             IWorker worker = _host.Services.GetRequiredService<IWorker>();
+
+            if (options.shouldDiscoverAndExit)
+            {
+                TelemetryUtil.TrackEvent("Network Discovery");
+                INetworkDiscoveryController networkDiscoveryController = _host.Services.GetRequiredService<INetworkDiscoveryController>();
+                List<Uri> targets = networkDiscoveryController.MulticastDiscoverTargets();
+                Console.WriteLine("Discovered targets:");
+                targets.ForEach(t => Console.WriteLine(t));
+                return (int)ExitCodes.Success;
+            }
+
+            // run application
             worker.Run(options);
             return (int)ExitCodes.Success;
         }
