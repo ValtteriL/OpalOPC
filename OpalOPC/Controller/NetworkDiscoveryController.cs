@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 using Opc.Ua;
 using Util;
 
@@ -9,12 +10,59 @@ namespace Controller
         public List<Uri> MulticastDiscoverTargets();
     }
 
-    public class NetworkDiscoveryController(ILogger logger, IDiscoveryUtil discoveryUtil) : INetworkDiscoveryController
+    public class NetworkDiscoveryController(ILogger logger, IDiscoveryUtil discoveryUtil, IMDNSUtil mDNSUtil) : INetworkDiscoveryController
     {
         public List<Uri> MulticastDiscoverTargets()
         {
-            List<Uri> discoveryUrls = new LDSDiscoverer(discoveryUtil, logger).DiscoverTargets();
-            return discoveryUrls;
+
+            ConcurrentBag<Uri> targetUris = [];
+
+            // run both discovery methods in parallel
+            Parallel.Invoke(
+                () => new LDSDiscoverer(discoveryUtil, logger).DiscoverTargets().ForEach(targetUris.Add),
+                () => new DNSSDDiscoverer(mDNSUtil, logger).DiscoverTargets().ForEach(targetUris.Add)
+                );
+
+            return [.. targetUris];
+        }
+
+        private class DNSSDDiscoverer(IMDNSUtil mDNSUtil, ILogger logger)
+        {
+            // discover targets through DNS-SD
+
+            // https://reference.opcfoundation.org/GDS/v105/docs/C
+            private readonly List<(string, string)> _dnsSdServiceNamesAndSchemes = [
+                ("_opcua-tcp", "opc.tcp"),
+                ("_opcua-tls", "opc.wss"),
+                ("_opcua-https", "opc.https")
+                ];
+            private readonly string _protocol = "_tcp";
+
+            public List<Uri> DiscoverTargets()
+            {
+                ConcurrentBag<Uri> targetUris = [];
+
+                try
+                {
+                    logger.LogTrace("{Message}", "Discovering targets through DNS-SD");
+
+                    // run parallel discovery for all service names
+                    Parallel.ForEach(_dnsSdServiceNamesAndSchemes, (serviceNameAndScheme) =>
+                    {
+                        (string serviceName, string scheme) = serviceNameAndScheme;
+                        // execute discovertargets and trigger cancellation after 5 seconds
+                        mDNSUtil.DiscoverTargets($"{serviceName}.{_protocol}.", scheme, new CancellationTokenSource(5000).Token).ForEach(targetUris.Add);
+                    });
+
+                    // return list of unique targetUris
+                    return targetUris.Distinct().ToList();
+                }
+                catch (Exception e)
+                {
+                    logger.LogDebug("{Message}", $"Error discovering targets through DNS-SD: {e.Message}");
+                    return [];
+                }
+            }
         }
 
         private class LDSDiscoverer(IDiscoveryUtil discoveryUtil, ILogger logger)
