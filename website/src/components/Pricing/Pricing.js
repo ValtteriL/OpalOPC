@@ -26,7 +26,7 @@ const Price = () => {
                         <li>Everything in Free, plus:</li>
                         <li>Priority email support</li>
                     </ul>
-                    <a href="#" class="primary-btn common-btns">Get Started</a>
+                    <a target="_blank" href="https://buy.stripe.com/7sIeVt9J5fiV6SQbII" class="primary-btn common-btns">Get Started</a>
                 </div>
             </div>
         </div>

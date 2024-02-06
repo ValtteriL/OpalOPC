@@ -51,8 +51,8 @@ export default function Home() {
   
   return (
     <Layout
-      title={`OPC UA Vulnerability Scanner - ${siteConfig.title}`}
-      description="Unmatched visibility to security posture of OPC UA applications, and corrective actions to keep them secure. For hackers and engineers alike."
+      title={`OPC UA Vulnerability Scanner`}
+      description={`${siteConfig.tagline}`}
       >
         <MySEO />
       <main>
