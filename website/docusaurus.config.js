@@ -77,12 +77,24 @@ const config = {
           { to: '/', label: 'Home', position: 'right' },
           { to: '/docs', label: 'Docs', position: 'right' },
           // {to: '/blog', label: 'Blog', position: 'left'},
-          {
-            type: 'html',
-            position: 'right',
-            value: '<div class="search-custom"><img src="/img/search.svg" alt="search" /><input type="text" class="search-bar" placeholder="Search OpalOPC"></div>',
-          },
+          // {
+          //   type: 'html',
+          //   position: 'right',
+          //   value: '<div class="search-custom"><img src="/img/search.svg" alt="search" /><input type="text" class="search-bar" placeholder="Search OpalOPC"></div>',
+          // },
         ],
+      },
+      algolia: {
+        // The application ID provided by Algolia
+        appId: 'QNZ3DE6IA2',
+  
+        // Public API key: it is safe to commit it
+        apiKey: '66cc6c6eca56463a870e5fb1d0cecded',
+  
+        indexName: 'opalopc',
+  
+        contextualSearch: false,
+        placeholder: 'Search documentation...',
       },
       // disable dark mode switch
       colorMode: {

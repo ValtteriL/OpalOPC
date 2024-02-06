@@ -14,6 +14,7 @@ import styles from './index.module.css';
 
 function HomepageHeader() {
   // const {siteConfig} = useDocusaurusContext();
+  
   return (
     <div>
       <HomepageHeader />
@@ -47,6 +48,7 @@ const MySEO = () => (
 
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
+  
   return (
     <Layout
       title={`OPC UA Vulnerability Scanner - ${siteConfig.title}`}
@@ -61,5 +63,7 @@ export default function Home() {
         <Price />
       </main>
     </Layout>
+    
   );
 }
+

@@ -570,13 +570,39 @@ nav.navbar .navbar__inner{
   border-radius: 10em;
 }
 
+.main-txt ul li {
+  list-style-position: inside;
+  text-indent: -18px;
+  padding: 0 0 0 18px;
+}
 
-.search-custom{
+.search-custom, .DocSearch-Button{
   position: relative;
-  border-bottom: 0.5px solid #00000099;
+  border-bottom: 0.5px solid #00000099!important;
   display:flex;
   width: 279px;
   align-items: center;
+  border-radius: unset!important;
+  background-color: transparent!important;
+}
+
+.DocSearch-Button:active, .DocSearch-Button:focus, .DocSearch-Button:hover{
+  background: transparent!important;
+  box-shadow: unset!important;
+}
+
+.DocSearch-Button-Keys{
+  display: none!important;
+}
+
+.DocSearch-Button-Placeholder{
+  font-family: Inter-Regular;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: 0em;
+  text-align: left;
+
 }
 
 .search-custom input{
@@ -755,7 +781,7 @@ a.secondary-btn:visited{
       display: block;
   }
   .navbar__link{
-    display: none;
+    display: none!important;
   }
   .navbar__toggle {
     display: none;
@@ -828,6 +854,12 @@ a.secondary-btn:visited{
 }
 }
 
+@media screen and (max-width: 768px){
+  .DocSearch-Button-Placeholder {
+    display: block!important;
+  }
+}
+
 
 @media screen and (max-width: 576px) {
   .navbar__logo img {
@@ -842,7 +874,7 @@ a.secondary-btn:visited{
   .featured-wrapper img {
     margin-right: 0;
   }
-  .search-custom{
+  .search-custom, .DocSearch-Button{
     width: 162px;
   }
   .main-txt h1 {
