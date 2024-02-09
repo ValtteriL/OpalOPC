@@ -7,27 +7,36 @@ namespace Controller
 {
     public interface INetworkDiscoveryController
     {
-        public List<Uri> MulticastDiscoverTargets();
+        public List<Uri> MulticastDiscoverTargets(int timeoutSeconds);
     }
 
-    public class NetworkDiscoveryController(ILogger logger, IDiscoveryUtil discoveryUtil, IMDNSUtil mDNSUtil) : INetworkDiscoveryController
+    public class NetworkDiscoveryController(ILogger<NetworkDiscoveryController> logger, IDiscoveryUtil discoveryUtil, IMDNSUtil mDNSUtil) : INetworkDiscoveryController
     {
-        public List<Uri> MulticastDiscoverTargets()
+        public List<Uri> MulticastDiscoverTargets(int timeoutSeconds)
         {
-
             ConcurrentBag<Uri> targetUris = [];
 
-            // run both discovery methods in parallel
-            Parallel.Invoke(
-                () => new LDSDiscoverer(discoveryUtil, logger).DiscoverTargets().ForEach(targetUris.Add),
-                () => new DNSSDDiscoverer(mDNSUtil, logger).DiscoverTargets().ForEach(targetUris.Add)
-                );
+            // run both discovery methods in parallel until timeout
+            // if timeout is reached, stop discovery and return list of unique targetUris
+            using var cts = new CancellationTokenSource();
+
+            // cancel after timeout
+            cts.CancelAfter(timeoutSeconds * 1000);
+
+            Task.Run(() =>
+            {
+                Task.WaitAll(
+                    new LDSDiscoverer(discoveryUtil, logger).DiscoverTargets(targetUris, cts.Token),
+                    new DNSSDDiscoverer(mDNSUtil, logger).DiscoverTargets(targetUris, cts.Token)
+                    );
+            }).Wait();
+
 
             // return list of unique targetUris
             return targetUris.Distinct().ToList();
         }
 
-        private class DNSSDDiscoverer(IMDNSUtil mDNSUtil, ILogger logger)
+        private class DNSSDDiscoverer(IMDNSUtil mDNSUtil, ILogger<NetworkDiscoveryController> logger)
         {
             // discover targets through DNS-SD
 
@@ -39,34 +48,37 @@ namespace Controller
                 ];
             private readonly string _protocol = "_tcp";
 
-            public List<Uri> DiscoverTargets()
+            public Task DiscoverTargets(ConcurrentBag<Uri> targetUris, CancellationToken cancellationToken)
             {
-                ConcurrentBag<Uri> targetUris = [];
+                logger.LogTrace("{Message}", "Discovering targets through DNS-SD");
 
+                List<Task> tasks = [];
+
+                foreach ((string serviceName, string scheme) in _dnsSdServiceNamesAndSchemes)
+                {
+                    // execute discovertargets and trigger cancellation after 5 seconds
+                    tasks.Add(
+                        Task.Run(() => DiscoverTargets(targetUris, $"{serviceName}.{_protocol}.", scheme, cancellationToken), cancellationToken)
+                    );
+                }
+
+                return Task.WhenAll(tasks);
+            }
+
+            private void DiscoverTargets(ConcurrentBag<Uri> targetUris, string query, string scheme, CancellationToken cancellationToken)
+            {
                 try
                 {
-                    logger.LogTrace("{Message}", "Discovering targets through DNS-SD");
-
-                    // run parallel discovery for all service names
-                    Parallel.ForEach(_dnsSdServiceNamesAndSchemes, (serviceNameAndScheme) =>
-                    {
-                        (string serviceName, string scheme) = serviceNameAndScheme;
-                        // execute discovertargets and trigger cancellation after 5 seconds
-                        mDNSUtil.DiscoverTargets($"{serviceName}.{_protocol}.", scheme, new CancellationTokenSource(5000).Token).ForEach(targetUris.Add);
-                    });
-
-                    // return list of targetUris
-                    return targetUris.Distinct().ToList();
+                    mDNSUtil.DiscoverTargets(targetUris, query, scheme, cancellationToken);
                 }
                 catch (Exception e)
                 {
                     logger.LogDebug("{Message}", $"Error discovering targets through DNS-SD: {e.Message}");
-                    return [];
                 }
             }
         }
 
-        private class LDSDiscoverer(IDiscoveryUtil discoveryUtil, ILogger logger)
+        private class LDSDiscoverer(IDiscoveryUtil discoveryUtil, ILogger<NetworkDiscoveryController> logger)
         {
             // discover targets through LDS, try to find the LDS on localhost
 
@@ -77,29 +89,55 @@ namespace Controller
             private readonly string _discoveryUriBase = "opc.tcp://127.0.0.1";
             private readonly IDiscoveryUtil _discoveryUtil = discoveryUtil;
 
-            public List<Uri> DiscoverTargets()
+            public Task DiscoverTargets(ConcurrentBag<Uri> targetUris, CancellationToken cancellationToken)
             {
-                ApplicationDescriptionCollection applications = [];
 
                 // try to discover applications and servers on each port
                 // add applications to list
                 // if server is found, discover applications on it as well and add to list
+
+                List<Task> tasks = [];
+
                 foreach (int port in _ldsPortNumbers)
                 {
                     Uri discoveryUri = new($"{_discoveryUriBase}:{port}");
 
-                    applications.AddRange(DiscoverApplications(discoveryUri) ?? []);
-
-                    foreach (ServerOnNetwork server in DiscoverApplicationsOnNetwork(discoveryUri) ?? [])
-                    {
-                        applications.AddRange(DiscoverApplications(new Uri(server.DiscoveryUrl)) ?? []);
-                    }
+                    tasks.Add(Task.Run(() => DiscoverApplications(discoveryUri, targetUris), cancellationToken));
+                    tasks.Add(Task.Run(() => DiscoverApplicationsOnNetwork(discoveryUri, targetUris, cancellationToken), cancellationToken));
                 }
 
-                // get flat list of unique discoveryUrls from all applications
-                List<Uri> discoveryUrls = applications.SelectMany(app => app.DiscoveryUrls).Distinct().Select(s => new Uri(s)).ToList();
+                return Task.WhenAll(tasks);
 
-                return discoveryUrls;
+            }
+
+            private Task DiscoverApplicationsOnNetwork(Uri discoveryUri, ConcurrentBag<Uri> targetUris, CancellationToken cancellationToken)
+            {
+                // get flat list of unique discoveryUrls from servers on network and add them to targetUris
+
+                ServerOnNetworkCollection serversOnNetwork = DiscoverApplicationsOnNetwork(discoveryUri) ?? [];
+
+                List<Task> tasks = [];
+
+                foreach (ServerOnNetwork server in serversOnNetwork)
+                {
+                    tasks.Add(Task.Run(() =>
+                    {
+                        ApplicationDescriptionCollection applicationsOnNetwork = DiscoverApplications(new Uri(server.DiscoveryUrl)) ?? [];
+                        applicationsOnNetwork.SelectMany(app => app.DiscoveryUrls).Distinct().Select(s => new Uri(s)).ToList().ForEach(targetUris.Add);
+                    }, cancellationToken));
+                }
+
+                return Task.WhenAll(tasks);
+
+            }
+
+            private void DiscoverApplications(Uri discoveryUri, ConcurrentBag<Uri> targetUris)
+            {
+
+                ApplicationDescriptionCollection applications = DiscoverApplications(discoveryUri) ?? [];
+
+                // get flat list of unique discoveryUrls and add them to targetUris
+                applications.SelectMany(app => app.DiscoveryUrls).Distinct().Select(s => new Uri(s)).ToList().ForEach(targetUris.Add);
             }
 
             private ApplicationDescriptionCollection DiscoverApplications(Uri discoveryUri)

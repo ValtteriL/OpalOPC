@@ -163,12 +163,15 @@
                                         </Button>
                                         <customControls:ToggleTimeButton
                                             x:Name="NetworkDiscoveryButton"
+                                            AutomationProperties.AutomationId="NetworkDiscoveryButton"
+                                            Command="{Binding NetworkDiscoveryCommand}"
+                                            CommandParameter="{Binding NetworkDiscoverySeconds}"
                                             Grid.Column="2"
                                             MinWidth="150"
                                             MinHeight="54"
                                             MaxWidth="500"
                                             MaxHeight="250" IsEnableTimer="True"
-                                            Margin="10,0,0,0" IsAppendTime="True" WaitSeconds="5"
+                                            Margin="10,0,0,0" IsAppendTime="True" WaitSeconds="{Binding NetworkDiscoverySeconds}"
                                             TimeTextBlock="{Binding ElementName=NetworkDiscoveryButtonTb}"
                                             AllowDrop="True"
                                             Background="#E5E9F7"

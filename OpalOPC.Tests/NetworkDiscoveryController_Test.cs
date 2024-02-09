@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Controller;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -11,6 +12,7 @@ public class NetworkDiscoveryControllerTest
     private readonly Mock<IDiscoveryUtil> _mockDiscoveryUtil;
     private readonly Mock<IMDNSUtil> _mockMDNSUtil;
     private readonly Mock<ILogger<NetworkDiscoveryController>> _loggerMock;
+    private readonly int _timeoutSeconds = 5;
 
     public NetworkDiscoveryControllerTest()
     {
@@ -51,12 +53,15 @@ public class NetworkDiscoveryControllerTest
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(appUri1)).Returns([applicationDescription(appUri1)]);
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(appUri2)).Returns([applicationDescription(appUri2)]);
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplicationsOnNetwork(appUri1)).Returns([serverOnNetwork(appUri2)]);
-        _mockMDNSUtil.Setup(m => m.DiscoverTargets(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns([dnsAppURI]);
+        _mockMDNSUtil.Setup(m => m.DiscoverTargets(It.IsAny<ConcurrentBag<Uri>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<ConcurrentBag<Uri>, string, string, CancellationToken>((bag, query, scheme, token) =>
+        {
+            bag.Add(dnsAppURI);
+        });
 
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
         // act
-        List<Uri> targets = controller.MulticastDiscoverTargets();
+        List<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
 
         // assert
         Assert.NotEmpty(targets);
@@ -65,7 +70,7 @@ public class NetworkDiscoveryControllerTest
         Assert.Contains(appUri2, targets);
         _mockDiscoveryUtil.Verify(util => util.DiscoverApplications(It.IsAny<Uri>()), Times.Exactly(4));
         _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsOnNetwork(It.IsAny<Uri>()), Times.Exactly(3));
-        _mockMDNSUtil.Verify(m => m.DiscoverTargets(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+        _mockMDNSUtil.Verify(m => m.DiscoverTargets(It.IsAny<ConcurrentBag<Uri>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
 
     [Fact]
@@ -79,7 +84,7 @@ public class NetworkDiscoveryControllerTest
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
         // act
-        List<Uri> targets = controller.MulticastDiscoverTargets();
+        List<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
 
         // assert
         Assert.NotEmpty(targets);
@@ -100,7 +105,7 @@ public class NetworkDiscoveryControllerTest
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
         // act
-        List<Uri> targets = controller.MulticastDiscoverTargets();
+        List<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
 
         // assert
         Assert.NotEmpty(targets);
@@ -120,7 +125,7 @@ public class NetworkDiscoveryControllerTest
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
         // act
-        List<Uri> targets = controller.MulticastDiscoverTargets();
+        List<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
 
         // act & assert
         Assert.Empty(targets);
@@ -133,12 +138,12 @@ public class NetworkDiscoveryControllerTest
     {
         // arrange
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns([]);
-        _mockMDNSUtil.Setup(m => m.DiscoverTargets(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Throws<Exception>();
+        _mockMDNSUtil.Setup(m => m.DiscoverTargets(It.IsAny<ConcurrentBag<Uri>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Throws<Exception>();
 
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
         // act
-        List<Uri> targets = controller.MulticastDiscoverTargets();
+        List<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
 
         // assert
         Assert.Empty(targets);
@@ -149,13 +154,13 @@ public class NetworkDiscoveryControllerTest
     {
         // arrange
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplications(It.IsAny<Uri>())).Returns([]);
-        _mockMDNSUtil.Setup(m => m.DiscoverTargets(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns([]);
+        //_mockMDNSUtil.Setup(m => m.DiscoverTargets(It.IsAny<ConcurrentBag<Uri>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns([]);
 
 
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
         // act
-        List<Uri> targets = controller.MulticastDiscoverTargets();
+        List<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
 
         // assert
         Assert.Empty(targets);

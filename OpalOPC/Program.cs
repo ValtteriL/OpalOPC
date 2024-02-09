@@ -32,7 +32,7 @@ class OpalOPC
             {
                 TelemetryUtil.TrackEvent("Network Discovery");
                 INetworkDiscoveryController networkDiscoveryController = _host.Services.GetRequiredService<INetworkDiscoveryController>();
-                List<Uri> targets = networkDiscoveryController.MulticastDiscoverTargets();
+                List<Uri> targets = networkDiscoveryController.MulticastDiscoverTargets(5);
                 Console.WriteLine("Discovered targets:");
                 targets.ForEach(t => Console.WriteLine(t));
                 return (int)ExitCodes.Success;

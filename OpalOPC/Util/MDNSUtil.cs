@@ -1,17 +1,17 @@
-﻿using Makaretu.Dns;
+﻿using System.Collections.Concurrent;
+using Makaretu.Dns;
 
 namespace Util
 {
     public interface IMDNSUtil
     {
-        public List<Uri> DiscoverTargets(string query, string scheme, CancellationToken cancellationToken);
+        public void DiscoverTargets(ConcurrentBag<Uri> targetUris, string query, string scheme, CancellationToken cancellationToken);
     }
 
     public class MDNSUtil : IMDNSUtil
     {
-        private readonly List<Uri> _targetUris = [];
 
-        public List<Uri> DiscoverTargets(string query, string scheme, CancellationToken cancellationToken)
+        public void DiscoverTargets(ConcurrentBag<Uri> targetUris, string query, string scheme, CancellationToken cancellationToken)
         {
             MulticastService multicastService = new();
             ServiceDiscovery serviceDiscovery = new(multicastService);
@@ -35,7 +35,7 @@ namespace Util
                 foreach (SRVRecord srvRecord in srvRecords)
                 {
                     string targetUri = $"{scheme}://{srvRecord.Target}:{srvRecord.Port}";
-                    _targetUris.Add(new Uri(targetUri));
+                    targetUris.Add(new Uri(targetUri));
                 }
             };
 
@@ -50,8 +50,6 @@ namespace Util
                 serviceDiscovery.Dispose();
                 multicastService.Stop();
             }
-
-            return _targetUris;
         }
     }
 }

@@ -28,6 +28,9 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
     [ObservableProperty]
     private string _targetToAdd = string.Empty;
 
+    [ObservableProperty]
+    private int _networkDiscoverySeconds = 5;
+
     [ObservableProperty] private ObservableCollection<Uri> _targets = [];
 
     [ObservableProperty]
@@ -39,6 +42,14 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(OpenReportCommand))]
     private bool _scanCompletedSuccessfully = false;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(NetworkDiscoveryCommand))]
+    private bool _networkDiscoveryOnGoing = false;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(NetworkDiscoveryCommand))]
+    private bool _scanOnGoing = false;
 
     private string _outputfile = string.Empty;
     const string Protocol = "opc.tcp://";
@@ -60,6 +71,47 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         _fileUtil = fileUtil;
         _messageBoxUtil = messageBoxUtil;
         _scanViewModelUtil = scanViewModelUtil;
+    }
+
+    [RelayCommand(CanExecute = nameof(canRunNetworkDiscovery))]
+    private void NetworkDiscovery(int timeout)
+    {
+        NetworkDiscoveryOnGoing = true;
+        Log = string.Empty;
+        GUILoggerProvider loggerProvider = new(Verbosity);
+        ILogger logger = loggerProvider.CreateLogger(string.Empty);
+
+        logger.LogInformation("{Message}", "Starting network discovery");
+
+        try
+        {
+            // configure application just to get the NetworkDiscoveryController
+            IHost _host = AppConfigurer.ConfigureApplication(new Options() { logLevel = Verbosity }, loggerProvider);
+            INetworkDiscoveryController networkDiscoveryController = _host.Services.GetRequiredService<INetworkDiscoveryController>();
+
+
+            Task.Run(() =>
+            {
+
+                // run
+                List<Uri> discoveredTargets = networkDiscoveryController.MulticastDiscoverTargets(timeout);
+
+                // add discovered targets to targets
+                discoveredTargets.ForEach(target => AddTarget(target.AbsoluteUri, logger));
+
+                // let user know how many targets were added
+                logger.LogInformation("{Message}", $"Discovered {discoveredTargets.Count} targets on network");
+
+            });
+        }
+        catch (Exception e)
+        {
+            logger.LogCritical("{Message}", $"Unhandled exception: {e}");
+        }
+        finally
+        {
+            NetworkDiscoveryOnGoing = false;
+        }
     }
 
     [RelayCommand]
@@ -92,6 +144,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         Log = string.Empty;
 
         ScanCompletedSuccessfully = false;
+        ScanOnGoing = true;
         GUILoggerProvider loggerProvider = new(Verbosity);
 
         // check if output file specified
@@ -150,6 +203,10 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         catch (Exception ex)
         {
             loggerProvider.CreateLogger(string.Empty).LogCritical("{Message}", $"Unhandled exception: {ex}");
+        }
+        finally
+        {
+            ScanOnGoing = false;
         }
     }
 
@@ -211,6 +268,11 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
     private bool canOpenReport()
     {
         return ScanCompletedSuccessfully;
+    }
+
+    private bool canRunNetworkDiscovery()
+    {
+        return !NetworkDiscoveryOnGoing && !ScanOnGoing;
     }
 
     public void SetOutputFileLocation(string fullPath)
