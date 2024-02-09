@@ -23,7 +23,8 @@ namespace Controller
                 () => new DNSSDDiscoverer(mDNSUtil, logger).DiscoverTargets().ForEach(targetUris.Add)
                 );
 
-            return [.. targetUris];
+            // return list of unique targetUris
+            return targetUris.Distinct().ToList();
         }
 
         private class DNSSDDiscoverer(IMDNSUtil mDNSUtil, ILogger logger)
@@ -54,7 +55,7 @@ namespace Controller
                         mDNSUtil.DiscoverTargets($"{serviceName}.{_protocol}.", scheme, new CancellationTokenSource(5000).Token).ForEach(targetUris.Add);
                     });
 
-                    // return list of unique targetUris
+                    // return list of targetUris
                     return targetUris.Distinct().ToList();
                 }
                 catch (Exception e)
