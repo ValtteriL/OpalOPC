@@ -74,7 +74,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
     }
 
     [RelayCommand(CanExecute = nameof(canRunNetworkDiscovery))]
-    private void NetworkDiscovery(int timeout)
+    private async void NetworkDiscovery(int timeout)
     {
         NetworkDiscoveryOnGoing = true;
         Log = string.Empty;
@@ -90,19 +90,17 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
             INetworkDiscoveryController networkDiscoveryController = _host.Services.GetRequiredService<INetworkDiscoveryController>();
 
 
-            Task.Run(() =>
+            List<Uri> discoveredTargets = await Task.Run(() =>
             {
-
-                // run
-                List<Uri> discoveredTargets = networkDiscoveryController.MulticastDiscoverTargets(timeout);
-
-                // add discovered targets to targets
-                discoveredTargets.ForEach(target => AddTarget(target.AbsoluteUri, logger));
-
-                // let user know how many targets were added
-                logger.LogInformation("{Message}", $"Discovered {discoveredTargets.Count} targets on network");
+                return networkDiscoveryController.MulticastDiscoverTargets(timeout);
 
             });
+
+            // add discovered targets to targets
+            discoveredTargets.ForEach(target => AddTarget(target.AbsoluteUri, logger));
+
+            // let user know how many targets were added
+            logger.LogInformation("{Message}", $"Discovered {discoveredTargets.Count} targets on network");
         }
         catch (Exception e)
         {
