@@ -9,11 +9,11 @@ tags: [release, 3.0.0.0]
 ![Release 3.0.0.0](release-3.0.0.0.png)
 
 * Network Discovery
-* New plugin: [ServerStatus]//../docs/plugins/serverstatus.md)
-* New plugin: [Self-signed user certificate]//../docs/plugins/self-signed-user-certificate.md)
-* New plugin: [Server Certificate]//../docs/plugins/server-certificate.md)
-* New plugin: [Invalid Server Certificate]//../docs/plugins/invalid-server-certificate.md)
-* Add new credentials to [Common credentials]//../docs/plugins/common-credentials.md) plugin
+* New plugin: [ServerStatus](/docs/plugin-10013)
+* New plugin: [Self-signed user certificate](/docs/plugin-10016)
+* New plugin: [Server Certificate](/docs/plugin-10015)
+* New plugin: [Invalid Server Certificate](/docs/plugin-10014)
+* Add new credentials to [Common credentials](/docs/plugin-10003) plugin
 * Make reports standalone
 * Multiple bugfixes
 
@@ -27,7 +27,7 @@ On GUI, discovery can be started by clicking the Network Discovery button.
 
 On CLI, discovery can be started by using the `-d` or `--discovery` option.
 
-***TODO: network discovery gif ***
+![Network Discovery](network-discovery.gif)
 
 ## New plugin: ServerStatus
 
@@ -35,22 +35,28 @@ On CLI, discovery can be started by using the `-d` or `--discovery` option.
 
 This information is essential for identifying the scanned server or device.
 
-![ServerStatus plugin issue on report](ser)
+![ServerStatus plugin issue on report](serverstatus-plugin-issue.png)
 
 ## New plugin: Self-signed user certificate
 
-[The Self-signed user certificate plugin]//../docs/plugins/self-signed-user-certificate.md) attempts to authenticate with target servers using a self-signed user certificate.
+[The Self-signed user certificate plugin](/docs/plugin-10016) attempts to authenticate with target servers using a self-signed user certificate.
+
+![Self-signed user certificate issue on report](self-signed-user-certificate-plugin-issue.png)
 
 ## New plugin: Server Certificate
 
-[The Server Certificate plugin]//../docs/plugins/server-certificate.md) retrieves the server's certificate.
+[The Server Certificate plugin](/docs/plugin-10015) retrieves the server's certificate.
 
 The certificate data is useful for reconnaissance.
 
+![Server certificate issue on report](servers-certificate-plugin-issue.png)
+
 ## New plugin: Invalid Server Certificate
 
-[The Invalid Server Certificate plugin]//../docs/plugins/invalid-server-certificate.md) checks the validity of target server certificate. The plugin reports an issue if the certificate has expired or is otherwise invalid.
+[The Invalid Server Certificate plugin](/docs/plugin-10014) checks the validity of target server certificate. The plugin reports an issue if the certificate has expired or is otherwise invalid.
+
+![Invalid Server Certificate issue on report](invalid-server-certificate-plugin-issue.png)
 
 ## New credentials to Common credentials
 
-A new set of credentials has been added to the [Common credentials]//../docs/plugins/common-credentials.md) plugin. The new credentials are: `Administrator:1` from [Beckhoff EK9160 manual](https://download.beckhoff.com/download/software/ethercat/ekxxxx/ek9160/IOT_EK9160_OPC-UA_with_UaExpert_en_V1.pdf).
+A new set of credentials has been added to the [Common credentials](/docs/plugin-10003) plugin. The new credentials are: `Administrator:1` from [Beckhoff EK9160 manual](https://download.beckhoff.com/download/software/ethercat/ekxxxx/ek9160/IOT_EK9160_OPC-UA_with_UaExpert_en_V1.pdf).

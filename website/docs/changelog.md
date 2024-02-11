@@ -10,6 +10,7 @@ sidebar_position: 7
 * New plugin: [ServerStatus](./plugins/serverstatus.md)
 * New plugin: [Self-signed user certificate](./plugins/self-signed-user-certificate.md)
 * New plugin: [Server Certificate](./plugins/server-certificate.md)
+* New plugin: [Invalid Server Certificate](./plugins/invalid-server-certificate.md)
 * Add new credentials to [Common credentials](./plugins/common-credentials.md) plugin
 * Make reports standalone
 * Multiple bugfixes
