@@ -1,7 +1,6 @@
 using Controller;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Model;
 using ScannerApplication;
 using Util;
@@ -25,8 +24,23 @@ class OpalOPC
 
             options.commandLine = Environment.CommandLine;
 
+            // configure application
             IHost _host = AppConfigurer.ConfigureApplication(options);
             IWorker worker = _host.Services.GetRequiredService<IWorker>();
+
+            if (options.shouldDiscoverAndExit)
+            {
+                INetworkDiscoveryController networkDiscoveryController = _host.Services.GetRequiredService<INetworkDiscoveryController>();
+                IList<Uri> targets = networkDiscoveryController.MulticastDiscoverTargets(5);
+                Console.WriteLine("Discovered targets:");
+                foreach (Uri target in targets)
+                {
+                    Console.WriteLine(target);
+                }
+                return (int)ExitCodes.Success;
+            }
+
+            // run application
             worker.Run(options);
             return (int)ExitCodes.Success;
         }

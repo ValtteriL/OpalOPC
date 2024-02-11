@@ -8,11 +8,20 @@ namespace Util
     {
         IPAddress[] ResolveIPv4Addresses(string host);
         ApplicationDescriptionCollection DiscoverApplications(Uri uri);
+        ServerOnNetworkCollection DiscoverApplicationsOnNetwork(Uri uri);
         EndpointDescriptionCollection DiscoverEndpoints(Uri uri);
     }
 
     public class DiscoveryUtil : IDiscoveryUtil
     {
+        public ServerOnNetworkCollection DiscoverApplicationsOnNetwork(Uri uri)
+        {
+            uint startingRecordId = (uint)0;
+            uint maxRecordsToReturn = (uint)0;
+            StringCollection serverCapabilityFilter = [];
+            return DiscoveryClient.Create(uri).FindServersOnNetwork(startingRecordId, maxRecordsToReturn, serverCapabilityFilter, out _);
+        }
+
         public ApplicationDescriptionCollection DiscoverApplications(Uri uri)
         {
             return DiscoveryClient.Create(uri).FindServers(null);

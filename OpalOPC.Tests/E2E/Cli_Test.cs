@@ -104,5 +104,17 @@ namespace Tests.E2E
             File.Delete(reportname);
         }
 
+        [Fact]
+        [Trait("Category", "E2E")]
+        public void ScanNetworkDiscovery()
+        {
+
+            // act
+            Process process = RunCommand($"{ApplicationPath} -d");
+
+            // assert
+            Assert.True(process.ExitCode == 0);
+        }
+
     }
 }

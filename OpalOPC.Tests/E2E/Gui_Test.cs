@@ -40,6 +40,8 @@ namespace Tests.E2E
         private const string DeleteUserAuthenticationCertificateButton = "DeleteUserAuthenticationCertificateButton";
         private const string DeleteBruteforceCredentialsButton = "DeleteBruteforceCredentialsButton";
 
+        private const string NetworkDiscoveryButton = "NetworkDiscoveryButton";
+
         private const string AboutWindow = "AboutWindow";
 
         private readonly string _paste = Keys.Control + "v";
@@ -192,6 +194,11 @@ namespace Tests.E2E
 
             // cleanup
             File.Delete(outputLocation);
+
+            // run network discovery
+            AppSession.FindElementByAccessibilityId(NetworkDiscoveryButton).Click();
+            // wait for discovery to finish
+            Thread.Sleep(6 * 1000);
         }
     }
 }

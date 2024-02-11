@@ -28,6 +28,7 @@ namespace View
                 { "B|brute-force-credential-file=", "import list of username:password for brute force attack from file", b => _options = addBruteForceCredentialsFromFile(b) },
                 { "c|user-certificate-and-privatekey=", "path-to-certificate:path-to-privatekey for user authentication", c => _options = addUserCertificatePrivatekey(c) },
                 { "a|application-certificate-and-privatekey=", "path-to-certificate:path-to-privatekey for application authentication", a => _options = addAppCertificatePrivatekey(a) },
+                { "d|discovery", "discover targets on network through mDNS and exit", d => _options.shouldDiscoverAndExit = d != null },
                 { "version", "show version and exit", ver => _options.shouldShowVersion = ver != null },
             };
 

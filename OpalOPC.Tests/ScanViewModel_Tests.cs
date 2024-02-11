@@ -167,5 +167,17 @@ public class ScanViewModel_Tests
         Assert.True(model.ScanCompletedSuccessfully);
     }
 
+    // network discovery
+    [Fact]
+    public async void NetworkDiscovery()
+    {
+        ScanViewModel model = new();
+
+        await model.NetworkDiscoveryCommand.ExecuteAsync(5);
+
+        Assert.True(!model.NetworkDiscoveryOnGoing);
+
+    }
+
 }
 #endif

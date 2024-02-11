@@ -4,10 +4,21 @@ description: The changelog shows OpalOPC release dates and what kind of changes 
 sidebar_position: 7
 ---
 
+## 3.0.0.0 - 2024-02-11
+
+* Network Discovery
+* New plugin: [ServerStatus](./plugins/serverstatus.md)
+* New plugin: [Self-signed user certificate](./plugins/self-signed-user-certificate.md)
+* New plugin: [Server Certificate](./plugins/server-certificate.md)
+* New plugin: [Invalid Server Certificate](./plugins/invalid-server-certificate.md)
+* Add new credentials to [Common credentials](./plugins/common-credentials.md) plugin
+* Make reports standalone
+* Multiple bugfixes
+
 ## 2.0.0.0 - 2023-12-12
 
 * Support for user-provided credentials
-* New plugin: Brute force
+* New plugin: [Brute force](./plugins/brute-force.md)
 * Improved performance
 * Improved certificate handling
 * Version flag

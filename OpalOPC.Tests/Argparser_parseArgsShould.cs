@@ -500,5 +500,17 @@ public class Argparser_parseArgsShould
         Assert.True(options.exitCode == ExitCodes.Error);
     }
 
+    [Theory]
+    [InlineData("-d")]
+    [InlineData("--discovery")]
+    public void ParseArgs_DiscoverySetsShouldDiscoverAndExit(string flag)
+    {
+        string[] args = [flag];
+        Argparser argparser = new(args);
+
+        Options options = argparser.parseArgs();
+
+        Assert.True(options.shouldDiscoverAndExit);
+    }
 
 }
