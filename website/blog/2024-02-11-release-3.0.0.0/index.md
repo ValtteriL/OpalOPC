@@ -31,7 +31,7 @@ On CLI, discovery can be started by using the `-d` or `--discovery` option.
 
 ## New plugin: ServerStatus
 
-[The ServerStatus plugin]//../docs/plugins/serverstatus.md) plugin retrieves the [ServerStatus](https://reference.opcfoundation.org/Core/Part5/v104/docs/12.10) node from the server. This node contains information about the server's current state, as well as its [BuildInfo](https://reference.opcfoundation.org/Core/Part5/v104/docs/12.4).
+[The ServerStatus plugin](/docs/plugin-10013) plugin retrieves the [ServerStatus](https://reference.opcfoundation.org/Core/Part5/v104/docs/12.10) node from the server. This node contains information about the server's current state, as well as its [BuildInfo](https://reference.opcfoundation.org/Core/Part5/v104/docs/12.4).
 
 This information is essential for identifying the scanned server or device.
 
