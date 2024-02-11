@@ -11,7 +11,7 @@ make release
 ```
 
 This command creates MSIX and Snapd packages of OpalOPC.
-The Snapd package is automatically uploaded to Snap store, but MSIX needs to be uploaded by hand to Microsoft Partner Portal.
+The Snapd package is automatically uploaded to Snap store, but need to be promoted to latest/stable by hand in Snapd listing page. MSIX needs to be uploaded by hand to Microsoft Partner Portal.
 
 ### Update website
 
