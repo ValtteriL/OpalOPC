@@ -7,13 +7,16 @@ namespace Controller
 {
     public interface INetworkDiscoveryController
     {
-        public List<Uri> MulticastDiscoverTargets(int timeoutSeconds);
+        public IList<Uri> MulticastDiscoverTargets(int timeoutSeconds);
     }
 
     public class NetworkDiscoveryController(ILogger<NetworkDiscoveryController> logger, IDiscoveryUtil discoveryUtil, IMDNSUtil mDNSUtil) : INetworkDiscoveryController
     {
-        public List<Uri> MulticastDiscoverTargets(int timeoutSeconds)
+        public IList<Uri> MulticastDiscoverTargets(int timeoutSeconds)
         {
+            // track event
+            TelemetryUtil.TrackEvent("Network Discovery");
+
             ConcurrentBag<Uri> targetUris = [];
 
             // run both discovery methods in parallel until timeout
@@ -32,8 +35,20 @@ namespace Controller
             }).Wait();
 
 
+            IList<Uri> discoveredUris = targetUris.Distinct().ToList();
+
+            TelemetryUtil.TrackEvent("Network Discovery finished", GetDiscoveryProperties(discoveredUris));
+
             // return list of unique targetUris
-            return targetUris.Distinct().ToList();
+            return discoveredUris;
+        }
+
+        private static Dictionary<string, string> GetDiscoveryProperties(IList<Uri> targetUris)
+        {
+            return new()
+            {
+                { "NumberOfTargetsDiscovered", targetUris.Count.ToString() },
+            };
         }
 
         private class DNSSDDiscoverer(IMDNSUtil mDNSUtil, ILogger<NetworkDiscoveryController> logger)

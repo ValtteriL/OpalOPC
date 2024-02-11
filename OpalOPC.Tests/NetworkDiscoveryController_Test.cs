@@ -35,7 +35,7 @@ public class NetworkDiscoveryControllerTest
             ]
         };
     }
-    private ServerOnNetwork serverOnNetwork(Uri uri)
+    private static ServerOnNetwork serverOnNetwork(Uri uri)
     {
         return new ServerOnNetwork()
         {
@@ -61,7 +61,7 @@ public class NetworkDiscoveryControllerTest
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
         // act
-        List<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
+        IList<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
 
         // assert
         Assert.NotEmpty(targets);
@@ -84,7 +84,7 @@ public class NetworkDiscoveryControllerTest
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
         // act
-        List<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
+        IList<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
 
         // assert
         Assert.NotEmpty(targets);
@@ -105,7 +105,7 @@ public class NetworkDiscoveryControllerTest
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
         // act
-        List<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
+        IList<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
 
         // assert
         Assert.NotEmpty(targets);
@@ -125,7 +125,7 @@ public class NetworkDiscoveryControllerTest
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
         // act
-        List<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
+        IList<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
 
         // act & assert
         Assert.Empty(targets);
@@ -143,7 +143,7 @@ public class NetworkDiscoveryControllerTest
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
         // act
-        List<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
+        IList<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
 
         // assert
         Assert.Empty(targets);
@@ -160,7 +160,7 @@ public class NetworkDiscoveryControllerTest
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
         // act
-        List<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
+        IList<Uri> targets = controller.MulticastDiscoverTargets(_timeoutSeconds);
 
         // assert
         Assert.Empty(targets);

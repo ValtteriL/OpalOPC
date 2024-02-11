@@ -30,11 +30,13 @@ class OpalOPC
 
             if (options.shouldDiscoverAndExit)
             {
-                TelemetryUtil.TrackEvent("Network Discovery");
                 INetworkDiscoveryController networkDiscoveryController = _host.Services.GetRequiredService<INetworkDiscoveryController>();
-                List<Uri> targets = networkDiscoveryController.MulticastDiscoverTargets(5);
+                IList<Uri> targets = networkDiscoveryController.MulticastDiscoverTargets(5);
                 Console.WriteLine("Discovered targets:");
-                targets.ForEach(t => Console.WriteLine(t));
+                foreach (Uri target in targets)
+                {
+                    Console.WriteLine(target);
+                }
                 return (int)ExitCodes.Success;
             }
 

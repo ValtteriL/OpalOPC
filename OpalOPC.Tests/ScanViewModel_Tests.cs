@@ -169,11 +169,11 @@ public class ScanViewModel_Tests
 
     // network discovery
     [Fact]
-    public void NetworkDiscovery()
+    public async void NetworkDiscovery()
     {
         ScanViewModel model = new();
 
-        model.NetworkDiscoveryCommand.Execute(5);
+        await model.NetworkDiscoveryCommand.ExecuteAsync(5);
 
         Assert.True(!model.NetworkDiscoveryOnGoing);
 
