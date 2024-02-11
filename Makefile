@@ -24,19 +24,14 @@ lint:
 lint-check:
 	@dotnet format --verify-no-changes
 
-# Build
-.PHONY: build
-build:
-	@dotnet build
-
 # Run locally
 .PHONY: run
 run:
 	@dotnet run --runtime linux-x64 --project OpalOPC -- opc.tcp://echo:53530
 
 # Deployment
-.PHONY: publish-all
-publish-all:
+.PHONY: release
+release:
 	@export DOTNET_CLI_ENABLE_PUBLISH_RELEASE_FOR_SOLUTIONS=1
 	@ansible-playbook \
 		--vault-password-file "$(VAULT_PASSWORD_FILE)" \

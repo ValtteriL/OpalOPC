@@ -2,31 +2,56 @@
 
 OPC UA security scanner
 
-## Deploy
+## Deployment
 
-Build Windows, OSX and Linux binaries, sign them with GPG key,
-create windows installer, and publish on the opalopc.com website
-along with linux and mac installer. Update EULA at the same time.
+### Release applications
 
-```
-make publish-all
+```bash
+make release
 ```
 
-## Develop
-```
-make run
-make server
+This command creates MSIX and Snapd packages of OpalOPC.
+The Snapd package is automatically uploaded to Snap store, but MSIX needs to be uploaded by hand to Microsoft Partner Portal.
+
+### Update website
+
+```bash
+make deploy-website
 ```
 
-## Test
+## Development
 
+Scan echo (on linux):
+
+```bash
+make eun
 ```
-# unit test
-make test
 
-# e2e tests
+Run website on localhost with hot reload on changes:
+
+```bash
+make docs
+```
+
+Formatting:
+
+```bash
+# check
+make lint-check
+
+# make changes
+make lint
+```
+
+## Testing
+
+```bash
+# unit tests
+make run-unit-tests
+
+# e2e tests (requires Windows)
 make run-e2e-tests
 
-# test install.sh
-make run-linux-mac-installer
+# All tests
+make run-all-tests
 ```
