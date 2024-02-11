@@ -7,7 +7,7 @@ slug: usage-cli
 ---
 
 ```bash
-Opal OPC 2.0.1.0 ( https://opalopc.com )
+Opal OPC 3.0.0.0 ( https://opalopc.com )
 Usage: opalopc [Options] [Target ...]
   -i, --input-file=VALUE     input targets from list of discovery uris
   -o, --output=VALUE         output XHTML report filename
@@ -30,6 +30,7 @@ Usage: opalopc [Options] [Target ...]
   -a, --application-certificate-and-privatekey=VALUE
                              path-to-certificate:path-to-privatekey for
                                application authentication
+  -d, --discovery            discover targets on network through mDNS and exit
       --version              show version and exit
 ```
 
@@ -96,6 +97,10 @@ Specify `path-to-certificate:path-to-privatekey` for user authentication. The fi
 
 Specify `path-to-certificate:path-to-privatekey` for application authentication. The files shall be in PEM format. Can be specified multiple times to add multiple credentials.
 
+#### -d, --discovery
+
+Run network discovery through mDNS and exit. Prints discovered OPC UA Discovery URLs to stdout.
+
 #### --version
 
 Show version and exit.
@@ -130,6 +135,12 @@ opalopc -s -i - -o -
 
 ```bash
 opalopc -a /tmp/certificate.pem:/tmp/privkey.pem -l opcadmin:v3rys3cr3t123! opc.tcp://scanme.opalopc.com:53530
+```
+
+#### Discover targets on network
+
+```bash
+opalopc -d
 ```
 
 #### Debug output

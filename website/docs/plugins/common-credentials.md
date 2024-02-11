@@ -40,7 +40,7 @@ The server can be accessed using well-known credentials.
 
 The server uses default credentials (username & password) for potentially critical functionality. An attacker can easily guess the credentials to bypass authentication and to gain access to the server.
 
-The credentials attempted are listed with sources [here](https://github.com/COMSYS/msf-opcua/blob/a3d4fedf91ca59055a083c8047cdc7a1de3cbe7e/credentials/opcua_credentials_sources.txt).
+The credentials attempted are listed with sources [here](https://github.com/COMSYS/msf-opcua/blob/a3d4fedf91ca59055a083c8047cdc7a1de3cbe7e/credentials/opcua_credentials_sources.txt). An additional credential was also added from [here](https://download.beckhoff.com/download/software/ethercat/ekxxxx/ek9160/IOT_EK9160_OPC-UA_with_UaExpert_en_V1.pdf).
 
 ## Solution
 

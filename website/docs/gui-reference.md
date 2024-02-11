@@ -16,7 +16,7 @@ To import targets from file, you need a file with one URI per line.
 If target URI points to a server, all its endpoints will be scanned.
 If target URI points to a Local Discovery Server (LDS) or Global Discovery Server (GDS), all endpoints listed in them will be scanned.
 
-Currently only ocp.tcp scheme is supported.
+Currently only `ocp.tcp` scheme is supported.
 
 ![OPC URL format](/img/opc-ua-uri-format.png)
 
@@ -25,6 +25,10 @@ Currently only ocp.tcp scheme is supported.
 ```text
 opc.tcp://scanme.opalopc.com:53530
 ```
+
+### Network discovery
+
+Select `Network Discovery` to scan the network for available OPC UA servers using mDNS. Discovered servers will be added to the target list.
 
 ## Verbosity level
 
@@ -54,14 +58,14 @@ Specify username and password -pairs for user authentication brute force attack.
 
 ## Scanning
 
-Selecting “Scan” will start a vulnerability scan against the specified targets.
+Selecting `Scan` will start a vulnerability scan against the specified targets.
 Scanning will generate log messages to the log textbox as the scan progresses.
 
 An ongoing scan can be canceled. No report is written for canceled scans.
 
 ## Opening report
 
-After a successful scan, the resulting report can be opened by selecting “Open Report”.
+After a successful scan, the resulting report can be opened by selecting `Open Report`.
 
 The report will be opened using your default HTML viewer. If you have not specified the default, you will be prompted for a program.
 We recommend using your web browser, as the report is human readable in it.
