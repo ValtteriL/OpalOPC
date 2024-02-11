@@ -35,8 +35,8 @@ release:
 	@export DOTNET_CLI_ENABLE_PUBLISH_RELEASE_FOR_SOLUTIONS=1
 	@ansible-playbook \
 		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
-		--inventory ron, \
-		deploy/playbooks/publish.yaml
+		--inventory deploy/inventory.yaml \
+		deploy/playbooks/release.yaml
 
 .PHONY: setup-snap-builder
 setup-snap-builder:
