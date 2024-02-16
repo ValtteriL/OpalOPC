@@ -58,3 +58,14 @@ deploy-website:
 .PHONY: list-website-deployments
 list-website-deployments:
 	@npx wrangler pages deployment list --project-name opalopc
+
+.PHONY: api
+api:
+	@cd OpalOPC/known-vulnerability-plugin-api && npm run dev
+
+.PHONY: test-api
+test-api:
+	@cd OpalOPC/known-vulnerability-plugin-api && npm test
+
+
+
