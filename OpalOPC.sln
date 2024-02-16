@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpalOPC.WPF", "OpalOPC.WPF\
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "WindowsPackaging", "WindowsPackaging\WindowsPackaging.wapproj", "{9C98553B-1B40-4A43-8CEE-E085274C9B0D}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "KnownVulnerabilityPluginAPI", "KnownVulnerabilityPluginAPI\KnownVulnerabilityPluginAPI.esproj", "{BAE87382-2FED-4375-834E-91640461D8D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,36 @@ Global
 		{9C98553B-1B40-4A43-8CEE-E085274C9B0D}.Release|x86.ActiveCfg = Release|x86
 		{9C98553B-1B40-4A43-8CEE-E085274C9B0D}.Release|x86.Build.0 = Release|x86
 		{9C98553B-1B40-4A43-8CEE-E085274C9B0D}.Release|x86.Deploy.0 = Release|x86
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|ARM.Build.0 = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|ARM.Deploy.0 = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|ARM64.Deploy.0 = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|x64.Build.0 = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|x86.Build.0 = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|ARM.ActiveCfg = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|ARM.Build.0 = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|ARM.Deploy.0 = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|ARM64.Build.0 = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|ARM64.Deploy.0 = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|x64.ActiveCfg = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|x64.Build.0 = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|x64.Deploy.0 = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|x86.ActiveCfg = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|x86.Build.0 = Release|Any CPU
+		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|x86.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
