@@ -13,6 +13,8 @@ Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "WindowsPackaging", "Windows
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "KnownVulnerabilityPluginAPI", "KnownVulnerabilityPluginAPI\KnownVulnerabilityPluginAPI.esproj", "{BAE87382-2FED-4375-834E-91640461D8D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnownVulnerabilityAPI", "KnownVulnerabilityAPI\KnownVulnerabilityAPI.csproj", "{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +149,26 @@ Global
 		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|x86.ActiveCfg = Release|Any CPU
 		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|x86.Build.0 = Release|Any CPU
 		{BAE87382-2FED-4375-834E-91640461D8D1}.Release|x86.Deploy.0 = Release|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Debug|ARM.Build.0 = Debug|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Debug|x64.Build.0 = Debug|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Debug|x86.Build.0 = Debug|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Release|ARM.ActiveCfg = Release|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Release|ARM.Build.0 = Release|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Release|ARM64.Build.0 = Release|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Release|x64.ActiveCfg = Release|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Release|x64.Build.0 = Release|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Release|x86.ActiveCfg = Release|Any CPU
+		{95E80FAC-049C-4006-B61E-D6F6B6EB87CD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
