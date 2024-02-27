@@ -59,13 +59,27 @@ deploy-website:
 list-website-deployments:
 	@npx wrangler pages deployment list --project-name opalopc
 
-.PHONY: api
-api:
-	@cd OpalOPC/known-vulnerability-plugin-api && npm run dev
+.PHONY: deploy-api
+deploy-api:
+	@ansible-playbook \
+		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
+		--inventory deploy/inventory.yaml \
+		deploy/playbooks/deploy-api.yaml
 
-.PHONY: test-api
-test-api:
-	@cd OpalOPC/known-vulnerability-plugin-api && npm test
+.PHONY: run-api
+run-api:
+	@docker run --env ApiKey=dummy -p 5039:8080 -it --rm opalopc-api
 
+.PHONY: setup-scanme
+setup-scanme:
+	@ansible-playbook \
+		deploy/playbooks/setup-scanme.yaml \
+		--inventory deploy/inventory.yaml \
+		--vault-password-file "$(VAULT_PASSWORD_FILE)"
 
-
+.PHONY: edit-vault
+edit-vault:
+	@ansible-vault \
+		edit \
+		./deploy/playbooks/group_vars/opalopc-snap-builder/vault.yaml \
+		--vault-password-file "$(VAULT_PASSWORD_FILE)"

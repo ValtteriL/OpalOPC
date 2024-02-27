@@ -1,0 +1,28 @@
+---
+- name: Install requirements
+  ansible.builtin.apt:
+    update_cache: yes
+    pkg:
+    - xfce4
+    - xfce4-goodies
+    - xrdp
+
+- name: Start and enable xrdp
+  ansible.builtin.service:
+    name: xrdp
+    state: started
+    enabled: true
+
+- name: Configure xrdp
+  ansible.builtin.copy:
+    src: xsession
+    dest: ~/.xsession
+  notify: Restart xrdp
+
+- name: Allow RDP in
+  ufw:
+    comment: allow rdp in
+    direction: in
+    to_port: 3389
+    rule: allow
+    proto: tcp

@@ -1,0 +1,21 @@
+---
+
+- name: Run common tasks
+  ansible.builtin.include_tasks: common.yaml
+
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: scanme.opalopc.com
+    use: systemd
+
+- name: Create local user 'valtteri'
+  ansible.builtin.include_tasks: create-local-user.yaml
+
+- name: Include desktop environment and RDP
+  ansible.builtin.include_tasks: rdp.yaml
+
+- name: Make ProsysOPC Simulationserver related changes
+  ansible.builtin.include_tasks: simulationserver.yaml
+
+- name: Install api dependencies
+  ansible.builtin.include_tasks: api.yaml

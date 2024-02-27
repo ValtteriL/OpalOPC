@@ -1,0 +1,75 @@
+---
+
+# Build KnownVulnerabilityAPI and deploy to Hermione
+
+- name: Deploy KnownVulnerabilityAPI
+  hosts: hermione
+  gather_facts: false
+
+  vars:
+    image_archive_path: "{{ repo_root.stdout }}/opalopc-api.tar"
+
+  tasks:
+
+    - name: Build container
+      delegate_to: localhost
+      block:
+
+        - name: Get repo root path
+          ansible.builtin.shell:
+            cmd: git rev-parse --show-toplevel
+          register: repo_root
+
+        - name: get git version
+          ansible.builtin.shell:
+            cmd: git rev-parse HEAD
+          register: git_version
+
+        - name: Build api application
+          community.docker.docker_image:
+            build:
+              path: "{{ repo_root.stdout }}/KnownVulnerabilityAPI"
+            name: opalopc-api
+            tag: "{{ git_version.stdout }}"
+            source: build
+
+        - name: Archive image
+          community.docker.docker_image:
+            name: opalopc-api
+            tag: "{{ git_version.stdout }}"
+            archive_path: "{{ image_archive_path }}"
+            source: local
+
+    - name: Transfer image to hermione
+      ansible.builtin.copy:
+        src: "{{ image_archive_path }}"
+        dest: /tmp/opalopc-api.tar
+    
+    - name: Load image on hermione
+      community.docker.docker_image:
+        name: opalopc-api
+        tag: "{{ git_version.stdout }}"
+        load_path: /tmp/opalopc-api.tar
+        source: load
+
+    - name: Run api container
+      community.docker.docker_container:
+        name: opalopc-api
+        image: opalopc-api:{{ git_version.stdout }}
+        env:
+          ApiKey: "{{ NVD_API_KEY }}"
+        ports:
+          - "127.0.0.1:8080:8080"
+        state: started
+        restart_policy: "unless-stopped"
+
+    - name: Ensure reverse proxy is running
+      community.docker.docker_container:
+        name: caddy
+        image: caddy:2.7.6
+        ports:
+          - "443:443"
+          - "80:80"
+        command: caddy reverse-proxy --from api.opalopc.com --to 127.0.0.1:8080
+        state: started
+        restart_policy: "unless-stopped"

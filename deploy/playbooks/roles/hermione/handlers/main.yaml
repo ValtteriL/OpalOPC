@@ -1,0 +1,9 @@
+- name: Restart xrdp
+  ansible.builtin.service:
+    name: xrdp
+    state: restarted
+
+- name: Restart sshd
+  service:
+    name: sshd
+    state: restarted

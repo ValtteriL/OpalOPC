@@ -1,0 +1,27 @@
+---
+
+# install dependencies required by api.opalopc.com deployment
+
+- name: Install docker
+  ansible.builtin.package:
+    name: docker.io
+    state: present
+
+- name: Add user to docker group
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+
+- name: UFW - Allow HTTP
+  ufw:
+    rule: allow
+    port: 80
+    proto: tcp
+
+- name: UFW - Allow HTTPS
+  ufw:
+    rule: allow
+    port: 443
+    proto: tcp
+

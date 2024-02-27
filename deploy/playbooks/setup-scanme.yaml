@@ -1,0 +1,12 @@
+# Setup Ubuntu 22.04 with
+# - RDP
+# - Automatic updates
+# - Prosys OPC Simulation server in downloads
+
+- name: Setup scanme.opalopc.com
+  hosts: hermione
+  become: true
+  roles:
+    - hermione
+  vars:
+    ansible_user: valtteri
