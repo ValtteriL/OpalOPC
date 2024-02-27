@@ -11,6 +11,10 @@
 
   tasks:
 
+    - name: Include vault secrets
+      ansible.builtin.include_vars:
+        file: vault.yaml
+
     - name: Build container
       delegate_to: localhost
       block:
@@ -52,14 +56,20 @@
         load_path: /tmp/opalopc-api.tar
         source: load
 
+    - name: Create a docker network
+      docker_network:
+        name: opalopc-api-network
+
     - name: Run api container
       community.docker.docker_container:
         name: opalopc-api
         image: opalopc-api:{{ git_version.stdout }}
         env:
           ApiKey: "{{ NVD_API_KEY }}"
-        ports:
-          - "127.0.0.1:8080:8080"
+        networks:
+          - name: opalopc-api-network
+        exposed_ports:
+          - 8080
         state: started
         restart_policy: "unless-stopped"
 
@@ -67,9 +77,11 @@
       community.docker.docker_container:
         name: caddy
         image: caddy:2.7.6
+        networks:
+          - name: opalopc-api-network
         ports:
           - "443:443"
           - "80:80"
-        command: caddy reverse-proxy --from api.opalopc.com --to 127.0.0.1:8080
+        command: caddy reverse-proxy --from api.opalopc.com --to http://opalopc-api:8080
         state: started
         restart_policy: "unless-stopped"

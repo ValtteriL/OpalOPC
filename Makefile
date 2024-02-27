@@ -66,10 +66,6 @@ deploy-api:
 		--inventory deploy/inventory.yaml \
 		deploy/playbooks/deploy-api.yaml
 
-.PHONY: run-api
-run-api:
-	@docker run --env ApiKey=dummy -p 5039:8080 -it --rm opalopc-api
-
 .PHONY: setup-scanme
 setup-scanme:
 	@ansible-playbook \
@@ -81,5 +77,5 @@ setup-scanme:
 edit-vault:
 	@ansible-vault \
 		edit \
-		./deploy/playbooks/group_vars/opalopc-snap-builder/vault.yaml \
+		./deploy/playbooks/vault.yaml \
 		--vault-password-file "$(VAULT_PASSWORD_FILE)"
