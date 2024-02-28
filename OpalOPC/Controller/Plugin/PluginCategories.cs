@@ -8,5 +8,6 @@ namespace Plugin
         public const string Accounting = "Accounting";
         public const string Authorization = "Authorization";
         public const string Reconnaissance = "Reconnaissance";
+        public const string Multiple = "Multiple";
     }
 }

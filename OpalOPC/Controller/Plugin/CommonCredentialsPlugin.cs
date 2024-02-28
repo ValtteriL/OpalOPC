@@ -53,7 +53,7 @@ namespace Plugin
                 }
             }
 
-            if (validCredentials.Any())
+            if (validCredentials.Count != 0)
             {
                 IEnumerable<string> credpairs = validCredentials.Select(c => $"{c.username}:{c.password}");
                 s_issueTitle = $"Common credentials in use ({string.Join(", ", credpairs)})";

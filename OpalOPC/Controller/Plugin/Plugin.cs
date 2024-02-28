@@ -10,6 +10,7 @@ namespace Plugin
         PreAuthPlugin = 1,
         PostAuthPlugin = 2,
         SessionCredentialPlugin = 3,
+        PostAuthMultipleIssuesPlugin = 4
     }
 
     public interface IPlugin
@@ -19,22 +20,13 @@ namespace Plugin
         public Plugintype Type { get; }
     }
 
-    public abstract class Plugin
+    public abstract class Plugin(ILogger logger, PluginId pluginId, string category, string name, double severity)
     {
-        public ILogger _logger;
-        public PluginId pluginId { get; }
-        protected readonly double _severity;
-        protected readonly string _category;
-        protected readonly string _name;
-
-        public Plugin(ILogger logger, PluginId pluginId, string category, string name, double severity)
-        {
-            _logger = logger;
-            this.pluginId = pluginId;
-            _category = category;
-            _name = name;
-            _severity = severity;
-        }
+        public ILogger _logger = logger;
+        public PluginId pluginId { get; } = pluginId;
+        protected readonly double _severity = severity;
+        protected readonly string _category = category;
+        protected readonly string _name = name;
 
         protected virtual Issue CreateIssue()
         {
@@ -47,12 +39,8 @@ namespace Plugin
         public (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions);
     }
 
-    public abstract class PreAuthPlugin : Plugin, IPreAuthPlugin
+    public abstract class PreAuthPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : Plugin(logger, pluginId, category, name, severity), IPreAuthPlugin
     {
-        public PreAuthPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : base(logger, pluginId, category, name, severity)
-        {
-        }
-
         public virtual Plugintype Type => Plugintype.PreAuthPlugin;
 
         public abstract (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions);
@@ -63,14 +51,21 @@ namespace Plugin
         public Issue? Run(ISession session);
     }
 
-    public abstract class PostAuthPlugin : Plugin, IPostAuthPlugin
+    public abstract class PostAuthPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : Plugin(logger, pluginId, category, name, severity), IPostAuthPlugin
     {
-        public PostAuthPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : base(logger, pluginId, category, name, severity)
-        {
-        }
-
         public Plugintype Type => Plugintype.PostAuthPlugin;
         public abstract Issue? Run(ISession session);
+    }
+
+    public interface IMultipleIssuesPostAuthPlugin : IPlugin
+    {
+        public Task<List<Issue>> Run(ISession session);
+    }
+
+    public abstract class MultipleIssuesPostAuthPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : Plugin(logger, pluginId, category, name, severity), IMultipleIssuesPostAuthPlugin
+    {
+        public Plugintype Type => Plugintype.PostAuthMultipleIssuesPlugin;
+        public abstract Task<List<Issue>> Run(ISession session);
     }
 
     public interface ISessionCredentialPlugin : IPlugin
@@ -78,12 +73,8 @@ namespace Plugin
         public Issue? Run(ICollection<ISecurityTestSession> sessionsAndCredentials);
     }
 
-    public abstract class SessionCredentialPlugin : Plugin, ISessionCredentialPlugin
+    public abstract class SessionCredentialPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : Plugin(logger, pluginId, category, name, severity), ISessionCredentialPlugin
     {
-        public SessionCredentialPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : base(logger, pluginId, category, name, severity)
-        {
-        }
-
         public Plugintype Type => Plugintype.SessionCredentialPlugin;
         public abstract Issue? Run(ICollection<ISecurityTestSession> sessionsAndCredentials);
     }

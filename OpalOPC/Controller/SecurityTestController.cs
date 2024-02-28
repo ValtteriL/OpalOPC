@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Model;
 using Plugin;
@@ -114,6 +113,17 @@ namespace Controller
                 Issue? postauthIssue = postAuthPlugin.Run(server.securityTestSessions.First().Session);
                 if (postauthIssue != null) server.AddIssue(postauthIssue);
             }
+
+            foreach (IMultipleIssuesPostAuthPlugin multipleIssuesPostAuthPlugin in GetPluginsByType(Plugintype.PostAuthMultipleIssuesPlugin).Cast<IMultipleIssuesPostAuthPlugin>())
+            {
+                taskUtil.CheckForCancellation();
+                ICollection<Issue> postauthIssues = multipleIssuesPostAuthPlugin.Run(server.securityTestSessions.First().Session).Result;
+                foreach (Issue issue in postauthIssues)
+                {
+                    server.AddIssue(issue);
+                }
+            }
+
             logger.LogTrace("{Message}", $"Finished post-authentication tests");
         }
 

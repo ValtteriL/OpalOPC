@@ -27,6 +27,7 @@ namespace Model
         public bool shouldDiscoverAndExit { get; set; }
         public AuthenticationData authenticationData { get; set; } = new();
         public string commandLine { get; set; } = string.Empty;
+        public string apiUri { get; set; } = "https://api.opalopc.com/known-vulnerabilities";
 
         public void Dispose()
         {

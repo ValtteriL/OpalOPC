@@ -8,7 +8,7 @@ namespace Plugin
         List<IPlugin> GetAll(AuthenticationData authenticationData);
     }
 
-    public class PluginRepository(ILogger<IPluginRepository> logger) : IPluginRepository
+    public class PluginRepository(ILogger<IPluginRepository> logger, IHttpClientFactory httpClientFactory) : IPluginRepository
     {
         private List<IPlugin> _plugins = [];
 
@@ -44,6 +44,7 @@ namespace Plugin
                 new ServerCertificateInvalidPlugin(logger),
                 new ServerCertificatePlugin(logger),
                 new SelfSignedUserCertificatePlugin(logger, authenticationData),
+                new KnownVulnerabilityPlugin(logger, httpClientFactory),
             ];
         }
     }

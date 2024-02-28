@@ -27,6 +27,11 @@ namespace ScannerApplication
                     services.AddSingleton<IPluginRepository, PluginRepository>();
                     services.AddSingleton<INetworkDiscoveryController, NetworkDiscoveryController>();
                     services.AddSingleton<IMDNSUtil, MDNSUtil>();
+                    services.AddHttpClient<IMultipleIssuesPostAuthPlugin, KnownVulnerabilityPlugin>(client =>
+                    {
+                        client.BaseAddress = new Uri(options.apiUri);
+                        client.Timeout = TimeSpan.FromSeconds(180);
+                    });
                 })
                 .ConfigureLogging(logging =>
                 {
