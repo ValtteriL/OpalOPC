@@ -24,15 +24,16 @@ namespace ScannerApplication
                     services.AddSingleton<IDiscoveryUtil, DiscoveryUtil>();
                     services.AddSingleton<ISecurityTestController, SecurityTestController>();
                     services.AddSingleton<ITaskUtil, TaskUtil>();
-                    services.AddSingleton<IKnownVulnerabilityApiRequestUtil, KnownVulnerabilityApiRequestUtil>();
                     services.AddSingleton<IPluginRepository, PluginRepository>();
                     services.AddSingleton<INetworkDiscoveryController, NetworkDiscoveryController>();
                     services.AddSingleton<IMDNSUtil, MDNSUtil>();
-                    services.AddHttpClient<IMultipleIssuesPostAuthPlugin, KnownVulnerabilityPlugin>(client =>
+                    services.AddHttpClient<IKnownVulnerabilityApiRequestUtil, KnownVulnerabilityApiRequestUtil>("KnownVulnerabilityPlugin", client =>
                     {
                         client.BaseAddress = new Uri(options.apiUri);
-                        client.Timeout = TimeSpan.FromSeconds(180);
+                        client.Timeout = TimeSpan.FromSeconds(300);
                     });
+                    //services.RemoveAll<IHttpMessageHandlerBuilderFilter>(); // disable httpclient default logging
+                    services.AddSingleton<IKnownVulnerabilityApiRequestUtil, KnownVulnerabilityApiRequestUtil>();
                 })
                 .ConfigureLogging(logging =>
                 {
