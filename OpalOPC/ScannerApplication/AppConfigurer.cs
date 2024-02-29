@@ -1,6 +1,8 @@
 ﻿using Controller;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Model;
 using Plugin;
@@ -32,7 +34,7 @@ namespace ScannerApplication
                         client.BaseAddress = new Uri(options.apiUri);
                         client.Timeout = TimeSpan.FromSeconds(300);
                     });
-                    //services.RemoveAll<IHttpMessageHandlerBuilderFilter>(); // disable httpclient default logging
+                    services.RemoveAll<IHttpMessageHandlerBuilderFilter>(); // disable httpclient default logging
                     services.AddSingleton<IKnownVulnerabilityApiRequestUtil, KnownVulnerabilityApiRequestUtil>();
                 })
                 .ConfigureLogging(logging =>
