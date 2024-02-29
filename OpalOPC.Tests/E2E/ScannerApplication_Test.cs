@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Logger;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Model;
@@ -24,7 +25,9 @@ namespace OpalOPC.Tests.E2E
             options.authenticationData = new AuthenticationData();
             options.commandLine = string.Empty;
 
-            IHost _host = AppConfigurer.ConfigureApplication(options);
+            CLILoggerProvider loggerProvider = new(options.logLevel);
+
+            IHost _host = AppConfigurer.ConfigureApplication(options, loggerProvider);
             IWorker worker = _host.Services.GetRequiredService<IWorker>();
 
             // act

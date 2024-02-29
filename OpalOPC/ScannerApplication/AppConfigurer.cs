@@ -11,7 +11,7 @@ namespace ScannerApplication
 {
     public class AppConfigurer
     {
-        public static IHost ConfigureApplication(Options options, ILoggerProvider? loggerProvider = null)
+        public static IHost ConfigureApplication(Options options, ILoggerProvider loggerProvider)
         {
             return Host.CreateDefaultBuilder()
                 .ConfigureServices((_, services) =>
@@ -39,16 +39,7 @@ namespace ScannerApplication
                 {
                     logging.ClearProviders();
                     logging.SetMinimumLevel(options.logLevel);
-
-                    if (loggerProvider != null)
-                        logging.AddProvider(loggerProvider);
-                    else
-                        logging.AddSimpleConsole(options =>
-                        {
-                            options.IncludeScopes = false;
-                            options.TimestampFormat = "HH:mm:ss ";
-                            options.SingleLine = true;
-                        });
+                    logging.AddProvider(loggerProvider);
                 })
                 .Build();
         }
