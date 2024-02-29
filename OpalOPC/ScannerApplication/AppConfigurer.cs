@@ -24,6 +24,7 @@ namespace ScannerApplication
                     services.AddSingleton<IDiscoveryUtil, DiscoveryUtil>();
                     services.AddSingleton<ISecurityTestController, SecurityTestController>();
                     services.AddSingleton<ITaskUtil, TaskUtil>();
+                    services.AddSingleton<IKnownVulnerabilityApiRequestUtil, KnownVulnerabilityApiRequestUtil>();
                     services.AddSingleton<IPluginRepository, PluginRepository>();
                     services.AddSingleton<INetworkDiscoveryController, NetworkDiscoveryController>();
                     services.AddSingleton<IMDNSUtil, MDNSUtil>();

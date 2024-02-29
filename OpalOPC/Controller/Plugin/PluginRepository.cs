@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Model;
+using Util;
 
 namespace Plugin
 {
@@ -8,7 +9,7 @@ namespace Plugin
         List<IPlugin> GetAll(AuthenticationData authenticationData);
     }
 
-    public class PluginRepository(ILogger<IPluginRepository> logger, IHttpClientFactory httpClientFactory) : IPluginRepository
+    public class PluginRepository(ILogger<IPluginRepository> logger, IKnownVulnerabilityApiRequestUtil knownVulnerabilityApiRequestUtil) : IPluginRepository
     {
         private List<IPlugin> _plugins = [];
 
@@ -44,7 +45,7 @@ namespace Plugin
                 new ServerCertificateInvalidPlugin(logger),
                 new ServerCertificatePlugin(logger),
                 new SelfSignedUserCertificatePlugin(logger, authenticationData),
-                new KnownVulnerabilityPlugin(logger, httpClientFactory),
+                new KnownVulnerabilityPlugin(logger, knownVulnerabilityApiRequestUtil),
             ];
         }
     }
