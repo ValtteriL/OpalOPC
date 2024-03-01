@@ -29,7 +29,7 @@
 
     - name: Deploy
       ansible.builtin.command:
-        cmd: "npx wrangler pages deploy build --branch=main" # put to production (apex domain)
+        cmd: "npx wrangler pages deploy build --branch=main --project-name opalopc" # put to production (apex domain)
         chdir: "{{ docusaurus_root | mandatory }}"
       register: deploy_result
 
