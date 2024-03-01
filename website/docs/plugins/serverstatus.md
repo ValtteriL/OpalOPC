@@ -1,7 +1,7 @@
 ---
 id: 10013
 title: ServerStatus
-description: Target Server status.
+description: Server status.
 keywords: [plugin, reconnaissance]
 slug: /plugin-10013
 tags: [plugin, reconnaissance]

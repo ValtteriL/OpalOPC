@@ -1,4 +1,5 @@
 using Controller;
+using Logger;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Model;
@@ -24,8 +25,10 @@ class OpalOPC
 
             options.commandLine = Environment.CommandLine;
 
+            CLILoggerProvider loggerProvider = new(options.logLevel);
+
             // configure application
-            IHost _host = AppConfigurer.ConfigureApplication(options);
+            IHost _host = AppConfigurer.ConfigureApplication(options, loggerProvider);
             IWorker worker = _host.Services.GetRequiredService<IWorker>();
 
             if (options.shouldDiscoverAndExit)

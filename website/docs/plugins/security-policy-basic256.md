@@ -1,7 +1,7 @@
 ---
 id: 10008
 title: Security policy Basic256
-description: Information on the issue detected by Security policy Basic256 security testing plugin.
+description: Server traffic encryption in risk to be broken.
 keywords: [plugin, security policy basic256, transport-security]
 slug: /plugin-10008
 tags: [plugin, transport-security]

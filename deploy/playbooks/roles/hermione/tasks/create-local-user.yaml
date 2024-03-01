@@ -1,0 +1,19 @@
+---
+  - name: Add the user '{{ username }}'
+    ansible.builtin.user:
+      name: "{{ username }}"
+      groups: sudo
+
+  - name: Make users passwordless for sudo in group sudo
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^%sudo'
+      line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+      validate: 'visudo -cf %s'
+
+  - name: Add SSH keys to the user from github
+    ansible.posix.authorized_key:
+      user: "{{ username }}"
+      state: present
+      key: "{{ lookup('url', 'https://github.com/ValtteriL.keys', split_lines=False) }}"

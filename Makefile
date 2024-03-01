@@ -58,3 +58,24 @@ deploy-website:
 .PHONY: list-website-deployments
 list-website-deployments:
 	@npx wrangler pages deployment list --project-name opalopc
+
+.PHONY: deploy-api
+deploy-api:
+	@ansible-playbook \
+		--vault-password-file "$(VAULT_PASSWORD_FILE)" \
+		--inventory deploy/inventory.yaml \
+		deploy/playbooks/deploy-api.yaml
+
+.PHONY: setup-scanme
+setup-scanme:
+	@ansible-playbook \
+		deploy/playbooks/setup-scanme.yaml \
+		--inventory deploy/inventory.yaml \
+		--vault-password-file "$(VAULT_PASSWORD_FILE)"
+
+.PHONY: edit-vault
+edit-vault:
+	@ansible-vault \
+		edit \
+		./deploy/playbooks/vault.yaml \
+		--vault-password-file "$(VAULT_PASSWORD_FILE)"

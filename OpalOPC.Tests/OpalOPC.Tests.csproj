@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KnownVulnerabilityAPI\KnownVulnerabilityAPI.csproj" />
     <ProjectReference Include="..\OpalOPC.WPF\OpalOPC.WPF.csproj" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <ProjectReference Include="..\OpalOPC\OpalOPC.csproj" />
   </ItemGroup>

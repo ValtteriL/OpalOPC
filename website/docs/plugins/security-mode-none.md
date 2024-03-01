@@ -1,7 +1,7 @@
 ---
 id: 10006
 title: Security mode none
-description: Information on the issue detected by Security mode none security testing plugin.
+description: Server traffic can be intercepted and modified on the fly.
 keywords: [plugin, security mode none, transport-security]
 slug: /plugin-10006
 tags: [plugin, transport-security]

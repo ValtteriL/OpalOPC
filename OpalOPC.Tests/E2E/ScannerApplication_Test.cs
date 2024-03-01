@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Logger;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Model;
 using ScannerApplication;
 using Tests.Helpers;
-using Util;
-using View;
 using Xunit;
 
 namespace OpalOPC.Tests.E2E
@@ -31,7 +25,9 @@ namespace OpalOPC.Tests.E2E
             options.authenticationData = new AuthenticationData();
             options.commandLine = string.Empty;
 
-            IHost _host = AppConfigurer.ConfigureApplication(options);
+            CLILoggerProvider loggerProvider = new(options.logLevel);
+
+            IHost _host = AppConfigurer.ConfigureApplication(options, loggerProvider);
             IWorker worker = _host.Services.GetRequiredService<IWorker>();
 
             // act

@@ -19,11 +19,11 @@ namespace Controller
         {
             logger.LogDebug("{Message}", $"Starting Discovery with {discoveryUris.Count} URIs");
 
-            ICollection<Target> targets = new List<Target>();
+            ICollection<Target> targets = [];
             foreach (Uri uri in discoveryUris)
             {
                 taskUtil.CheckForCancellation();
-                targets = targets.Concat(DiscoverTargets(uri)).ToList();
+                targets = [.. targets, .. DiscoverTargets(uri)];
             }
 
             return targets;

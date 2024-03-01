@@ -19,5 +19,6 @@ namespace Plugin
         ServerCertificateInvalid = 10014,
         ServerCertificate = 10015,
         SelfSignedUserCertificate = 10016,
+        KnownVulnerability = 10017,
     }
 }

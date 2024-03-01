@@ -5,7 +5,7 @@ using Opc.Ua.Client;
 
 namespace Plugin
 {
-    public class AuditingDisabledPlugin : PostAuthPlugin
+    public class AuditingDisabledPlugin(ILogger logger) : PostAuthPlugin(logger, s_pluginId, s_category, s_issueTitle, s_severity)
     {
         // check if auditing disabled
         private static readonly PluginId s_pluginId = PluginId.AuditingDisabled;
@@ -14,8 +14,6 @@ namespace Plugin
 
         // Medium
         private static readonly double s_severity = 5.0;
-
-        public AuditingDisabledPlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity) { }
 
         public override Issue? Run(ISession session)
         {

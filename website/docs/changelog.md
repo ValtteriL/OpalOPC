@@ -4,6 +4,9 @@ description: The changelog shows OpalOPC release dates and what kind of changes 
 sidebar_position: 7
 ---
 
+## 3.1.0.0 - 2024-03-01
+* New plugin: [Known vulnerability](./plugins/known-vulnerability.md)
+
 ## 3.0.0.0 - 2024-02-11
 
 * Network Discovery

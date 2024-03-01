@@ -1,6 +1,8 @@
 ﻿using Controller;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Model;
 using Plugin;
@@ -11,7 +13,7 @@ namespace ScannerApplication
 {
     public class AppConfigurer
     {
-        public static IHost ConfigureApplication(Options options, ILoggerProvider? loggerProvider = null)
+        public static IHost ConfigureApplication(Options options, ILoggerProvider loggerProvider)
         {
             return Host.CreateDefaultBuilder()
                 .ConfigureServices((_, services) =>
@@ -27,21 +29,19 @@ namespace ScannerApplication
                     services.AddSingleton<IPluginRepository, PluginRepository>();
                     services.AddSingleton<INetworkDiscoveryController, NetworkDiscoveryController>();
                     services.AddSingleton<IMDNSUtil, MDNSUtil>();
+                    services.AddHttpClient<IKnownVulnerabilityApiRequestUtil, KnownVulnerabilityApiRequestUtil>("KnownVulnerabilityPlugin", client =>
+                    {
+                        client.BaseAddress = new Uri(options.apiUri);
+                        client.Timeout = TimeSpan.FromSeconds(300);
+                    });
+                    services.RemoveAll<IHttpMessageHandlerBuilderFilter>(); // disable httpclient default logging
+                    services.AddSingleton<IKnownVulnerabilityApiRequestUtil, KnownVulnerabilityApiRequestUtil>();
                 })
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();
                     logging.SetMinimumLevel(options.logLevel);
-
-                    if (loggerProvider != null)
-                        logging.AddProvider(loggerProvider);
-                    else
-                        logging.AddSimpleConsole(options =>
-                        {
-                            options.IncludeScopes = false;
-                            options.TimestampFormat = "HH:mm:ss ";
-                            options.SingleLine = true;
-                        });
+                    logging.AddProvider(loggerProvider);
                 })
                 .Build();
         }

@@ -16,7 +16,7 @@ namespace Util
     {
         private readonly ApplicationConfiguration _applicationConfiguration;
         private readonly CertificateIdentifier _certificateIdentifier;
-        private readonly ISelfSignedCertificateUtil _selfSignedCertificateUtil;
+        private readonly SelfSignedCertificateUtil _selfSignedCertificateUtil;
         private readonly string _sessionName = "OpalOPC Security Check";
 
         public ConnectionUtil()
@@ -63,7 +63,7 @@ namespace Util
 
             ConfiguredEndpoint endpoint = new(null, endpointDescription, endpointConfiguration);
 
-            ISessionFactory sessionFactory = new DefaultSessionFactory();
+            DefaultSessionFactory sessionFactory = new();
 
             ISession session = await sessionFactory.CreateAsync(
                 _applicationConfiguration,

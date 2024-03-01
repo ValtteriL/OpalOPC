@@ -1,0 +1,36 @@
+---
+- name: Disable SSH password auth
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
+  notify: Restart sshd
+
+- name: Update packages
+  ansible.builtin.apt:
+    upgrade: safe
+    update_cache: yes
+    autoremove: yes
+
+- name: Install basic tools
+  ansible.builtin.apt:
+    pkg:
+      - tmux
+      - vim
+      - ufw
+
+- name: UFW - Allow SSH
+  ufw:
+    rule: allow
+    port: 22
+    proto: tcp
+
+- name: UFW - Enable & default deny ingress
+  ufw:
+    comment: default deny ingress
+    default: deny
+    direction: incoming
+    state: enabled
+
+- name: Add own SSH keys
+  ansible.posix.authorized_key:
+    user: "{{ ansible_user }}"
+    state: present
+    key: "{{ lookup('url', 'https://github.com/ValtteriL.keys', split_lines=False) }}"

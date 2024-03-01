@@ -1,0 +1,32 @@
+---
+
+- name: Copy Simulation Server over
+  ansible.builtin.copy:
+    src: prosys-opc-ua-simulation-server-linux-x64-5.4.6-148.sh
+    dest: /home/valtteri/Downloads/
+
+- name: Copy Simulation Server User Manual over
+  ansible.builtin.copy:
+    src: Prosys_OPC_UA_Simulation_Server_UserManual.pdf
+    dest: /home/valtteri/Downloads/
+
+- name: Copy Simulation Server License over
+  ansible.builtin.copy:
+    src: Prosys_OPC_UA_Simulation_Server_License.pdf
+    dest: /home/valtteri/Downloads/
+
+- name: Allow OPC TCP
+  ufw:
+    comment: allow opc tcp in
+    direction: in
+    to_port: 53530
+    rule: allow
+    proto: tcp
+
+- name: Allow OPC HTTPS
+  ufw:
+    comment: allow ocp https in
+    direction: in
+    to_port: 53443
+    rule: allow
+    proto: tcp
