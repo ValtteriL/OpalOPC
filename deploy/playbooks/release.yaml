@@ -3,7 +3,7 @@
 # Build OpalOPC for all platforms with given version number, transfer builds to webserver
 
 - name: Publish
-  hosts: all
+  hosts: opalopc-snap-builder
 
   vars_prompt:
     - name: version
