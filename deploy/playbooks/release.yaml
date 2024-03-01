@@ -3,7 +3,7 @@
 # Build OpalOPC for all platforms with given version number, transfer builds to webserver
 
 - name: Publish
-  hosts: all
+  hosts: opalopc-snap-builder
 
   vars_prompt:
     - name: version
@@ -153,6 +153,10 @@
         - name: A helpful reminder to submit updated Windows package to Microsoft Store
           ansible.builtin.pause:
             prompt: "Make sure to submit Windows package to Microsoft Store (Version {{ version }} in {{ win_packages_path }})"
+
+        - name: A helpful reminder to promote the snap package from latest/edge to latest/stable
+          ansible.builtin.pause:
+            prompt: "Make sure to promote the build (version {{ version }}) to latest/stable in https://snapcraft.io/opalopc/releases"
 
     - name: Local finishing touches
       delegate_to: localhost
