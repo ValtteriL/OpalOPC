@@ -1,7 +1,7 @@
 ---
 id: 10015
 title: Server Certificate
-description: Target server certificate.
+description: Server certificate.
 keywords: [plugin, reconnaissance]
 slug: /plugin-10015
 tags: [plugin, reconnaissance]

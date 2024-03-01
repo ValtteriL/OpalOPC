@@ -1,7 +1,7 @@
 ---
 id: 10016
 title: Self signed user certificate
-description: Information on the issue detected by Self signed user certificate security testing plugin.
+description: The server can be accessed using unauthorized users.
 keywords: [plugin, self-signed user certificate, authentication]
 slug: /plugin-10016
 tags: [plugin, authentication]

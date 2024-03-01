@@ -1,7 +1,7 @@
 ---
 id: 10002
 title: Auditing disabled
-description: Information on the issue detected by Auditing disabled security testing plugin.
+description: The server is not tracking activities.
 keywords: [plugin, auditing disabled, accounting]
 slug: /plugin-10002
 tags: [plugin, accounting]

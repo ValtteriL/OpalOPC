@@ -1,7 +1,7 @@
 ---
 id: 10004
 title: RBAC not supported
-description: Information on the issue detected by RBAC not supported security testing plugin.
+description: All identities have same level of access on the server.
 keywords: [plugin, rbac not supported, authorization]
 slug: /plugin-10004
 tags: [plugin, authorization]

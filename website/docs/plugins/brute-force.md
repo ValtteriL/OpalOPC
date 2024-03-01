@@ -1,7 +1,7 @@
 ---
 id: 10012
 title: Brute Force
-description: Information on the issue detected by Brute Force security testing plugin.
+description: Brute Force attack was successful against the server.
 keywords: [plugin, brute force, authentication]
 slug: /plugin-10012
 tags: [plugin, authentication]

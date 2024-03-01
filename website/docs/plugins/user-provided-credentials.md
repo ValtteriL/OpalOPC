@@ -1,7 +1,7 @@
 ---
 id: 10011
 title: User-provided credentials
-description: Information on the issue detected by User-provided credentials security testing plugin.
+description: The server allows access using user-provided credentials.
 keywords: [plugin, user-provided credentials, authentication]
 slug: /plugin-10011
 tags: [plugin, authentication]
@@ -45,4 +45,3 @@ OpalOPC user provided user credentials for target server authentication. The ser
 N/A
 
 ## References
-

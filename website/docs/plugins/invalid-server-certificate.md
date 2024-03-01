@@ -1,7 +1,7 @@
 ---
 id: 10014
 title: Invalid Server Certificate
-description: Server certificate is invalid.
+description: The server certificate is invalid.
 keywords: [plugin, server certificate invalid, transport-security]
 slug: /plugin-10014
 tags: [plugin, transport-security]

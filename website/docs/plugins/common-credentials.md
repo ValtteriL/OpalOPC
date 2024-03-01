@@ -1,7 +1,7 @@
 ---
 id: 10003
 title: Common credentials
-description: Information on the issue detected by Common credentials security testing plugin.
+description: The server can be accessed using well-known credentials.
 keywords: [plugin, common credentials, authentication]
 slug: /plugin-10003
 tags: [plugin, authentication]
