@@ -9,6 +9,10 @@ namespace Tests.E2E
 
         private const string ApplicationPath = @"C:\Users\valtteri\source\repos\opc-ua-security-scanner\OpalOPC.WPF\bin\Debug\net8.0-windows\win-x64\opalopc.exe";
 
+        private readonly string _reportBaseName = "opalopc-report";
+        private string _htmlReport => _reportBaseName + ".html";
+        private string _sarifReport => _reportBaseName + ".sarif";
+
         private static Process RunCommand(string command)
         {
             Process process = new()
@@ -36,12 +40,9 @@ namespace Tests.E2E
         {
             // scan echo server, validate report
 
-            // arrange
-            string reportname = "opalopc-report-echo.html";
-
             // act
-            Process process = RunCommand($"{ApplicationPath} opc.tcp://echo:53530 -vv --output {reportname}");
-            ParsedReport parsedReport = new(File.ReadAllText(reportname));
+            Process process = RunCommand($"{ApplicationPath} opc.tcp://echo:53530 -vv --output {_reportBaseName}");
+            ParsedReport parsedReport = new(File.ReadAllText(_htmlReport));
 
             // assert
             Assert.True(process.ExitCode == 0);
@@ -51,7 +52,8 @@ namespace Tests.E2E
             ExpectedTargetResult.Echo.validateWithParsedReport(parsedReport);
 
             // cleanup
-            File.Delete(reportname);
+            File.Delete(_htmlReport);
+            File.Delete(_sarifReport);
         }
 
         [Fact]
@@ -60,12 +62,9 @@ namespace Tests.E2E
         {
             // scan opc.tcp://thisdoesnotexistsfafasfada:53530
 
-            // arrange
-            string reportname = "opalopc-report-invalidtarget.html";
-
             // act
-            Process process = RunCommand($"{ApplicationPath} opc.tcp://thisdoesnotexistsfafasfada:53530 -vv --output {reportname}");
-            ParsedReport parsedReport = new(File.ReadAllText(reportname));
+            Process process = RunCommand($"{ApplicationPath} opc.tcp://thisdoesnotexistsfafasfada:53530 -vv --output {_reportBaseName}");
+            ParsedReport parsedReport = new(File.ReadAllText(_htmlReport));
 
             // assert
             Assert.True(process.ExitCode == 0);
@@ -73,7 +72,8 @@ namespace Tests.E2E
             ExpectedTargetResult.Invalid.validateWithParsedReport(parsedReport);
 
             // cleanup
-            File.Delete(reportname);
+            File.Delete(_htmlReport);
+            File.Delete(_sarifReport);
         }
 
         [Fact]
@@ -82,12 +82,9 @@ namespace Tests.E2E
         {
             // scan echo, golf, india, scanme.opalopc.com
 
-            // arrange
-            string reportname = "opalopc-report-multipletargets.html";
-
             // act
-            Process process = RunCommand($"{ApplicationPath} opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 opc.tcp://scanme.opalopc.com:53530 -vv --output {reportname}");
-            ParsedReport parsedReport = new(File.ReadAllText(reportname));
+            Process process = RunCommand($"{ApplicationPath} opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 opc.tcp://scanme.opalopc.com:53530 -vv --output {_reportBaseName}");
+            ParsedReport parsedReport = new(File.ReadAllText(_htmlReport));
 
             // assert
             Assert.True(process.ExitCode == 0);
@@ -101,7 +98,8 @@ namespace Tests.E2E
             ExpectedTargetResult.Scanme.validateWithParsedReport(parsedReport);
 
             // cleanup
-            File.Delete(reportname);
+            File.Delete(_htmlReport);
+            File.Delete(_sarifReport);
         }
 
         [Fact]

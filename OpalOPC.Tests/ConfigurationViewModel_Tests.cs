@@ -1,7 +1,7 @@
 #if BUILT_FOR_WINDOWS
 using Moq;
-using OpalOPC.WPF.GuiUtil;
-using OpalOPC.WPF.ViewModels;
+using OpalOPCWPF.GuiUtil;
+using OpalOPCWPF.ViewModels;
 using Opc.Ua;
 using Opc.Ua.Security.Certificates;
 using Util;
@@ -20,7 +20,7 @@ public class ConfigurationViewModel_Tests
                     .Create("CN=Test")
                     .AddExtension(
                         new X509SubjectAltNameExtension("urn:opalopc.com:host",
-                        new string[] { "host", "host.opalopc.com", "192.168.1.100" }))
+                        ["host", "host.opalopc.com", "192.168.1.100"]))
                     .CreateForRSA());
     }
 
@@ -203,7 +203,7 @@ public class ConfigurationViewModel_Tests
         string path = "path";
         string[] lines = ["username:password", "username2:password2"];
         _fileUtilMock.Setup(_fileUtilMock => _fileUtilMock.ReadFileToList(It.IsAny<string>()))
-            .Returns(lines.ToList());
+            .Returns([.. lines]);
         ConfigurationViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object);
 
         // Act
@@ -280,7 +280,7 @@ public class ConfigurationViewModel_Tests
         string path = "path";
         string[] lines = ["username:password", "username2:password2"];
         _fileUtilMock.Setup(_fileUtilMock => _fileUtilMock.ReadFileToList(It.IsAny<string>()))
-            .Returns(lines.ToList());
+            .Returns([.. lines]);
         ConfigurationViewModel model = new(_fileUtilMock.Object, _messageBoxUtilMock.Object);
 
         // Act

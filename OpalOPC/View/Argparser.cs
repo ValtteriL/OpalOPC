@@ -10,26 +10,37 @@ namespace View
     {
         private readonly string[] _args;
         private readonly Mono.Options.OptionSet _optionSet;
-        private Options _options = new();
         private readonly string _programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
         private readonly IFileUtil _fileUtil;
+
+        private bool _shouldDiscoverAndExit = false;
+        private bool _shouldShowVersion = false;
+        private bool _shouldShowHelp = false;
+        private LogLevel _logLevel = LogLevel.Information;
+        private string? _htmlOutputReportName;
+        private string? _sarifOutputReportName;
+        private Stream? _htmlOutputStream;
+        private Stream? _sarifOutputStream;
+        private bool _shouldExit = false;
+        private int _exitCode = (int)ExitCodes.Success;
+        private readonly AuthenticationData _authenticationData = new();
+        private readonly List<Uri> _targets = [];
 
         public Argparser(string[] args)
         {
             _optionSet = new Mono.Options.OptionSet {
-                { "i|input-file=", "input targets from list of discovery uris", il => _options = readTargetFile(il) },
-                { "o|output=", "output XHTML report filename", ox => _options = setOutputFile(ox) },
-                { "v", "increase verbosity (can be specified up to 2 times)", v => _options.logLevel = (v == null) ? _options.logLevel : _options.logLevel == LogLevel.Information ? LogLevel.Debug : LogLevel.Trace },
-                { "h|help", "show this message and exit", h => _options.shouldShowHelp = h != null },
-                { "s", "silence output (useful with -o -)", s => _options.logLevel = (s == null) ? _options.logLevel : LogLevel.None },
-                { "l|login-credential=", "username:password for user authentication", l => _options = addLoginCredential(l) },
-                { "b|brute-force-credential=", "username:password for brute force attack", b => _options = addBruteForceCredential(b) },
-                { "L|login-credential-file=", "import list of username:password for authentication from file", l => _options = addLoginCredentialsFromFile(l) },
-                { "B|brute-force-credential-file=", "import list of username:password for brute force attack from file", b => _options = addBruteForceCredentialsFromFile(b) },
-                { "c|user-certificate-and-privatekey=", "path-to-certificate:path-to-privatekey for user authentication", c => _options = addUserCertificatePrivatekey(c) },
-                { "a|application-certificate-and-privatekey=", "path-to-certificate:path-to-privatekey for application authentication", a => _options = addAppCertificatePrivatekey(a) },
-                { "d|discovery", "discover targets on network through mDNS and exit", d => _options.shouldDiscoverAndExit = d != null },
-                { "version", "show version and exit", ver => _options.shouldShowVersion = ver != null },
+                { "i|input-file=", "input targets from list of discovery uris", il => readTargetFile(il) },
+                { "o|output=", "base name for output reports", ox => setOutputFile(ox) },
+                { "v", "increase verbosity (can be specified up to 2 times)", v => _logLevel = (v == null) ? _logLevel : _logLevel == LogLevel.Information ? LogLevel.Debug : LogLevel.Trace },
+                { "h|help", "show this message and exit", h => _shouldShowHelp = h != null },
+                { "l|login-credential=", "username:password for user authentication", l => addLoginCredential(l) },
+                { "b|brute-force-credential=", "username:password for brute force attack", b => addBruteForceCredential(b) },
+                { "L|login-credential-file=", "import list of username:password for authentication from file", l => addLoginCredentialsFromFile(l) },
+                { "B|brute-force-credential-file=", "import list of username:password for brute force attack from file", b => addBruteForceCredentialsFromFile(b) },
+                { "c|user-certificate-and-privatekey=", "path-to-certificate:path-to-privatekey for user authentication", c => addUserCertificatePrivatekey(c) },
+                { "a|application-certificate-and-privatekey=", "path-to-certificate:path-to-privatekey for application authentication", a => addAppCertificatePrivatekey(a) },
+                { "d|discovery", "discover targets on network through mDNS and exit", d => _shouldDiscoverAndExit = d != null },
+                { "version", "show version and exit", ver => _shouldShowVersion = ver != null },
             };
 
             _args = args;
@@ -87,84 +98,74 @@ namespace View
             return cert;
         }
 
-        private Options addAppCertificatePrivatekey(string paths)
+        private void addAppCertificatePrivatekey(string paths)
         {
             (string certpath, string privkeypath) = splitStringToTwoByColon(paths);
-            _options.authenticationData.AddApplicationCertificate(readCertificate(certpath, privkeypath));
-            return _options;
+            _authenticationData.AddApplicationCertificate(readCertificate(certpath, privkeypath));
         }
 
-        private Options addUserCertificatePrivatekey(string paths)
+        private void addUserCertificatePrivatekey(string paths)
         {
             (string certpath, string privkeypath) = splitStringToTwoByColon(paths);
-            _options.authenticationData.AddUserCertificate(readCertificate(certpath, privkeypath));
-            return _options;
+            _authenticationData.AddUserCertificate(readCertificate(certpath, privkeypath));
         }
 
-        private Options addBruteForceCredentialsFromFile(string path)
+        private void addBruteForceCredentialsFromFile(string path)
         {
             foreach (string line in readFileToList(path))
             {
                 addBruteForceCredential(line);
             }
-
-            return _options;
         }
 
-        private Options addLoginCredentialsFromFile(string path)
+        private void addLoginCredentialsFromFile(string path)
         {
             foreach (string line in readFileToList(path))
             {
                 addLoginCredential(line);
             }
-
-            return _options;
         }
 
-        private Options addLoginCredential(string credential)
+        private void addLoginCredential(string credential)
         {
             (string username, string password) = splitStringToTwoByColon(credential);
-            _options.authenticationData.AddLoginCredential(username, password);
-            return _options;
+            _authenticationData.AddLoginCredential(username, password);
         }
 
-        private Options addBruteForceCredential(string credential)
+        private void addBruteForceCredential(string credential)
         {
             (string username, string password) = splitStringToTwoByColon(credential);
-            _options.authenticationData.AddBruteForceCredential(username, password);
-            return _options;
+            _authenticationData.AddBruteForceCredential(username, password);
         }
 
-        private Options setOutputFile(string path)
+        private void setOutputFile(string path)
         {
-            if (path == "-")
-            {
-                // stdout
-                _options.OutputStream = Console.OpenStandardOutput();
-            }
-            else
-            {
-                // the path
-                _options.OutputReportName = path;
+            // assume path does not contain extension - add .html and .sarif
 
-                try
-                {
-                    _options.OutputStream = File.Create(path);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    throw new OptionException($"Not authorized to open \"{path}\" for writing", "");
-                }
-                catch
-                {
-                    throw new OptionException($"Unable to open \"{path}\" for writing", "");
-                }
-            }
+            _htmlOutputReportName = $"{path}.html";
+            _sarifOutputReportName = $"{path}.sarif";
 
-            return _options;
+            _htmlOutputStream = openFile(_htmlOutputReportName);
+            _sarifOutputStream = openFile(_sarifOutputReportName);
         }
 
-        private Options readTargetFile(string path)
+        private static FileStream openFile(string path)
+        {
+            try
+            {
+                return File.Create(path);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                throw new OptionException($"Not authorized to open \"{path}\" for writing", "");
+            }
+            catch
+            {
+                throw new OptionException($"Unable to open \"{path}\" for writing", "");
+            }
+        }
+
+        private void readTargetFile(string path)
         {
             List<string> lines = [];
 
@@ -193,8 +194,6 @@ namespace View
             {
                 appendTarget(line);
             }
-
-            return _options;
         }
 
         private void appendTarget(string target)
@@ -210,7 +209,7 @@ namespace View
                 throw new OptionException($"\"{target}\" is invalid target", "");
             }
 
-            _options.targets.Add(uri);
+            _targets.Add(uri);
         }
 
         private void printHelp()
@@ -226,10 +225,16 @@ namespace View
 
         private void deleteReportIfCreatedAlready()
         {
-            if (_options.OutputReportName != null)
+            if (_htmlOutputStream != null)
             {
-                _options.OutputStream!.Dispose();
-                File.Delete(_options.OutputReportName);
+                _htmlOutputStream!.Dispose();
+                File.Delete(_htmlOutputReportName!);
+            }
+
+            if (_sarifOutputStream != null)
+            {
+                _sarifOutputStream.Dispose();
+                File.Delete(_sarifOutputReportName!);
             }
         }
 
@@ -240,10 +245,9 @@ namespace View
                 // parse the command line
                 List<string> extra = _optionSet.Parse(_args);
                 extra.ForEach(e => appendTarget(e));
-                if (_options.OutputStream == null)
+                if (_htmlOutputReportName == null || _sarifOutputReportName == null)
                 {
-                    _options.OutputReportName = ArgUtil.DefaultReportName();
-                    setOutputFile(_options.OutputReportName);
+                    setOutputFile(ArgUtil.DefaultReportName());
                 }
             }
             catch (OptionException e)
@@ -252,29 +256,45 @@ namespace View
                 Console.Write($"{_programName}: ");
                 Console.WriteLine(e.Message);
                 Console.WriteLine($"Try `{_programName} --help' for more information.");
-                _options.exitCode = ExitCodes.Error;
+                _shouldExit = true;
+                _exitCode = ExitCodes.Error;
             }
 
             // no arguments at all - show help
             if (_args.Length == 0)
             {
-                _options.shouldShowHelp = true;
+                _shouldShowHelp = true;
             }
 
-            if (_options.shouldShowHelp)
+            if (_shouldShowHelp)
             {
                 deleteReportIfCreatedAlready();
                 printHelp();
-                _options.exitCode = ExitCodes.Success;
+                _shouldExit = true;
             }
-            else if (_options.shouldShowVersion)
+            else if (_shouldShowVersion)
             {
                 deleteReportIfCreatedAlready();
                 printVersion();
-                _options.exitCode = ExitCodes.Success;
+                _shouldExit = true;
             }
 
-            return _options;
+            return new Options()
+            {
+                targets = _targets,
+                HtmlOutputStream = _htmlOutputStream!,
+                SarifOutputStream = _sarifOutputStream!,
+                HtmlOutputReportName = _htmlOutputReportName!,
+                SarifOutputReportName = _sarifOutputReportName!,
+                logLevel = _logLevel,
+                shouldShowHelp = _shouldShowHelp,
+                shouldExit = _shouldExit,
+                exitCode = _exitCode,
+                shouldShowVersion = _shouldShowVersion,
+                shouldDiscoverAndExit = _shouldDiscoverAndExit,
+                authenticationData = _authenticationData,
+                commandLine = Environment.CommandLine,
+            };
         }
     }
 }

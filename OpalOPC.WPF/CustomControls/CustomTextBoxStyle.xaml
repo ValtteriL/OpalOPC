@@ -1,7 +1,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:customControls="clr-namespace:OpalOPC.WPF.CustomControls"
+    xmlns:customControls="clr-namespace:OpalOPCWPF.CustomControls"
     xmlns:sys="clr-namespace:System;assembly=System.Runtime">
 
     <Style TargetType="{x:Type customControls:CustomTextBox}">

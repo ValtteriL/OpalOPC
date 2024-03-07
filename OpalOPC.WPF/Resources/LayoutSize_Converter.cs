@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace OpalOPC.WPF.Resources;
+namespace OpalOPCWPF.Resources;
 
 /// <summary>
 /// Used to break and change layouts on runtime based on different breakpoints.

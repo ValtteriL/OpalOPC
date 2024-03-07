@@ -15,7 +15,7 @@ namespace Tests.E2E
         private const string DebugVerbosityRadioButton = "DebugVerbosityRadioButton";
         private const string TraceVerbosityRadioButton = "TraceVerbosityRadioButton";
         private const string StartButton = "StartButton";
-        private const string StopButton = "StopButton";
+        //private const string StopButton = "StopButton";
         private const string NavbarAbout = "NavbarAbout";
         private const string NavbarConfiguration = "NavbarConfiguration";
         private const string NavbarScan = "NavbarScan";
@@ -45,6 +45,10 @@ namespace Tests.E2E
         private const string AboutWindow = "AboutWindow";
 
         private readonly string _paste = Keys.Control + "v";
+
+        private readonly string _outputLocationBaseName = "opalopc-report-guitest";
+        private string _htmlReportLocation => $"{_outputLocationBaseName}.html";
+        private string _sarifReportLocation => $"{_outputLocationBaseName}.sarif";
 
         private void AddTarget(string target)
         {
@@ -138,11 +142,10 @@ namespace Tests.E2E
             AppSession.FindElementByAccessibilityId(TraceVerbosityRadioButton).Click();
 
             // add report location
-            string outputLocation = "opalopc-report-guitest.html";
-            SetClipboardText(outputLocation);
-            WindowsElement outputLocationTextBox = AppSession.FindElementByAccessibilityId(OutputLocationTextBox);
-            outputLocationTextBox.Clear();
-            outputLocationTextBox.SendKeys(_paste);
+            SetClipboardText(_outputLocationBaseName);
+            WindowsElement outputLocationBaseNameTextBox = AppSession.FindElementByAccessibilityId(OutputLocationTextBox);
+            outputLocationBaseNameTextBox.Clear();
+            outputLocationBaseNameTextBox.SendKeys(_paste);
 
             // open & close about
             AppSession.FindElementByAccessibilityId(NavbarAbout).Click();
@@ -188,12 +191,14 @@ namespace Tests.E2E
             Thread.Sleep(5 * 1000);
 
             // validate report
-            Assert.True(File.Exists(outputLocation));
-            ParsedReport parsedReport = new(File.ReadAllText(outputLocation));
+            Assert.True(File.Exists(_htmlReportLocation));
+            Assert.True(File.Exists(_sarifReportLocation));
+            ParsedReport parsedReport = new(File.ReadAllText(_htmlReportLocation));
             ExpectedTargetResult.Echo.validateWithParsedReport(parsedReport);
 
             // cleanup
-            File.Delete(outputLocation);
+            File.Delete(_htmlReportLocation);
+            File.Delete(_sarifReportLocation);
 
             // run network discovery
             AppSession.FindElementByAccessibilityId(NetworkDiscoveryButton).Click();

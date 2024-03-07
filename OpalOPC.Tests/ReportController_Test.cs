@@ -13,7 +13,7 @@ public class ReportControllerTest
     private readonly Mock<ILogger<IReportController>> _loggerMock;
     private readonly EndpointDescription _endpointDescription = new()
     {
-        UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
+        UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.UserName)]),
         SecurityMode = MessageSecurityMode.None,
         EndpointUrl = "opc.tcp://localhost:4840",
     };
@@ -25,13 +25,14 @@ public class ReportControllerTest
         ProductUri = "test",
     };
 
-    private readonly Mock<IReporter> _reporterMock;
+    private readonly Mock<IHtmlReporter> _htmlReporterMock = new();
+    private readonly Mock<ISarifReporter> _sarifReporterMock = new();
 
     public ReportControllerTest()
     {
         _loggerMock = new Mock<ILogger<IReportController>>();
-        _reporterMock = new Mock<IReporter>();
-        _reporterMock.Setup(r => r.PrintXHTMLReport(It.IsAny<Report>(), _outputStream)).Verifiable();
+        _htmlReporterMock.Setup(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream)).Verifiable();
+        _sarifReporterMock.Setup(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream)).Verifiable();
     }
 
     // add test to check if targets are sorted by server issue severity
@@ -41,12 +42,13 @@ public class ReportControllerTest
         // Arrange
 
         // Act
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object);
-        Report report = reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, "", "");
-        reportController.WriteReport(report, _outputStream);
+        ReportController reportController = new(_loggerMock.Object, _htmlReporterMock.Object, _sarifReporterMock.Object);
+        Report report = reportController.GenerateReport([], DateTime.Now, DateTime.Now, "", "");
+        reportController.WriteReports(report, _outputStream, _outputStream);
 
         // Assert
-        _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>(), _outputStream), Times.Once);
+        _htmlReporterMock.Verify(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream), Times.Once);
+        _sarifReporterMock.Verify(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream), Times.Once);
         Assert.NotNull(report);
         Assert.Empty(report.Targets);
     }
@@ -57,12 +59,13 @@ public class ReportControllerTest
         // Arrange
 
         // Act
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object);
-        Report report = reportController.GenerateReport(new List<Target> { new(_applicationDescription) }, DateTime.Now, DateTime.Now, "", "");
-        reportController.WriteReport(report, _outputStream);
+        ReportController reportController = new(_loggerMock.Object, _htmlReporterMock.Object, _sarifReporterMock.Object);
+        Report report = reportController.GenerateReport([new(_applicationDescription)], DateTime.Now, DateTime.Now, "", "");
+        reportController.WriteReports(report, _outputStream, _outputStream);
 
         // Assert
-        _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>(), _outputStream), Times.Once);
+        _htmlReporterMock.Verify(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream), Times.Once);
+        _sarifReporterMock.Verify(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream), Times.Once);
         Assert.NotNull(report);
         Assert.NotEmpty(report.Targets);
         Assert.True(report.Targets.Count == 1);
@@ -87,12 +90,13 @@ public class ReportControllerTest
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object);
-        Report report = reportController.GenerateReport(new List<Target> { target1, target2, target3 }, DateTime.Now, DateTime.Now, "", "");
-        reportController.WriteReport(report, _outputStream);
+        ReportController reportController = new(_loggerMock.Object, _htmlReporterMock.Object, _sarifReporterMock.Object);
+        Report report = reportController.GenerateReport([target1, target2, target3], DateTime.Now, DateTime.Now, "", "");
+        reportController.WriteReports(report, _outputStream, _outputStream);
 
         // Assert
-        _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>(), _outputStream), Times.Once);
+        _htmlReporterMock.Verify(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream), Times.Once);
+        _sarifReporterMock.Verify(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream), Times.Once);
         Assert.NotNull(report);
         Assert.NotEmpty(report.Targets);
         Assert.True(report.Targets.Count == 3);
@@ -117,12 +121,13 @@ public class ReportControllerTest
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object);
-        Report report = reportController.GenerateReport(new List<Target> { target1, target2, target3 }, DateTime.Now, DateTime.Now, "", "");
-        reportController.WriteReport(report, _outputStream);
+        ReportController reportController = new(_loggerMock.Object, _htmlReporterMock.Object, _sarifReporterMock.Object);
+        Report report = reportController.GenerateReport([target1, target2, target3], DateTime.Now, DateTime.Now, "", "");
+        reportController.WriteReports(report, _outputStream, _outputStream);
 
         // Assert
-        _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>(), _outputStream), Times.Once);
+        _htmlReporterMock.Verify(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream), Times.Once);
+        _sarifReporterMock.Verify(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream), Times.Once);
         Assert.NotNull(report);
         Assert.NotEmpty(report.Targets);
         Assert.True(report.Targets.Count == 3);
@@ -147,12 +152,13 @@ public class ReportControllerTest
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object);
-        Report report = reportController.GenerateReport(new List<Target> { target1, target2, target3 }, DateTime.Now, DateTime.Now, "", "");
-        reportController.WriteReport(report, _outputStream);
+        ReportController reportController = new(_loggerMock.Object, _htmlReporterMock.Object, _sarifReporterMock.Object);
+        Report report = reportController.GenerateReport([target1, target2, target3], DateTime.Now, DateTime.Now, "", "");
+        reportController.WriteReports(report, _outputStream, _outputStream);
 
         // Assert
-        _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>(), _outputStream), Times.Once);
+        _htmlReporterMock.Verify(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream), Times.Once);
+        _sarifReporterMock.Verify(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream), Times.Once);
         Assert.NotNull(report);
         Assert.NotEmpty(report.Targets);
         Assert.True(report.Targets.Count == 3);
@@ -181,12 +187,13 @@ public class ReportControllerTest
         target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
 
         // Act
-        ReportController reportController = new(_loggerMock.Object, _reporterMock.Object);
-        Report report = reportController.GenerateReport(new List<Target> { target1, target2, target3 }, DateTime.Now, DateTime.Now, "", "");
-        reportController.WriteReport(report, _outputStream);
+        ReportController reportController = new(_loggerMock.Object, _htmlReporterMock.Object, _sarifReporterMock.Object);
+        Report report = reportController.GenerateReport([target1, target2, target3], DateTime.Now, DateTime.Now, "", "");
+        reportController.WriteReports(report, _outputStream, _outputStream);
 
         // Assert
-        _reporterMock.Verify(r => r.PrintXHTMLReport(It.IsAny<Report>(), _outputStream), Times.Once);
+        _htmlReporterMock.Verify(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream), Times.Once);
+        _sarifReporterMock.Verify(r => r.WriteReportToStream(It.IsAny<Report>(), _outputStream), Times.Once);
         Assert.NotNull(report);
         Assert.NotEmpty(report.Targets);
         Assert.True(report.Targets.Count == 3);

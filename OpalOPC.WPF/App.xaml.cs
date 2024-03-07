@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace OpalOPC.WPF
+namespace OpalOPCWPF
 {
     /// <summary>
     /// Interaction logic for App.xaml

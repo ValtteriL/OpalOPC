@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
-using OpalOPC.WPF.ViewModels;
+using OpalOPCWPF.ViewModels;
 using Util;
 
-namespace OpalOPC.WPF.Logger
+namespace OpalOPCWPF.Logger
 {
     public class GUILogger(LogLevel minimumLogLevel) : ILogger
     {

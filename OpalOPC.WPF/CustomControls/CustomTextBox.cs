@@ -2,7 +2,7 @@
 using System.Windows.Automation;
 using System.Windows.Controls;
 
-namespace OpalOPC.WPF.CustomControls;
+namespace OpalOPCWPF.CustomControls;
 
 public class CustomTextBox : TextBox
 {

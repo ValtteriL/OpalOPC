@@ -1,11 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
 
-namespace OpalOPC.WPF.ViewModels
+namespace OpalOPCWPF.ViewModels
 {
-    public class LogMessage : ValueChangedMessage<string>
+    public class LogMessage(string value) : ValueChangedMessage<string>(value)
     {
-        public LogMessage(string value) : base(value)
-        {
-        }
     }
 }

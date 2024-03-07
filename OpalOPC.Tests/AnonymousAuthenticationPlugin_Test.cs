@@ -29,7 +29,7 @@ public class AnonymousAuthenticationPluginTest
 
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Certificate) })
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.Certificate)])
         };
         Endpoint endpoint = new(endpointDescription);
 
@@ -53,7 +53,7 @@ public class AnonymousAuthenticationPluginTest
         // arrange
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.Anonymous)]),
             SecurityPolicyUri = SecurityPolicies.None
         };
         Endpoint endpoint = new(endpointDescription);
@@ -81,7 +81,7 @@ public class AnonymousAuthenticationPluginTest
         // arrange
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.Anonymous)]),
             SecurityPolicyUri = SecurityPolicies.None
         };
         _endpointDescriptions.Add(endpointDescription);
@@ -105,7 +105,7 @@ public class AnonymousAuthenticationPluginTest
         // arrange
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.Anonymous)]),
             SecurityPolicyUri = SecurityPolicies.Basic128Rsa15
         };
         _endpointDescriptions.Add(endpointDescription);

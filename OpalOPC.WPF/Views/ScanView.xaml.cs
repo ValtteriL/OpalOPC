@@ -1,11 +1,11 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
-using OpalOPC.WPF.GuiUtil;
-using OpalOPC.WPF.Models;
-using OpalOPC.WPF.ViewModels;
+using OpalOPCWPF.GuiUtil;
+using OpalOPCWPF.Models;
+using OpalOPCWPF.ViewModels;
 
-namespace OpalOPC.WPF.Views;
+namespace OpalOPCWPF.Views;
 
 /// <summary>
 /// Interaction logic for ScanView.xaml

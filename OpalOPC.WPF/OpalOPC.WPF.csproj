@@ -23,6 +23,7 @@
 	<Configurations>Debug;Release</Configurations>
 	<Platforms>AnyCPU;x64</Platforms>
 	<PlatformTarget>AnyCPU</PlatformTarget>
+	<RootNamespace>OpalOPCWPF</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

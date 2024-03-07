@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Moq;
-using OpalOPC.WPF.GuiUtil;
-using OpalOPC.WPF.Models;
+using OpalOPCWPF.GuiUtil;
+using OpalOPCWPF.Models;
 using Opc.Ua;
 using Plugin;
 using Util;

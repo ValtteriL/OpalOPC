@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace OpalOPC.WPF
+namespace OpalOPCWPF
 {
     /// <summary>
     /// Interaktionslogik für VersionWindow.xaml

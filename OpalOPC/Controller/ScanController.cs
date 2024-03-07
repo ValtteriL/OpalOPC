@@ -1,20 +1,17 @@
 using Microsoft.Extensions.Logging;
 using Model;
-using Org.BouncyCastle.Tsp;
-using Plugin;
 using Util;
-using View;
 
 namespace Controller
 {
     public interface IScanController
     {
-        void Scan(ICollection<Uri> discoveryUris, string commandLine, AuthenticationData authenticationData, Stream outputStream);
+        void Scan(ICollection<Uri> discoveryUris, string commandLine, AuthenticationData authenticationData, Stream htmlOutputStream, Stream sarifOutputStream);
     }
 
     public class ScanController(ILogger<ScanController> logger, IReportController reportController, IDiscoveryController discoveryController, ISecurityTestController securityTestController, ITaskUtil taskUtil) : IScanController
     {
-        public void Scan(ICollection<Uri> discoveryUris, string commandLine, AuthenticationData authenticationData, Stream outputStream)
+        public void Scan(ICollection<Uri> discoveryUris, string commandLine, AuthenticationData authenticationData, Stream htmlOutputStream, Stream sarifOutputStream)
         {
             TelemetryUtil.TrackEvent("Scan started", GetScanProperties(discoveryUris, authenticationData));
 
@@ -44,7 +41,7 @@ namespace Controller
 
 
             Report report = reportController.GenerateReport(testedTargets, start, end, commandLine, runStatus);
-            reportController.WriteReport(report, outputStream);
+            reportController.WriteReports(report, htmlOutputStream, sarifOutputStream);
 
             TelemetryUtil.TrackEvent("Scan finished", GetScanResultProperties(report, ts, discoveryUris, authenticationData));
         }

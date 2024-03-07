@@ -15,16 +15,15 @@ public class ReportController_WriteReportShould
 
         ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<ReportController_WriteReportShould>();
-        StreamWriter sw = new(new MemoryStream())
-        {
-            AutoFlush = true
-        };
-        Reporter reporter = new();
+
+        HtmlReporter htmlReporter = new();
+        SarifReporter sarifReporter = new();
+
         string runStatus = "hello";
         string commandLine = "commandline";
-        ReportController reportController = new(_loggerMock.Object, reporter);
-        Report report = reportController.GenerateReport(new List<Target>(), DateTime.Now, DateTime.Now, commandLine, runStatus);
-        reportController.WriteReport(report, new MemoryStream());
+        ReportController reportController = new(_loggerMock.Object, htmlReporter, sarifReporter);
+        Report report = reportController.GenerateReport([], DateTime.Now, DateTime.Now, commandLine, runStatus);
+        reportController.WriteReports(report, new MemoryStream(), new MemoryStream());
 
         Assert.True(report.RunStatus == runStatus);
         Assert.True(report.Command == commandLine);

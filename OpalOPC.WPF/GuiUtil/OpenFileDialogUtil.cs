@@ -1,6 +1,6 @@
-﻿using OpalOPC.WPF.Models;
+﻿using OpalOPCWPF.Models;
 
-namespace OpalOPC.WPF.GuiUtil
+namespace OpalOPCWPF.GuiUtil
 {
     public class OpenFileDialogUtil
     {

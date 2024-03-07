@@ -9,13 +9,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Model;
-using OpalOPC.WPF.GuiUtil;
-using OpalOPC.WPF.Logger;
+using OpalOPCWPF.GuiUtil;
+using OpalOPCWPF.Logger;
 using ScannerApplication;
 using Util;
 
 
-namespace OpalOPC.WPF.ViewModels;
+namespace OpalOPCWPF.ViewModels;
 
 public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
 {
@@ -51,7 +51,9 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
     [NotifyCanExecuteChangedFor(nameof(NetworkDiscoveryCommand))]
     private bool _scanOnGoing = false;
 
-    private string _outputfile = string.Empty;
+    private string _outputfileBasename = string.Empty;
+    private string _htmlOutputReportName => _outputfileBasename + ".html";
+    private string _sarifOutputReportName => _outputfileBasename + ".sarif";
     const string Protocol = "opc.tcp://";
 
     private readonly IFileUtil _fileUtil;
@@ -154,26 +156,29 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
         // if neither => try to create new file
         if (Directory.Exists(OutputFileLocation) || OutputFileLocation == string.Empty)
         {
-            _outputfile = Path.Combine(OutputFileLocation, Util.ArgUtil.DefaultReportName());
+            _outputfileBasename = Path.Combine(OutputFileLocation, Util.ArgUtil.DefaultReportName());
         }
         else
         {
-            _outputfile = OutputFileLocation;
+            _outputfileBasename = OutputFileLocation;
         }
 
         // scan
         try
         {
-            using Stream outputStream = _fileUtil.Create(_outputfile);
+            using Stream htmlOutputStream = _fileUtil.Create(_htmlOutputReportName);
+            using Stream sarifOutputStream = _fileUtil.Create(_sarifOutputReportName);
             _authenticationData = _scanViewModelUtil.GetAuthenticationData();
 
             Options options = new()
             {
                 authenticationData = _authenticationData,
-                OutputStream = outputStream,
                 targets = [.. Targets],
-                OutputReportName = _outputfile,
                 commandLine = generateGUICommandInReport(),
+                HtmlOutputReportName = _htmlOutputReportName,
+                SarifOutputReportName = _sarifOutputReportName,
+                HtmlOutputStream = htmlOutputStream,
+                SarifOutputStream = sarifOutputStream,
             };
 
             await Task.Run(() =>
@@ -263,7 +268,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
     [RelayCommand(CanExecute = nameof(canOpenReport))]
     private void OpenReport()
     {
-        Process.Start(new ProcessStartInfo(_outputfile) { UseShellExecute = true });
+        Process.Start(new ProcessStartInfo(_htmlOutputReportName) { UseShellExecute = true });
     }
 
     private bool canOpenReport()
@@ -318,22 +323,17 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
 
     private string generateGUICommandInReport()
     {
-        string verbosityInReport;
-        switch (Verbosity)
+        string verbosityInReport = Verbosity switch
         {
-            case LogLevel.Debug:
-                verbosityInReport = "Debug";
-                break;
-            case LogLevel.Trace:
-                verbosityInReport = "Trace";
-                break;
-            case LogLevel.Information:
-                verbosityInReport = "Normal";
-                break;
-            default:
-                throw new NotImplementedException();
-        }
-
+            LogLevel.Debug => "Debug",
+            LogLevel.Trace => "Trace",
+            LogLevel.Information => "Normal",
+            LogLevel.Warning => "Warning",
+            LogLevel.Error => "Error",
+            LogLevel.Critical => "Critical",
+            LogLevel.None => "None",
+            _ => "Unknown",
+        };
         string userCertificates = FormatList(_authenticationData.userCertificates);
         string loginCredentials = FormatList(_authenticationData.loginCredentials);
         string applicationCertificates = FormatList(_authenticationData.applicationCertificates);

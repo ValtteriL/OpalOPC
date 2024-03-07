@@ -2,9 +2,9 @@
 using Controller;
 using Microsoft.Extensions.Logging;
 using Model;
-using OpalOPC.WPF.Models;
+using OpalOPCWPF.Models;
 
-namespace OpalOPC.WPF.GuiUtil
+namespace OpalOPCWPF.GuiUtil
 {
     public interface IScanViewModelUtil
     {

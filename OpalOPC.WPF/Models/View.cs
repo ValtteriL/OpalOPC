@@ -1,4 +1,4 @@
-﻿namespace OpalOPC.WPF.Models;
+﻿namespace OpalOPCWPF.Models;
 
 public class View
 {

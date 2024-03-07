@@ -27,6 +27,8 @@ namespace Tests.E2E
                     process.Kill();
                 }
             }
+
+            GC.SuppressFinalize(this);
         }
 
         private static Process StartWinAppDriver()

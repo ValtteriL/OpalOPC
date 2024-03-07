@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace OpalOPC.WPF.CustomControls;
+namespace OpalOPCWPF.CustomControls;
 
 public class ToggleTimeButton : Button
 {
