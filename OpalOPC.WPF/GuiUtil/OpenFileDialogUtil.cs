@@ -2,16 +2,12 @@
 
 namespace OpalOPCWPF.GuiUtil
 {
-    public class OpenFileDialogUtil
+    public class OpenFileDialogUtil(IFilePathUtil filePathUtil)
     {
-        private readonly IFilePathUtil _filePathUtil;
+        private readonly IFilePathUtil _filePathUtil = filePathUtil;
 
         public OpenFileDialogUtil() : this(new FilePathUtil())
         {
-        }
-        public OpenFileDialogUtil(IFilePathUtil filePathUtil)
-        {
-            _filePathUtil = filePathUtil;
         }
 
         public string GetFilePathFromUser(IOpenFileDialog openFileDialog, string filter)

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Model;
 using OpalOPCWPF.GuiUtil;
+using OpalOPCWPF.Logger;
 using ScannerApplication;
 using Util;
 
