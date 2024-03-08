@@ -3,12 +3,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Model;
-using OpalOPC.WPF.GuiUtil;
-using OpalOPC.WPF.Models;
+using OpalOPCWPF.GuiUtil;
+using OpalOPCWPF.Models;
 using Opc.Ua;
 using Util;
 
-namespace OpalOPC.WPF.ViewModels;
+namespace OpalOPCWPF.ViewModels;
 
 public partial class ConfigurationViewModel : ObservableObject
 {

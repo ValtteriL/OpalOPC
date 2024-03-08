@@ -26,6 +26,7 @@
     <PackageReference Include="Mono.Options" Version="6.12.0.148" />
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.371.60" />
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client.ComplexTypes" Version="1.4.371.60" />
+    <PackageReference Include="Sarif.Sdk" Version="4.5.4" />
   </ItemGroup>
 
   <ItemGroup>

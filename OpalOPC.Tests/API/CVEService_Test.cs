@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
-namespace OpalOPC.Tests.API
+namespace Tests.API
 {
     public class CVEServiceTest
     {

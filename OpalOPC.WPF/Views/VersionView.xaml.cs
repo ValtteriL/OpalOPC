@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
-using OpalOPC.WPF.ViewModels;
+using OpalOPCWPF.ViewModels;
 
-namespace OpalOPC.WPF.Views
+namespace OpalOPCWPF.Views
 {
     /// <summary>
     /// Interaction logic for VersionView.xaml

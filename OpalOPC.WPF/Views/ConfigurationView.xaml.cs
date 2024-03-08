@@ -1,11 +1,11 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using OpalOPC.WPF.GuiUtil;
-using OpalOPC.WPF.Models;
-using OpalOPC.WPF.ViewModels;
+using OpalOPCWPF.GuiUtil;
+using OpalOPCWPF.Models;
+using OpalOPCWPF.ViewModels;
 using Opc.Ua;
 
-namespace OpalOPC.WPF.Views
+namespace OpalOPCWPF.Views
 {
     /// <summary>
     /// Interaction logic for ConfigurationView.xaml

@@ -1,8 +1,8 @@
 ﻿<Application
-    x:Class="OpalOPC.WPF.App"
+    x:Class="OpalOPCWPF.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:OpalOPC.WPF"
+    xmlns:local="clr-namespace:OpalOPCWPF"
     StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>

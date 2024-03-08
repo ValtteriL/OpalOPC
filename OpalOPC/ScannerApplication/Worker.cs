@@ -12,12 +12,10 @@ namespace ScannerApplication
     {
         public void Run(Options options)
         {
-            scanController.Scan(options.targets, options.commandLine, options.authenticationData, options.OutputStream!);
+            scanController.Scan(options.targets, options.commandLine, options.authenticationData, options.HtmlOutputStream!, options.SarifOutputStream!);
 
-            if (options.OutputReportName != null)
-            {
-                logger.LogInformation("{Message}", $"Report saved to {options.OutputReportName} (Use browser to view it)");
-            }
+            logger.LogInformation("{Message}", $"HTML report saved to {options.HtmlOutputReportName} (Use browser to view it)");
+            logger.LogInformation("{Message}", $"SARIF report saved to {options.SarifOutputReportName} (Use SARIF viewer to view it)");
         }
     }
 }

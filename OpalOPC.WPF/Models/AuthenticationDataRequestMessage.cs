@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
 using Model;
 
-namespace OpalOPC.WPF.Models;
+namespace OpalOPCWPF.Models;
 
 public class AuthenticationDataRequestMessage : RequestMessage<AuthenticationData>
 {

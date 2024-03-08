@@ -59,12 +59,12 @@ public class BruteForcePluginTest
         // arrange
         _endpointDescriptions.Add(new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.UserName)]),
             SecurityPolicyUri = SecurityPolicies.None,
         });
         _endpointDescriptions.Add(new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.UserName)]),
             SecurityPolicyUri = SecurityPolicies.Basic128Rsa15
         });
 
@@ -90,7 +90,7 @@ public class BruteForcePluginTest
         // arrange
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.UserName)]),
             SecurityPolicyUri = SecurityPolicies.None,
         };
         Endpoint endpoint = new(endpointDescription);
@@ -119,12 +119,12 @@ public class BruteForcePluginTest
         // arrange
         _endpointDescriptions.Add(new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.UserName)]),
             SecurityPolicyUri = SecurityPolicies.None,
         });
         _endpointDescriptions.Add(new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.UserName)]),
             SecurityPolicyUri = SecurityPolicies.Basic128Rsa15,
         });
 

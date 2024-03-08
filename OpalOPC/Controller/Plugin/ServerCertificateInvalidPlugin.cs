@@ -2,11 +2,10 @@
 using Microsoft.Extensions.Logging;
 using Model;
 using Opc.Ua;
-using Plugin;
 
 namespace Plugin
 {
-    public class ServerCertificateInvalidPlugin : PreAuthPlugin
+    public class ServerCertificateInvalidPlugin(ILogger logger) : PreAuthPlugin(logger, s_pluginId, s_category, s_issueTitle, s_severity)
     {
         private static readonly PluginId s_pluginId = PluginId.ServerCertificateInvalid;
         private static readonly string s_category = PluginCategories.TransportSecurity;
@@ -15,23 +14,19 @@ namespace Plugin
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:A/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N
         private static readonly double s_severity = 3.7;
 
-        public ServerCertificateInvalidPlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
-        {
-        }
-
         public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
             foreach (EndpointDescription endpointDescription in endpointDescriptions)
             {
                 // parse the certificate
                 X509Certificate2 certificate = new(endpointDescription.ServerCertificate);
-                if(!certificate.Verify())
+                if (!certificate.Verify())
                 {
-                    if(certificate.NotAfter < DateTime.Now)
+                    if (certificate.NotAfter < DateTime.Now)
                     {
                         return (CreateDetailedIssue("certificate has expired"), new List<ISecurityTestSession>());
                     }
-                    else if(certificate.NotBefore > DateTime.Now)
+                    else if (certificate.NotBefore > DateTime.Now)
                     {
                         return (CreateDetailedIssue("certificate is not yet valid"), new List<ISecurityTestSession>());
                     }
@@ -43,12 +38,12 @@ namespace Plugin
 
             }
 
-            return (null, new List<ISecurityTestSession>());
+            return (null, []);
         }
 
-        private Issue CreateDetailedIssue(string details)
+        private static Issue CreateDetailedIssue(string details)
         {
-            return new Issue((int)s_pluginId, $"{s_issueTitle}: {details}", s_severity);
+            return new Issue(s_pluginId, $"{s_issueTitle}: {details}", s_severity);
         }
     }
 }

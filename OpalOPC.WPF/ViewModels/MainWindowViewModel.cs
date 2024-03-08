@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace OpalOPC.WPF.ViewModels;
+namespace OpalOPCWPF.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {

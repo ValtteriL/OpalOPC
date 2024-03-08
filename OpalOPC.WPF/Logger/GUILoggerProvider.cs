@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace OpalOPC.WPF.Logger
+namespace OpalOPCWPF.Logger
 {
     internal class GUILoggerProvider(LogLevel logLevel) : ILoggerProvider
     {

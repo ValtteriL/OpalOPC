@@ -15,22 +15,29 @@ namespace Plugin
 
     public interface IPlugin
     {
-        public PluginId pluginId { get; }
+        public PluginId Id { get; }
 
         public Plugintype Type { get; }
+
+        public string Name { get; }
+
+        public double Severity { get; }
     }
 
     public abstract class Plugin(ILogger logger, PluginId pluginId, string category, string name, double severity)
     {
         public ILogger _logger = logger;
-        public PluginId pluginId { get; } = pluginId;
+        public PluginId Id { get; } = pluginId;
+        public string Name => _name;
+        public double Severity => _severity;
+
         protected readonly double _severity = severity;
         protected readonly string _category = category;
         protected readonly string _name = name;
 
         protected virtual Issue CreateIssue()
         {
-            return new Issue((int)pluginId, _name, _severity);
+            return new Issue(Id, _name, _severity);
         }
     }
 

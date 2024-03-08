@@ -6,7 +6,7 @@ using Opc.Ua.Client;
 
 namespace Plugin
 {
-    public class ServerStatusPlugin : PostAuthPlugin
+    public class ServerStatusPlugin(ILogger logger) : PostAuthPlugin(logger, s_pluginId, s_category, s_issueTitle, s_severity)
     {
         // check if auditing disabled
         private static readonly PluginId s_pluginId = PluginId.ServerStatus;
@@ -16,8 +16,6 @@ namespace Plugin
 
         // Info
         private static readonly double s_severity = 0;
-
-        public ServerStatusPlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity) { }
 
         public override Issue? Run(ISession session)
         {
@@ -42,7 +40,7 @@ namespace Plugin
             string issueDescription = $"ServerStatus: {JsonSerializer.Serialize(
                 new ServerStatusJson(serverStatusDataType),
                 _jsonSerializerOptions)}";
-            return new Issue((int)s_pluginId, issueDescription, _severity);
+            return new Issue(s_pluginId, issueDescription, _severity);
         }
 
         private class ServerStatusJson(ServerStatusDataType serverStatusDataType)

@@ -18,12 +18,10 @@ class OpalOPC
         {
             using Options options = new Argparser(args).parseArgs();
 
-            if (options.exitCode.HasValue)
+            if (options.shouldExit)
             {
                 Environment.Exit((int)options.exitCode);
             }
-
-            options.commandLine = Environment.CommandLine;
 
             CLILoggerProvider loggerProvider = new(options.logLevel);
 

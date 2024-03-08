@@ -1,7 +1,7 @@
 ﻿using KnownVulnerabilityAPI.Services;
 using Xunit;
 
-namespace OpalOPC.Tests.API
+namespace Tests.API
 {
     public class NameFormatterServiceTest()
     {
@@ -29,7 +29,7 @@ namespace OpalOPC.Tests.API
         [MemberData(nameof(TestData))]
         public void CorrectResult(string input, string[] expectedOutput)
         {
-            NameFormatterService nameFormatterService = new NameFormatterService();
+            NameFormatterService nameFormatterService = new();
             string[] result = nameFormatterService.FormatName(input);
             Assert.Equal(expectedOutput, result);
         }

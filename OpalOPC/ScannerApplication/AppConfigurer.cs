@@ -20,7 +20,8 @@ namespace ScannerApplication
                 {
                     services.AddSingleton<IWorker, Worker>();
                     services.AddSingleton<IScanController, ScanController>();
-                    services.AddSingleton<IReporter, Reporter>();
+                    services.AddSingleton<IHtmlReporter, HtmlReporter>();
+                    services.AddSingleton<ISarifReporter, SarifReporter>();
                     services.AddSingleton<IReportController, ReportController>();
                     services.AddSingleton<IDiscoveryController, DiscoveryController>();
                     services.AddSingleton<IDiscoveryUtil, DiscoveryUtil>();

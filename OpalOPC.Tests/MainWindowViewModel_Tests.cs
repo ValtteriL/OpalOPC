@@ -1,5 +1,5 @@
 #if BUILT_FOR_WINDOWS
-using OpalOPC.WPF.ViewModels;
+using OpalOPCWPF.ViewModels;
 using Xunit;
 
 namespace Tests;
@@ -14,10 +14,10 @@ public class MainWindowViewModel_Tests
 
         Assert.True(model.Title != null);
         Assert.True(model.ViewCollection != null);
-        Assert.Contains(model.ViewCollection, v => v.ViewType == OpalOPC.WPF.Models.ViewType.ScanView);
-        Assert.Contains(model.ViewCollection, v => v.ViewType == OpalOPC.WPF.Models.ViewType.ConfigurationView);
+        Assert.Contains(model.ViewCollection, v => v.ViewType == OpalOPCWPF.Models.ViewType.ScanView);
+        Assert.Contains(model.ViewCollection, v => v.ViewType == OpalOPCWPF.Models.ViewType.ConfigurationView);
         Assert.True(model.SelectedView != null);
-        Assert.True(model.SelectedView.ViewType == OpalOPC.WPF.Models.ViewType.ScanView);
+        Assert.True(model.SelectedView.ViewType == OpalOPCWPF.Models.ViewType.ScanView);
     }
 }
 #endif

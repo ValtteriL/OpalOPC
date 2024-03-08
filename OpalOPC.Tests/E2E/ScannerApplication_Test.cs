@@ -1,13 +1,13 @@
 ﻿using Logger;
+using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Model;
 using ScannerApplication;
 using Tests.Helpers;
 using Xunit;
 
-namespace OpalOPC.Tests.E2E
+namespace Tests.E2E
 {
     public class ScannerApplicationTest
     {
@@ -17,13 +17,16 @@ namespace OpalOPC.Tests.E2E
         public void ScanEchoTest()
         {
             // arrange
-            Stream outputStream = new MemoryStream();
-            using Options options = new();
+            Stream htmlOutputStream = new MemoryStream();
+            Stream sarifOutputStream = new MemoryStream();
+            using Options options = new()
+            {
+                HtmlOutputStream = htmlOutputStream,
+                SarifOutputStream = sarifOutputStream,
+                authenticationData = new AuthenticationData(),
+                commandLine = string.Empty,
+            };
             options.targets.Add(new Uri("opc.tcp://echo:53530"));
-            options.OutputStream = outputStream;
-            options.logLevel = LogLevel.Information;
-            options.authenticationData = new AuthenticationData();
-            options.commandLine = string.Empty;
 
             CLILoggerProvider loggerProvider = new(options.logLevel);
 
@@ -34,15 +37,18 @@ namespace OpalOPC.Tests.E2E
             worker.Run(options);
 
             //convert stream to string
-            outputStream.Position = 0;
-            string report = new StreamReader(outputStream).ReadToEnd();
+            htmlOutputStream.Position = 0;
+            string report = new StreamReader(htmlOutputStream).ReadToEnd();
+            sarifOutputStream.Position = 0;
 
             ParsedReport parsedReport = new(report);
+            SarifLog sarifLog = SarifLog.Load(sarifOutputStream);
 
             // assert
             Assert.True(parsedReport.NumberOfTargets == 1);
             Assert.True(parsedReport.IssueIds.Count == parsedReport.NumberOfIssues);
             ExpectedTargetResult.Echo.validateWithParsedReport(parsedReport);
+            ExpectedTargetResult.Echo.validateWithSarifReport(sarifLog);
 
         }
     }

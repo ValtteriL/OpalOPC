@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Util;
 
-namespace OpalOPC.WPF
+namespace OpalOPCWPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

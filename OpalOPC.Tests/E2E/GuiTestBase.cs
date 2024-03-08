@@ -45,6 +45,8 @@ namespace Tests.E2E
                 AppSession.Close();
                 AppSession.Quit();
             }
+
+            GC.SuppressFinalize(this);
         }
     }
 }

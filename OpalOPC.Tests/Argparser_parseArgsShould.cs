@@ -39,7 +39,8 @@ public class Argparser_parseArgsShould
         Options options = argparser.parseArgs();
 
         Assert.True(options.targets.Count == 0);
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
     }
 
     [Theory]
@@ -52,9 +53,12 @@ public class Argparser_parseArgsShould
 
         Options options = argparser.parseArgs();
 
-        Assert.True(options.OutputReportName == filename);
-        Assert.True(options.OutputStream!.CanWrite);
-        Assert.True(options.exitCode == null);
+        Assert.True(options.HtmlOutputReportName == filename + ".html");
+        Assert.True(options.SarifOutputReportName == filename + ".sarif");
+        Assert.True(options.HtmlOutputStream!.CanWrite);
+        Assert.True(options.SarifOutputStream!.CanWrite);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
     }
 
     [Theory]
@@ -79,7 +83,8 @@ public class Argparser_parseArgsShould
         Options options = argparser.parseArgs();
 
         Assert.True(options.logLevel == Microsoft.Extensions.Logging.LogLevel.Debug);
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
     }
 
     [Fact]
@@ -91,19 +96,8 @@ public class Argparser_parseArgsShould
         Options options = argparser.parseArgs();
 
         Assert.True(options.logLevel == Microsoft.Extensions.Logging.LogLevel.Trace);
-        Assert.True(options.exitCode == null);
-    }
-
-    [Fact]
-    public void ParseArgs_SilenceLogging()
-    {
-        string[] args = ["-s"];
-        Argparser argparser = new(args);
-
-        Options options = argparser.parseArgs();
-
-        Assert.True(options.logLevel == Microsoft.Extensions.Logging.LogLevel.None);
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
     }
 
     [Fact]
@@ -169,7 +163,8 @@ public class Argparser_parseArgsShould
 
         Assert.True(options.authenticationData.loginCredentials.Count == 1);
         Assert.Contains(_loginCredential, options.authenticationData.loginCredentials);
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
     }
 
     [Theory]
@@ -185,7 +180,8 @@ public class Argparser_parseArgsShould
         Assert.True(options.authenticationData.loginCredentials.Count == 2);
         Assert.Contains(_loginCredential, options.authenticationData.loginCredentials);
         Assert.Contains(_loginCredential2, options.authenticationData.loginCredentials);
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
     }
 
 
@@ -201,7 +197,8 @@ public class Argparser_parseArgsShould
 
         Assert.True(options.authenticationData.bruteForceCredentials.Count == 1);
         Assert.Contains(_loginCredential, options.authenticationData.bruteForceCredentials);
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
     }
 
     [Theory]
@@ -217,7 +214,8 @@ public class Argparser_parseArgsShould
         Assert.True(options.authenticationData.bruteForceCredentials.Count == 2);
         Assert.Contains(_loginCredential, options.authenticationData.bruteForceCredentials);
         Assert.Contains(_loginCredential2, options.authenticationData.bruteForceCredentials);
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
     }
 
     [Theory]
@@ -241,7 +239,8 @@ public class Argparser_parseArgsShould
             string[] splitLine = line.Split(':', 2);
             Assert.Contains((splitLine[0], splitLine[1]), options.authenticationData.loginCredentials);
         }
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
     }
 
     [Theory]
@@ -265,7 +264,8 @@ public class Argparser_parseArgsShould
             string[] splitLine = line.Split(':', 2);
             Assert.Contains((splitLine[0], splitLine[1]), options.authenticationData.loginCredentials);
         }
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
     }
 
     [Theory]
@@ -295,7 +295,7 @@ public class Argparser_parseArgsShould
         string[] args = [flag, _path];
         string invalidLine = "asddasdasda";
 
-        _fileUtilMock.Setup(x => x.ReadFileToList(_path)).Returns(new List<string> { invalidLine });
+        _fileUtilMock.Setup(x => x.ReadFileToList(_path)).Returns([invalidLine]);
         Argparser argparser = new(args, _fileUtilMock.Object);
 
         // act
@@ -326,7 +326,8 @@ public class Argparser_parseArgsShould
             string[] splitLine = line.Split(':', 2);
             Assert.Contains((splitLine[0], splitLine[1]), options.authenticationData.bruteForceCredentials);
         }
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
     }
 
     [Theory]
@@ -350,7 +351,8 @@ public class Argparser_parseArgsShould
             string[] splitLine = line.Split(':', 2);
             Assert.Contains((splitLine[0], splitLine[1]), options.authenticationData.bruteForceCredentials);
         }
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
     }
 
     [Theory]
@@ -380,7 +382,7 @@ public class Argparser_parseArgsShould
         string[] args = [flag, _path];
         string invalidLine = "asddasdasda";
 
-        _fileUtilMock.Setup(x => x.ReadFileToList(_path)).Returns(new List<string> { invalidLine });
+        _fileUtilMock.Setup(x => x.ReadFileToList(_path)).Returns([invalidLine]);
         Argparser argparser = new(args, _fileUtilMock.Object);
 
         // act
@@ -418,7 +420,8 @@ public class Argparser_parseArgsShould
         Options options = argparser.parseArgs();
 
         // assert
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
 
 
         List<CertificateIdentifier> certificateIdentifiers;
@@ -468,7 +471,8 @@ public class Argparser_parseArgsShould
         }
 
         // assert
-        Assert.True(options.exitCode == null);
+        Assert.True(options.exitCode == ExitCodes.Success);
+        Assert.True(options.shouldExit == false);
         Assert.True(certificateIdentifiers.Count == 2);
         foreach (CertificateIdentifier identifier in certificateIdentifiers)
         {

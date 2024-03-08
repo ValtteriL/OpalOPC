@@ -7,7 +7,7 @@ using Opc.Ua;
 
 namespace Plugin
 {
-    public class ServerCertificatePlugin : PreAuthPlugin
+    public class ServerCertificatePlugin(ILogger logger) : PreAuthPlugin(logger, s_pluginId, s_category, s_issueTitle, s_severity)
     {
         private static readonly PluginId s_pluginId = PluginId.ServerCertificate;
         private static readonly string s_category = PluginCategories.Reconnaissance;
@@ -15,10 +15,6 @@ namespace Plugin
         private readonly JsonSerializerOptions _jsonSerializerOptions = new() { WriteIndented = true };
 
         private static readonly double s_severity = 0;
-
-        public ServerCertificatePlugin(ILogger logger) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
-        {
-        }
 
         public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
@@ -34,7 +30,7 @@ namespace Plugin
             }
 
             // create list of ServerCertificateJson objects
-            List<ServerCertificateJson> serverCertificateJsons = new();
+            List<ServerCertificateJson> serverCertificateJsons = [];
 
             foreach (X509Certificate2 certificate in certificates)
             {
@@ -51,7 +47,7 @@ namespace Plugin
 
             if (serverCertificateJsons.Count == 0)
             {
-                return (null, new List<ISecurityTestSession>());
+                return (null, []);
             }
 
             Issue issue = CreateIssue(serverCertificateJsons);
@@ -64,7 +60,7 @@ namespace Plugin
             string issueDescription = $"{s_issueTitle}s: {JsonSerializer.Serialize(
                 serverCertificateJsons,
                 _jsonSerializerOptions)}";
-            return new Issue((int)s_pluginId, issueDescription, _severity);
+            return new Issue(s_pluginId, issueDescription, _severity);
         }
 
         private class ServerCertificateJson(X509Certificate2 certificate)

@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace OpalOPC.WPF.ViewModels;
+namespace OpalOPCWPF.ViewModels;
 
 public partial class VersionViewModel : ObservableObject
 {

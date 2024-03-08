@@ -2,6 +2,6 @@
 {
     public class ArgUtil
     {
-        public static string DefaultReportName() => $"opalopc-report-{DateTime.Now:yyyyMMddHHmmssffff}.html";
+        public static string DefaultReportName() => $"opalopc-report-{DateTime.Now:yyyyMMddHHmmssffff}";
     }
 }

@@ -1,11 +1,11 @@
 <UserControl
-    x:Class="OpalOPC.WPF.Views.VersionView"
+    x:Class="OpalOPCWPF.Views.VersionView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:OpalOPC.WPF.Views"
+    xmlns:local="clr-namespace:OpalOPCWPF.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewModels="clr-namespace:OpalOPC.WPF.ViewModels"
+    xmlns:viewModels="clr-namespace:OpalOPCWPF.ViewModels"
     d:DataContext="{d:DesignInstance viewModels:VersionViewModel,
                                      IsDesignTimeCreatable=False}"
     d:DesignHeight="720"
