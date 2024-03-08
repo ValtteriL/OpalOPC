@@ -117,7 +117,7 @@ public class SarifReporterTest
                     // check that all errors are in report
 
                     Result result = run.Results.First(r => r.Message.Text == error.Message);
-                    ReportingDescriptor rule = run.Tool.Driver.Rules.Where(r => r.Id == "error").First();
+                    ReportingDescriptor rule = run.Tool.Driver.Rules.Where(r => r.Id == SarifReporter.ErrorRuleId).First();
 
                     Assert.True(result.RuleIndex == run.Tool.Driver.Rules.IndexOf(rule));
                     Assert.True(result.Level == FailureLevel.Warning);

@@ -9,10 +9,11 @@ namespace View
     }
     public class SarifReporter(IPluginRepository pluginRepository) : ISarifReporter
     {
+        public const string ErrorRuleId = "-1";
         private readonly IList<ReportingDescriptor> _rules = BuildRules(pluginRepository);
         private static readonly ReportingDescriptor s_errorRule = new()
         {
-            Id = "error",
+            Id = ErrorRuleId,
             Name = "Error",
             DefaultConfiguration = new ReportingConfiguration
             {
