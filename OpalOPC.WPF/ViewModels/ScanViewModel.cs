@@ -10,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Model;
 using OpalOPCWPF.GuiUtil;
-using OpalOPCWPF.Logger;
 using ScannerApplication;
 using Util;
 
@@ -92,11 +91,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
             INetworkDiscoveryController networkDiscoveryController = _host.Services.GetRequiredService<INetworkDiscoveryController>();
 
 
-            IList<Uri> discoveredTargets = await Task.Run(() =>
-            {
-                return networkDiscoveryController.MulticastDiscoverTargets(timeout);
-
-            });
+            IList<Uri> discoveredTargets = await networkDiscoveryController.MulticastDiscoverTargets(timeout);
 
             // add discovered targets to targets
             foreach (Uri target in discoveredTargets)
