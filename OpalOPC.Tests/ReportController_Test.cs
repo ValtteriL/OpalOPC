@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Model;
 using Moq;
 using Opc.Ua;
+using Plugin;
 using View;
 using Xunit;
 
@@ -79,15 +80,15 @@ public class ReportControllerTest
 
         var target1 = new Target(_applicationDescription);
         target1.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
-        target1.Servers.First().Issues.Add(new Issue(1, "description", 0.1));
+        target1.Servers.First().Issues.Add(new Issue(PluginId.BruteForce, "description", 0.1));
 
         var target2 = new Target(_applicationDescription);
         target2.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
-        target2.Servers.First().Issues.Add(new Issue(1, "description", 0.2));
+        target2.Servers.First().Issues.Add(new Issue(PluginId.BruteForce, "description", 0.2));
 
         var target3 = new Target(_applicationDescription);
         target3.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
-        target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
+        target3.Servers.First().Issues.Add(new Issue(PluginId.BruteForce, "description", 0.3));
 
         // Act
         ReportController reportController = new(_loggerMock.Object, _htmlReporterMock.Object, _sarifReporterMock.Object);
@@ -112,13 +113,13 @@ public class ReportControllerTest
 
         var target1 = new Target(_applicationDescription);
         target1.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
-        target1.Servers.First().Issues.Add(new Issue(1, "description", 0.1));
+        target1.Servers.First().Issues.Add(new Issue(PluginId.BruteForce, "description", 0.1));
 
         var target2 = new Target(_applicationDescription);
 
         var target3 = new Target(_applicationDescription);
         target3.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
-        target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
+        target3.Servers.First().Issues.Add(new Issue(PluginId.BruteForce, "description", 0.3));
 
         // Act
         ReportController reportController = new(_loggerMock.Object, _htmlReporterMock.Object, _sarifReporterMock.Object);
@@ -142,14 +143,14 @@ public class ReportControllerTest
 
         var target1 = new Target(_applicationDescription);
         target1.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
-        target1.Servers.First().Issues.Add(new Issue(1, "description", 0.1));
+        target1.Servers.First().Issues.Add(new Issue(PluginId.BruteForce, "description", 0.1));
 
         var target2 = new Target(_applicationDescription);
         target2.AddServer(new Server("opc.tcp://discoveryuri", []));
 
         var target3 = new Target(_applicationDescription);
         target3.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
-        target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
+        target3.Servers.First().Issues.Add(new Issue(PluginId.BruteForce, "description", 0.3));
 
         // Act
         ReportController reportController = new(_loggerMock.Object, _htmlReporterMock.Object, _sarifReporterMock.Object);
@@ -173,9 +174,9 @@ public class ReportControllerTest
 
         var target1 = new Target(_applicationDescription);
         target1.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
-        target1.Servers.First().Issues.Add(new Issue(1, "description", 0.1));
-        target1.Servers.First().Issues.Add(new Issue(2, "description", 0.1));
-        target1.Servers.First().Issues.Add(new Issue(3, "description", 0.1));
+        target1.Servers.First().Issues.Add(new Issue(PluginId.BruteForce, "description", 0.1));
+        target1.Servers.First().Issues.Add(new Issue(PluginId.ServerCertificate, "description", 0.1));
+        target1.Servers.First().Issues.Add(new Issue(PluginId.KnownVulnerability, "description", 0.1));
 
         var target2 = new Target(_applicationDescription);
         target2.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
@@ -184,7 +185,7 @@ public class ReportControllerTest
 
         var target3 = new Target(_applicationDescription);
         target3.AddServer(new Server("opc.tcp://discoveryuri", [_endpointDescription]));
-        target3.Servers.First().Issues.Add(new Issue(1, "description", 0.3));
+        target3.Servers.First().Issues.Add(new Issue(PluginId.BruteForce, "description", 0.3));
 
         // Act
         ReportController reportController = new(_loggerMock.Object, _htmlReporterMock.Object, _sarifReporterMock.Object);

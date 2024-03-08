@@ -1,5 +1,6 @@
 using Model;
 using Opc.Ua;
+using Plugin;
 using View;
 using Xunit;
 
@@ -29,9 +30,9 @@ public class HtmlReporterTest
         server.AddError(new Error("error message 1"));
         server.AddError(new Error("error message 2"));
         server.AddError(new Error("error message 3"));
-        server.AddIssue(new Issue(1, "issue name 1", 1.0));
-        server.AddIssue(new Issue(2, "issue name 2", 6.0));
-        server.AddIssue(new Issue(3, "issue name 3", 9.2));
+        server.AddIssue(new Issue(PluginId.BruteForce, "description", 1.0));
+        server.AddIssue(new Issue(PluginId.AuditingDisabled, "issue name 2", 6.0));
+        server.AddIssue(new Issue(PluginId.AnonymousAuthentication, "issue name 3", 9.2));
         _target.AddServer(server);
 
         _targets = [_target];
@@ -61,8 +62,8 @@ public class HtmlReporterTest
 
     private static void VerifyReportContainsAllInfo(Report report, string reportString)
     {
-        Assert.Contains(report.StartTime.ToString(), reportString);
-        Assert.Contains(report.EndTime.ToString(), reportString);
+        Assert.Contains(report.StartTimeString, reportString);
+        Assert.Contains(report.EndTimeString, reportString);
         Assert.Contains(report.Targets.Count.ToString(), reportString);
         Assert.Contains(report.Version, reportString);
         Assert.Contains(report.Command, reportString);
@@ -83,7 +84,7 @@ public class HtmlReporterTest
                 foreach (Issue issue in server.Issues)
                 {
                     Assert.Contains(issue.Name, reportString);
-                    Assert.Contains(issue.PluginId.ToString(), reportString);
+                    Assert.Contains(issue.PluginIdInt.ToString(), reportString);
                     Assert.Contains(issue.Severity.ToString(), reportString);
                 }
                 foreach (Error error in server.Errors)

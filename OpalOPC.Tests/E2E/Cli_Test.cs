@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.CodeAnalysis.Sarif;
 using Tests.Helpers;
 using Xunit;
 
@@ -43,6 +44,7 @@ namespace Tests.E2E
             // act
             Process process = RunCommand($"{ApplicationPath} opc.tcp://echo:53530 -vv --output {_reportBaseName}");
             ParsedReport parsedReport = new(File.ReadAllText(_htmlReport));
+            SarifLog sarifLog = SarifLog.Load(_sarifReport);
 
             // assert
             Assert.True(process.ExitCode == 0);
@@ -50,6 +52,7 @@ namespace Tests.E2E
             Assert.True(parsedReport.IssueIds.Count == parsedReport.NumberOfIssues);
 
             ExpectedTargetResult.Echo.validateWithParsedReport(parsedReport);
+            ExpectedTargetResult.Echo.validateWithSarifReport(sarifLog);
 
             // cleanup
             File.Delete(_htmlReport);
@@ -65,11 +68,13 @@ namespace Tests.E2E
             // act
             Process process = RunCommand($"{ApplicationPath} opc.tcp://thisdoesnotexistsfafasfada:53530 -vv --output {_reportBaseName}");
             ParsedReport parsedReport = new(File.ReadAllText(_htmlReport));
+            SarifLog sarifLog = SarifLog.Load(_sarifReport);
 
             // assert
             Assert.True(process.ExitCode == 0);
             Assert.True(parsedReport.IssueIds.Count == parsedReport.NumberOfIssues);
             ExpectedTargetResult.Invalid.validateWithParsedReport(parsedReport);
+            ExpectedTargetResult.Invalid.validateWithSarifReport(sarifLog);
 
             // cleanup
             File.Delete(_htmlReport);
@@ -85,6 +90,7 @@ namespace Tests.E2E
             // act
             Process process = RunCommand($"{ApplicationPath} opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 opc.tcp://scanme.opalopc.com:53530 -vv --output {_reportBaseName}");
             ParsedReport parsedReport = new(File.ReadAllText(_htmlReport));
+            SarifLog sarifLog = SarifLog.Load(_sarifReport);
 
             // assert
             Assert.True(process.ExitCode == 0);
@@ -93,9 +99,13 @@ namespace Tests.E2E
             Assert.True(parsedReport.IssueIds.Count == parsedReport.NumberOfIssues);
 
             ExpectedTargetResult.Echo.validateWithParsedReport(parsedReport);
+            ExpectedTargetResult.Echo.validateWithSarifReport(sarifLog);
             ExpectedTargetResult.Golf.validateWithParsedReport(parsedReport);
+            ExpectedTargetResult.Golf.validateWithSarifReport(sarifLog);
             ExpectedTargetResult.India.validateWithParsedReport(parsedReport);
+            ExpectedTargetResult.India.validateWithSarifReport(sarifLog);
             ExpectedTargetResult.Scanme.validateWithParsedReport(parsedReport);
+            ExpectedTargetResult.Scanme.validateWithSarifReport(sarifLog);
 
             // cleanup
             File.Delete(_htmlReport);

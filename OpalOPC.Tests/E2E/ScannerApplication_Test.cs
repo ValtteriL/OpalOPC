@@ -1,4 +1,5 @@
 ﻿using Logger;
+using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Model;
@@ -38,13 +39,16 @@ namespace Tests.E2E
             //convert stream to string
             htmlOutputStream.Position = 0;
             string report = new StreamReader(htmlOutputStream).ReadToEnd();
+            sarifOutputStream.Position = 0;
 
             ParsedReport parsedReport = new(report);
+            SarifLog sarifLog = SarifLog.Load(sarifOutputStream);
 
             // assert
             Assert.True(parsedReport.NumberOfTargets == 1);
             Assert.True(parsedReport.IssueIds.Count == parsedReport.NumberOfIssues);
             ExpectedTargetResult.Echo.validateWithParsedReport(parsedReport);
+            ExpectedTargetResult.Echo.validateWithSarifReport(sarifLog);
 
         }
     }

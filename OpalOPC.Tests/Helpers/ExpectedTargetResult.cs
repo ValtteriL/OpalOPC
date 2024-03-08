@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Microsoft.CodeAnalysis.Sarif;
+using Xunit;
 
 namespace Tests.Helpers
 {
@@ -28,6 +29,26 @@ namespace Tests.Helpers
             foreach (int issueId in _issueIds)
             {
                 Assert.Contains(issueId, parsedReport.IssueIds);
+            }
+        }
+
+        public void validateWithSarifReport(SarifLog sarifLog)
+        {
+            Assert.True(sarifLog.Runs.Count == 1);
+            Run run = sarifLog.Runs[0];
+
+            Assert.True(run.Invocations.Count == 1);
+            Invocation invocation = run.Invocations[0];
+
+            Assert.True(invocation.ExitCode == 0);
+            Assert.True(invocation.ExecutionSuccessful);
+
+            Assert.True(run.Results.Where(r => r.Level != FailureLevel.Warning).Count() >= NumberOfIssues);
+            Assert.True(run.Results.Where(r => r.Level == FailureLevel.Warning).Count() >= NumberOfErrors);
+
+            foreach (int issueId in _issueIds)
+            {
+                Assert.True(run.Results.Where(r => r.RuleId == issueId.ToString()).Any());
             }
         }
 

@@ -20,7 +20,5 @@ public class Report_Constructor
         Assert.True(report.RunStatus == runStatus);
         Assert.True(report.Command == commandLine);
         Assert.True(report.Version != null);
-        Assert.True(report.StartTime != null);
-        Assert.True(report.EndTime != null);
     }
 }

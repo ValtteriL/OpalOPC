@@ -22,7 +22,7 @@ namespace Controller
             _securityTestPlugins = pluginRepository.GetAll(authenticationData);
 
             logger.LogTrace("{Message}", $"Loaded {_securityTestPlugins.Count} security test plugins");
-            logger.LogTrace("{Message}", $"Plugins: {string.Join(", ", _securityTestPlugins.Select(p => (int)p.pluginId))}");
+            logger.LogTrace("{Message}", $"Plugins: {string.Join(", ", _securityTestPlugins.Select(p => (int)p.Id))}");
 
             logger.LogDebug("{Message}", $"Starting security tests of {opcTargets.Count} targets");
 

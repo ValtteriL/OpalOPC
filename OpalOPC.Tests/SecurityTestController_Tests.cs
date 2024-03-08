@@ -16,7 +16,7 @@ namespace Tests
         private readonly Mock<ITaskUtil> _taskUtilMock;
         private readonly EndpointDescription _endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.UserName)]),
             SecurityMode = MessageSecurityMode.None,
             EndpointUrl = "opc.tcp://localhost:4840",
         };
@@ -93,7 +93,7 @@ namespace Tests
             var opcTargets = new List<Target> { _target, _target, _target };
 
             var mockPreAuthPlugin = new Mock<IPreAuthPlugin>();
-            mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
+            mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(PluginId.BruteForce, "description", 2), new List<ISecurityTestSession>()));
             mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
 
             _pluginRepositoryMock.Setup(repository => repository.GetAll(It.IsAny<AuthenticationData>())).Returns([mockPreAuthPlugin.Object]);
@@ -111,13 +111,13 @@ namespace Tests
         public void TestNoPluginsRunIfNoTargets()
         {
             // arrange
-            _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
+            _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(PluginId.BruteForce, "description", 2), new List<ISecurityTestSession>()));
             _mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
             _pluginRepositoryMock.Setup(repository => repository.GetAll(It.IsAny<AuthenticationData>())).Returns([_mockPreAuthPlugin.Object]);
             SecurityTestController securityTestController = new(_loggerMock.Object, _taskUtilMock.Object, _pluginRepositoryMock.Object);
 
             // act
-            securityTestController.TestTargetSecurity(new List<Target>(), _authenticationData);
+            securityTestController.TestTargetSecurity([], _authenticationData);
 
             // assert
             _mockPreAuthPlugin.Verify(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>()), Times.Never);
@@ -129,10 +129,10 @@ namespace Tests
             // arrange
             var opcTargets = new List<Target> { _target };
 
-            _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>() { _mockSecurityTestSession.Object }));
+            _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(PluginId.BruteForce, "description", 2), new List<ISecurityTestSession>() { _mockSecurityTestSession.Object }));
             _mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
 
-            _mockPostAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<ISession>())).Returns((new Issue(2, "test", 2)));
+            _mockPostAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<ISession>())).Returns((new Issue(PluginId.KnownVulnerability, "test", 2)));
             _mockPostAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PostAuthPlugin);
 
             _pluginRepositoryMock.Setup(repository => repository.GetAll(It.IsAny<AuthenticationData>())).Returns([_mockPreAuthPlugin.Object, _mockPostAuthPlugin.Object]);
@@ -154,10 +154,10 @@ namespace Tests
             // arrange
             var opcTargets = new List<Target> { _target };
 
-            _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(1, "test", 2), new List<ISecurityTestSession>()));
+            _mockPreAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<string>(), It.IsAny<EndpointDescriptionCollection>())).Returns((new Issue(PluginId.BruteForce, "description", 2), new List<ISecurityTestSession>()));
             _mockPreAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PreAuthPlugin);
 
-            _mockPostAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<ISession>())).Returns((new Issue(2, "test", 2)));
+            _mockPostAuthPlugin.Setup(plugin => plugin.Run(It.IsAny<ISession>())).Returns((new Issue(PluginId.AuditingDisabled, "test", 2)));
             _mockPostAuthPlugin.Setup(plugin => plugin.Type).Returns(Plugintype.PostAuthPlugin);
 
             _pluginRepositoryMock.Setup(repository => repository.GetAll(It.IsAny<AuthenticationData>())).Returns([_mockPreAuthPlugin.Object, _mockPostAuthPlugin.Object]);

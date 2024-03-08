@@ -46,7 +46,7 @@ namespace Plugin
                 AttempLoginWithUsernamesPasswords(sessions, validUsernamePasswords, new Endpoint(usernameEndpointsNoApplicationAuthentication));
             }
 
-            if (!validUsernamePasswords.Any() && usernameEndpointWithApplicationAuthentication != null)
+            if (validUsernamePasswords.Count == 0 && usernameEndpointWithApplicationAuthentication != null)
             {
                 // no valid credentials found, try again with different application certificates
                 foreach (CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
@@ -55,11 +55,11 @@ namespace Plugin
                 }
             }
 
-            if (validUsernamePasswords.Any())
+            if (validUsernamePasswords.Count != 0)
             {
                 IEnumerable<string> credpairs = validUsernamePasswords.Select(c => $"{c.username}:{c.password}");
                 s_issueTitle = $"Brute forced credentials in use ({string.Join(", ", credpairs)})";
-                return (new CredentialsIssue((int)s_pluginId, s_issueTitle, s_severity, validUsernamePasswords), sessions);
+                return (new CredentialsIssue(s_pluginId, s_issueTitle, s_severity, validUsernamePasswords), sessions);
             }
 
             return (null, sessions);

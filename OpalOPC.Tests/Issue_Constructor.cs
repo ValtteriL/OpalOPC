@@ -1,4 +1,5 @@
 using Model;
+using Plugin;
 using Xunit;
 
 namespace Tests;
@@ -7,7 +8,7 @@ public class Issue_Constructor
     [Fact]
     public void constructor_SetsProperties()
     {
-        int pluginId = 0;
+        PluginId pluginId = PluginId.BruteForce;
         string name = "a";
         double severity = 0;
         Issue issue = new(

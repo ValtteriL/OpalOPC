@@ -1,5 +1,6 @@
 ﻿#if BUILT_FOR_WINDOWS
 using System.Windows;
+using Microsoft.CodeAnalysis.Sarif;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium.Windows;
 using Tests.Helpers;
@@ -194,7 +195,9 @@ namespace Tests.E2E
             Assert.True(File.Exists(_htmlReportLocation));
             Assert.True(File.Exists(_sarifReportLocation));
             ParsedReport parsedReport = new(File.ReadAllText(_htmlReportLocation));
+            SarifLog sarifLog = SarifLog.Load(_sarifReportLocation);
             ExpectedTargetResult.Echo.validateWithParsedReport(parsedReport);
+            ExpectedTargetResult.Echo.validateWithSarifReport(sarifLog);
 
             // cleanup
             File.Delete(_htmlReportLocation);

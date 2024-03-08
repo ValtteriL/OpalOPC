@@ -12,16 +12,16 @@ public class ReportController_WriteReportShould
     public void WriteReport_AddsReportRunStatus()
     {
         Mock<ILogger<IReportController>> _loggerMock = new();
+        Mock<ISarifReporter> _sarifReporterMock = new();
 
         ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
         ILogger logger = loggerFactory.CreateLogger<ReportController_WriteReportShould>();
 
         HtmlReporter htmlReporter = new();
-        SarifReporter sarifReporter = new();
 
         string runStatus = "hello";
         string commandLine = "commandline";
-        ReportController reportController = new(_loggerMock.Object, htmlReporter, sarifReporter);
+        ReportController reportController = new(_loggerMock.Object, htmlReporter, _sarifReporterMock.Object);
         Report report = reportController.GenerateReport([], DateTime.Now, DateTime.Now, commandLine, runStatus);
         reportController.WriteReports(report, new MemoryStream(), new MemoryStream());
 

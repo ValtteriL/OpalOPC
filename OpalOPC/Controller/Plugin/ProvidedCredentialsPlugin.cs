@@ -73,7 +73,7 @@ namespace Plugin
             {
                 IEnumerable<string> credpairs = validUsernamePasswords.Select(c => $"{c.username}:{c.password}").Concat(validCertificates.Select(c => $"certificate:{c.Thumbprint}"));
                 s_issueTitle = $"Provided credentials in use ({string.Join(", ", credpairs)})";
-                return (new CredentialsIssue((int)s_pluginId, s_issueTitle, s_severity, validUsernamePasswords, validCertificates), sessions);
+                return (new CredentialsIssue(s_pluginId, s_issueTitle, s_severity, validUsernamePasswords, validCertificates), sessions);
             }
 
             return (null, sessions);
