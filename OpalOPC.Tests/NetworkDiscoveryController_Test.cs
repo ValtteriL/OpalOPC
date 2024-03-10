@@ -13,6 +13,7 @@ public class NetworkDiscoveryControllerTest
     private readonly Mock<IMDNSUtil> _mockMDNSUtil;
     private readonly Mock<ILogger<NetworkDiscoveryController>> _loggerMock;
     private readonly int _timeoutSeconds = 5;
+    private readonly int _numberOfDifferentPortsInNetworkDiscovery = 15;
 
     public NetworkDiscoveryControllerTest()
     {
@@ -58,6 +59,7 @@ public class NetworkDiscoveryControllerTest
         Uri dnsAppURI = new("opc.tcp://127.0.0.1:53531");
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplicationsAsync(appUri1)).ReturnsAsync([applicationDescription(appUri1)]);
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplicationsAsync(appUri2)).ReturnsAsync([applicationDescription(appUri2)]);
+        _mockDiscoveryUtil.Setup(util => util.DiscoverApplicationsOnNetworkAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>())).ReturnsAsync(new FindServersOnNetworkResponse());
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplicationsOnNetworkAsync(appUri1, It.IsAny<CancellationToken>())).ReturnsAsync(serversOnNetworkResponse(appUri2));
         _mockMDNSUtil.Setup(m => m.DiscoverTargets(It.IsAny<ConcurrentBag<Uri>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<ConcurrentBag<Uri>, string, string, CancellationToken>((bag, query, scheme, token) =>
         {
@@ -74,8 +76,8 @@ public class NetworkDiscoveryControllerTest
         Assert.True(targets.Count == 3);
         Assert.Contains(appUri1, targets);
         Assert.Contains(appUri2, targets);
-        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsAsync(It.IsAny<Uri>()), Times.Exactly(4));
-        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsOnNetworkAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsAsync(It.IsAny<Uri>()), Times.Exactly(_numberOfDifferentPortsInNetworkDiscovery + 1)); // +1 for the appUri2 discovered by findserversonnetwork
+        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsOnNetworkAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.Exactly(_numberOfDifferentPortsInNetworkDiscovery));
         _mockMDNSUtil.Verify(m => m.DiscoverTargets(It.IsAny<ConcurrentBag<Uri>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
     }
 
@@ -96,8 +98,8 @@ public class NetworkDiscoveryControllerTest
         Assert.NotEmpty(targets);
         Assert.True(targets.Count == 1);
         Assert.Contains(appUri1, targets);
-        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsAsync(It.IsAny<Uri>()), Times.Exactly(3));
-        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsOnNetworkAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsAsync(It.IsAny<Uri>()), Times.Exactly(_numberOfDifferentPortsInNetworkDiscovery));
+        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsOnNetworkAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.Exactly(_numberOfDifferentPortsInNetworkDiscovery));
     }
 
     [Fact]
@@ -117,8 +119,8 @@ public class NetworkDiscoveryControllerTest
         Assert.NotEmpty(targets);
         Assert.True(targets.Count == 1);
         Assert.Contains(uri, targets);
-        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsAsync(It.IsAny<Uri>()), Times.Exactly(6)); // 3 times by default, 3 times more for each time theres a serveronnetwork found
-        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsOnNetworkAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsAsync(It.IsAny<Uri>()), Times.Exactly(_numberOfDifferentPortsInNetworkDiscovery + _numberOfDifferentPortsInNetworkDiscovery)); // _numberOfDifferentPortsInNetworkDiscovery times by default, _numberOfDifferentPortsInNetworkDiscovery times more for each time theres a serveronnetwork found
+        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsOnNetworkAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.Exactly(_numberOfDifferentPortsInNetworkDiscovery));
     }
 
     [Fact]
@@ -135,8 +137,8 @@ public class NetworkDiscoveryControllerTest
 
         // act & assert
         Assert.Empty(targets);
-        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsAsync(It.IsAny<Uri>()), Times.Exactly(3));
-        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsOnNetworkAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsAsync(It.IsAny<Uri>()), Times.Exactly(_numberOfDifferentPortsInNetworkDiscovery));
+        _mockDiscoveryUtil.Verify(util => util.DiscoverApplicationsOnNetworkAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.Exactly(_numberOfDifferentPortsInNetworkDiscovery));
     }
 
     [Fact]
@@ -144,6 +146,7 @@ public class NetworkDiscoveryControllerTest
     {
         // arrange
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplicationsAsync(It.IsAny<Uri>())).ReturnsAsync([]);
+        _mockDiscoveryUtil.Setup(util => util.DiscoverApplicationsOnNetworkAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>())).ReturnsAsync(new FindServersOnNetworkResponse());
         _mockMDNSUtil.Setup(m => m.DiscoverTargets(It.IsAny<ConcurrentBag<Uri>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Throws<Exception>();
 
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
@@ -160,8 +163,7 @@ public class NetworkDiscoveryControllerTest
     {
         // arrange
         _mockDiscoveryUtil.Setup(util => util.DiscoverApplicationsAsync(It.IsAny<Uri>())).ReturnsAsync([]);
-        //_mockMDNSUtil.Setup(m => m.DiscoverTargets(It.IsAny<ConcurrentBag<Uri>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns([]);
-
+        _mockDiscoveryUtil.Setup(util => util.DiscoverApplicationsOnNetworkAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>())).ReturnsAsync(new FindServersOnNetworkResponse());
 
         NetworkDiscoveryController controller = new(_loggerMock.Object, _mockDiscoveryUtil.Object, _mockMDNSUtil.Object);
 
