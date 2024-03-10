@@ -4,8 +4,17 @@ description: The changelog shows OpalOPC release dates and what kind of changes 
 sidebar_position: 7
 ---
 
+## 3.2.0.0 - 2024-03-10
+
+* Add SARIF report format
+* Improve Networkdiscovery responsiveness on GUI
+* Remove `-s` flag
+* Change `-o`, `--output` flag semantings
+
 ## 3.1.0.0 - 2024-03-01
+
 * New plugin: [Known vulnerability](./plugins/known-vulnerability.md)
+* Improve logging
 
 ## 3.0.0.0 - 2024-02-11
 

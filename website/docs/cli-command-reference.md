@@ -7,13 +7,12 @@ slug: usage-cli
 ---
 
 ```bash
-Opal OPC 3.0.0.0 ( https://opalopc.com )
+Opal OPC 3.2.0.0 ( https://opalopc.com )
 Usage: opalopc [Options] [Target ...]
   -i, --input-file=VALUE     input targets from list of discovery uris
-  -o, --output=VALUE         output XHTML report filename
+  -o, --output=VALUE         base name for output reports
   -v                         increase verbosity (can be specified up to 2 times)
   -h, --help                 show this message and exit
-  -s                         silence output (useful with -o -)
   -l, --login-credential=VALUE
                              username:password for user authentication
   -b, --brute-force-credential=VALUE
@@ -57,8 +56,8 @@ The special value `-` causes URIs to be read from stdin.
 
 #### -o, --output=VALUE
 
-Specify filename for output report. If unspecified, OpalOPC will generate a name for it.
-The special value `-` causes report to be printed to stdout.
+Provide a base filename for output reports. If not specified, OpalOPC will generate it automatically.
+The base name is used to create an HTML report (`.html`) and a SARIF scanning report (`.sarif`).
 
 #### -v
 
@@ -68,10 +67,6 @@ Currently the maximum verbosity is reached by using this flag 2 times.
 #### -h, --help
 
 Show help message and exit.
-
-#### -s
-
-Silence all output. This is useful with `-o -`.
 
 #### -l, --login-credetial=VALUE
 
@@ -122,13 +117,13 @@ opalopc opc.tcp://echo:53530 opc.tcp://foxtrot:48010
 #### Scan all DiscoveryUrls in file, produce report with custom name
 
 ```bash
-opalopc -i discoveryuris.txt -o vulnerability-report.html
+opalopc -i discoveryuris.txt -o vulnerability-report
 ```
 
-#### Read stdin for DiscoveryURLs and print report to stdout
+#### Read targets from stdin and scan them
 
 ```bash
-opalopc -s -i - -o -
+opalopc -i -
 ```
 
 #### Scan with application certificate and credential pair

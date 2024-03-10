@@ -31,7 +31,7 @@ import TabItem from '@theme/TabItem';
 Use the command line interface to scan the [test target](test-drive.md):
 
 ```bash
-opalopc -vv opc.tcp://scanme.opalopc.com:53530 -o opalopc-report.html
+opalopc -vv opc.tcp://scanme.opalopc.com:53530 -o opalopc-report
 ```
 
 ## View the report
