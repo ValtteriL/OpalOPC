@@ -10,7 +10,7 @@ using View;
 
 class OpalOPC
 {
-    public static int Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
         TelemetryUtil.TrackEvent("CLI started");
 
@@ -32,7 +32,7 @@ class OpalOPC
             if (options.shouldDiscoverAndExit)
             {
                 INetworkDiscoveryController networkDiscoveryController = _host.Services.GetRequiredService<INetworkDiscoveryController>();
-                IList<Uri> targets = networkDiscoveryController.MulticastDiscoverTargets(5);
+                IList<Uri> targets = await networkDiscoveryController.MulticastDiscoverTargets(5);
                 Console.WriteLine("Discovered targets:");
                 foreach (Uri target in targets)
                 {

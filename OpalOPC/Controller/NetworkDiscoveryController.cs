@@ -7,12 +7,12 @@ namespace Controller
 {
     public interface INetworkDiscoveryController
     {
-        public IList<Uri> MulticastDiscoverTargets(int timeoutSeconds);
+        public Task<IList<Uri>> MulticastDiscoverTargets(int timeoutSeconds);
     }
 
     public class NetworkDiscoveryController(ILogger<NetworkDiscoveryController> logger, IDiscoveryUtil discoveryUtil, IMDNSUtil mDNSUtil) : INetworkDiscoveryController
     {
-        public IList<Uri> MulticastDiscoverTargets(int timeoutSeconds)
+        public async Task<IList<Uri>> MulticastDiscoverTargets(int timeoutSeconds)
         {
             // track event
             TelemetryUtil.TrackEvent("Network Discovery");
@@ -26,14 +26,10 @@ namespace Controller
             // cancel after timeout
             cts.CancelAfter(timeoutSeconds * 1000);
 
-            Task.Run(() =>
-            {
-                Task.WaitAll(
-                    new LDSDiscoverer(discoveryUtil, logger).DiscoverTargets(targetUris, cts.Token),
-                    new DNSSDDiscoverer(mDNSUtil, logger).DiscoverTargets(targetUris, cts.Token)
-                    );
-            }).Wait();
-
+            List<Task> tasks = [];
+            tasks.Add(new LDSDiscoverer(discoveryUtil, logger).DiscoverTargets(targetUris, cts.Token));
+            tasks.Add(new DNSSDDiscoverer(mDNSUtil, logger).DiscoverTargets(targetUris, cts.Token));
+            await Task.WhenAll(tasks);
 
             IList<Uri> discoveredUris = targetUris.Distinct().ToList();
 
@@ -72,19 +68,17 @@ namespace Controller
                 foreach ((string serviceName, string scheme) in _dnsSdServiceNamesAndSchemes)
                 {
                     // execute discovertargets and trigger cancellation after 5 seconds
-                    tasks.Add(
-                        Task.Run(() => DiscoverTargets(targetUris, $"{serviceName}.{_protocol}.", scheme, cancellationToken), cancellationToken)
-                    );
+                    tasks.Add(DiscoverTargets(targetUris, $"{serviceName}.{_protocol}.", scheme, cancellationToken));
                 }
 
                 return Task.WhenAll(tasks);
             }
 
-            private void DiscoverTargets(ConcurrentBag<Uri> targetUris, string query, string scheme, CancellationToken cancellationToken)
+            private async Task DiscoverTargets(ConcurrentBag<Uri> targetUris, string query, string scheme, CancellationToken cancellationToken)
             {
                 try
                 {
-                    mDNSUtil.DiscoverTargets(targetUris, query, scheme, cancellationToken);
+                    await mDNSUtil.DiscoverTargets(targetUris, query, scheme, cancellationToken);
                 }
                 catch (Exception e)
                 {
@@ -100,11 +94,11 @@ namespace Controller
             // 4840 is the default port
             // 4843 is the default port for HTTPS: https://help.commonvisionblox.com/OpcUa/server.html
             // 53530 is the default for Prosys OPC UA Simulation Server
-            private readonly List<int> _ldsPortNumbers = [4840, 4843, 53530];
+            private readonly List<int> _ldsPortNumbers = [4843, 26543, 48010, 48020, 48031, 48050, 4840, 4841, 4855, 4885, 4897, 49320, 53520, 53530, 62541];
             private readonly string _discoveryUriBase = "opc.tcp://127.0.0.1";
             private readonly IDiscoveryUtil _discoveryUtil = discoveryUtil;
 
-            public Task DiscoverTargets(ConcurrentBag<Uri> targetUris, CancellationToken cancellationToken)
+            public async Task DiscoverTargets(ConcurrentBag<Uri> targetUris, CancellationToken cancellationToken)
             {
 
                 // try to discover applications and servers on each port
@@ -118,49 +112,52 @@ namespace Controller
                     Uri discoveryUri = new($"{_discoveryUriBase}:{port}");
 
                     tasks.Add(Task.Run(() => DiscoverApplications(discoveryUri, targetUris), cancellationToken));
-                    tasks.Add(Task.Run(() => DiscoverApplicationsOnNetwork(discoveryUri, targetUris, cancellationToken), cancellationToken));
+                    tasks.Add(DiscoverApplicationsOnNetwork(discoveryUri, targetUris, cancellationToken));
                 }
 
-                return Task.WhenAll(tasks);
+                // wait until tasks ready or until cancellation
+                await Task.WhenAll(tasks);
 
+                return;
             }
 
-            private Task DiscoverApplicationsOnNetwork(Uri discoveryUri, ConcurrentBag<Uri> targetUris, CancellationToken cancellationToken)
+            private async Task DiscoverApplicationsOnNetwork(Uri discoveryUri, ConcurrentBag<Uri> targetUris, CancellationToken cancellationToken)
             {
                 // get flat list of unique discoveryUrls from servers on network and add them to targetUris
 
-                ServerOnNetworkCollection serversOnNetwork = DiscoverApplicationsOnNetwork(discoveryUri) ?? [];
+                FindServersOnNetworkResponse serversOnNetwork = await DiscoverApplicationsOnNetwork(discoveryUri, cancellationToken);
 
                 List<Task> tasks = [];
 
-                foreach (ServerOnNetwork server in serversOnNetwork)
+                foreach (ServerOnNetwork server in serversOnNetwork.Servers)
                 {
-                    tasks.Add(Task.Run(() =>
+                    tasks.Add(Task.Run(async () =>
                     {
-                        ApplicationDescriptionCollection applicationsOnNetwork = DiscoverApplications(new Uri(server.DiscoveryUrl)) ?? [];
+                        ApplicationDescriptionCollection applicationsOnNetwork = await DiscoverApplications(new Uri(server.DiscoveryUrl)) ?? [];
                         applicationsOnNetwork.SelectMany(app => app.DiscoveryUrls).Distinct().Select(s => new Uri(s)).ToList().ForEach(targetUris.Add);
                     }, cancellationToken));
                 }
 
-                return Task.WhenAll(tasks);
+                await Task.WhenAll(tasks);
 
+                return;
             }
 
-            private void DiscoverApplications(Uri discoveryUri, ConcurrentBag<Uri> targetUris)
+            private async Task DiscoverApplications(Uri discoveryUri, ConcurrentBag<Uri> targetUris)
             {
 
-                ApplicationDescriptionCollection applications = DiscoverApplications(discoveryUri) ?? [];
+                ApplicationDescriptionCollection applications = await DiscoverApplications(discoveryUri) ?? [];
 
                 // get flat list of unique discoveryUrls and add them to targetUris
                 applications.SelectMany(app => app.DiscoveryUrls).Distinct().Select(s => new Uri(s)).ToList().ForEach(targetUris.Add);
             }
 
-            private ApplicationDescriptionCollection DiscoverApplications(Uri discoveryUri)
+            private async Task<ApplicationDescriptionCollection> DiscoverApplications(Uri discoveryUri)
             {
                 try
                 {
                     logger.LogTrace("{Message}", $"Discovering applications on {discoveryUri}");
-                    return _discoveryUtil.DiscoverApplications(discoveryUri);
+                    return await _discoveryUtil.DiscoverApplicationsAsync(discoveryUri);
                 }
                 catch (Exception e)
                 {
@@ -169,17 +166,17 @@ namespace Controller
                 }
             }
 
-            private ServerOnNetworkCollection DiscoverApplicationsOnNetwork(Uri discoveryUri)
+            private async Task<FindServersOnNetworkResponse> DiscoverApplicationsOnNetwork(Uri discoveryUri, CancellationToken cancellationToken)
             {
                 try
                 {
                     logger.LogTrace("{Message}", $"Discovering servers on network on {discoveryUri}");
-                    return _discoveryUtil.DiscoverApplicationsOnNetwork(discoveryUri);
+                    return await _discoveryUtil.DiscoverApplicationsOnNetworkAsync(discoveryUri, cancellationToken);
                 }
                 catch (Exception e)
                 {
                     logger.LogDebug("{Message}", $"Error discovering servers on network on {discoveryUri}: {e.Message}");
-                    return [];
+                    return new FindServersOnNetworkResponse();
                 }
             }
         }

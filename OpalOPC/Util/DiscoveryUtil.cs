@@ -8,7 +8,9 @@ namespace Util
     {
         IPAddress[] ResolveIPv4Addresses(string host);
         ApplicationDescriptionCollection DiscoverApplications(Uri uri);
+        Task<ApplicationDescriptionCollection> DiscoverApplicationsAsync(Uri uri);
         ServerOnNetworkCollection DiscoverApplicationsOnNetwork(Uri uri);
+        Task<FindServersOnNetworkResponse> DiscoverApplicationsOnNetworkAsync(Uri uri, CancellationToken cancellationToken);
         EndpointDescriptionCollection DiscoverEndpoints(Uri uri);
     }
 
@@ -22,9 +24,23 @@ namespace Util
             return DiscoveryClient.Create(uri).FindServersOnNetwork(startingRecordId, maxRecordsToReturn, serverCapabilityFilter, out _);
         }
 
+        public Task<FindServersOnNetworkResponse> DiscoverApplicationsOnNetworkAsync(Uri uri, CancellationToken cancellationToken)
+        {
+            uint startingRecordId = (uint)0;
+            uint maxRecordsToReturn = (uint)0;
+            StringCollection serverCapabilityFilter = [];
+            RequestHeader requestHeader = new();
+            return DiscoveryClient.Create(uri).FindServersOnNetworkAsync(requestHeader, startingRecordId, maxRecordsToReturn, serverCapabilityFilter, cancellationToken);
+        }
+
         public ApplicationDescriptionCollection DiscoverApplications(Uri uri)
         {
             return DiscoveryClient.Create(uri).FindServers(null);
+        }
+
+        public Task<ApplicationDescriptionCollection> DiscoverApplicationsAsync(Uri uri)
+        {
+            return DiscoveryClient.Create(uri).FindServersAsync(null);
         }
 
         public EndpointDescriptionCollection DiscoverEndpoints(Uri uri)

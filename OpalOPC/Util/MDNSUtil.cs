@@ -5,13 +5,13 @@ namespace Util
 {
     public interface IMDNSUtil
     {
-        public void DiscoverTargets(ConcurrentBag<Uri> targetUris, string query, string scheme, CancellationToken cancellationToken);
+        public Task DiscoverTargets(ConcurrentBag<Uri> targetUris, string query, string scheme, CancellationToken cancellationToken);
     }
 
     public class MDNSUtil : IMDNSUtil
     {
 
-        public void DiscoverTargets(ConcurrentBag<Uri> targetUris, string query, string scheme, CancellationToken cancellationToken)
+        public async Task DiscoverTargets(ConcurrentBag<Uri> targetUris, string query, string scheme, CancellationToken cancellationToken)
         {
             MulticastService multicastService = new();
             ServiceDiscovery serviceDiscovery = new(multicastService);
@@ -42,8 +42,9 @@ namespace Util
             try
             {
                 multicastService.Start();
+
                 // wait until the cancellation token is triggered
-                cancellationToken.WaitHandle.WaitOne();
+                await Task.Run(() => cancellationToken.WaitHandle.WaitOne());
             }
             finally
             {

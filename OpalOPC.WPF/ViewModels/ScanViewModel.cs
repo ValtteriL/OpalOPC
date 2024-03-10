@@ -91,12 +91,8 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
             IHost _host = AppConfigurer.ConfigureApplication(new Options() { logLevel = Verbosity }, loggerProvider);
             INetworkDiscoveryController networkDiscoveryController = _host.Services.GetRequiredService<INetworkDiscoveryController>();
 
-
-            IList<Uri> discoveredTargets = await Task.Run(() =>
-            {
-                return networkDiscoveryController.MulticastDiscoverTargets(timeout);
-
-            });
+            IList<Uri> discoveredTargets = await Task.Run(() => networkDiscoveryController.MulticastDiscoverTargets(timeout));
+            //IList<Uri> discoveredTargets = await networkDiscoveryController.MulticastDiscoverTargets(timeout);
 
             // add discovered targets to targets
             foreach (Uri target in discoveredTargets)
