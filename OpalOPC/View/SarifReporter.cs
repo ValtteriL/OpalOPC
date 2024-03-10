@@ -11,6 +11,7 @@ namespace View
     {
         public const string ErrorRuleId = "-1";
         private readonly IList<ReportingDescriptor> _rules = BuildRules(pluginRepository);
+        private readonly Guid _guid = new("9ff60239-60d4-4715-afa8-bfe993f72824");
         private static readonly ReportingDescriptor s_errorRule = new()
         {
             Id = ErrorRuleId,
@@ -41,6 +42,7 @@ namespace View
                             {
                                 Name = "OpalOPC",
                                 InformationUri = new Uri("https://opalopc.com/"),
+                                Guid = _guid,
                                 Version = report.Version,
                                 Rules = _rules,
                                 ShortDescription = new MultiformatMessageString
