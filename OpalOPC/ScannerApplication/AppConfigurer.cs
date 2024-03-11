@@ -24,6 +24,7 @@ namespace ScannerApplication
                     services.AddSingleton<ISarifReporter, SarifReporter>();
                     services.AddSingleton<IReportController, ReportController>();
                     services.AddSingleton<IDiscoveryController, DiscoveryController>();
+                    services.AddSingleton<ILicensingController, LicensingController>();
                     services.AddSingleton<IDiscoveryUtil, DiscoveryUtil>();
                     services.AddSingleton<ISecurityTestController, SecurityTestController>();
                     services.AddSingleton<ITaskUtil, TaskUtil>();
