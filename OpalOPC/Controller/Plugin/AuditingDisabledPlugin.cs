@@ -17,14 +17,21 @@ namespace Plugin
 
         public override Issue? Run(ISession session)
         {
-            _logger.LogTrace("{Message}", $"Testing {session.Endpoint.EndpointUrl} for disabled auditing");
+            _logger.LogTrace("{Message}", $"Testing {session.Endpoint.EndpointUrl} for disabled auditing (session {session.Identity.DisplayName})");
 
-            // check if auditing enabled
-            DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
-            if (!auditingValue.GetValue(false))
+            try
             {
-                _logger.LogTrace("{Message}", $"Endpoint {session.Endpoint.EndpointUrl} has auditing disabled");
-                return CreateIssue();
+                // check if auditing enabled
+                DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
+                if (!auditingValue.GetValue(false))
+                {
+                    _logger.LogTrace("{Message}", $"Endpoint {session.Endpoint.EndpointUrl} has auditing disabled");
+                    return CreateIssue();
+                }
+            }
+            catch (ServiceResultException)
+            {
+                // ignore errors like BadUserAccessDenied
             }
 
             return null;

@@ -111,17 +111,29 @@ namespace Controller
             foreach (IPostAuthPlugin postAuthPlugin in GetPluginsByType(Plugintype.PostAuthPlugin).Cast<IPostAuthPlugin>())
             {
                 taskUtil.CheckForCancellation();
-                Issue? postauthIssue = postAuthPlugin.Run(server.securityTestSessions.First().Session);
-                if (postauthIssue != null) server.AddIssue(postauthIssue);
+                foreach (ISecurityTestSession session in server.securityTestSessions)
+                {
+                    Issue? postauthIssue = postAuthPlugin.Run(session.Session);
+                    if (postauthIssue != null)
+                    {
+                        server.AddIssue(postauthIssue);
+                        break;
+                    }
+                }
             }
 
             foreach (IMultipleIssuesPostAuthPlugin multipleIssuesPostAuthPlugin in GetPluginsByType(Plugintype.PostAuthMultipleIssuesPlugin).Cast<IMultipleIssuesPostAuthPlugin>())
             {
                 taskUtil.CheckForCancellation();
-                ICollection<Issue> postauthIssues = multipleIssuesPostAuthPlugin.Run(server.securityTestSessions.First().Session).Result;
-                foreach (Issue issue in postauthIssues)
+
+                foreach (ISecurityTestSession session in server.securityTestSessions)
                 {
-                    server.AddIssue(issue);
+                    ICollection<Issue> postauthIssues = multipleIssuesPostAuthPlugin.Run(session.Session).Result;
+                    foreach (Issue issue in postauthIssues)
+                    {
+                        server.AddIssue(issue);
+                    }
+                    if (postauthIssues.Count != 0) break;
                 }
             }
 
