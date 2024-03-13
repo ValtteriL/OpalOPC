@@ -41,13 +41,15 @@ namespace Plugin
 
             List<ISecurityTestSession> sessions = [];
 
-            if (anonymousEndpointNoApplicationAuthentication != null)
+            EndpointDescription? endpointToTryWithoutOrWithSelfSignedAppCertificate = anonymousEndpointNoApplicationAuthentication ?? anonymousEndpointWithApplicationAuthentication;
+
+            // try connecting anonymously without or with self-signed app cert, if not working, try application certificates one by one until one works or they run out
+            if (endpointToTryWithoutOrWithSelfSignedAppCertificate != null)
             {
-                // try with self-signed cert, if not working, try application certificates one by one until one works or they run out
                 // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                 try
                 {
-                    ISecurityTestSession session = _connectionUtil.StartSession(anonymousEndpointNoApplicationAuthentication, new UserIdentity()).Result;
+                    ISecurityTestSession session = _connectionUtil.StartSession(endpointToTryWithoutOrWithSelfSignedAppCertificate, new UserIdentity()).Result;
                     sessions.Add(session);
                     return (CreateIssue(), sessions);
                 }

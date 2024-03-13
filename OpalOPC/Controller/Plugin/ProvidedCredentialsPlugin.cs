@@ -44,13 +44,16 @@ namespace Plugin
             EndpointDescription? certificateEndpointNoApplicationAuthentication = certificateEndpoints.Find(e => e.SecurityPolicyUri == SecurityPolicies.None);
             EndpointDescription? certificateEndpointWithApplicationAuthentication = certificateEndpoints.Find(e => e.SecurityPolicyUri != SecurityPolicies.None);
 
-            if (usernameEndpointNoApplicationAuthentication != null)
+            EndpointDescription? usernameEndpointToTryWithoutOrWithSelfSignedAppCertificate = usernameEndpointNoApplicationAuthentication ?? usernameEndpointWithApplicationAuthentication;
+            EndpointDescription? certificateEndpointToTryWithoutOrWithSelfSignedAppCertificate = certificateEndpointNoApplicationAuthentication ?? certificateEndpointWithApplicationAuthentication;
+
+            if (usernameEndpointToTryWithoutOrWithSelfSignedAppCertificate != null)
             {
-                AttempLoginWithUsernamesPasswords(sessions, validUsernamePasswords, new Endpoint(usernameEndpointNoApplicationAuthentication));
+                AttempLoginWithUsernamesPasswords(sessions, validUsernamePasswords, new Endpoint(usernameEndpointToTryWithoutOrWithSelfSignedAppCertificate));
             }
-            if (certificateEndpointNoApplicationAuthentication != null)
+            if (certificateEndpointToTryWithoutOrWithSelfSignedAppCertificate != null)
             {
-                AttempLoginWithUserCertificates(sessions, validCertificates, new Endpoint(certificateEndpointNoApplicationAuthentication));
+                AttempLoginWithUserCertificates(sessions, validCertificates, new Endpoint(certificateEndpointToTryWithoutOrWithSelfSignedAppCertificate));
             }
 
             if (validUsernamePasswords.Count == 0 && validCertificates.Count == 0)

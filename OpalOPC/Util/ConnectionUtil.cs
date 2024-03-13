@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using Model;
 using Opc.Ua;
 using Opc.Ua.Client;
@@ -34,12 +35,19 @@ namespace Util
                 SecurityConfiguration = new SecurityConfiguration(),
 
                 // accept any server certificates
-                CertificateValidator = new CertificateValidator
+                CertificateValidator = new RelaxedCertificateValidator
                 {
                     AutoAcceptUntrustedCertificates = true
                 }
             };
 
+        }
+
+        private class RelaxedCertificateValidator : CertificateValidator
+        {
+            public override void Validate(X509Certificate2Collection certificateChain) { return; }
+            public override void Validate(X509Certificate2Collection chain, ConfiguredEndpoint endpoint) { return; }
+            protected override Task InternalValidate(X509Certificate2Collection certificates, ConfiguredEndpoint endpoint) { return Task.CompletedTask; }
         }
 
         // Authenticate with OPC UA server and start a session
