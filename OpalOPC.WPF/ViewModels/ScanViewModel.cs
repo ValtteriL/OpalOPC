@@ -175,6 +175,7 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
                 SarifOutputReportName = _sarifOutputReportName,
                 HtmlOutputStream = htmlOutputStream,
                 SarifOutputStream = sarifOutputStream,
+                logLevel = Verbosity
             };
 
             await Task.Run(() =>
