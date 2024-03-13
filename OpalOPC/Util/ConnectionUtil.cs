@@ -101,7 +101,7 @@ namespace Util
 
         public ISecurityTestSession? AttemptLogin(Endpoint endpoint, UserIdentity identity) => AttemptLogin(endpoint, identity, null);
 
-        private ApplicationConfiguration buildApplicationConfiguration(CertificateIdentifier applicationCertificate)
+        private static ApplicationConfiguration buildApplicationConfiguration(CertificateIdentifier applicationCertificate)
         {
             return new ApplicationConfiguration
             {

@@ -19,7 +19,7 @@ namespace Controller
         // Run all security tests and return result-populated opcTarget
         public ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets, AuthenticationData authenticationData)
         {
-            _securityTestPlugins = pluginRepository.GetAll(authenticationData);
+            _securityTestPlugins = pluginRepository.BuildAll(authenticationData);
 
             logger.LogTrace("{Message}", $"Loaded {_securityTestPlugins.Count} security test plugins");
             logger.LogTrace("{Message}", $"Plugins: {string.Join(", ", _securityTestPlugins.Select(p => (int)p.Id))}");

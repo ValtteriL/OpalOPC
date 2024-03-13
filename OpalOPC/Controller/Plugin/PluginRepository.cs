@@ -6,26 +6,20 @@ namespace Plugin
 {
     public interface IPluginRepository
     {
-        List<IPlugin> GetAll(AuthenticationData authenticationData);
+        List<IPlugin> BuildAll(AuthenticationData authenticationData);
+        List<IPlugin> GetAll();
     }
 
     public class PluginRepository(ILogger<IPluginRepository> logger, IKnownVulnerabilityApiRequestUtil knownVulnerabilityApiRequestUtil) : IPluginRepository
     {
-        private List<IPlugin> _plugins = [];
 
+        public List<IPlugin> GetAll() => InitializePlugins(new AuthenticationData()); // just for getting all plugins, but not running them
 
-        public List<IPlugin> GetAll(AuthenticationData authenticationData)
+        public List<IPlugin> BuildAll(AuthenticationData authenticationData) => InitializePlugins(authenticationData); // for running the plugins
+
+        private List<IPlugin> InitializePlugins(AuthenticationData authenticationData)
         {
-            if (_plugins.Count == 0)
-                InitializePlugins(authenticationData);
-
-            return _plugins;
-        }
-
-        private void InitializePlugins(AuthenticationData authenticationData)
-        {
-            _plugins =
-            [
+            return [
             new SecurityModeInvalidPlugin(logger),
                 new SecurityModeNonePlugin(logger),
 
