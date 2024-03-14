@@ -17,21 +17,35 @@ namespace Plugin
         // Info
         private static readonly double s_severity = 0;
 
-        public override Issue? Run(ISession session)
+        public override Issue? Run(IList<ISession> sessions)
         {
-            _logger.LogTrace("{Message}", $"Checking ServerStatus on {session.Endpoint.EndpointUrl}");
+            ISession firstSession = sessions.First();
+            _logger.LogTrace("{Message}", $"Checking ServerStatus on {firstSession.Endpoint.EndpointUrl}");
 
-            // check ServerStatus
-            ServerStatusDataType? serverStatusDataType = (ServerStatusDataType)session.ReadValue(Util.WellKnownNodes.Server_ServerStatus, typeof(ServerStatusDataType));
-
-            // if serverStatusDataType is null, return null
-            if (serverStatusDataType == null)
+            // try checking ServerStatus with each session until success
+            foreach (ISession session in sessions)
             {
-                _logger.LogTrace("{Message}", "ServerStatus is null");
-                return null;
+                try
+                {
+                    // check ServerStatus
+                    ServerStatusDataType? serverStatusDataType = (ServerStatusDataType)session.ReadValue(Util.WellKnownNodes.Server_ServerStatus, typeof(ServerStatusDataType));
+
+                    // if serverStatusDataType is null, return null
+                    if (serverStatusDataType == null)
+                    {
+                        _logger.LogTrace("{Message}", "ServerStatus is null");
+                        return null;
+                    }
+
+                    return CreateIssue(serverStatusDataType);
+                }
+                catch (ServiceResultException)
+                {
+                    // ignore errors like BadUserAccessDenied
+                }
             }
 
-            return CreateIssue(serverStatusDataType);
+            return null;
         }
 
         private Issue CreateIssue(ServerStatusDataType serverStatusDataType)

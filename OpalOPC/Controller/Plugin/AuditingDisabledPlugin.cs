@@ -15,23 +15,32 @@ namespace Plugin
         // Medium
         private static readonly double s_severity = 5.0;
 
-        public override Issue? Run(ISession session)
+        public override Issue? Run(IList<ISession> sessions)
         {
-            _logger.LogTrace("{Message}", $"Testing {session.Endpoint.EndpointUrl} for disabled auditing (session {session.Identity.DisplayName})");
+            ISession firstSession = sessions.First();
+            _logger.LogTrace("{Message}", $"Testing {firstSession.Endpoint.EndpointUrl} for disabled auditing");
 
-            try
+            // try checking auditing status with each session until success
+            foreach (ISession session in sessions)
             {
-                // check if auditing enabled
-                DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
-                if (!auditingValue.GetValue(false))
+                try
                 {
-                    _logger.LogTrace("{Message}", $"Endpoint {session.Endpoint.EndpointUrl} has auditing disabled");
-                    return CreateIssue();
+                    // check if auditing enabled
+                    DataValue auditingValue = session.ReadValue(Util.WellKnownNodes.Server_Auditing);
+                    if (!auditingValue.GetValue(false))
+                    {
+                        _logger.LogTrace("{Message}", $"Endpoint {session.Endpoint.EndpointUrl} has auditing disabled");
+                        return CreateIssue();
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
-            }
-            catch (ServiceResultException)
-            {
-                // ignore errors like BadUserAccessDenied
+                catch (ServiceResultException)
+                {
+                    // ignore errors like BadUserAccessDenied
+                }
             }
 
             return null;

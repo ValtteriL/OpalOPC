@@ -41,15 +41,36 @@ namespace Plugin
 
             List<ISecurityTestSession> sessions = [];
 
-            EndpointDescription? endpointToTryWithoutOrWithSelfSignedAppCertificate = anonymousEndpointNoApplicationAuthentication ?? anonymousEndpointWithApplicationAuthentication;
+            EndpointDescription? endPointToTryWithoutProvidedAppCertificates = anonymousEndpointNoApplicationAuthentication ?? anonymousEndpointWithApplicationAuthentication;
+            if (endPointToTryWithoutProvidedAppCertificates == null)
+            {
+                return (null, sessions);
+            }
 
-            // try connecting anonymously without or with self-signed app cert, if not working, try application certificates one by one until one works or they run out
-            if (endpointToTryWithoutOrWithSelfSignedAppCertificate != null)
+            // try connecting anonymously without or with self-signed app cert
+            try
+            {
+                ISecurityTestSession session = _connectionUtil.StartSession(endPointToTryWithoutProvidedAppCertificates, new UserIdentity()).Result;
+                sessions.Add(session);
+                return (CreateIssue(), sessions);
+            }
+            catch (Exception)
+            {
+
+            }
+
+            // if not working, try application certificates one by one until one works or they run out
+            if (anonymousEndpointWithApplicationAuthentication == null)
+            {
+                return (null, sessions);
+            }
+
+            foreach (Opc.Ua.CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
             {
                 // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                 try
                 {
-                    ISecurityTestSession session = _connectionUtil.StartSession(endpointToTryWithoutOrWithSelfSignedAppCertificate, new UserIdentity()).Result;
+                    ISecurityTestSession session = _connectionUtil.StartSession(anonymousEndpointWithApplicationAuthentication, new UserIdentity(), applicationCertificate).Result;
                     sessions.Add(session);
                     return (CreateIssue(), sessions);
                 }
@@ -57,32 +78,12 @@ namespace Plugin
                 {
 
                 }
-
-                return (CreateIssue(), sessions);
             }
 
-            if (anonymousEndpointWithApplicationAuthentication != null)
-            {
-                foreach (Opc.Ua.CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
-                {
-                    // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
-                    try
-                    {
-                        ISecurityTestSession session = _connectionUtil.StartSession(anonymousEndpointWithApplicationAuthentication, new UserIdentity(), applicationCertificate).Result;
-                        sessions.Add(session);
-                        return (CreateIssue(), sessions);
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-
-                return (CreateIssue(), sessions);
-            }
-
+            // if still no sessions, return not vulnerable despite seeing anonymous endpoint
             return (null, sessions);
         }
+
 
     }
 }
