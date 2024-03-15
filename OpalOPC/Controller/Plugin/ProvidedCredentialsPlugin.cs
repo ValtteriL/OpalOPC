@@ -5,7 +5,7 @@ using Util;
 
 namespace Plugin
 {
-    public class ProvidedCredentialsPlugin : PreAuthPlugin
+    public class ProvidedCredentialsPlugin(ILogger logger, IConnectionUtil connectionUtil, AuthenticationData authenticationData) : PreAuthPlugin(logger, s_pluginId, s_category, s_issueTitle, s_severity)
     {
         private static readonly PluginId s_pluginId = PluginId.ProvidedCredentials;
         private static readonly string s_category = PluginCategories.Authentication;
@@ -13,21 +13,6 @@ namespace Plugin
 
         // Info
         private static readonly double s_severity = 0;
-
-        private readonly IConnectionUtil _connectionUtil;
-        private readonly AuthenticationData _authenticationData;
-
-        public ProvidedCredentialsPlugin(ILogger logger, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
-        {
-            _connectionUtil = new ConnectionUtil();
-            _authenticationData = authenticationData;
-        }
-
-        public ProvidedCredentialsPlugin(ILogger logger, IConnectionUtil connectionUtil, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
-        {
-            _connectionUtil = connectionUtil;
-            _authenticationData = authenticationData;
-        }
 
         public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
@@ -59,7 +44,7 @@ namespace Plugin
             if (validUsernamePasswords.Count == 0 && validCertificates.Count == 0)
             {
                 // no valid credentials found, try again with different application certificates
-                foreach (CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
+                foreach (CertificateIdentifier applicationCertificate in authenticationData.applicationCertificates)
                 {
                     if (usernameEndpointWithApplicationAuthentication != null)
                     {
@@ -84,13 +69,13 @@ namespace Plugin
 
         private void AttempLoginWithUserCertificates(List<ISecurityTestSession> sessions, List<CertificateIdentifier> validCertificates, Endpoint endpoint, CertificateIdentifier? certificateIdentifier = null)
         {
-            foreach (CertificateIdentifier userCertificate in _authenticationData.userCertificates)
+            foreach (CertificateIdentifier userCertificate in authenticationData.userCertificates)
             {
                 ISecurityTestSession? session;
                 if (certificateIdentifier == null)
-                    session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(userCertificate));
+                    session = connectionUtil.AttemptLogin(endpoint, new UserIdentity(userCertificate));
                 else
-                    session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(userCertificate), certificateIdentifier);
+                    session = connectionUtil.AttemptLogin(endpoint, new UserIdentity(userCertificate), certificateIdentifier);
 
                 if (session != null && session.Session.Connected)
                 {
@@ -103,13 +88,13 @@ namespace Plugin
 
         private void AttempLoginWithUsernamesPasswords(List<ISecurityTestSession> sessions, List<(string, string)> validUsernamePasswords, Endpoint endpoint, CertificateIdentifier? certificateIdentifier = null)
         {
-            foreach ((string username, string password) in _authenticationData.loginCredentials)
+            foreach ((string username, string password) in authenticationData.loginCredentials)
             {
                 ISecurityTestSession? session;
                 if (certificateIdentifier == null)
-                    session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password));
+                    session = connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password));
                 else
-                    session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password), certificateIdentifier);
+                    session = connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password), certificateIdentifier);
 
                 if (session != null && session.Session.Connected)
                 {

@@ -20,20 +20,18 @@ namespace ScannerApplication
             DateTime start = DateTime.Now;
             logger.LogInformation("{Message}", $"Starting OpalOPC {Util.VersionUtil.AppAssemblyVersion} ( https://opalopc.com )");
 
+
             if (!myLicensingController.IsLicensed())
             {
-                logger.LogInformation("{Message}", "Not licensed - Continuing with limited functionality");
-                // TODO: continue with limited functionality
-                // hide issues but 3
-                // no sarif output
-                // something else???
+                TelemetryUtil.TrackEvent("Not licensed");
+                logger.LogCritical("{Message}", "Software license validation failed. Exiting");
+                return;
             }
             else
             {
-                logger.LogInformation("{Message}", "License valid");
+                TelemetryUtil.TrackEvent("License valid");
+                logger.LogInformation("{Message}", "Software license validated successfully");
             }
-
-
 
             if (options.targets.Count == 0)
             {

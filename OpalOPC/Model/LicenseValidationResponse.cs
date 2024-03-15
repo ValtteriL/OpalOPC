@@ -1,13 +1,28 @@
-﻿namespace Model
-{
-    public class LicenseValidationResponse(string licenseId, string code)
-    {
-        public readonly string LicenseId = licenseId;
-        public readonly string Code = code;
+﻿using static Model.LicenseValidationResponse;
 
-        public bool IsValid => Code is "VALID";
-        public bool ShouldActivateMachine => Code is "NO_MACHINE" or "NO_MACHINES" or "FINGERPRINT_SCOPE_MISMATCH";
-        public bool IsMachineLimitExceeded => Code is "TOO_MANY_MACHINES";
-        public bool IsInvalid => Code is "NOT_FOUND" or "SUSPENDED" or "OVERDUE" or "EXPIRED" or "BANNED";
+namespace Model
+{
+    public class LicenseValidationResponse(string licenseId, LicenseValidationCode code)
+    {
+        public enum LicenseValidationCode
+        {
+            VALID,
+            NO_MACHINE,
+            NO_MACHINES,
+            FINGERPRINT_SCOPE_MISMATCH,
+            TOO_MANY_MACHINES,
+            NOT_FOUND,
+            SUSPENDED,
+            OVERDUE,
+            EXPIRED,
+            BANNED
+        }
+        public readonly string LicenseId = licenseId;
+        public readonly LicenseValidationCode code = code;
+
+        public bool IsValid => code is LicenseValidationCode.VALID;
+        public bool ShouldActivateMachine => code is LicenseValidationCode.NO_MACHINE or LicenseValidationCode.NO_MACHINES or LicenseValidationCode.FINGERPRINT_SCOPE_MISMATCH;
+        public bool IsMachineLimitExceeded => code is LicenseValidationCode.TOO_MANY_MACHINES;
+        public bool IsInvalid => code is LicenseValidationCode.NOT_FOUND or LicenseValidationCode.SUSPENDED or LicenseValidationCode.SUSPENDED or LicenseValidationCode.EXPIRED or LicenseValidationCode.BANNED;
     }
 }

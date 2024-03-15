@@ -5,7 +5,7 @@ using Util;
 
 namespace Plugin
 {
-    public class CommonCredentialsPlugin : PreAuthPlugin
+    public class CommonCredentialsPlugin(ILogger logger, IConnectionUtil connectionUtil, AuthenticationData authenticationData) : PreAuthPlugin(logger, s_pluginId, s_category, s_issueTitle, s_severity)
     {
         private static readonly PluginId s_pluginId = PluginId.CommonCredentials;
         private static readonly string s_category = PluginCategories.Authentication;
@@ -13,21 +13,6 @@ namespace Plugin
 
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L
         private static readonly double s_severity = 7.3;
-
-        private readonly IConnectionUtil _connectionUtil;
-        private readonly AuthenticationData _authenticationData;
-
-        public CommonCredentialsPlugin(ILogger logger, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
-        {
-            _connectionUtil = new ConnectionUtil();
-            _authenticationData = authenticationData;
-        }
-
-        public CommonCredentialsPlugin(ILogger logger, IConnectionUtil connectionUtil, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
-        {
-            _connectionUtil = connectionUtil;
-            _authenticationData = authenticationData;
-        }
 
         public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
@@ -49,7 +34,7 @@ namespace Plugin
             }
             else if (usernameEndpointWithApplicationAuthentication != null)
             {
-                foreach (CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
+                foreach (CertificateIdentifier applicationCertificate in authenticationData.applicationCertificates)
                 {
                     AttempLoginWithUsernamesPasswords(sessions, validCredentials, new Endpoint(usernameEndpointWithApplicationAuthentication), applicationCertificate);
                 }
@@ -72,9 +57,9 @@ namespace Plugin
                 ISecurityTestSession? session;
 
                 if (certificateIdentifier == null)
-                    session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password));
+                    session = connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password));
                 else
-                    session = _connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password), certificateIdentifier);
+                    session = connectionUtil.AttemptLogin(endpoint, new UserIdentity(username, password), certificateIdentifier);
 
                 if (session != null && session.Session.Connected)
                 {

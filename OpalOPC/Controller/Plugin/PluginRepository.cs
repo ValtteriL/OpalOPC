@@ -10,7 +10,7 @@ namespace Plugin
         List<IPlugin> GetAll();
     }
 
-    public class PluginRepository(ILogger<IPluginRepository> logger, IKnownVulnerabilityApiRequestUtil knownVulnerabilityApiRequestUtil) : IPluginRepository
+    public class PluginRepository(ILogger<IPluginRepository> logger, IKnownVulnerabilityApiRequestUtil knownVulnerabilityApiRequestUtil, ISelfSignedCertificateUtil selfSignedCertificateUtil, IConnectionUtil connectionUtil) : IPluginRepository
     {
 
         public List<IPlugin> GetAll() => InitializePlugins(new AuthenticationData()); // just for getting all plugins, but not running them
@@ -27,18 +27,18 @@ namespace Plugin
                 new SecurityPolicyBasic256Plugin(logger),
                 new SecurityPolicyNonePlugin(logger),
 
-                new AnonymousAuthenticationPlugin(logger, authenticationData),
+                new AnonymousAuthenticationPlugin(logger, connectionUtil, authenticationData),
                 new SelfSignedCertificatePlugin(logger),
 
-                new ProvidedCredentialsPlugin(logger, authenticationData),
-                new CommonCredentialsPlugin(logger, authenticationData),
-                new BruteForcePlugin(logger, authenticationData),
+                new ProvidedCredentialsPlugin(logger, connectionUtil, authenticationData),
+                new CommonCredentialsPlugin(logger, connectionUtil, authenticationData),
+                new BruteForcePlugin(logger, connectionUtil, authenticationData),
                 new RBACNotSupportedPlugin(logger),
                 new AuditingDisabledPlugin(logger),
                 new ServerStatusPlugin(logger),
                 new ServerCertificateInvalidPlugin(logger),
                 new ServerCertificatePlugin(logger),
-                new SelfSignedUserCertificatePlugin(logger, authenticationData),
+                new SelfSignedUserCertificatePlugin(logger, selfSignedCertificateUtil, connectionUtil, authenticationData),
                 new KnownVulnerabilityPlugin(logger, knownVulnerabilityApiRequestUtil),
             ];
         }

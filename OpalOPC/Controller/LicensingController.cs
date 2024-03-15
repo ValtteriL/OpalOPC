@@ -8,31 +8,56 @@ namespace Controller
     {
         bool IsLicensed();
     }
-    internal class LicensingController(ILogger<LicensingController> logger, IKeygenApiUtil keygenApiUtil) : ILicensingController
+    public class LicensingController(ILogger<LicensingController> logger, IKeygenApiUtil keygenApiUtil, IFileUtil fileUtil) : ILicensingController
     {
         private string? _machineId;
         private string? _licenseKey;
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private bool _isSuccessfullyLicensed = false;
+        public static readonly string s_licenseKeyEnv = "OPALOPC_LICENSE_KEY";
+        public static readonly string s_licenseFileName = "license.txt";
 
         public bool IsLicensed()
         {
-            // get license key
-            // if no key, return false
-            if (!GetLicenseKey())
+            _licenseKey = GetLicenseKey();
+            if (_licenseKey == null)
             {
+                logger.LogError("{Message}", "Missing software license key");
                 return false;
             }
 
-            _isSuccessfullyLicensed = ValidateLicense();
+            try
+            {
+                _isSuccessfullyLicensed = ValidateLicense();
+            }
+            catch (Exception e)
+            {
+                TelemetryUtil.TrackException(e);
+            }
 
             return _isSuccessfullyLicensed;
         }
 
-        private bool GetLicenseKey()
+        private string? GetLicenseKey()
         {
-            // get license key from file or environment variable
-            throw new NotImplementedException();
+            // read environment variable "key"
+            // if not found, read from file
+            // if not found, return null
+
+            string? envLicenseKey = Environment.GetEnvironmentVariable(s_licenseKeyEnv);
+            if (envLicenseKey != null)
+            {
+                logger.LogTrace("{msg}", $"Using license key from environment variable {s_licenseKeyEnv}");
+                return envLicenseKey;
+            }
+
+            if (fileUtil.FileExistsInAppdata(s_licenseFileName))
+            {
+                logger.LogTrace("{msg}", $"Using license key from file {s_licenseFileName}");
+                return fileUtil.ReadFileInAppdataToList(s_licenseFileName).FirstOrDefault();
+            }
+
+            return null;
         }
 
         private bool ValidateLicense()
@@ -51,19 +76,19 @@ namespace Controller
             }
             else if (validationReponse.IsMachineLimitExceeded)
             {
-                string message = "License node limit exceeded.";
+                string message = "License node limit exceeded";
                 logger.LogCritical("{msg}", message);
                 throw new Exception(message);
             }
             else if (validationReponse.IsInvalid)
             {
-                string message = $"Invalid license. Reported as {validationReponse.Code}.";
+                string message = $"Invalid license. Reported as {validationReponse.code}";
                 logger.LogCritical("{msg}", message);
                 throw new Exception(message);
             }
             else
             {
-                string message = "Licensing API returned an unexpected response.";
+                string message = "Licensing API returned an unexpected response";
                 logger.LogCritical("{msg}", message);
                 throw new Exception(message);
             }
@@ -81,14 +106,17 @@ namespace Controller
 
         private void StartHeartbeat()
         {
+            // send single heartbeat for tests
+            keygenApiUtil.Heartbeat(_licenseKey!, _machineId!);
+
             // start a heartbeat every 10 minutes in background
             Task.Run(() =>
             {
                 while (true)
                 {
+                    Thread.Sleep(10 * 1000);
                     logger.LogTrace("Sending licensing heartbeat");
                     keygenApiUtil.Heartbeat(_licenseKey!, _machineId!);
-                    Thread.Sleep(10 * 1000);
                 }
             }, _cancellationTokenSource.Token);
         }
@@ -102,7 +130,7 @@ namespace Controller
         public void Dispose()
         {
             _cancellationTokenSource.Cancel();
-            if (_isSuccessfullyLicensed)
+            if (_isSuccessfullyLicensed && _machineId != null)
             {
                 DeactivateMachine();
             }

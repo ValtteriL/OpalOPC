@@ -25,7 +25,7 @@ public class SelfSignedCertificateUtil_Tests
     {
         // arrange
         SelfSignedCertificateUtil selfSignedCertificateUtil = new(_fileUtilMock.Object);
-        _fileUtilMock.Setup(fileUtil => fileUtil.CreateCertificateIdentifierFromPfxFile(It.IsAny<string>())).Throws(new FileNotFoundException());
+        _fileUtilMock.Setup(fileUtil => fileUtil.CreateCertificateIdentifierFromPfxFileInAppdata(It.IsAny<string>())).Throws(new FileNotFoundException());
 
         // act
         CertificateIdentifier certificate = selfSignedCertificateUtil.GetCertificate();
@@ -41,7 +41,7 @@ public class SelfSignedCertificateUtil_Tests
     {
         // arrange
         SelfSignedCertificateUtil selfSignedCertificateUtil = new(_fileUtilMock.Object);
-        _fileUtilMock.Setup(fileUtil => fileUtil.CreateCertificateIdentifierFromPfxFile(It.IsAny<string>())).Returns(_certificateIdentifier);
+        _fileUtilMock.Setup(fileUtil => fileUtil.CreateCertificateIdentifierFromPfxFileInAppdata(It.IsAny<string>())).Returns(_certificateIdentifier);
 
         // act
         CertificateIdentifier certificate = selfSignedCertificateUtil.GetCertificate();
@@ -77,7 +77,7 @@ public class SelfSignedCertificateUtil_Tests
     {
         // arrange
         SelfSignedCertificateUtil selfSignedCertificateUtil = new(_fileUtilMock.Object);
-        _fileUtilMock.Setup(fileUtil => fileUtil.WriteCertificateToDisk(It.IsAny<CertificateIdentifier>(), It.IsAny<string>())).Throws(new Exception());
+        _fileUtilMock.Setup(fileUtil => fileUtil.WriteCertificateToFileInAppdata(It.IsAny<CertificateIdentifier>(), It.IsAny<string>())).Throws(new Exception());
 
         // act
         try

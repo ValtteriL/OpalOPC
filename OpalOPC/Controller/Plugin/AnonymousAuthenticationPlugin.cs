@@ -5,7 +5,7 @@ using Util;
 
 namespace Plugin
 {
-    public class AnonymousAuthenticationPlugin : PreAuthPlugin
+    public class AnonymousAuthenticationPlugin(ILogger logger, IConnectionUtil connectionUtil, AuthenticationData authenticationData) : PreAuthPlugin(logger, s_pluginId, s_category, s_issueTitle, s_severity)
     {
         // "′anonymous′ should be used only for accessing non-critical UA server resources"
         //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
@@ -16,20 +16,6 @@ namespace Plugin
 
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L
         private static readonly double s_severity = 7.3;
-
-        private readonly IConnectionUtil _connectionUtil;
-        private readonly AuthenticationData _authenticationData;
-
-        public AnonymousAuthenticationPlugin(ILogger logger, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
-        {
-            _connectionUtil = new ConnectionUtil();
-            _authenticationData = authenticationData;
-        }
-        public AnonymousAuthenticationPlugin(ILogger logger, IConnectionUtil connectionUtil, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
-        {
-            _connectionUtil = connectionUtil;
-            _authenticationData = authenticationData;
-        }
 
         public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
@@ -50,7 +36,7 @@ namespace Plugin
             // try connecting anonymously without or with self-signed app cert
             try
             {
-                ISecurityTestSession session = _connectionUtil.StartSession(endPointToTryWithoutProvidedAppCertificates, new UserIdentity()).Result;
+                ISecurityTestSession session = connectionUtil.StartSession(endPointToTryWithoutProvidedAppCertificates, new UserIdentity()).Result;
                 sessions.Add(session);
                 return (CreateIssue(), sessions);
             }
@@ -65,12 +51,12 @@ namespace Plugin
                 return (null, sessions);
             }
 
-            foreach (Opc.Ua.CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
+            foreach (Opc.Ua.CertificateIdentifier applicationCertificate in authenticationData.applicationCertificates)
             {
                 // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                 try
                 {
-                    ISecurityTestSession session = _connectionUtil.StartSession(anonymousEndpointWithApplicationAuthentication, new UserIdentity(), applicationCertificate).Result;
+                    ISecurityTestSession session = connectionUtil.StartSession(anonymousEndpointWithApplicationAuthentication, new UserIdentity(), applicationCertificate).Result;
                     sessions.Add(session);
                     return (CreateIssue(), sessions);
                 }
