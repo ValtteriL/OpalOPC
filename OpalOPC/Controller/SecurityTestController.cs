@@ -19,7 +19,7 @@ namespace Controller
         // Run all security tests and return result-populated opcTarget
         public ICollection<Target> TestTargetSecurity(ICollection<Target> opcTargets, AuthenticationData authenticationData)
         {
-            _securityTestPlugins = pluginRepository.GetAll(authenticationData);
+            _securityTestPlugins = pluginRepository.BuildAll(authenticationData);
 
             logger.LogTrace("{Message}", $"Loaded {_securityTestPlugins.Count} security test plugins");
             logger.LogTrace("{Message}", $"Plugins: {string.Join(", ", _securityTestPlugins.Select(p => (int)p.Id))}");
@@ -111,14 +111,17 @@ namespace Controller
             foreach (IPostAuthPlugin postAuthPlugin in GetPluginsByType(Plugintype.PostAuthPlugin).Cast<IPostAuthPlugin>())
             {
                 taskUtil.CheckForCancellation();
-                Issue? postauthIssue = postAuthPlugin.Run(server.securityTestSessions.First().Session);
-                if (postauthIssue != null) server.AddIssue(postauthIssue);
+                Issue? postauthIssue = postAuthPlugin.Run(server.securityTestSessions.Select(s => s.Session).ToList());
+                if (postauthIssue != null)
+                {
+                    server.AddIssue(postauthIssue);
+                }
             }
 
             foreach (IMultipleIssuesPostAuthPlugin multipleIssuesPostAuthPlugin in GetPluginsByType(Plugintype.PostAuthMultipleIssuesPlugin).Cast<IMultipleIssuesPostAuthPlugin>())
             {
                 taskUtil.CheckForCancellation();
-                ICollection<Issue> postauthIssues = multipleIssuesPostAuthPlugin.Run(server.securityTestSessions.First().Session).Result;
+                ICollection<Issue> postauthIssues = multipleIssuesPostAuthPlugin.Run(server.securityTestSessions.Select(s => s.Session).ToList()).Result;
                 foreach (Issue issue in postauthIssues)
                 {
                     server.AddIssue(issue);

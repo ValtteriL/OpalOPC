@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using Opc.Ua;
-using Opc.Ua.Security.Certificates;
 using static System.Environment;
 
 namespace Util
@@ -12,8 +11,9 @@ namespace Util
 
     public class SelfSignedCertificateUtil : ISelfSignedCertificateUtil
     {
+        public static readonly string s_applicationName = "OpalOPC@host";
         private readonly string _subject = "CN=OpalOPC Security Scanner, C=FI, S=Uusimaa, O=Molemmat Oy";
-        private readonly string _applicationUri = "urn:opalopc.com";
+        public static readonly string s_applicationUri = "urn:OPCUA:OpalOPC";
         private readonly string[] _domainNames = ["opalopc.com"];
         private readonly string _dirName = "OpalOPC";
         private readonly string _certFilename = "cert.pfx";
@@ -51,11 +51,12 @@ namespace Util
 
         private CertificateIdentifier GenerateNewCertificate()
         {
-            CertificateIdentifier certificate = new(CertificateBuilder
-                .Create(_subject)
-                .AddExtension(new X509SubjectAltNameExtension(_applicationUri, _domainNames))
-                .SetNotAfter(DateTime.UtcNow.AddYears(1))
-                .CreateForRSA());
+            CertificateIdentifier certificate = new(CertificateFactory.CreateCertificate(
+                s_applicationUri,
+                s_applicationName,
+                _subject,
+                _domainNames)
+                .SetNotAfter(DateTime.UtcNow.AddYears(1)).CreateForRSA());
 
             _fileUtil.WriteCertificateToDisk(certificate, _certPath);
 

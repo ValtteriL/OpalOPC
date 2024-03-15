@@ -179,7 +179,7 @@ namespace View
         private static IList<ReportingDescriptor> BuildRules(IPluginRepository pluginRepository)
         {
             IList<ReportingDescriptor> rules = [];
-            foreach (IPlugin plugin in pluginRepository.GetAll(new AuthenticationData()))
+            foreach (IPlugin plugin in pluginRepository.GetAll())
             {
                 rules.Add(BuildRule(plugin));
             }

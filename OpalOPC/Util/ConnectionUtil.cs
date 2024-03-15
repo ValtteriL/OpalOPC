@@ -1,6 +1,8 @@
+using System.Security.Cryptography.X509Certificates;
 using Model;
 using Opc.Ua;
 using Opc.Ua.Client;
+using Opc.Ua.Security.Certificates;
 
 namespace Util
 {
@@ -14,8 +16,7 @@ namespace Util
 
     public class ConnectionUtil : IConnectionUtil
     {
-        private readonly ApplicationConfiguration _applicationConfiguration;
-        private readonly CertificateIdentifier _certificateIdentifier;
+        private readonly CertificateIdentifier _selfSignedCertificate;
         private readonly SelfSignedCertificateUtil _selfSignedCertificateUtil;
         private readonly string _sessionName = "OpalOPC Security Check";
 
@@ -23,29 +24,20 @@ namespace Util
         {
             // Generate self-signed certificate for client
             _selfSignedCertificateUtil = new SelfSignedCertificateUtil();
-            _certificateIdentifier = _selfSignedCertificateUtil.GetCertificate();
+            _selfSignedCertificate = _selfSignedCertificateUtil.GetCertificate();
+        }
 
-            _applicationConfiguration = new ApplicationConfiguration
-            {
-                ApplicationName = "OpalOPC@host",
-                ApplicationUri = "urn:OPCUA:OpalOPC",
-                ApplicationType = ApplicationType.Server,
-                ClientConfiguration = new ClientConfiguration(),
-                SecurityConfiguration = new SecurityConfiguration(),
-
-                // accept any server certificates
-                CertificateValidator = new CertificateValidator
-                {
-                    AutoAcceptUntrustedCertificates = true
-                }
-            };
-
+        private class RelaxedCertificateValidator : CertificateValidator
+        {
+            public override void Validate(X509Certificate2Collection certificateChain) { return; }
+            public override void Validate(X509Certificate2Collection chain, ConfiguredEndpoint endpoint) { return; }
+            protected override Task InternalValidate(X509Certificate2Collection certificates, ConfiguredEndpoint endpoint) { return Task.CompletedTask; }
         }
 
         // Authenticate with OPC UA server and start a session
         public async Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, UserIdentity userIdentity)
         {
-            SessionCredential credential = new(userIdentity, _certificateIdentifier, true);
+            SessionCredential credential = new(userIdentity, _selfSignedCertificate, true);
             return await StartSession(endpointDescription, credential);
         }
 
@@ -57,16 +49,18 @@ namespace Util
 
         private async Task<ISecurityTestSession> StartSession(EndpointDescription endpointDescription, SessionCredential sessionCredential)
         {
+            ApplicationConfiguration applicationConfiguration = buildApplicationConfiguration(sessionCredential.applicationCertificate);
+
             // Prepare application and endpoint configurations
-            _applicationConfiguration.SecurityConfiguration.ApplicationCertificate = sessionCredential.applicationCertificate;
-            EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(_applicationConfiguration);
+            applicationConfiguration.SecurityConfiguration.ApplicationCertificate = sessionCredential.applicationCertificate;
+            EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(applicationConfiguration);
 
             ConfiguredEndpoint endpoint = new(null, endpointDescription, endpointConfiguration);
 
             DefaultSessionFactory sessionFactory = new();
 
             ISession session = await sessionFactory.CreateAsync(
-                _applicationConfiguration,
+                applicationConfiguration,
                 endpoint,
                 false,
                 false,
@@ -106,5 +100,26 @@ namespace Util
         }
 
         public ISecurityTestSession? AttemptLogin(Endpoint endpoint, UserIdentity identity) => AttemptLogin(endpoint, identity, null);
+
+        private static ApplicationConfiguration buildApplicationConfiguration(CertificateIdentifier applicationCertificate)
+        {
+            return new ApplicationConfiguration
+            {
+                ApplicationName = SelfSignedCertificateUtil.s_applicationName,
+                ApplicationUri = applicationCertificate.Certificate.FindExtension<X509SubjectAltNameExtension>().Uris.FirstOrDefault(SelfSignedCertificateUtil.s_applicationUri),
+                ApplicationType = ApplicationType.Server,
+                ClientConfiguration = new ClientConfiguration(),
+                SecurityConfiguration = new SecurityConfiguration()
+                {
+                    ApplicationCertificate = applicationCertificate
+                },
+
+                // accept any server certificates
+                CertificateValidator = new RelaxedCertificateValidator
+                {
+                    AutoAcceptUntrustedCertificates = true
+                }
+            };
+        }
     }
 }
