@@ -76,7 +76,7 @@ public class AnonymousAuthenticationPluginTest
     }
 
     [Fact]
-    public void FailureToOpenSessionFailsGracefully()
+    public void FailureToOpenSessionResultsInNotVulnerable()
     {
         // arrange
         EndpointDescription endpointDescription = new()
@@ -95,7 +95,7 @@ public class AnonymousAuthenticationPluginTest
 
         // assert
         _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Once);
-        Assert.True(issue != null);
+        Assert.True(issue == null);
         Assert.Empty(sessions);
     }
 
@@ -111,6 +111,7 @@ public class AnonymousAuthenticationPluginTest
         _endpointDescriptions.Add(endpointDescription);
 
         // StartSession should return a dummy session
+        _mockConnectionUtil.Setup(conn => conn.StartSession(endpointDescription, It.IsAny<UserIdentity>())).Throws(new Exception()); // first call (without using provided app cert) fails
         _mockConnectionUtil.Setup(conn => conn.StartSession(endpointDescription, It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()).Result).Returns(_mockSession.Object);
 
         AuthenticationData authenticationData = new();
@@ -123,7 +124,7 @@ public class AnonymousAuthenticationPluginTest
         (Issue? issue, ICollection<ISecurityTestSession> sessions) = plugin.Run(_discoveryUrl, _endpointDescriptions);
 
         // assert
-        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Never);
+        _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>()), Times.Once);
         _mockConnectionUtil.Verify(conn => conn.StartSession(It.IsAny<EndpointDescription>(), It.IsAny<UserIdentity>(), It.IsAny<CertificateIdentifier>()), Times.Once);
         Assert.True(issue != null);
         Assert.True(sessions.Count == 1);

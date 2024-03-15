@@ -55,24 +55,24 @@ namespace Plugin
 
     public interface IPostAuthPlugin : IPlugin
     {
-        public Issue? Run(ISession session);
+        public Issue? Run(IList<ISession> sessions);
     }
 
     public abstract class PostAuthPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : Plugin(logger, pluginId, category, name, severity), IPostAuthPlugin
     {
         public Plugintype Type => Plugintype.PostAuthPlugin;
-        public abstract Issue? Run(ISession session);
+        public abstract Issue? Run(IList<ISession> sessions);
     }
 
     public interface IMultipleIssuesPostAuthPlugin : IPlugin
     {
-        public Task<List<Issue>> Run(ISession session);
+        public Task<List<Issue>> Run(IList<ISession> sessions);
     }
 
     public abstract class MultipleIssuesPostAuthPlugin(ILogger logger, PluginId pluginId, string category, string name, double severity) : Plugin(logger, pluginId, category, name, severity), IMultipleIssuesPostAuthPlugin
     {
         public Plugintype Type => Plugintype.PostAuthMultipleIssuesPlugin;
-        public abstract Task<List<Issue>> Run(ISession session);
+        public abstract Task<List<Issue>> Run(IList<ISession> sessions);
     }
 
     public interface ISessionCredentialPlugin : IPlugin

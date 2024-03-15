@@ -28,7 +28,7 @@ public class RBACNotSupportedPluginTest
         // arrange
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Certificate) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.Certificate)]),
             EndpointUrl = "opc.tcp://localhost:4840",
         };
         Endpoint endpoint = new(endpointDescription);
@@ -38,7 +38,7 @@ public class RBACNotSupportedPluginTest
         _mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
 
         // act
-        Issue? issue = _plugin.Run(_mockSession.Object);
+        Issue? issue = _plugin.Run([_mockSession.Object]);
 
         // assert
         Assert.True(issue == null);
@@ -50,7 +50,7 @@ public class RBACNotSupportedPluginTest
         // arrange
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.Anonymous)]),
             EndpointUrl = "opc.tcp://localhost:4840",
         };
         Endpoint endpoint = new(endpointDescription);
@@ -60,7 +60,7 @@ public class RBACNotSupportedPluginTest
         _mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
 
         // act
-        Issue? issue = _plugin.Run(_mockSession.Object);
+        Issue? issue = _plugin.Run([_mockSession.Object]);
 
         // assert
         Assert.True(issue != null);

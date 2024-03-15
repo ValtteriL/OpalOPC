@@ -45,15 +45,17 @@ namespace Plugin
 
             List<ISecurityTestSession> sessions = [];
 
+            EndpointDescription? endpointToTryWithoutOrWithSelfSignedAppCertificate = userCertificateEndpointNoApplicationAuthentication ?? userCertificateEndpointWithApplicationAuthentication;
+
             UserIdentity userIdentityWithCertificate = new(_selfSignedCertificateUtil.GetCertificate());
 
-            if (userCertificateEndpointNoApplicationAuthentication != null)
+            if (endpointToTryWithoutOrWithSelfSignedAppCertificate != null)
             {
                 // try with self-signed cert, if not working, try application certificates one by one until one works or they run out
                 // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                 try
                 {
-                    ISecurityTestSession session = _connectionUtil.StartSession(userCertificateEndpointNoApplicationAuthentication, userIdentityWithCertificate).Result;
+                    ISecurityTestSession session = _connectionUtil.StartSession(endpointToTryWithoutOrWithSelfSignedAppCertificate, userIdentityWithCertificate).Result;
                     sessions.Add(session);
                     return (CreateIssue(), sessions);
                 }

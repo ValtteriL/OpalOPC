@@ -41,9 +41,11 @@ namespace Plugin
 
             List<(string username, string password)> validUsernamePasswords = [];
 
-            if (usernameEndpointsNoApplicationAuthentication != null)
+            EndpointDescription? endpointToTryWithoutOrWithSelfSignedAppCertificate = usernameEndpointsNoApplicationAuthentication ?? usernameEndpointWithApplicationAuthentication;
+
+            if (endpointToTryWithoutOrWithSelfSignedAppCertificate != null)
             {
-                AttempLoginWithUsernamesPasswords(sessions, validUsernamePasswords, new Endpoint(usernameEndpointsNoApplicationAuthentication));
+                AttempLoginWithUsernamesPasswords(sessions, validUsernamePasswords, new Endpoint(endpointToTryWithoutOrWithSelfSignedAppCertificate));
             }
 
             if (validUsernamePasswords.Count == 0 && usernameEndpointWithApplicationAuthentication != null)

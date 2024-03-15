@@ -28,17 +28,17 @@ public class ServerStatusPluginTest
         // arrange
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Certificate) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.Certificate)]),
             EndpointUrl = "opc.tcp://localhost:4840",
         };
         Endpoint endpoint = new(endpointDescription);
 
         // session should return null on session.ReadValue(Util.WellKnownNodes.Server_ServerStatus)
-        _mockSession.Setup(session => session.ReadValue(Util.WellKnownNodes.Server_ServerStatus, typeof(ServerStatusDataType))).Returns(null);
+        //_mockSession.Setup(session => session.ReadValue(Util.WellKnownNodes.Server_ServerStatus, typeof(ServerStatusDataType))).Returns(null);
         _mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
 
         // act
-        Issue? issue = _plugin.Run(_mockSession.Object);
+        Issue? issue = _plugin.Run([_mockSession.Object]);
 
         // assert
         Assert.True(issue == null);
@@ -50,14 +50,15 @@ public class ServerStatusPluginTest
         // arrange
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.Anonymous)]),
             EndpointUrl = "opc.tcp://localhost:4840",
         };
         Endpoint endpoint = new(endpointDescription);
 
         // session should return plain ServerStatusDataType on session.ReadValue(Util.WellKnownNodes.Server_ServerStatus)
         _mockSession.Setup(session => session.ReadValue(Util.WellKnownNodes.Server_ServerStatus, typeof(ServerStatusDataType))).Returns(
-            new ServerStatusDataType() {
+            new ServerStatusDataType()
+            {
                 SecondsTillShutdown = 0,
                 State = ServerState.Running,
                 BuildInfo = new BuildInfo()
@@ -76,7 +77,7 @@ public class ServerStatusPluginTest
         _mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
 
         // act
-        Issue? issue = _plugin.Run(_mockSession.Object);
+        Issue? issue = _plugin.Run([_mockSession.Object]);
 
         // assert
         Assert.True(issue != null);
@@ -88,7 +89,7 @@ public class ServerStatusPluginTest
         // arrange
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Anonymous) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.Anonymous)]),
             EndpointUrl = "opc.tcp://localhost:4840",
         };
         Endpoint endpoint = new(endpointDescription);
@@ -99,7 +100,7 @@ public class ServerStatusPluginTest
         _mockSession.Setup(session => session.Endpoint).Returns(endpointDescription);
 
         // act
-        Issue? issue = _plugin.Run(_mockSession.Object);
+        Issue? issue = _plugin.Run([_mockSession.Object]);
 
         // assert
         Assert.True(issue != null);
