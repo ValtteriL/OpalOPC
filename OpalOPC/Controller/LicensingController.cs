@@ -7,6 +7,7 @@ namespace Controller
     public interface ILicensingController : IDisposable
     {
         Task<bool> IsLicensed();
+        Task StoreLicense(string licenseKey);
     }
     public class LicensingController(ILogger<LicensingController> logger, IKeygenApiUtil keygenApiUtil, IFileUtil fileUtil) : ILicensingController
     {
@@ -150,6 +151,12 @@ namespace Controller
             {
                 DeactivateMachine();
             }
+        }
+
+        public async Task StoreLicense(string licenseKey)
+        {
+            TelemetryUtil.TrackEvent("Store license key");
+            await fileUtil.WriteStringToFileInAppdata(s_licenseFileName, licenseKey);
         }
     }
 }

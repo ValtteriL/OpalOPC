@@ -13,6 +13,7 @@ namespace Util
         public void WriteCertificateToFileInAppdata(CertificateIdentifier certificate, string filename);
         public CertificateIdentifier CreateCertificateIdentifierFromPfxFileInAppdata(string filename);
         public bool FileExistsInAppdata(string filename);
+        public Task WriteStringToFileInAppdata(string filename, string contents);
     }
 
     public class FileUtil : IFileUtil
@@ -51,6 +52,11 @@ namespace Util
         public CertificateIdentifier CreateCertificateIdentifierFromPfxFileInAppdata(string filename)
         {
             return new CertificateIdentifier(new X509Certificate2(Path.Combine(_opalOPCDirectory, filename)));
+        }
+
+        public async Task WriteStringToFileInAppdata(string filename, string contents)
+        {
+            await File.WriteAllTextAsync(Path.Combine(_opalOPCDirectory, filename), contents);
         }
 
         public bool FileExistsInAppdata(string filename)

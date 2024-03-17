@@ -159,5 +159,18 @@ namespace Tests
             // Assert
             Assert.False(result);
         }
+
+        [Fact]
+        public async Task StoreLicenseWorksAsync()
+        {
+            // Arrange
+            _fileUtil.Setup(f => f.WriteStringToFileInAppdata(LicensingController.s_licenseFileName, s_licenseKeyValue));
+
+            // Act
+            await _licensingController.StoreLicense(s_licenseKeyValue);
+
+            // Assert
+            _fileUtil.Verify(f => f.WriteStringToFileInAppdata(LicensingController.s_licenseFileName, s_licenseKeyValue), Times.Once);
+        }
     }
 }
