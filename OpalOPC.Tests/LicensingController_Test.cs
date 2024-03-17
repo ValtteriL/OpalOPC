@@ -27,26 +27,26 @@ namespace Tests
         }
 
         [Fact]
-        public void LicensingWorksWithEnvLicenseKey()
+        public async Task LicensingWorksWithEnvLicenseKeyAsync()
         {
             try
             {
                 // Arrange
                 Environment.SetEnvironmentVariable(LicensingController.s_licenseKeyEnv, s_licenseKeyValue);
-                _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).Returns(s_nomachineLicenseValidationResponse);
-                _keygenApiUtil.Setup(k => k.ActivateMachine(It.IsAny<LicenseValidationResponse>())).Returns(s_machineActivationResponse);
+                _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).ReturnsAsync(s_nomachineLicenseValidationResponse);
+                _keygenApiUtil.Setup(k => k.ActivateMachine(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(s_machineActivationResponse);
                 _keygenApiUtil.Setup(k => k.Heartbeat(It.IsAny<string>(), It.IsAny<string>()));
 
                 // Act
-                bool result = _licensingController.IsLicensed();
+                bool result = await _licensingController.IsLicensed();
                 _licensingController.Dispose();
 
                 // Assert (make sure machine is deactivated at end as well), make sure heartbeats are sent
                 Assert.True(result);
                 _keygenApiUtil.Verify(k => k.ValidateLicenseKey(s_licenseKeyValue), Times.Once);
-                _keygenApiUtil.Verify(k => k.ActivateMachine(s_nomachineLicenseValidationResponse), Times.Once);
+                _keygenApiUtil.Verify(k => k.ActivateMachine(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
                 _keygenApiUtil.Verify(k => k.Heartbeat(s_licenseKeyValue, s_machineId), Times.Once);
-                _keygenApiUtil.Verify(k => k.DeactivateMachine(s_machineId), Times.Once);
+                _keygenApiUtil.Verify(k => k.DeactivateMachine(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
                 _fileUtil.Verify(f => f.FileExistsInAppdata(It.IsAny<string>()), Times.Never);
 
             }
@@ -57,17 +57,17 @@ namespace Tests
         }
 
         [Fact]
-        public void LicensingWorksWithFileLicenseKey()
+        public async Task LicensingWorksWithFileLicenseKeyAsync()
         {
             // Arrange
-            _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).Returns(s_nomachineLicenseValidationResponse);
-            _keygenApiUtil.Setup(k => k.ActivateMachine(It.IsAny<LicenseValidationResponse>())).Returns(s_machineActivationResponse);
+            _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).ReturnsAsync(s_nomachineLicenseValidationResponse);
+            _keygenApiUtil.Setup(k => k.ActivateMachine(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(s_machineActivationResponse);
             _keygenApiUtil.Setup(k => k.Heartbeat(It.IsAny<string>(), It.IsAny<string>()));
             _fileUtil.Setup(f => f.FileExistsInAppdata(LicensingController.s_licenseFileName)).Returns(true);
             _fileUtil.Setup(f => f.ReadFileInAppdataToList(LicensingController.s_licenseFileName)).Returns([s_licenseKeyValue]);
 
             // Act
-            bool result = _licensingController.IsLicensed();
+            bool result = await _licensingController.IsLicensed();
             _licensingController.Dispose();
 
             // Assert (make sure machine is deactivated at end as well), make sure heartbeats are sent
@@ -75,21 +75,21 @@ namespace Tests
             _fileUtil.Verify(f => f.FileExistsInAppdata(LicensingController.s_licenseFileName), Times.Once);
             _fileUtil.Verify(f => f.ReadFileInAppdataToList(LicensingController.s_licenseFileName), Times.Once);
             _keygenApiUtil.Verify(k => k.ValidateLicenseKey(s_licenseKeyValue), Times.Once);
-            _keygenApiUtil.Verify(k => k.ActivateMachine(s_nomachineLicenseValidationResponse), Times.Once);
+            _keygenApiUtil.Verify(k => k.ActivateMachine(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             _keygenApiUtil.Verify(k => k.Heartbeat(s_licenseKeyValue, s_machineId), Times.Once);
-            _keygenApiUtil.Verify(k => k.DeactivateMachine(s_machineId), Times.Once);
+            _keygenApiUtil.Verify(k => k.DeactivateMachine(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
-        public void LicensingWorksIfDirectValidMessageReceived()
+        public async Task LicensingWorksIfDirectValidMessageReceivedAsync()
         {
             // Arrange
-            _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).Returns(s_validLicenseValidationResponse);
+            _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).ReturnsAsync(s_validLicenseValidationResponse);
             _fileUtil.Setup(f => f.FileExistsInAppdata(LicensingController.s_licenseFileName)).Returns(true);
             _fileUtil.Setup(f => f.ReadFileInAppdataToList(LicensingController.s_licenseFileName)).Returns([s_licenseKeyValue]);
 
             // Act
-            bool result = _licensingController.IsLicensed();
+            bool result = await _licensingController.IsLicensed();
             _licensingController.Dispose();
 
             // Assert (now no activation, heartbeat, or deactivation should be called)
@@ -97,21 +97,21 @@ namespace Tests
             _fileUtil.Verify(f => f.FileExistsInAppdata(LicensingController.s_licenseFileName), Times.Once);
             _fileUtil.Verify(f => f.ReadFileInAppdataToList(LicensingController.s_licenseFileName), Times.Once);
             _keygenApiUtil.Verify(k => k.ValidateLicenseKey(s_licenseKeyValue), Times.Once);
-            _keygenApiUtil.Verify(k => k.ActivateMachine(It.IsAny<LicenseValidationResponse>()), Times.Never);
+            _keygenApiUtil.Verify(k => k.ActivateMachine(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             _keygenApiUtil.Verify(k => k.Heartbeat(It.IsAny<string>(), s_machineId), Times.Never);
-            _keygenApiUtil.Verify(k => k.DeactivateMachine(It.IsAny<string>()), Times.Never);
+            _keygenApiUtil.Verify(k => k.DeactivateMachine(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
-        public void LicensingFailsWhenLicenseFileIsEmpty()
+        public async Task LicensingFailsWhenLicenseFileIsEmptyAsync()
         {
             // Arrange
-            _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).Returns(s_validLicenseValidationResponse);
+            _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).ReturnsAsync(s_validLicenseValidationResponse);
             _fileUtil.Setup(f => f.FileExistsInAppdata(LicensingController.s_licenseFileName)).Returns(true);
             _fileUtil.Setup(f => f.ReadFileInAppdataToList(LicensingController.s_licenseFileName)).Returns([]);
 
             // Act
-            bool result = _licensingController.IsLicensed();
+            bool result = await _licensingController.IsLicensed();
 
             // Assert (now no activation, heartbeat, or deactivation should be called)
             Assert.False(result);
@@ -121,15 +121,15 @@ namespace Tests
         }
 
         [Fact]
-        public void LicensingFailsWhenNoLicenseKey()
+        public async Task LicensingFailsWhenNoLicenseKeyAsync()
         {
             // Arrange
-            _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).Returns(s_validLicenseValidationResponse);
+            _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).ReturnsAsync(s_validLicenseValidationResponse);
             _fileUtil.Setup(f => f.FileExistsInAppdata(LicensingController.s_licenseFileName)).Returns(true);
             _fileUtil.Setup(f => f.ReadFileInAppdataToList(LicensingController.s_licenseFileName)).Returns([]);
 
             // Act
-            bool result = _licensingController.IsLicensed();
+            bool result = await _licensingController.IsLicensed();
 
             // Assert (now no activation, heartbeat, or deactivation should be called)
             Assert.False(result);
@@ -146,15 +146,15 @@ namespace Tests
         [InlineData(LicenseValidationResponse.LicenseValidationCode.BANNED)]
         [InlineData(LicenseValidationResponse.LicenseValidationCode.SUSPENDED)]
         [InlineData(LicenseValidationResponse.LicenseValidationCode.FINGERPRINT_SCOPE_MISMATCH)]
-        public void LicensingFailsWhenItShould(LicenseValidationResponse.LicenseValidationCode code)
+        public async void LicensingFailsWhenItShould(LicenseValidationResponse.LicenseValidationCode code)
         {
             // Arrange
-            _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).Returns(new LicenseValidationResponse(s_licenseId, code));
+            _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).ReturnsAsync(new LicenseValidationResponse(s_licenseId, code));
             _fileUtil.Setup(f => f.FileExistsInAppdata(LicensingController.s_licenseFileName)).Returns(true);
             _fileUtil.Setup(f => f.ReadFileInAppdataToList(LicensingController.s_licenseFileName)).Returns([s_licenseKeyValue]);
 
             // Act
-            bool result = _licensingController.IsLicensed();
+            bool result = await _licensingController.IsLicensed();
 
             // Assert
             Assert.False(result);

@@ -21,7 +21,7 @@ namespace ScannerApplication
             logger.LogInformation("{Message}", $"Starting OpalOPC {Util.VersionUtil.AppAssemblyVersion} ( https://opalopc.com )");
 
 
-            if (!myLicensingController.IsLicensed())
+            if (!myLicensingController.IsLicensed().Result)
             {
                 TelemetryUtil.TrackEvent("Not licensed");
                 logger.LogCritical("{Message}", "Software license validation failed. Exiting");

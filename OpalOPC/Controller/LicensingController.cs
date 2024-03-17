@@ -6,7 +6,7 @@ namespace Controller
 {
     public interface ILicensingController : IDisposable
     {
-        bool IsLicensed();
+        Task<bool> IsLicensed();
     }
     public class LicensingController(ILogger<LicensingController> logger, IKeygenApiUtil keygenApiUtil, IFileUtil fileUtil) : ILicensingController
     {
@@ -17,7 +17,7 @@ namespace Controller
         public static readonly string s_licenseKeyEnv = "OPALOPC_LICENSE_KEY";
         public static readonly string s_licenseFileName = "license.txt";
 
-        public bool IsLicensed()
+        public async Task<bool> IsLicensed()
         {
             _licenseKey = GetLicenseKey();
             if (_licenseKey == null)
@@ -28,11 +28,12 @@ namespace Controller
 
             try
             {
-                _isSuccessfullyLicensed = ValidateLicense();
+                _isSuccessfullyLicensed = await ValidateLicense();
             }
             catch (Exception e)
             {
                 TelemetryUtil.TrackException(e);
+                logger.LogCritical("{msg}", $"Exception validating license key: {e.Message}");
             }
 
             return _isSuccessfullyLicensed;
@@ -60,10 +61,23 @@ namespace Controller
             return null;
         }
 
-        private bool ValidateLicense()
+        private async Task<bool> ValidateLicense()
         {
             logger.LogTrace("Testing license key");
-            LicenseValidationResponse validationReponse = keygenApiUtil.ValidateLicenseKey(_licenseKey!);
+
+            LicenseValidationResponse validationReponse;
+
+            try
+            {
+                validationReponse = await keygenApiUtil.ValidateLicenseKey(_licenseKey!);
+            }
+            catch (Exception e)
+            {
+                logger.LogError("{msg}", $"Exception validating license key {e.Message}");
+                return false;
+            }
+
+
             if (validationReponse.IsValid)
             {
                 logger.LogTrace("License is valid");
@@ -72,19 +86,19 @@ namespace Controller
             else if (validationReponse.ShouldActivateMachine)
             {
                 logger.LogTrace("Node is not activated");
-                return ActivateMachine(validationReponse);
+                return await ActivateMachine(validationReponse);
             }
             else if (validationReponse.IsMachineLimitExceeded)
             {
                 string message = "License node limit exceeded";
                 logger.LogCritical("{msg}", message);
-                throw new Exception(message);
+                return false;
             }
             else if (validationReponse.IsInvalid)
             {
                 string message = $"Invalid license. Reported as {validationReponse.code}";
                 logger.LogCritical("{msg}", message);
-                throw new Exception(message);
+                return false;
             }
             else
             {
@@ -94,10 +108,10 @@ namespace Controller
             }
         }
 
-        private bool ActivateMachine(LicenseValidationResponse validationResponse)
+        private async Task<bool> ActivateMachine(LicenseValidationResponse validationResponse)
         {
             logger.LogTrace("Activating node");
-            MachineActivationResponse activationResponse = keygenApiUtil.ActivateMachine(validationResponse);
+            MachineActivationResponse activationResponse = await keygenApiUtil.ActivateMachine(_licenseKey!, validationResponse.LicenseId);
             _machineId = activationResponse.MachineId;
             StartHeartbeat();
             logger.LogTrace("License is valid");
@@ -124,11 +138,13 @@ namespace Controller
         private void DeactivateMachine()
         {
             logger.LogTrace("Deactivating machine");
-            keygenApiUtil.DeactivateMachine(_machineId!);
+            keygenApiUtil.DeactivateMachine(_licenseKey!, _machineId!);
         }
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
+
             _cancellationTokenSource.Cancel();
             if (_isSuccessfullyLicensed && _machineId != null)
             {
