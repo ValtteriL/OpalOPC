@@ -51,8 +51,7 @@ class OpalOPC
             }
 
             // run application
-            worker.Run(options);
-            return (int)ExitCodes.Success;
+            return await worker.Run(options);
         }
         catch (Exception ex)
         {

@@ -22,7 +22,7 @@ namespace Util
         // create own appdata directory if it doesn't exist - this is cross platform
         // see https://developers.redhat.com/blog/2018/11/07/dotnet-special-folder-api-linux#
         private static readonly string s_dirName = "OpalOPC";
-        private readonly string _opalOPCDirectory = Directory.CreateDirectory(Path.Combine(GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.Create), s_dirName)).FullName;
+        public readonly string _opalOPCDirectory = Directory.CreateDirectory(Path.Combine(GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.Create), s_dirName)).FullName;
 
         public ICollection<string> ReadFileToList(string path)
         {

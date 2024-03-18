@@ -43,25 +43,29 @@ namespace Util
                 data = new
                 {
                     type = "machines",
-                    fingerprint = _fingerprint,
-                    hostname = Environment.MachineName,
-                    platform = Environment.OSVersion.Platform,
-                    cores = Environment.ProcessorCount,
-                },
-                relationships = new
-                {
-                    license = new
+                    attributes = new
                     {
-                        data = new
+                        fingerprint = _fingerprint,
+                        hostname = Environment.MachineName,
+                        platform = Environment.OSVersion.Platform.ToString(),
+                        cores = Environment.ProcessorCount,
+                    },
+                    relationships = new
+                    {
+                        license = new
                         {
-                            type = "licenses",
-                            id = licenseId
+                            data = new
+                            {
+                                type = "licenses",
+                                id = licenseId
+                            }
                         }
                     }
-                }
+                },
             };
 
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {licenseKey}");
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"License {licenseKey}");
+            _httpClient.DefaultRequestHeaders.Accept.Add(new("application/vnd.api+json"));
 
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync(machineActivationUri, activationMessage);
             response.EnsureSuccessStatusCode();
@@ -71,14 +75,14 @@ namespace Util
         public async Task Heartbeat(string licenseKey, string machineId)
         {
             Uri hearbeatUri = new($"https://api.keygen.sh/v1/accounts/{s_keygenAccountId}/machines/{machineId}/actions/ping");
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {licenseKey}");
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"License {licenseKey}");
             HttpResponseMessage response = await _httpClient.PostAsync(hearbeatUri, null);
             response.EnsureSuccessStatusCode();
         }
         public async Task DeactivateMachine(string licenseKey, string machineId)
         {
             Uri machineDeactivationUri = new($"https://api.keygen.sh/v1/accounts/{s_keygenAccountId}/machines/{machineId}");
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {licenseKey}");
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"License {licenseKey}");
             HttpResponseMessage response = await _httpClient.DeleteAsync(machineDeactivationUri);
             response.EnsureSuccessStatusCode();
         }

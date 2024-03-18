@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "OpalOPC.WPF": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "OPALOPC_LICENSE_KEY": "FD13CC-E8B2AD-94D5D2-62E73E-08AD1A-V3"
+      }
+    },
+    "OpalOPC.WPF suspended key": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "OPALOPC_LICENSE_KEY": "E0C190-27BA37-43FC53-423CC6-45DF35-V3"
+      }
+    }
+  }
+}

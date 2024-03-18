@@ -178,22 +178,17 @@ public partial class ScanViewModel : ObservableObject, IRecipient<LogMessage>
                 logLevel = Verbosity
             };
 
-            await Task.Run(() =>
-            {
+            IHost _host = AppConfigurer.ConfigureApplication(options, loggerProvider);
 
-                IHost _host = AppConfigurer.ConfigureApplication(options, loggerProvider);
+            // set token for cancellation
+            ITaskUtil taskUtil = _host.Services.GetRequiredService<ITaskUtil>();
+            taskUtil.token = token;
+            IWorker worker = _host.Services.GetRequiredService<IWorker>();
 
-                // set token for cancellation
-                ITaskUtil taskUtil = _host.Services.GetRequiredService<ITaskUtil>();
-                taskUtil.token = token;
+            // run in background thread
+            int result = await Task.Run(async () => await worker.Run(options));
 
-                // run
-                IWorker worker = _host.Services.GetRequiredService<IWorker>();
-                worker.Run(options);
-
-            }, token);
-
-            ScanCompletedSuccessfully = true;
+            ScanCompletedSuccessfully = result == ExitCodes.Success;
         }
         catch (Exception e) when (e is UnauthorizedAccessException || e is IOException || e is PathTooLongException || e is DirectoryNotFoundException)
         {

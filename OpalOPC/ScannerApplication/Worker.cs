@@ -7,11 +7,11 @@ namespace ScannerApplication
 {
     public interface IWorker
     {
-        void Run(Options options);
+        Task<int> Run(Options options);
     }
     public class Worker(ILogger<Worker> logger, ILicensingController licensingController, IReportController reportController, IDiscoveryController discoveryController, ISecurityTestController securityTestController, ITaskUtil taskUtil) : IWorker
     {
-        public void Run(Options options)
+        public async Task<int> Run(Options options)
         {
             using ILicensingController myLicensingController = licensingController; // automatically cleanup machine activation when done
 
@@ -21,11 +21,11 @@ namespace ScannerApplication
             logger.LogInformation("{Message}", $"Starting OpalOPC {Util.VersionUtil.AppAssemblyVersion} ( https://opalopc.com )");
 
 
-            if (!myLicensingController.IsLicensed().Result)
+            if (!await myLicensingController.IsLicensed())
             {
                 TelemetryUtil.TrackEvent("Not licensed");
                 logger.LogCritical("{Message}", "Software license validation failed. Exiting");
-                return;
+                return ExitCodes.Error;
             }
             else
             {
@@ -63,6 +63,8 @@ namespace ScannerApplication
 
             logger.LogInformation("{Message}", $"HTML report saved to {options.HtmlOutputReportName} (Use browser to view it)");
             logger.LogInformation("{Message}", $"SARIF report saved to {options.SarifOutputReportName} (Use SARIF viewer to view it)");
+
+            return ExitCodes.Success;
         }
 
         private static Dictionary<string, string> GetScanProperties(ICollection<Uri> discoveryUris, AuthenticationData authenticationData)

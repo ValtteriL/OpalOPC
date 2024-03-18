@@ -9,7 +9,7 @@ namespace Controller
         Task<bool> IsLicensed();
         Task StoreLicense(string licenseKey);
     }
-    public class LicensingController(ILogger<LicensingController> logger, IKeygenApiUtil keygenApiUtil, IFileUtil fileUtil) : ILicensingController
+    public class LicensingController(ILogger<LicensingController> logger, IKeygenApiUtil keygenApiUtil, IFileUtil fileUtil, IEnvironmentService environmentService) : ILicensingController
     {
         private string? _machineId;
         private string? _licenseKey;
@@ -46,7 +46,7 @@ namespace Controller
             // if not found, read from file
             // if not found, return null
 
-            string? envLicenseKey = Environment.GetEnvironmentVariable(s_licenseKeyEnv);
+            string? envLicenseKey = environmentService.GetEnvironmentVariable(s_licenseKeyEnv);
             if (envLicenseKey != null)
             {
                 logger.LogTrace("{msg}", $"Using license key from environment variable {s_licenseKeyEnv}");

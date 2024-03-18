@@ -19,6 +19,7 @@ namespace ScannerApplication
                 .ConfigureServices((_, services) =>
                 {
                     services.AddSingleton<IWorker, Worker>();
+                    services.AddSingleton<IEnvironmentService, EnvironmentService>();
                     services.AddSingleton<IFileUtil, FileUtil>();
                     services.AddSingleton<IConnectionUtil, ConnectionUtil>();
                     services.AddSingleton<ISelfSignedCertificateUtil, SelfSignedCertificateUtil>();

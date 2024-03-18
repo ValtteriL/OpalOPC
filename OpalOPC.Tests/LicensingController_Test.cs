@@ -12,6 +12,7 @@ namespace Tests
         private readonly Mock<ILogger<LicensingController>> _logger = new();
         private readonly Mock<IKeygenApiUtil> _keygenApiUtil = new();
         private readonly Mock<IFileUtil> _fileUtil = new();
+        private readonly Mock<IEnvironmentService> _environmentService = new();
         private readonly LicensingController _licensingController;
         private static readonly string s_licenseKeyValue = "this-is-the-license-key";
 
@@ -23,37 +24,30 @@ namespace Tests
 
         public LicensingControllerTest()
         {
-            _licensingController = new LicensingController(_logger.Object, _keygenApiUtil.Object, _fileUtil.Object);
+            _licensingController = new LicensingController(_logger.Object, _keygenApiUtil.Object, _fileUtil.Object, _environmentService.Object);
         }
 
         [Fact]
         public async Task LicensingWorksWithEnvLicenseKeyAsync()
         {
-            try
-            {
-                // Arrange
-                Environment.SetEnvironmentVariable(LicensingController.s_licenseKeyEnv, s_licenseKeyValue);
-                _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).ReturnsAsync(s_nomachineLicenseValidationResponse);
-                _keygenApiUtil.Setup(k => k.ActivateMachine(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(s_machineActivationResponse);
-                _keygenApiUtil.Setup(k => k.Heartbeat(It.IsAny<string>(), It.IsAny<string>()));
 
-                // Act
-                bool result = await _licensingController.IsLicensed();
-                _licensingController.Dispose();
+            // Arrange
+            _environmentService.Setup(e => e.GetEnvironmentVariable(LicensingController.s_licenseKeyEnv)).Returns(s_licenseKeyValue);
+            _keygenApiUtil.Setup(k => k.ValidateLicenseKey(It.IsAny<string>())).ReturnsAsync(s_nomachineLicenseValidationResponse);
+            _keygenApiUtil.Setup(k => k.ActivateMachine(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(s_machineActivationResponse);
+            _keygenApiUtil.Setup(k => k.Heartbeat(It.IsAny<string>(), It.IsAny<string>()));
 
-                // Assert (make sure machine is deactivated at end as well), make sure heartbeats are sent
-                Assert.True(result);
-                _keygenApiUtil.Verify(k => k.ValidateLicenseKey(s_licenseKeyValue), Times.Once);
-                _keygenApiUtil.Verify(k => k.ActivateMachine(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-                _keygenApiUtil.Verify(k => k.Heartbeat(s_licenseKeyValue, s_machineId), Times.Once);
-                _keygenApiUtil.Verify(k => k.DeactivateMachine(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-                _fileUtil.Verify(f => f.FileExistsInAppdata(It.IsAny<string>()), Times.Never);
+            // Act
+            bool result = await _licensingController.IsLicensed();
+            _licensingController.Dispose();
 
-            }
-            finally
-            {
-                Environment.SetEnvironmentVariable(LicensingController.s_licenseKeyEnv, null);
-            }
+            // Assert (make sure machine is deactivated at end as well), make sure heartbeats are sent
+            Assert.True(result);
+            _keygenApiUtil.Verify(k => k.ValidateLicenseKey(s_licenseKeyValue), Times.Once);
+            _keygenApiUtil.Verify(k => k.ActivateMachine(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            _keygenApiUtil.Verify(k => k.Heartbeat(s_licenseKeyValue, s_machineId), Times.Once);
+            _keygenApiUtil.Verify(k => k.DeactivateMachine(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            _fileUtil.Verify(f => f.FileExistsInAppdata(It.IsAny<string>()), Times.Never);
         }
 
         [Fact]

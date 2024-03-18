@@ -12,7 +12,7 @@ namespace Model
         public string? SarifOutputReportName { get; init; }
         public LogLevel logLevel { get; init; }
         public bool shouldShowHelp { get; init; }
-        public int exitCode { get; init; }
+        public int exitCode { get; set; }
         public bool shouldExit { get; init; }
         public bool shouldShowVersion { get; init; }
         public bool shouldDiscoverAndExit { get; init; }
@@ -32,7 +32,7 @@ namespace Model
         public string? SarifOutputReportName { get; init; }
         public LogLevel logLevel { get; init; } = LogLevel.Information;
         public bool shouldShowHelp { get; init; }
-        public int exitCode { get; init; } = ExitCodes.Success;
+        public int exitCode { get; set; } = ExitCodes.Success;
         public bool shouldExit { get; init; } = false;
         public bool shouldShowVersion { get; init; }
         public bool shouldDiscoverAndExit { get; init; }
