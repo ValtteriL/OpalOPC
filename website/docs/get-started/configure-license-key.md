@@ -2,13 +2,13 @@
 title: Configure License Key
 description: How to configure the license key for OpalOPC
 keywords: [how-to, start, configure]
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 You can configure a license key to OpalOPC by saving the license key to disk, or by using an environment variable.
 The environment variable takes precedence over the license key saved to disk.
 
-To obtain a license key, start a trial or purchase OpalOPC.
+To obtain a license key, [start a trial or purchase OpalOPC](/#starthere).
 
 ## Store license key to disk
 

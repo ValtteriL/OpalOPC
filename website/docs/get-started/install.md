@@ -16,3 +16,7 @@ Use [Microsoft Store](https://apps.microsoft.com/detail/OpalOPC/9N89VWR0GK7H?lau
 Use [Snap Store](https://snapcraft.io/opalopc) to install OpalOPC. Snap keeps it up-to-date for you automatically.
 
 <iframe width="100%" height="444" src="https://www.youtube-nocookie.com/embed/PWbCHtSqhis?si=K929wmVRGjVQP7O7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+## After installation
+
+Before scanning anything, you need to [configure the license key](configure-license-key.md).

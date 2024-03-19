@@ -34,7 +34,7 @@ import TabItem from '@theme/TabItem';
 
 ## Obtain & Set license key
 
-Obtain a license key by starting a free trial or purchasing OpalOPC.
+Obtain a license key by starting [a free trial or purchasing OpalOPC](/#starthere).
 
 Set the license key using the instructions below.
 
