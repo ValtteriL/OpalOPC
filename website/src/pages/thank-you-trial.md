@@ -8,4 +8,6 @@ title: Your trial license is on the way
 
 # Check your email
 
-We've sent you a trial license key. Thank you for trying out our product!
+We're preparing your license key. Please confirm your email to receive it.
+
+Thank you for trying out our product!
