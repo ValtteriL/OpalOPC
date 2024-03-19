@@ -24,7 +24,7 @@ namespace ScannerApplication
             if (!await myLicensingController.IsLicensed())
             {
                 TelemetryUtil.TrackEvent("Not licensed");
-                logger.LogCritical("{Message}", "Software license validation failed. Exiting");
+                logger.LogCritical("{Message}", "Software license validation failed. See https://opalopc.com/docs/tutorials/configure-license-key");
                 return ExitCodes.Error;
             }
             else
