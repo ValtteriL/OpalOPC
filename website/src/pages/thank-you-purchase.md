@@ -1,5 +1,5 @@
 ---
-title: Your license is on the way
+title: Thank you
 ---
 
 <head>
@@ -8,4 +8,4 @@ title: Your license is on the way
 
 # Thank you!
 
-Check your email. We've sent you your license key.
+We're preparing your license key according to your order. Once it's ready, we'll send it to you via email.
