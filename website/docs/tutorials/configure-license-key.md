@@ -15,7 +15,7 @@ To obtain a license key, start a trial or purchase OpalOPC.
 The following command stores the the license key to disk. This key will be used by OpalOPC in all future invocations.
 
 ```bash
-opalopc --set-licence-key <license_key>
+opalopc --set-licence-key <license-key>
 ```
 
 ## Environment variable
