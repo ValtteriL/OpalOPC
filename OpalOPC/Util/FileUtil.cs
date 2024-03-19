@@ -14,6 +14,7 @@ namespace Util
         public CertificateIdentifier CreateCertificateIdentifierFromPfxFileInAppdata(string filename);
         public bool FileExistsInAppdata(string filename);
         public Task WriteStringToFileInAppdata(string filename, string contents);
+        public string OpalOPCDirectoryPath { get; }
     }
 
     public class FileUtil : IFileUtil
@@ -23,6 +24,8 @@ namespace Util
         // see https://developers.redhat.com/blog/2018/11/07/dotnet-special-folder-api-linux#
         private static readonly string s_dirName = "OpalOPC";
         public readonly string _opalOPCDirectory = Directory.CreateDirectory(Path.Combine(GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.Create), s_dirName)).FullName;
+
+        public string OpalOPCDirectoryPath => _opalOPCDirectory;
 
         public ICollection<string> ReadFileToList(string path)
         {

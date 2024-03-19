@@ -24,6 +24,7 @@ namespace Tests
 
         public LicensingControllerTest()
         {
+            _fileUtil.Setup(f => f.OpalOPCDirectoryPath).Returns("this-is-the-opalopc-directory-path");
             _licensingController = new LicensingController(_logger.Object, _keygenApiUtil.Object, _fileUtil.Object, _environmentService.Object);
         }
 

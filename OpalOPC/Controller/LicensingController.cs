@@ -17,6 +17,8 @@ namespace Controller
         private bool _isSuccessfullyLicensed = false;
         public static readonly string s_licenseKeyEnv = "OPALOPC_LICENSE_KEY";
         public static readonly string s_licenseFileName = "license.txt";
+        private readonly string _fullLicensePath = Path.Combine(fileUtil.OpalOPCDirectoryPath, s_licenseFileName);
+
 
         public async Task<bool> IsLicensed()
         {
@@ -55,7 +57,7 @@ namespace Controller
 
             if (fileUtil.FileExistsInAppdata(s_licenseFileName))
             {
-                logger.LogTrace("{msg}", $"Using license key from file {s_licenseFileName}");
+                logger.LogTrace("{msg}", $"Using license key from file {_fullLicensePath}");
                 return fileUtil.ReadFileInAppdataToList(s_licenseFileName).FirstOrDefault();
             }
 
@@ -156,6 +158,7 @@ namespace Controller
         public async Task StoreLicense(string licenseKey)
         {
             TelemetryUtil.TrackEvent("Store license key");
+            logger.LogInformation("{msg}", $"Storing license key to {_fullLicensePath}");
             await fileUtil.WriteStringToFileInAppdata(s_licenseFileName, licenseKey);
         }
     }
