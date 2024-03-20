@@ -26,7 +26,7 @@ namespace Util
             config.TelemetryChannel.DeveloperMode = true;
 #endif
             TelemetryClient client = new(config);
-            client.Context.Component.Version = VersionUtil.AppAssemblyVersion!.ToString();
+            client.Context.Component.Version = VersionUtil.AppVersion;
             client.Context.Session.Id = Guid.NewGuid().ToString();
             client.Context.User.Id = (Environment.UserName + Environment.MachineName).GetHashCode().ToString(); // hashed for privacy
             client.Context.Device.OperatingSystem = Environment.OSVersion.ToString();

@@ -6,7 +6,7 @@ namespace OpalOPCWPF.ViewModels;
 public partial class MainWindowViewModel : ObservableObject
 {
     [ObservableProperty]
-    private string _title = $"OpalOPC {Util.VersionUtil.AppAssemblyVersion}";
+    private string _title = $"OpalOPC {Util.VersionUtil.AppVersion}";
 
     [ObservableProperty] private ObservableCollection<Models.View> _viewCollection;
     [ObservableProperty] private Models.View _selectedView;

@@ -7,7 +7,7 @@
 
   vars_prompt:
     - name: version
-      prompt: Version for this release?
+      prompt: Version for this release (SemVer)?
       private: false
 
   vars:
@@ -24,13 +24,17 @@
 
     windows_temp_build_folder: /mnt/c/Users/valtteri/AppData/Local/Temp/opalopc-build
     version_update_script: |
-      [xml]$manifest= get-content "./WindowsPackaging/Package.appxmanifest"; $manifest.Package.Identity.Version = "{{ version | mandatory }}"; $manifest.save("./WindowsPackaging/Package.appxmanifest")
+      [xml]$manifest= get-content "./WindowsPackaging/Package.appxmanifest"; $manifest.Package.Identity.Version = "{{ version | mandatory }}.0"; $manifest.save("./WindowsPackaging/Package.appxmanifest")
 
   tasks:
 
     - name: Local preparations
       delegate_to: localhost
       block:
+
+        - name: Validate version format
+          ansible.builtin.shell: echo "{{ version }}" | perl -ne 'exit 1 unless /^(\d+\.){2}\d+$/'
+
         - name: Check tag does not exist
           local_action:
             module: ansible.builtin.shell

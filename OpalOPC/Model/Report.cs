@@ -7,7 +7,7 @@ namespace Model
         public string StartTimeString => StartTime.ToString(Dateformat);
         public DateTime EndTime { get; private set; }
         public string EndTimeString => EndTime.ToString(Dateformat);
-        public string Version { get; private set; } = Util.VersionUtil.AppAssemblyVersion!.ToString();
+        public string Version { get; private set; } = Util.VersionUtil.AppVersion;
         public string Command { get; private set; }
         public string RunStatus { get; private set; }
 

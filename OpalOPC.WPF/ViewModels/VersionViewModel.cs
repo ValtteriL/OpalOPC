@@ -9,7 +9,7 @@ public partial class VersionViewModel : ObservableObject
     [ObservableProperty] private string _version;
     public VersionViewModel()
     {
-        Version = $"{Util.VersionUtil.AppAssemblyVersion}";
+        Version = $"{Util.VersionUtil.AppVersion}";
     }
 
     [RelayCommand]
