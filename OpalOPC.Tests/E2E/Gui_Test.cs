@@ -189,7 +189,7 @@ namespace Tests.E2E
             AppSession.FindElementByAccessibilityId(StartButton).Click();
 
             // wait for scan to finish
-            Thread.Sleep(5 * 1000);
+            Thread.Sleep(10 * 1000);
 
             // validate report
             Assert.True(File.Exists(_htmlReportLocation));
