@@ -79,3 +79,8 @@ edit-vault:
 		edit \
 		./deploy/playbooks/vault.yaml \
 		--vault-password-file "$(VAULT_PASSWORD_FILE)"
+
+.PHONY: delete-tag
+delete-tag:
+	@ansible-playbook \
+		deploy/playbooks/delete-tag.yaml
