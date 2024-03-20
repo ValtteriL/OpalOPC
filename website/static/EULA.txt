@@ -5,10 +5,7 @@ IF YOU DO NOT AGREE TO ALL OF THE TERMS OF THIS EULA, DO NOT INSTALL, USE OR COP
 
 1. Summary
 
-You may use the Software for free if either
-(i). You are using it exclusively for non-profit projects OR
-(ii). You are a company with yearly turnover under 1 million USD
-Otherwise you must purchase a Professional License.
+You must have a license to use this software. The license can be acquired for evaluation purposes, or bought.
 
 This Software automatically communicates with its server to check for updates.
 This Software is provided "as-is" with no warranties, and you agree that Molemmat Oy is not liable for anything you do with it.
@@ -25,12 +22,9 @@ Your license to use the Software is expressly conditioned upon your agreement to
 This software is licensed, not sold.
 
 4. Fees
-You may use the Software for free if either
-(i). You are using it exclusively for non-profit projects OR
-(ii). You are a company with yearly turnover under 1 million USD
-Otherwise you must purchase a Professional License.
+You must have a license to use this software. The license can be acquired for evaluation purposes, or bought.
 
-Professional License is available for purchase on https://opalopc.com/buy.
+The license is available for trial and for purchase on https://opalopc.com/.
 
 5. Restrictions
 
