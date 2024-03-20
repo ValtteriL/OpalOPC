@@ -6,6 +6,6 @@ title: Successful subscription
     <meta name="robots" content="noindex"/>
 </head>
 
-# Successful subscription
+# Welcome!
 
-Thank you for subscribing. We will keep you updated on OPC UA security.
+We will keep you on the forefront of OPC UA security.
