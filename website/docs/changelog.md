@@ -4,6 +4,12 @@ description: The changelog shows OpalOPC release dates and what kind of changes 
 sidebar_position: 7
 ---
 
+## 4.0.0 - 2024-03-20
+
+* Enforce licensing
+* Use SemVer
+* Fix multiple bugs detected at [OPC Interoperability Workshop 2024, North America](https://opcfoundation.org/event-detail/opc-interoperability-workshop-2024-north-america/)
+
 ## 3.2.0.0 - 2024-03-10
 
 * Add SARIF report format
