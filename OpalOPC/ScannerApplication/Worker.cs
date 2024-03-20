@@ -18,7 +18,7 @@ namespace ScannerApplication
             TelemetryUtil.TrackEvent("Scan started", GetScanProperties(options.targets, options.authenticationData));
 
             DateTime start = DateTime.Now;
-            logger.LogInformation("{Message}", $"Starting OpalOPC {Util.VersionUtil.AppAssemblyVersion} ( https://opalopc.com )");
+            logger.LogInformation("{Message}", $"Starting OpalOPC {Util.VersionUtil.AppVersion} ( https://opalopc.com )");
 
 
             if (!await myLicensingController.IsLicensed())

@@ -217,13 +217,13 @@ namespace View
 
         private void printHelp()
         {
-            Console.WriteLine($"Opal OPC {VersionUtil.AppAssemblyVersion} ( https://opalopc.com )");
+            Console.WriteLine($"Opal OPC {VersionUtil.AppVersion} ( https://opalopc.com )");
             Console.WriteLine($"Usage: {_programName} [Options] [Target ...]");
             _optionSet.WriteOptionDescriptions(Console.Out);
         }
         private static void printVersion()
         {
-            Console.WriteLine(VersionUtil.AppAssemblyVersion);
+            Console.WriteLine(VersionUtil.AppVersion);
         }
 
         private void deleteReportIfCreatedAlready()
