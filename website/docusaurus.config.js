@@ -41,7 +41,11 @@ const config = {
       src: 'https://static.getclicky.com/js',
       async: true,
       'data-id': '101427562'
-    },
+      },
+      {
+          src: '/mc.js', // mailchimp popup form
+          'id': 'mcjs'
+      }
   ],
 
   presets: [

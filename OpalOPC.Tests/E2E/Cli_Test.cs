@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
+using Controller;
 using Microsoft.CodeAnalysis.Sarif;
 using Tests.Helpers;
+using Util;
 using Xunit;
 
 namespace Tests.E2E
@@ -14,26 +16,49 @@ namespace Tests.E2E
         private string _htmlReport => _reportBaseName + ".html";
         private string _sarifReport => _reportBaseName + ".sarif";
 
+        // run with license key env
+        // run with invalid license key env
+        // run with no license key env
+
+        private static ProcessStartInfo BuildProcessStartInfo(string command)
+        {
+            return new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                Arguments = "/c " + command,
+                CreateNoWindow = true,
+                WorkingDirectory = string.Empty,
+            };
+        }
+
         private static Process RunCommand(string command)
+        {
+            ProcessStartInfo processStartInfo = BuildProcessStartInfo(command);
+            return RunProcess(processStartInfo);
+        }
+
+        private static Process RunCommandWithLicenseKey(string command, string licenseKey)
+        {
+            ProcessStartInfo processStartInfo = BuildProcessStartInfo(command);
+            processStartInfo.Environment.Add(LicensingController.s_licenseKeyEnv, licenseKey);
+            return RunProcess(processStartInfo);
+        }
+
+        private static Process RunProcess(ProcessStartInfo processStartInfo)
         {
             Process process = new()
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    RedirectStandardInput = true,
-                    Arguments = "/c " + command,
-                    CreateNoWindow = true,
-                    WorkingDirectory = string.Empty,
-                }
+                StartInfo = processStartInfo
             };
             process.Start();
             process.WaitForExit();
             return process;
         }
+
 
         [Fact]
         [Trait("Category", "E2E")]
@@ -42,7 +67,7 @@ namespace Tests.E2E
             // scan echo server, validate report
 
             // act
-            Process process = RunCommand($"{ApplicationPath} opc.tcp://echo:53530 -vv --output {_reportBaseName}");
+            Process process = RunCommandWithLicenseKey($"{ApplicationPath} opc.tcp://echo:53530 -vv --output {_reportBaseName}", LicenseKeys.s_validLicenseKey);
             ParsedReport parsedReport = new(File.ReadAllText(_htmlReport));
             SarifLog sarifLog = SarifLog.Load(_sarifReport);
 
@@ -66,7 +91,7 @@ namespace Tests.E2E
             // scan opc.tcp://thisdoesnotexistsfafasfada:53530
 
             // act
-            Process process = RunCommand($"{ApplicationPath} opc.tcp://thisdoesnotexistsfafasfada:53530 -vv --output {_reportBaseName}");
+            Process process = RunCommandWithLicenseKey($"{ApplicationPath} opc.tcp://thisdoesnotexistsfafasfada:53530 -vv --output {_reportBaseName}", LicenseKeys.s_validLicenseKey);
             ParsedReport parsedReport = new(File.ReadAllText(_htmlReport));
             SarifLog sarifLog = SarifLog.Load(_sarifReport);
 
@@ -88,7 +113,7 @@ namespace Tests.E2E
             // scan echo, golf, india, scanme.opalopc.com
 
             // act
-            Process process = RunCommand($"{ApplicationPath} opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 opc.tcp://scanme.opalopc.com:53530 -vv --output {_reportBaseName}");
+            Process process = RunCommandWithLicenseKey($"{ApplicationPath} opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 opc.tcp://scanme.opalopc.com:53530 -vv --output {_reportBaseName}", LicenseKeys.s_validLicenseKey);
             ParsedReport parsedReport = new(File.ReadAllText(_htmlReport));
             SarifLog sarifLog = SarifLog.Load(_sarifReport);
 
@@ -114,14 +139,33 @@ namespace Tests.E2E
 
         [Fact]
         [Trait("Category", "E2E")]
-        public void ScanNetworkDiscovery()
+        public void NetworkDiscovery()
         {
 
             // act
-            Process process = RunCommand($"{ApplicationPath} -d");
+            Process process = RunCommand($"{ApplicationPath} -d"); // discovery shall work without license key
 
             // assert
             Assert.True(process.ExitCode == 0);
+        }
+
+        [Fact]
+        [Trait("Category", "E2E")]
+        public void SetLicenseKey()
+        {
+
+            // act
+            string licenseKey = "1234567890";
+            FileUtil fileUtil = new();
+            Process process = RunCommand($"{ApplicationPath} --set-license-key {licenseKey}");
+
+            // assert
+            Assert.True(fileUtil.FileExistsInAppdata(LicensingController.s_licenseFileName));
+            Assert.True(fileUtil.ReadFileInAppdataToList(LicensingController.s_licenseFileName).First() == licenseKey);
+            Assert.True(process.ExitCode == 0);
+
+            // cleanup
+            File.Delete(Path.Combine(fileUtil._opalOPCDirectory, LicensingController.s_licenseFileName));
         }
 
     }

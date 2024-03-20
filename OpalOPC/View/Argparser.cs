@@ -14,6 +14,8 @@ namespace View
         private readonly IFileUtil _fileUtil;
 
         private bool _shouldDiscoverAndExit = false;
+        private bool _shouldStoreLicenseAndExit = false;
+        private string _licenseKey = string.Empty;
         private bool _shouldShowVersion = false;
         private bool _shouldShowHelp = false;
         private LogLevel _logLevel = LogLevel.Information;
@@ -39,6 +41,7 @@ namespace View
                 { "B|brute-force-credential-file=", "import list of username:password for brute force attack from file", b => addBruteForceCredentialsFromFile(b) },
                 { "c|user-certificate-and-privatekey=", "path-to-certificate:path-to-privatekey for user authentication", c => addUserCertificatePrivatekey(c) },
                 { "a|application-certificate-and-privatekey=", "path-to-certificate:path-to-privatekey for application authentication", a => addAppCertificatePrivatekey(a) },
+                { "s|set-license-key=", "save license key and exit", k => { _shouldStoreLicenseAndExit = true; _licenseKey = k; } },
                 { "d|discovery", "discover targets on network through mDNS and exit", d => _shouldDiscoverAndExit = d != null },
                 { "version", "show version and exit", ver => _shouldShowVersion = ver != null },
             };
@@ -294,6 +297,8 @@ namespace View
                 shouldDiscoverAndExit = _shouldDiscoverAndExit,
                 authenticationData = _authenticationData,
                 commandLine = Environment.CommandLine,
+                shouldStoreLicenseAndExit = _shouldStoreLicenseAndExit,
+                licenseKey = _licenseKey!
             };
         }
     }

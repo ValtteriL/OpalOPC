@@ -29,8 +29,17 @@ class OpalOPC
             IHost _host = AppConfigurer.ConfigureApplication(options, loggerProvider);
             IWorker worker = _host.Services.GetRequiredService<IWorker>();
 
+            if (options.shouldStoreLicenseAndExit)
+            {
+                // store license
+                ILicensingController licensingController = _host.Services.GetRequiredService<ILicensingController>();
+                await licensingController.StoreLicense(options.licenseKey);
+                return (int)ExitCodes.Success;
+            }
+
             if (options.shouldDiscoverAndExit)
             {
+                // discover targets
                 INetworkDiscoveryController networkDiscoveryController = _host.Services.GetRequiredService<INetworkDiscoveryController>();
                 IList<Uri> targets = await networkDiscoveryController.MulticastDiscoverTargets(5);
                 Console.WriteLine("Discovered targets:");
@@ -42,8 +51,7 @@ class OpalOPC
             }
 
             // run application
-            worker.Run(options);
-            return (int)ExitCodes.Success;
+            return await worker.Run(options);
         }
         catch (Exception ex)
         {

@@ -5,7 +5,7 @@ using Util;
 
 namespace Plugin
 {
-    public class SelfSignedUserCertificatePlugin : PreAuthPlugin
+    public class SelfSignedUserCertificatePlugin(ILogger logger, ISelfSignedCertificateUtil selfSignedCertificateUtil, IConnectionUtil connectionUtil, AuthenticationData authenticationData) : PreAuthPlugin(logger, s_pluginId, s_category, s_issueTitle, s_severity)
     {
         // "self-signed certificates should not be trusted automatically"
         //      - https://opcconnect.opcfoundation.org/2018/06/practical-security-guidelines-for-building-opc-ua-applications/
@@ -16,24 +16,6 @@ namespace Plugin
 
         // https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N
         private static readonly double s_severity = 5.4;
-
-        private readonly ISelfSignedCertificateUtil _selfSignedCertificateUtil;
-        private readonly IConnectionUtil _connectionUtil;
-        private readonly AuthenticationData _authenticationData;
-
-        public SelfSignedUserCertificatePlugin(ILogger logger, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
-        {
-            _selfSignedCertificateUtil = new SelfSignedCertificateUtil();
-            _connectionUtil = new ConnectionUtil();
-            _authenticationData = authenticationData;
-        }
-
-        public SelfSignedUserCertificatePlugin(ILogger logger, ISelfSignedCertificateUtil selfSignedCertificateUtil, IConnectionUtil connectionUtil, AuthenticationData authenticationData) : base(logger, s_pluginId, s_category, s_issueTitle, s_severity)
-        {
-            _selfSignedCertificateUtil = selfSignedCertificateUtil;
-            _connectionUtil = connectionUtil;
-            _authenticationData = authenticationData;
-        }
 
         public override (Issue?, ICollection<ISecurityTestSession>) Run(string discoveryUrl, EndpointDescriptionCollection endpointDescriptions)
         {
@@ -47,7 +29,7 @@ namespace Plugin
 
             EndpointDescription? endpointToTryWithoutOrWithSelfSignedAppCertificate = userCertificateEndpointNoApplicationAuthentication ?? userCertificateEndpointWithApplicationAuthentication;
 
-            UserIdentity userIdentityWithCertificate = new(_selfSignedCertificateUtil.GetCertificate());
+            UserIdentity userIdentityWithCertificate = new(selfSignedCertificateUtil.GetCertificate());
 
             if (endpointToTryWithoutOrWithSelfSignedAppCertificate != null)
             {
@@ -55,7 +37,7 @@ namespace Plugin
                 // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                 try
                 {
-                    ISecurityTestSession session = _connectionUtil.StartSession(endpointToTryWithoutOrWithSelfSignedAppCertificate, userIdentityWithCertificate).Result;
+                    ISecurityTestSession session = connectionUtil.StartSession(endpointToTryWithoutOrWithSelfSignedAppCertificate, userIdentityWithCertificate).Result;
                     sessions.Add(session);
                     return (CreateIssue(), sessions);
                 }
@@ -69,12 +51,12 @@ namespace Plugin
 
             if (userCertificateEndpointWithApplicationAuthentication != null)
             {
-                foreach (Opc.Ua.CertificateIdentifier applicationCertificate in _authenticationData.applicationCertificates)
+                foreach (Opc.Ua.CertificateIdentifier applicationCertificate in authenticationData.applicationCertificates)
                 {
                     // Open a session - swallow exceptions - endpoint messagesecuritymode may be incompatible for this specific
                     try
                     {
-                        ISecurityTestSession session = _connectionUtil.StartSession(userCertificateEndpointWithApplicationAuthentication, userIdentityWithCertificate, applicationCertificate).Result;
+                        ISecurityTestSession session = connectionUtil.StartSession(userCertificateEndpointWithApplicationAuthentication, userIdentityWithCertificate, applicationCertificate).Result;
                         sessions.Add(session);
                         return (CreateIssue(), sessions);
                     }

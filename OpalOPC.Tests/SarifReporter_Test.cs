@@ -13,6 +13,8 @@ public class SarifReporterTest
 {
     private readonly Mock<IKnownVulnerabilityApiRequestUtil> _knownVulnerabilityApiRequestUtil = new();
     private readonly Mock<ILogger<IPluginRepository>> _logger = new();
+    private readonly Mock<ISelfSignedCertificateUtil> _signedCertificateUtil = new();
+    private readonly Mock<IConnectionUtil> _connectionUtil = new();
 
     private readonly SarifReporter _reporter;
     private readonly MemoryStream _memoryStream = new();
@@ -23,7 +25,7 @@ public class SarifReporterTest
 
     public SarifReporterTest()
     {
-        PluginRepository _pluginRepository = new(_logger.Object, _knownVulnerabilityApiRequestUtil.Object);
+        PluginRepository _pluginRepository = new(_logger.Object, _knownVulnerabilityApiRequestUtil.Object, _signedCertificateUtil.Object, _connectionUtil.Object);
         _reporter = new(_pluginRepository);
 
         _target = new(new ApplicationDescription()

@@ -14,18 +14,10 @@ namespace Util
         public ISecurityTestSession? AttemptLogin(Endpoint endpoint, UserIdentity identity);
     }
 
-    public class ConnectionUtil : IConnectionUtil
+    public class ConnectionUtil(ISelfSignedCertificateUtil selfSignedCertificateUtil) : IConnectionUtil
     {
-        private readonly CertificateIdentifier _selfSignedCertificate;
-        private readonly SelfSignedCertificateUtil _selfSignedCertificateUtil;
+        private readonly CertificateIdentifier _selfSignedCertificate = selfSignedCertificateUtil.GetCertificate(); // Generate self-signed certificate for client
         private readonly string _sessionName = "OpalOPC Security Check";
-
-        public ConnectionUtil()
-        {
-            // Generate self-signed certificate for client
-            _selfSignedCertificateUtil = new SelfSignedCertificateUtil();
-            _selfSignedCertificate = _selfSignedCertificateUtil.GetCertificate();
-        }
 
         private class RelaxedCertificateValidator : CertificateValidator
         {

@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using Opc.Ua;
-using static System.Environment;
 
 namespace Util
 {
@@ -9,31 +8,14 @@ namespace Util
         public CertificateIdentifier GetCertificate();
     }
 
-    public class SelfSignedCertificateUtil : ISelfSignedCertificateUtil
+    public class SelfSignedCertificateUtil(IFileUtil fileUtil) : ISelfSignedCertificateUtil
     {
         public static readonly string s_applicationName = "OpalOPC@host";
         private readonly string _subject = "CN=OpalOPC Security Scanner, C=FI, S=Uusimaa, O=Molemmat Oy";
         public static readonly string s_applicationUri = "urn:OPCUA:OpalOPC";
         private readonly string[] _domainNames = ["opalopc.com"];
-        private readonly string _dirName = "OpalOPC";
         private readonly string _certFilename = "cert.pfx";
-        private readonly string _certPath;
-        private readonly IFileUtil _fileUtil;
 
-        public SelfSignedCertificateUtil() : this(new FileUtil())
-        {
-        }
-
-        public SelfSignedCertificateUtil(IFileUtil fileUtil)
-        {
-            _fileUtil = fileUtil;
-
-            // create directory if it doesn't exist - this is cross platform
-            // see https://developers.redhat.com/blog/2018/11/07/dotnet-special-folder-api-linux#
-            string certDir = Path.Combine(GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.Create), _dirName);
-            Directory.CreateDirectory(certDir);
-            _certPath = Path.Combine(certDir, _certFilename);
-        }
 
         public CertificateIdentifier GetCertificate()
         {
@@ -58,7 +40,7 @@ namespace Util
                 _domainNames)
                 .SetNotAfter(DateTime.UtcNow.AddYears(1)).CreateForRSA());
 
-            _fileUtil.WriteCertificateToDisk(certificate, _certPath);
+            fileUtil.WriteCertificateToFileInAppdata(certificate, _certFilename);
 
             return certificate;
         }
@@ -67,7 +49,7 @@ namespace Util
         {
             try
             {
-                return _fileUtil.CreateCertificateIdentifierFromPfxFile(_certPath);
+                return fileUtil.CreateCertificateIdentifierFromPfxFileInAppdata(_certFilename);
             }
             catch
             {

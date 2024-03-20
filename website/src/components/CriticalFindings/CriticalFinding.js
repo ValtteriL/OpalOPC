@@ -5,8 +5,8 @@ const Critical = () => {
     <div class="critical-container">
         <div class="common-container">
             <div class="critical-wrapper">
-                <h2>Great power.</h2>
-                <p>No Effort.</p>
+                <h2>Ensure your protection.</h2>
+                <p>Save time and effort.</p>
                 <div class="findings-container" >
                     <div class="findings coverage">
                         <img src="/img/coverage.png" alt="coverage" />
@@ -52,7 +52,7 @@ const Critical = () => {
                     </div>
                 </div>
                 <h4>Launch your first Security Scan now.</h4>
-                <a href="/docs/get-started/quick-start" class="primary-btn common-btns">Start Scanning</a>
+                  <a href="#starthere" class="primary-btn common-btns">Get started</a>
             </div>
             
         </div>

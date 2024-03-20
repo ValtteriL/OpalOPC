@@ -19,11 +19,16 @@ namespace ScannerApplication
                 .ConfigureServices((_, services) =>
                 {
                     services.AddSingleton<IWorker, Worker>();
-                    services.AddSingleton<IScanController, ScanController>();
+                    services.AddSingleton<IEnvironmentService, EnvironmentService>();
+                    services.AddSingleton<IFileUtil, FileUtil>();
+                    services.AddSingleton<IConnectionUtil, ConnectionUtil>();
+                    services.AddSingleton<ISelfSignedCertificateUtil, SelfSignedCertificateUtil>();
                     services.AddSingleton<IHtmlReporter, HtmlReporter>();
                     services.AddSingleton<ISarifReporter, SarifReporter>();
                     services.AddSingleton<IReportController, ReportController>();
                     services.AddSingleton<IDiscoveryController, DiscoveryController>();
+                    services.AddSingleton<ILicensingController, LicensingController>();
+                    services.AddSingleton<IKeygenApiUtil, KeygenApiUtil>();
                     services.AddSingleton<IDiscoveryUtil, DiscoveryUtil>();
                     services.AddSingleton<ISecurityTestController, SecurityTestController>();
                     services.AddSingleton<ITaskUtil, TaskUtil>();

@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using Controller;
+using Tests.Helpers;
 
 namespace Tests.E2E
 {
@@ -13,6 +15,8 @@ namespace Tests.E2E
 
         public WinAppDriverFixture()
         {
+            Environment.SetEnvironmentVariable(LicensingController.s_licenseKeyEnv, LicenseKeys.s_validLicenseKey);
+
             // Start WinAppDriver
             _winAppDriverProcess = StartWinAppDriver();
         }
@@ -35,7 +39,7 @@ namespace Tests.E2E
         {
             ProcessStartInfo psi = new(WinAppDriverPath)
             {
-                UseShellExecute = true
+                UseShellExecute = true,
             };
 
             Process? process = Process.Start(psi);

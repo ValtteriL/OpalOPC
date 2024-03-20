@@ -10,21 +10,16 @@ using Xunit;
 namespace Tests;
 public class SelfSignedUserCertificatePluginTest
 {
-    private readonly Mock<ILogger> _mockLogger;
-    private readonly Mock<CertificateIdentifier> _mockCertificateIdentifier;
-    private readonly Mock<SelfSignedCertificateUtil> _mockSelfSignedCertificateUtil;
-    private readonly Mock<IConnectionUtil> _mockConnectionUtil;
+    private readonly Mock<ILogger> _mockLogger = new();
+    private readonly Mock<ISelfSignedCertificateUtil> _mockSelfSignedCertificateUtil = new();
+    private readonly Mock<IConnectionUtil> _mockConnectionUtil = new();
     private readonly EndpointDescriptionCollection _endpointDescriptions = [];
-    private readonly Mock<ISecurityTestSession> _mockSession;
+    private readonly Mock<ISecurityTestSession> _mockSession = new();
     private readonly string _discoveryUrl = "opc.tcp://localhost:4840";
 
     public SelfSignedUserCertificatePluginTest()
     {
-        _mockLogger = new Mock<ILogger>();
-        _mockCertificateIdentifier = new Mock<CertificateIdentifier>();
-        _mockSelfSignedCertificateUtil = new Mock<SelfSignedCertificateUtil>();
-        _mockConnectionUtil = new Mock<IConnectionUtil>();
-        _mockSession = new Mock<ISecurityTestSession>();
+        _mockSelfSignedCertificateUtil.Setup(c => c.GetCertificate()).Returns(new CertificateIdentifier());
     }
 
 
@@ -34,7 +29,7 @@ public class SelfSignedUserCertificatePluginTest
         // arrange
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.UserName) }) // not UserTokenType.Certificate
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.UserName)]) // not UserTokenType.Certificate
         };
         _endpointDescriptions.Add(endpointDescription);
 
@@ -55,7 +50,7 @@ public class SelfSignedUserCertificatePluginTest
         // arrange
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Certificate) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.Certificate)]),
             SecurityPolicyUri = SecurityPolicies.None
         };
         Endpoint endpoint = new(endpointDescription);
@@ -82,7 +77,7 @@ public class SelfSignedUserCertificatePluginTest
         // arrange
         EndpointDescription endpointDescription = new()
         {
-            UserIdentityTokens = new UserTokenPolicyCollection(new List<UserTokenPolicy> { new(UserTokenType.Certificate) }),
+            UserIdentityTokens = new UserTokenPolicyCollection([new(UserTokenType.Certificate)]),
             SecurityPolicyUri = SecurityPolicies.None
         };
         _endpointDescriptions.Add(endpointDescription);

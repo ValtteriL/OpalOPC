@@ -1,9 +1,11 @@
 #if BUILT_FOR_WINDOWS
+using Controller;
 using Microsoft.Extensions.Logging;
 using Model;
 using Moq;
 using OpalOPCWPF.GuiUtil;
 using OpalOPCWPF.ViewModels;
+using Tests.Helpers;
 using Util;
 using Xunit;
 
@@ -124,6 +126,7 @@ public class ScanViewModel_Tests
         string tempfile = Path.GetTempFileName();
         model.OutputFileLocation = tempfile;
 
+        Environment.SetEnvironmentVariable(LicensingController.s_licenseKeyEnv, LicenseKeys.s_validLicenseKey);
         await model.ScanCommand.ExecuteAsync(null);
 
         Assert.True(model.ScanCompletedSuccessfully);
@@ -162,7 +165,10 @@ public class ScanViewModel_Tests
             OutputFileLocation = string.Empty
         };
 
+
+        Environment.SetEnvironmentVariable(LicensingController.s_licenseKeyEnv, LicenseKeys.s_validLicenseKey);
         await model.ScanCommand.ExecuteAsync(null);
+
 
         Assert.True(model.ScanCompletedSuccessfully);
     }
