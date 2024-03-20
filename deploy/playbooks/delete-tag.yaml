@@ -1,0 +1,33 @@
+---
+
+# Delete tag from local and remote
+# useful if want to recreate a tag
+
+- name: Delete tag
+  hosts: localhost
+  gather_facts: false
+
+  vars_prompt:
+    - name: tag
+      prompt: Enter tag to delete
+      private: false
+
+  vars:
+    repo_root: "{{ repo_root.stdout }}"
+
+  tasks:
+
+    - name: Get repo root path
+      ansible.builtin.shell:
+        cmd: git rev-parse --show-toplevel
+      register: repo_root
+
+    - name: Delete remote tag
+      ansible.builtin.shell: git push --delete origin {{ tag }}
+      args:
+        chdir: "{{ repo_root.stdout }}"
+
+    - name: Delete local tag
+      ansible.builtin.shell: git tag --delete {{ tag }}
+      args:
+        chdir: "{{ repo_root.stdout }}"
