@@ -29,6 +29,13 @@ import TabItem from '@theme/TabItem';
     ```bash
     sudo snap install opalopc
     ```
+
+    Or manually:
+    
+    ```bash
+    curl -LO "https://dl.opalopc.com/release/$(curl -L -s https://dl.opalopc.com/release/stable.txt)/bin/linux/amd64/opalopc"
+    sudo install -o root -g root -m 0755 opalopc /usr/local/bin/opalopc
+    ```
   </TabItem>
 </Tabs>
 

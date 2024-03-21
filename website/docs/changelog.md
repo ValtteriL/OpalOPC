@@ -6,9 +6,10 @@ sidebar_position: 7
 
 ## 4.0.0 - 2024-03-20
 
-* Enforce licensing
-* Use SemVer
-* Fix multiple bugs detected at [OPC Interoperability Workshop 2024, North America](https://opcfoundation.org/event-detail/opc-interoperability-workshop-2024-north-america/)
+* Licensing enforcement
+* Semantic Versioning
+* Direct download distribution
+* Multiple bugfixes
 
 ## 3.2.0.0 - 2024-03-10
 
