@@ -10,6 +10,10 @@ const MyHead = () => (
     <script id="mcjs">{`
       !function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/b8481fa110fd7bae3191c7b5f/c89d851cebe90d14cf64730b7.js");
     `}</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10831596791"/>
+    <script>{`
+      window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-10831596791');
+    `}</script>
   </Head>
 );
 
