@@ -84,3 +84,9 @@ edit-vault:
 delete-tag:
 	@ansible-playbook \
 		deploy/playbooks/delete-tag.yaml
+
+.PHONY: update-local-knownvulnerabilityapi-db
+update-local-knownvulnerabilityapi-db:
+	@ansible-playbook \
+		deploy/playbooks/update-local-knownvulnerabilityapi-db.yaml
+

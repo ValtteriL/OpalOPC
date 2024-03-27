@@ -483,3 +483,5 @@ daily-metrics.txt
 vault_password
 opalopc-api.tar
 .mono
+*.sqlite3
+*.sqlite3-journal
