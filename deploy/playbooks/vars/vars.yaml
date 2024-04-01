@@ -1,0 +1,3 @@
+db_path_on_agent: /var/lib/docker/volumes/{{ docker_volume_name }}/_data/db.sqlite3
+docker_volume_name: knownvulnapi-database-volume
+db_path_on_controller: "{{ repo_root.stdout }}/KnownVulnerabilityAPI/database/db.sqlite3"

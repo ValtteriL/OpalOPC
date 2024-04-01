@@ -90,3 +90,9 @@ update-local-knownvulnerabilityapi-db:
 	@ansible-playbook \
 		deploy/playbooks/update-local-knownvulnerabilityapi-db.yaml
 
+.PHONY: deploy-knownvulnerabilityapi-db
+deploy-knownvulnerabilityapi-db:
+	@ansible-playbook \
+		deploy/playbooks/deploy-knownvulnerabilityapi-db.yaml \
+		--inventory deploy/inventory.yaml \
+		--vault-password-file "$(VAULT_PASSWORD_FILE)"
