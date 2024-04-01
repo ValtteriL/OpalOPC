@@ -15,6 +15,10 @@
       ansible.builtin.include_vars:
         file: vault.yaml
 
+    - name: Include api vars
+      ansible.builtin.include_vars:
+        file: vars.yaml
+
     - name: Build container
       delegate_to: localhost
       block:
@@ -60,6 +64,16 @@
       docker_network:
         name: opalopc-api-network
 
+    - name: Create a volume for the database
+      docker_volume:
+        name: "{{ docker_volume_name }}"
+
+    - name: Copy database over if it doesn't exist (doesnt update it!)
+      become: true
+      ansible.builtin.copy:
+        src: "{{ db_path_on_controller }}"
+        dest: "{{ db_path_on_agent }}"
+
     - name: Run api container
       community.docker.docker_container:
         name: opalopc-api
@@ -70,6 +84,8 @@
           - name: opalopc-api-network
         exposed_ports:
           - 8080
+        volumes:
+          - "{{ docker_volume_name }}:/app/database"
         state: started
         restart_policy: "unless-stopped"
 
@@ -85,3 +101,6 @@
         command: caddy reverse-proxy --from api.opalopc.com --to http://opalopc-api:8080
         state: started
         restart_policy: "unless-stopped"
+
+    - name: Test API call
+      ansible.builtin.include_tasks: "tasks/test-knownulnerabilityapi-call.yaml"

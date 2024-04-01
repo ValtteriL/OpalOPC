@@ -1,0 +1,19 @@
+---
+
+# make a call to the known vulnerability api
+# to ensure it is running and responding
+# correctly
+
+- name: Test known vulnerability api call
+  ansible.builtin.uri:
+    url: "https://api.opalopc.com/known-vulnerabilities"
+    method: POST
+    body_format: json
+    body:
+      productName: "SimulationServer@echo"
+      manufacturer: "Prosys OPC Ltd."
+      softwareVersion: "4.0.2"
+    validate_certs: no
+    status_code: 
+      - 200
+      - 404

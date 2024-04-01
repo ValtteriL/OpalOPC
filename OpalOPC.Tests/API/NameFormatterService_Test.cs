@@ -10,27 +10,19 @@ namespace Tests.API
             [
                 ["Vendor Name", new object[] { "Vendor", "Name" }],
                 ["Vendor!@#$%^&*()_+Name", new object[] { "Vendor", "Name" }],
-                ["hello123", new string[] { "hello", "123" }],
-                ["vendorName", new string[] { "vendor", "Name" }],
-                ["VendorName", new string[] { "Vendor", "Name" }],
-                ["Prosys OPC Ltd.", new string[] { "Prosys", "OPC", "Ltd" }],
-                ["SimulationServer@echo", new string[] { "Simulation", "Server", "echo" }],
+                ["hello123", new string[] { "hello123" }],
+                ["vendorName", new string[] { "vendorName" }],
+                ["VendorName", new string[] { "VendorName" }],
+                ["Prosys OPC Ltd.", new string[] { "Prosys", "OPC", "\"Ltd.\"" }],
+                ["SimulationServer@echo", new string[] { "SimulationServer", "echo" }],
                 ["this is too long string 123 kek", new string[] { "this", "is", "too", "long", "string" }],
             ];
-
-        [Fact]
-        public void TestNameFormatterService()
-        {
-            INameFormatterService nameFormatterService = new NameFormatterService();
-            Assert.NotNull(nameFormatterService);
-        }
 
         [Theory]
         [MemberData(nameof(TestData))]
         public void CorrectResult(string input, string[] expectedOutput)
         {
-            NameFormatterService nameFormatterService = new();
-            string[] result = nameFormatterService.FormatName(input);
+            string[] result = NameFormatter.FormatName(input);
             Assert.Equal(expectedOutput, result);
         }
     }

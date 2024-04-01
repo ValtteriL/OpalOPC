@@ -28,7 +28,11 @@ Deploy Known Vulnerability API.
 ### Deploy API
 
 ```bash
+make update-local-knownvulnerabilityapi-db # create local CPE database using latest data
 make deploy-api
+
+# deploy the local CPE database to API
+make deploy-knownvulnerabilityapi-db
 ```
 
 
