@@ -23,9 +23,8 @@ const Price = () => {
                     <h3>Free</h3>
                     <ul>
                         <li>Everything in Paid</li>
-                        <li>No credit card required</li>
                     </ul>
-                      <a href="https://mailchi.mp/opalopc/trial" class="primary-btn common-btns">Start 14-day trial</a>
+                      <a href="https://buy.stripe.com/7sIeVt9J5fiV6SQbII" class="primary-btn common-btns">Start 14-day trial</a>
                 </div>
             </div>
         </div>
