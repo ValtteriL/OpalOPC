@@ -2,9 +2,9 @@ import React from 'react';
 
 const Featured = () => {
   return (
-    <div class="featured-container">
-        <div class="">
-            <div class="featured-wrapper">
+    <div className="featured-container">
+        <div className="">
+            <div className="featured-wrapper">
                 <h2>featured on</h2>
                 <section>
                     <article>
@@ -30,13 +30,13 @@ const Featured = () => {
                         </div>
                     </article>
                 </section>
-                <div class="feat-imgs">
-                    <img src="/img/opc.png" alt="opc" class='opc' />
-                    <img src="/img/isssource.png" alt="isssource" class="isssource"/>
-                    <img src="/img/SecurityWeek.png" alt="SecurityWeek" class="SecurityWeek" />
-                    <img src="/img/Digital.png" alt="Digital" class="Digital" />
-                    <img src="/img/stackoverflow.png" alt="stackoverflow" class="stackoverflow" />
-                    <img src="/img/hacker.png" alt="hacker" class="hacker" />
+                <div className="feat-imgs">
+                    <img src="/img/opc.png" alt="opc" className='opc' />
+                    <img src="/img/isssource.png" alt="isssource" className="isssource"/>
+                    <img src="/img/SecurityWeek.png" alt="SecurityWeek" className="SecurityWeek" />
+                    <img src="/img/Digital.png" alt="Digital" className="Digital" />
+                    <img src="/img/stackoverflow.png" alt="stackoverflow" className="stackoverflow" />
+                    <img src="/img/hacker.png" alt="hacker" className="hacker" />
                 </div>
             </div>
         </div>
