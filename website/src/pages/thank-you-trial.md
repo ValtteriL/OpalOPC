@@ -1,5 +1,5 @@
 ---
-title: Your trial license is on the way
+title: Your license is on the way
 ---
 
 <head>
@@ -8,6 +8,6 @@ title: Your trial license is on the way
 
 # Check your email
 
-We're preparing your license key. Please confirm your email to receive it.
+We're preparing your license key according to your order. Once it's ready, we'll send it to you via email.
 
 Thank you for trying out our product!
