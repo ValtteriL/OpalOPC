@@ -186,11 +186,21 @@ The HTML report does not display correctly on Jenkins. Therefore you should down
 
 Now that we have a working pipeline, we will configure it to run automatically when new code is pushed to the Git repository.
 
-1. Open the pipeline in Jenkins
-1. Select `Configure` in the left-hand menu
-1. Scroll down to the `Build Triggers` section
-1. Select `Poll SCM` with schedule `*/5 * * * *`
-1. Save the configuration
+1. Add the following snippet to the Jenkinsfile, under agent:
+
+```jenkinsfile
+triggers {
+    pollSCM('*/5 * * * *')
+}
+```
+2. Commit & Push the changes to the repository
+
+```bash
+git add Jenkinsfile
+git commit -m "Add trigger"
+git push
+```
+3. Run the pipeline
 
 Configured this way, Jenkins will check your repository every 5 minutes for new changes and run the pipeline if any are found.
 You simply need to check the pipeline results to see if there are any security issues.
@@ -211,4 +221,4 @@ By tracking the results, you will be the first to learn when a change in the cod
 
 Usually, the next step after automation is to configure centralized vulnerability management, which allows you to track the security of your servers over time.
 This is especially important in large organizations with many servers.
-We will cover this in a future tutorial.
+We cover this in [How to import OPC UA vulnerabilities into DefectDojo](../manage-vulnerabilities-with-defectdojo).

@@ -1,6 +1,6 @@
 ---
 title: How to import OPC UA vulnerabilities into DefectDojo
-description: XXXXXXXXXXXXXXXXXX
+description: How to import OpalOPC report into vulnerability management system both manually and programmatically
 keywords: [how-to, defectdojo, cicd, automation, vulnerability management]
 sidebar_position: 2
 ---
@@ -14,19 +14,24 @@ This tutorial shows how to bring your vulnerabilities discovered with OpalOPC in
 
 OpalOPC can be run manually by a security tester, or automatically by a CI/CD pipeline.
 When running manually, it makes sense to import the report also manually to DejectDojo.
-With CI/CD pipelines, the report should be imported automatically.
+With CI/CD pipelines, automatic importing is desirable.
 This tutorial shows you how to do both.
 
 ## Overview
 
-KUVA: DefectDojon logo ja joku prosessikaavio niinku Jenkinsissä
+We will be tracking vulnerabilities in an OPC UA server using DefectDojo.
+The result is a single source of truth for the server's security posture that makes it easy to manage.
+The server whose vulnerabilities we will be tracking is the [Console Reference Server](https://github.com/OPCFoundation/UA-.NETStandard/tree/master/Applications/ConsoleReferenceServer).
 
-We will be tracking vulnerabilities in a OPC UA server using DefectDojo. All testing results will be imported to Defectdojo to track the discovered security issues.
-The result is a single source of truth for the security posture that makes it easy to manage the security of the product.
+We will first import testing results manually. Then we will configure a CI/CD pipeline to automate the process.
 
-The server we will be tracking is the [Console Reference Server](https://github.com/OPCFoundation/UA-.NETStandard/tree/master/Applications/ConsoleReferenceServer).
+![Import vulnerability scan report to defectdojo](opalopc-import-results-to-defectdojo-overview.png)
 
-We will first import testing results manually. Then we will integrate with a DAST pipeline to automate it.
+## Prerequisites
+
+- DefectDojo either installed or bought
+- OpalOPC report (If importing manually)
+- A DAST CI/CD pipeline with OpalOPC (If importing via CI/CD)
 
 ## Register product in DefectDojo
 
@@ -43,13 +48,12 @@ Register the server as a product in DefectDojo.
 
 ## Import results
 
-DefectDojo organizes testing of a product into engagements. Engagement is a point in time when the product is tested.
+DefectDojo organizes the testing of a product into engagements. Engagement is a point in time when the product is tested.
 Each engagement contains one or multiple tests, which correspond to testing reports from different tools.
-OpalOPC report is also a test in the eyes of DefectDojo.
 
 ### Manually
 
-When testing manually, we simply import the testing report into DefectDojo. This automatically creates an engagement for us.
+When testing manually, we simply import the testing report into DefectDojo. This automatically creates an AdHoc engagement for us.
 
 1. Open the product
 2. Select Findings>Import Scan Results
@@ -62,22 +66,20 @@ When testing manually, we simply import the testing report into DefectDojo. This
     - Choose report file: Choose the SARIF report
 4. Select Import
 5. Do any modifications to test results or engagement if desired
-6. Select Engagements>View Engagements
-7. Close the active engagement
 
 You can now see the issues detected by OpalOPC in the engagement scan findings. The findings are also visible in the product metrics.
 
 ![Scan results in engagement](imported-results-visible-in-engagement.jpeg)
 
-Every time you test the server, you need to repeat this process of creating a new engagement and importing the scan results.
+Depending on how your security testing practices, you can either reuse the engagement on future tests or create a new engagement each time.
 DefectDojo takes care of handling duplicates and closing issues in the same product that are no longer relevant.
 
 ### Automatically from CI/CD pipeline
 
 To automatically import scan results, we need to use the DefectDojo API.
-We will show how to configure a dedicated DefectDojo API user for our pipeline, and configure the pipeline in [Jenkins tutorial](../automated-dast-on-opcua-with-jenkins/) to use it.
+We will create a dedicated DefectDojo API user for our pipeline and configure the pipeline in the [Jenkins tutorial](../automated-dast-on-opcua-with-jenkins/) to use it.
 
-#### Create dedicated API user
+#### Create a dedicated API user
 
 1. Create a new user
     - Username: `<anything>`
@@ -103,13 +105,39 @@ stage('Run OpalOPC') {
 
         // Import results to DefectDojo
         sh '''
-        curl XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        curl -X 'POST' \
+            '<YOUR-JENKINS-URI>/api/v2/import-scan/' \
+            -H 'accept: application/json' \
+            -H "Authorization: Token $DEFECTDOJO_API_KEY" \
+            -H 'Content-Type: multipart/form-data' \
+            -F 'active=false' \
+            -F 'verified=true' \
+            -F 'close_old_findings=true' \
+            -F 'engagement_name=DAST pipeline' \
+            -F "build_id=$BUILD_ID" \
+            -F 'deduplication_on_engagement=true' \
+            -F 'minimum_severity=Info' \
+            -F 'create_finding_groups_for_all_findings=true' \
+            -F "commit_hash=$GIT_COMMIT" \
+            -F 'product_name=ConsoleReferenceServer' \
+            -F 'file=@opalopc-report.sarif' \
+            -F 'auto_create_context=true' \
+            -F 'scan_type=SARIF' \
+            -F "branch_tag=$GIT_BRANCH"
         '''
     }
 }
 ```
 
-The full Jenkinsfile shall look as the one available here: XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+The full Jenkinsfile shall look like the one available [here](https://gist.github.com/ValtteriL/0d9e784e13ae488a214e6b36bc10f95a#file-jenkinsfile-defectdojo).
+
+2. Commit & Push the changes to the repository
+
+```bash
+git add Jenkinsfile
+git commit -m "Import results to DefectDojo"
+git push
+```
 
 #### Configure API key as Jenkins secret
 
@@ -125,12 +153,13 @@ The full Jenkinsfile shall look as the one available here: XXXXXXXXXXXXXXXXXXXXX
 
 1. Run the pipeline
 2. Verify it runs successfully
-3. Verify a new engagement is added to the product in DefectDojo
+3. Verify that there's a new engagement called `DAST pipeline` in your product
 
-KUVA: pipelinet vihreällä
+![Test results uploaded by Jenkins](defectdojo-cicd-dast-pipeline.jpeg)
 
-Every time the pipeline runs, it will automatically create a new engagement and import the vulnerability scan results.
-If you configure your pipeline to run every time the OPC UA server code changes, you will stay on top of its security posture.
+Every time the pipeline runs, it automatically updates the vulnerabilities discovered in the `DAST pipeline` engagement with the newest results, closing all fixed ones.
+You can see which commit of the product was tested in the Import History.
+If you configure your pipeline to run every time the OPC UA server code changes, you always have an updated view of its security posture in DefectDojo.
 
 ## Conclusion
 
