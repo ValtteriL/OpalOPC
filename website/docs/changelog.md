@@ -4,6 +4,10 @@ description: The changelog shows OpalOPC release dates and what kind of changes 
 sidebar_position: 7
 ---
 
+## 4.1.0 - 2024-04-12
+
+* Add [partialFingerPrints](https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/sarif-v2.1.0-errata01-os-complete.html#_Toc141790905) to SARIF reports
+
 ## 4.0.0 - 2024-03-20
 
 * Licensing enforcement
