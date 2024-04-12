@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis.Sarif;
+﻿using System.Security.Cryptography;
+using System.Text;
+using Microsoft.CodeAnalysis.Sarif;
 using Model;
 using Plugin;
 
@@ -143,6 +145,10 @@ namespace View
                 ],
                 Level = FailureLevel.Warning,
                 Rank = 0, // No CVSS for errors
+                PartialFingerprints = new Dictionary<string, string>
+                {
+                    ["1"] = GeneratePartialFingerPrint(s_errorRule.Id, server.DiscoveryUrl, error.Message)
+                }
             };
         }
 
@@ -173,7 +179,22 @@ namespace View
                 ],
                 Level = issue.Severity > 0 ? FailureLevel.Error : FailureLevel.Note,
                 Rank = issue.Severity * 10, // CVSS * 10
+                PartialFingerprints = new Dictionary<string, string>
+                {
+                    ["1"] = GeneratePartialFingerPrint(issue.PluginIdInt.ToString(), server.DiscoveryUrl, issue.Name)
+                }
             };
+        }
+
+        private string GeneratePartialFingerPrint(string ruleId, string discoveryUrl, string message)
+        {
+            // generate a determenistic hash of the issue/error to be used as a partial fingerprint
+
+            string unhashedPartialFingerPrint = $"{_guid}{ruleId}{discoveryUrl}{message}";
+
+            return BitConverter.ToString(MD5.HashData(Encoding.ASCII.GetBytes(unhashedPartialFingerPrint)))
+                .Replace("-", string.Empty)
+                .ToLower();
         }
 
         private static IList<ReportingDescriptor> BuildRules(IPluginRepository pluginRepository)

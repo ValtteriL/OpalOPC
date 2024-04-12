@@ -89,6 +89,9 @@ public class SarifReporterTest
         Assert.True(invocation.ExitCode == 0);
         Assert.True(invocation.ExecutionSuccessful);
 
+        // collect all partialFingerprints
+        List<string> partialFingerPrints = [];
+
         foreach (Target target in report.Targets)
         {
             foreach (Server server in target.Servers)
@@ -113,6 +116,8 @@ public class SarifReporterTest
                     Assert.True(result.RuleIndex == run.Tool.Driver.Rules.IndexOf(rule));
 
                     Assert.True(run.Artifacts.Where(a => a.Description.Text.Contains(target.ApplicationName)).Any());
+                    Assert.True(result.PartialFingerprints["1"].Length == 32); // md5 hash length
+                    partialFingerPrints.Add(result.PartialFingerprints["1"]);
                 }
                 foreach (Error error in server.Errors)
                 {
@@ -125,8 +130,13 @@ public class SarifReporterTest
                     Assert.True(result.Level == FailureLevel.Warning);
                     Assert.True(result.Rank == 0);
                     Assert.True(result.Locations[0].PhysicalLocation.ArtifactLocation.Uri == new Uri(server.DiscoveryUrl));
+                    Assert.True(result.PartialFingerprints["1"].Length == 32); // md5 hash length
+                    partialFingerPrints.Add(result.PartialFingerprints["1"]);
                 }
             }
         }
+
+        // check that all partialFingerprints are unique
+        Assert.True(partialFingerPrints.Distinct().Count() == partialFingerPrints.Count);
     }
 }
