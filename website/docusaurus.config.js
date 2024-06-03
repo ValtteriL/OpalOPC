@@ -38,9 +38,9 @@ const config = {
   // https://docusaurus.io/docs/api/docusaurus-config#scripts
   scripts: [
     {
-      src: 'https://static.getclicky.com/js',
+      src: 'https://umami.molemmat.fi/script.js',
       async: true,
-      'data-id': '101427562'
+      'data-website-id': 'e8c79fbd-9bdd-4f68-92a3-61b93464a836'
       }
   ],
 
