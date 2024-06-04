@@ -17,6 +17,10 @@ What OpalOPC probes in each application is based on plugins. Take a look at [plu
 
 No. The GUI is Windows only.
 
+## How can I manage my subscription?
+
+You can manage your subscription [here](https://billing.stripe.com/p/login/bIY28PeVX5ez2U8288).
+
 ## I have more questions! Where do I ask?
 
 Email us at [info@opalopc.com](mailto:info@opalopc.com).
