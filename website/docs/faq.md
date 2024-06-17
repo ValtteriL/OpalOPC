@@ -2,7 +2,7 @@
 title: FAQ
 description: The FAQ answers the most frequently asked questions.
 keywords: [faq]
-sidebar_position: 8
+sidebar_position: 9
 ---
 
 ## Who maintains OpalOPC?
@@ -20,6 +20,12 @@ No. The GUI is Windows only.
 ## How can I manage my subscription?
 
 You can manage your subscription [here](https://billing.stripe.com/p/login/bIY28PeVX5ez2U8288).
+
+## Can I buy on invoice?
+
+Yes. See [here](billing#buying-on-invoice).
+
+## Can I buy one-off license?
 
 ## I have more questions! Where do I ask?
 
