@@ -35,7 +35,6 @@ make deploy-api
 make deploy-knownvulnerabilityapi-db
 ```
 
-
 ### Setup scanme.opalopc.com
 
 Setup scanme on a VPS. Only needs to be run once.
@@ -49,7 +48,7 @@ make setup-scanme
 Scan echo (on linux):
 
 ```bash
-make eun
+make run
 ```
 
 Run website on localhost with hot reload on changes:
@@ -84,7 +83,7 @@ make run-all-tests
 ## Misc
 
 ### Edit Ansible vault
-    
+
 ```bash
 make edit-vault
 ```
