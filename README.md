@@ -1,89 +1,51 @@
 # OpalOPC
 
-OPC UA security scanner
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/ValtteriL/OpalOPC">
+    <img src="website/static/img/opalopc-logo-no-text.png" alt="Logo" width="100" height="100">
+  </a>
 
-## Deployment
+  <h3 align="center">OpalOPC</h3>
 
-To deploy means to release applications, and if necessary, to deploy website and API.
+  <p align="center">
+    OPC UA Security Scanner
+    <br />
+    <a href="https://opalopc.com/docs/"><strong>Explore the docs »</strong></a>
+  </p>
+</div>
 
-### Release applications
+OpalOPC is a vulnerability scanner for OPC UA applications that enables anyone to conduct professional-grade security tests against OPC UA servers with minimal effort. It scans OPC UA applications for common misconfigurations and vulnerabilities, providing unmatched visibility into their security posture.
 
-```bash
-make release
-```
+## Features
 
-This command creates MSIX and Snapd packages of OpalOPC.
-The Snapd package is automatically uploaded to Snap store, but need to be promoted to latest/stable by hand in Snapd listing page. MSIX needs to be uploaded by hand to Microsoft Partner Portal.
+- 17+ security checks
+- CLI and GUI interfaces (GUI is Windows only)
+- HTML and SARIF reports
+- Easy to use
+- Easy integration with CI/CD pipelines
 
-### Deploy website
+## Installation
 
-Deploy Docusaurus website to Cloudflare Pages.
+Refer to the [Quick Start](https://opalopc.com/docs/get-started/quick-start).
 
-```bash
-make deploy-website
-```
+## Usage
 
-Deploy Known Vulnerability API.
+- [CLI](https://opalopc.com/docs/usage-cli)
+- [GUI](https://opalopc.com/docs/usage-gui)
 
-### Deploy API
+### Tutorial
 
-```bash
-make update-local-knownvulnerabilityapi-db # create local CPE database using latest data
-make deploy-api
+Refer to [How to run your first vulnerability scan](https://opalopc.com/docs/tutorials/first-vulnerability-scan).
 
-# deploy the local CPE database to API
-make deploy-knownvulnerabilityapi-db
-```
+## Contributing
 
-### Setup scanme.opalopc.com
+Pull requests are welcome. For major changes, please open an issue first
+to discuss what you would like to change.
 
-Setup scanme on a VPS. Only needs to be run once.
+Please make sure to update tests as appropriate.
 
-```bash
-make setup-scanme
-```
+## License
 
-## Development
-
-Scan echo (on linux):
-
-```bash
-make run
-```
-
-Run website on localhost with hot reload on changes:
-
-```bash
-make docs
-```
-
-Formatting:
-
-```bash
-# check
-make lint-check
-
-# make changes
-make lint
-```
-
-## Testing
-
-```bash
-# unit tests
-make run-unit-tests
-
-# e2e tests (requires Windows)
-make run-e2e-tests
-
-# All tests
-make run-all-tests
-```
-
-## Misc
-
-### Edit Ansible vault
-
-```bash
-make edit-vault
-```
+[GPLv2](https://choosealicense.com/licenses/gpl-2.0/)
