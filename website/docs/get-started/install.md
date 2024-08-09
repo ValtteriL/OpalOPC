@@ -42,7 +42,3 @@ mv ./opalopc ~/.local/bin/opalopc
 ```
 
 :::
-
-## After installation
-
-Before scanning anything, you need to [configure the license key](configure-license-key.md).

@@ -107,9 +107,6 @@ pipeline {
         }
 
         stage('Run OpalOPC') {
-            environment {
-                OPALOPC_LICENSE_KEY = credentials('opalopc-license-key')
-            }
             agent {
                 dockerfile {
                     filename 'Dockerfile.opalopc'
@@ -161,10 +158,6 @@ git add .
 git commit -m "Add pipeline files"
 git push
 ```
-
-7. Configure a new secret text credential in Jenkins with the name `opalopc-license-key` and the value of your OpalOPC license key.
-
-![Configure secret text credentials](credential-secret-text-configuration.png)
 
 ## Get results
 
