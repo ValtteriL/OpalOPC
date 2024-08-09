@@ -29,7 +29,6 @@ In this statement, we explain how we process the personal data of our customers 
 |Signatories of the agreements (name and position)|From the customer or vendor company|After the retention period required by accounting (5 or 10 years)|No|Contract conclusion, accounting and invoicing|
 |A breakdown of the invoice, which shows the person performing the work, contact person, phone number and other contact information|From the customer or vendor company|After the retention period required by accounting (5 or 10 years)|No|Contract conclusion, accounting and invoicing* Information marked with an asterisk is personal information in the case of a one-person company. At other times, we consider the data to be company data (ie not personal data)|
 |URL & Title of pages viewed, URL & Title of any links that are clicked on pages viewed, Referrer, User agent, Screen resolution, Language, x/y coordinates of mouse events, Anonymized IP address|From you/your device when you come to our website|After 1 year|Yes|Improving our marketing and sales|
-|Email address,IP address, timestamp, which form you subscribed from|From you when you subscribe to our newsletter|3 years after unsubscribing from the list|Yes|Managing newsletter subscriptions and sending the newsletter to you|
 
 ## Website
 
@@ -125,23 +124,6 @@ We use the Google Ads -service for advertising. We buy advertising space in Goog
 At Molemmat Oy we do not process personal data with our advertising and we are not the controllers i.e. the ones responsible for the information that Google uses to target its advertisements. Moreover, we do not have Google’s or any other third party’s cookies on our website.
 
 You can find more information about the data that Google processes on you and how Google targets ads for you on Google’s own site [https://policies.google.com/privacy?hl=en](https://policies.google.com/privacy?hl=fi). On the same website you can also find information on how you can affect the data that Google gathers on you and how your data is used.
-
-## Newsletter Subscription
-
-You can subscribe to our newsletter by filling in the subscription form on our website. We use [Mailchimp](https://mailchimp.com/) service to manage the newsletter subscriptions and to send the newsletter to you. We also use the information to monitor the usage of complimentary OpalOPC-licenses and to prevent fraudulent use of our complimentary licenses.
-
-The following information is processed about you:
-
-* Email address
-* IP address
-* timestamp
-* which form you subscribed from
-
-We get the information directly from you when you send us the subscription. You can unsubscribe from the newsletter anytime you want. Your data is stored for three years after you unsubscribe to allow us to monitor that our terms for complimentary licenses are not violated. The information is processed and stored in Mailchimp service and The Rocket Science Group is the data processor. The Rocket Science Group may use the information also to their own purposes in which case The Rocket Science Group is the data controller. You can read more about this from their privacy policy: https://www.intuit.com/privacy/statement/. The data is transferred to the United States using Data Privacy Framework as a transfer mechanism. Read more about Data Privacy Framework here: https://www.dataprivacyframework.gov/s/.
-
-We process client data according to the EU’s General Data Protection Regulation’s (GDPR) article 6.1 section b): “processing is necessary for the performance of a contract to which the data subject is party or in order to take steps at the request of the data subject prior to entering into a contract”. In practice this means that we need the data in order to send you the newsletter which you have subscribed to.
-
-However, the longer processing time after you unsubscribe is based on the GDPR’s article 6.1 section f): “processing is necessary for the purposes of the legitimate interests pursued by the controller or by a third party, except where such interests are overridden by the interests or fundamental rights and freedoms of the data subject which require protection of personal data, in particular where the data subject is a child”. We have a legitimate interest in storing data to ensure that our complimentary licenses are not used fraudulently. Since we do not process much data on you and since the data we process cannot be deemed as very sensitive, we are of the opinion that in this case your rights according to data protection legislation do not weigh more than our legitimate interest to process your data.
 
 ## Your rights and the contact details of the Data Protection Ombudsman
 
