@@ -7,7 +7,7 @@ const ReportMain = () => {
             <h1><span>Reveal Security Issues</span> in your Most Critical Systems</h1>
             <p>OPC UA security scanner</p>
             <div className="main-btns">
-                <a href="#starthere" className="primary-btn common-btns">Get started</a>
+                <a href="/docs/get-started/quick-start" className="primary-btn common-btns">Get started</a>
                 <a href="/docs" className="secondary-btn common-btns">Read Docs</a>
             </div>
             <ul>
@@ -16,8 +16,8 @@ const ReportMain = () => {
                 <li><span></span>Say goodbye to unactionable results - <b>clear</b> prioritization &amp; fixing plan</li>
             </ul>
             <div className='dwnld-links'>
-                <a href="#starthere" className="microsoft-link"><img src="/img/microsoft.jpg" alt="Microsoft" /></a>
-                <a href="#starthere" className="snap-link"><img src="/img/snap.jpg" alt="Snap" /></a>
+                <a target="_blank" href="https://apps.microsoft.com/detail/OpalOPC/9N89VWR0GK7H?launch=true&mode=mini" className="microsoft-link"><img src="/img/microsoft.jpg" alt="Microsoft" /></a>
+                <a target="_blank" href="https://snapcraft.io/opalopc" className="snap-link"><img src="/img/snap.jpg" alt="Snap" /></a>
             </div>
         </div>
         <div className="main-img">

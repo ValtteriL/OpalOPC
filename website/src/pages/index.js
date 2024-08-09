@@ -6,7 +6,6 @@ import ReportMain from '../components/ReportMain/ReportMain';
 import Testimonials from '../components/Testimonials/Testimonials';
 import Critical from '../components/CriticalFindings/CriticalFinding';
 import Featured from '../components/Featured/Featured';
-import Price from '../components/Pricing/Pricing';
 import Head from '@docusaurus/Head';
 
 import Heading from '@theme/Heading';
@@ -34,7 +33,6 @@ export default function Home() {
         <Testimonials />
         <Critical />
         <Featured />
-        <Price />
       </main>
     </Layout>
     

@@ -52,7 +52,7 @@ const Critical = () => {
                     </div>
                 </div>
                 <h4>Launch your first Security Scan now.</h4>
-                  <a href="#starthere" className="primary-btn common-btns">Get started</a>
+                  <a href="/docs/get-started/quick-start" className="primary-btn common-btns">Get started</a>
             </div>
             
         </div>
