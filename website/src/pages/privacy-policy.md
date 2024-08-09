@@ -30,8 +30,6 @@ In this statement, we explain how we process the personal data of our customers 
 |A breakdown of the invoice, which shows the person performing the work, contact person, phone number and other contact information|From the customer or vendor company|After the retention period required by accounting (5 or 10 years)|No|Contract conclusion, accounting and invoicing* Information marked with an asterisk is personal information in the case of a one-person company. At other times, we consider the data to be company data (ie not personal data)|
 |URL & Title of pages viewed, URL & Title of any links that are clicked on pages viewed, Referrer, User agent, Screen resolution, Language, x/y coordinates of mouse events, Anonymized IP address|From you/your device when you come to our website|After 1 year|Yes|Improving our marketing and sales|
 |Email address,IP address, timestamp, which form you subscribed from|From you when you subscribe to our newsletter|3 years after unsubscribing from the list|Yes|Managing newsletter subscriptions and sending the newsletter to you|
-|Name, Email address, IBAN number & name on account & Billing address, Payment card information & Country or Region, Activity with timestamps related to OpalOPC purchase, IP address|From you when you purchase OpalOPC Professional License|3 years after the end of the customer relationship or after the retention period required by accounting (5 or 10 years).|Yes|Receiving payments from customers|
-|OS version, Client type, City, Region, Country, Scan settings excluding target and credential information, Number of discovered issues, Number of errors, Timestamp, Scan duration|From you when you use OpalOPC security scanner|90 days|No|Improving OpalOPC|
 
 ## Website
 
@@ -144,51 +142,6 @@ We get the information directly from you when you send us the subscription. You 
 We process client data according to the EU’s General Data Protection Regulation’s (GDPR) article 6.1 section b): “processing is necessary for the performance of a contract to which the data subject is party or in order to take steps at the request of the data subject prior to entering into a contract”. In practice this means that we need the data in order to send you the newsletter which you have subscribed to.
 
 However, the longer processing time after you unsubscribe is based on the GDPR’s article 6.1 section f): “processing is necessary for the purposes of the legitimate interests pursued by the controller or by a third party, except where such interests are overridden by the interests or fundamental rights and freedoms of the data subject which require protection of personal data, in particular where the data subject is a child”. We have a legitimate interest in storing data to ensure that our complimentary licenses are not used fraudulently. Since we do not process much data on you and since the data we process cannot be deemed as very sensitive, we are of the opinion that in this case your rights according to data protection legislation do not weigh more than our legitimate interest to process your data.
-
-## Professional License Purchases
-
-We use the services of [Stripe](https://stripe.com/docs/payments/checkout) to facilitate selling of professional software licenses. We direct Stripe to take payments from our customers.
-
-The following information is processed about you (depending on the payment method you choose):
-
-* Name
-* Email address
-* IBAN number & name on account & Billing address
-* Payment card information & Country or Region
-* Activity with timestamps related to OpalOPC purchase
-* IP address
-
-Stripe gets this information directly from you when you purchase OpalOPC Professional License. Stripe is the data processor, and processes the data outside ETA. Stripe will not sell, retain, use or disclose Personal Data for any purpose other than for the specific purposes of performing the Services and to comply with Law, unless otherwise permitted by your Stripe Services Agreement or DP Law.
-
-At your request, Stripe will delete or return all Personal Data to you after the Term, and delete existing copies held by Stripe, unless Stripe is required or authorized by DP Law to store Personal Data for a longer period.
-
-You can read more about this from their privacy policy: https://stripe.com/en-fi/privacy. The data may be transferred globally using varying transfer mechanisms that are interpreted as approved (EEA SCCs, the UK Data Transfer Addendum or any data transfer mechanism a supervisory authority approves under DP Law). You can read more in Stripe’s Data Processing Agreement: https://stripe.com/en-fi/legal/dpa.
-
-Stripe shares this information with us, but with only partial payment information.
-
-We process client data according to the EU’s General Data Protection Regulation’s (GDPR) article 6.1 section b): “processing is necessary for the performance of a contract to which the data subject is party or in order to take steps at the request of the data subject prior to entering into a contract”. In practice this means that we need the data in order to enter in to license agreement with you and to manage the payments according to our agreement.
-
-## Telemetry
-
-We use [Azure Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) by Microsoft to collect telemetry of the usage of OpalOPC. This information is used to improve the product.
-
-The following information is processed about you:
-
-* OS version
-* Client type
-* City, Region, Country
-* Scan settings excluding target and credential information
-* Number of discovered issues
-* Number of errors
-* Timestamp
-* Scan duration
-* IP address
-
-Microsoft gets this information from you when you use the OpalOPC security scanner. Microsoft is the data processor, and processes the data inside ETA. Microsoft will not sell, retain, use or disclose Personal Data for any purpose other than for the specific purposes of performing the Services and to comply with Law.
-
-Microsoft shares this information with us in anonymized form (without the IP address).
-
-Molemmat Oy is the data controller, and at your request will delete or return all Personal Data to you after the Term, and delete any existing copies help by Microsoft. By default, all data is deleted after 90 days.
 
 ## Your rights and the contact details of the Data Protection Ombudsman
 
