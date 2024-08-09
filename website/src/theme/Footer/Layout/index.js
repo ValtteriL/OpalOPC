@@ -17,13 +17,6 @@ export default function FooterLayout({ style, links, logo, copyright }) {
         )}
       </div>
 
-      {/* ### 3. Add Cookiebot cookie declaration to the footer of very page */}
-      <script
-        id="CookieDeclaration"
-        src="https://consent.cookiebot.com/9625f1c9-907a-4cb8-95d0-15bfd9db488a/cd.js"
-        type="text/javascript"
-      ></script>
-
     </footer>
   );
 }
