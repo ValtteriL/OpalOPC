@@ -9,29 +9,14 @@ namespace ScannerApplication
     {
         Task<int> Run(Options options);
     }
-    public class Worker(ILogger<Worker> logger, ILicensingController licensingController, IReportController reportController, IDiscoveryController discoveryController, ISecurityTestController securityTestController, ITaskUtil taskUtil) : IWorker
+    public class Worker(ILogger<Worker> logger, IReportController reportController, IDiscoveryController discoveryController, ISecurityTestController securityTestController, ITaskUtil taskUtil) : IWorker
     {
         public async Task<int> Run(Options options)
         {
-            using ILicensingController myLicensingController = licensingController; // automatically cleanup machine activation when done
-
             TelemetryUtil.TrackEvent("Scan started", GetScanProperties(options.targets, options.authenticationData));
 
             DateTime start = DateTime.Now;
             logger.LogInformation("{Message}", $"Starting OpalOPC {Util.VersionUtil.AppVersion} ( https://opalopc.com )");
-
-
-            if (!await myLicensingController.IsLicensed())
-            {
-                TelemetryUtil.TrackEvent("Not licensed");
-                logger.LogCritical("{Message}", "Software license validation failed. See https://opalopc.com/docs/get-started/configure-license-key");
-                return ExitCodes.Error;
-            }
-            else
-            {
-                TelemetryUtil.TrackEvent("License valid");
-                logger.LogInformation("{Message}", "Software license validated successfully");
-            }
 
             if (options.targets.Count == 0)
             {

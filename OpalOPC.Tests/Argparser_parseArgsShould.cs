@@ -516,44 +516,4 @@ public class Argparser_parseArgsShould
 
         Assert.True(options.shouldDiscoverAndExit);
     }
-
-    [Theory]
-    [InlineData("-s")]
-    [InlineData("--set-license-key")]
-    public void ParseArgs_SetLicenseKeySetsFlagAndLicensekeyVariable(string flag)
-    {
-        // arrange
-        string licenseKey = "this-is-the-license-key";
-        string[] args = [flag, licenseKey];
-
-        Argparser argparser = new(args, _fileUtilMock.Object);
-
-        // act
-        Options options = argparser.parseArgs();
-
-        // assert
-        Assert.True(options.shouldStoreLicenseAndExit);
-        Assert.True(options.licenseKey == licenseKey);
-        Assert.True(options.exitCode == ExitCodes.Success);
-    }
-
-    // no license key given?
-    [Theory]
-    [InlineData("-s")]
-    [InlineData("--set-license-key")]
-    public void ParseArgs_SetLicenseKeyWithoutLicensekeyResultsInError(string flag)
-    {
-        // arrange
-        string[] args = [flag];
-
-        Argparser argparser = new(args, _fileUtilMock.Object);
-
-        // act
-        Options options = argparser.parseArgs();
-
-        // assert
-        Assert.True(!options.shouldStoreLicenseAndExit);
-        Assert.True(options.licenseKey == string.Empty);
-        Assert.True(options.exitCode == ExitCodes.Error);
-    }
 }

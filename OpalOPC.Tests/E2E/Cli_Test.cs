@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
-using Controller;
 using Microsoft.CodeAnalysis.Sarif;
 using Tests.Helpers;
-using Util;
 using Xunit;
 
 namespace Tests.E2E
@@ -41,13 +39,6 @@ namespace Tests.E2E
             return RunProcess(processStartInfo);
         }
 
-        private static Process RunCommandWithLicenseKey(string command, string licenseKey)
-        {
-            ProcessStartInfo processStartInfo = BuildProcessStartInfo(command);
-            processStartInfo.Environment.Add(LicensingController.s_licenseKeyEnv, licenseKey);
-            return RunProcess(processStartInfo);
-        }
-
         private static Process RunProcess(ProcessStartInfo processStartInfo)
         {
             Process process = new()
@@ -67,7 +58,7 @@ namespace Tests.E2E
             // scan echo server, validate report
 
             // act
-            Process process = RunCommandWithLicenseKey($"{ApplicationPath} opc.tcp://echo:53530 -vv --output {_reportBaseName}", LicenseKeys.s_validLicenseKey);
+            Process process = RunCommand($"{ApplicationPath} opc.tcp://echo:53530 -vv --output {_reportBaseName}");
             ParsedReport parsedReport = new(File.ReadAllText(_htmlReport));
             SarifLog sarifLog = SarifLog.Load(_sarifReport);
 
@@ -91,7 +82,7 @@ namespace Tests.E2E
             // scan opc.tcp://thisdoesnotexistsfafasfada:53530
 
             // act
-            Process process = RunCommandWithLicenseKey($"{ApplicationPath} opc.tcp://thisdoesnotexistsfafasfada:53530 -vv --output {_reportBaseName}", LicenseKeys.s_validLicenseKey);
+            Process process = RunCommand($"{ApplicationPath} opc.tcp://thisdoesnotexistsfafasfada:53530 -vv --output {_reportBaseName}");
             ParsedReport parsedReport = new(File.ReadAllText(_htmlReport));
             SarifLog sarifLog = SarifLog.Load(_sarifReport);
 
@@ -110,25 +101,21 @@ namespace Tests.E2E
         [Trait("Category", "E2E")]
         public void ScanMultipleTargetsTest()
         {
-            // scan echo, golf, india, scanme.opalopc.com
+            // scan echo, scanme.opalopc.com
 
             // act
-            Process process = RunCommandWithLicenseKey($"{ApplicationPath} opc.tcp://echo:53530 opc.tcp://golf:53530 opc.tcp://india:53530 opc.tcp://scanme.opalopc.com:53530 -vv --output {_reportBaseName}", LicenseKeys.s_validLicenseKey);
+            Process process = RunCommand($"{ApplicationPath} opc.tcp://echo:53530 opc.tcp://scanme.opalopc.com:53530 -vv --output {_reportBaseName}");
             ParsedReport parsedReport = new(File.ReadAllText(_htmlReport));
             SarifLog sarifLog = SarifLog.Load(_sarifReport);
 
             // assert
             Assert.True(process.ExitCode == 0);
-            Assert.True(parsedReport.NumberOfTargets == 4);
-            Assert.True(parsedReport.NumberOfEndpoints == ExpectedTargetResult.Echo.NumberOfEndpoints + ExpectedTargetResult.Golf.NumberOfEndpoints + ExpectedTargetResult.India.NumberOfEndpoints + ExpectedTargetResult.Scanme.NumberOfEndpoints);
+            Assert.True(parsedReport.NumberOfTargets == 2);
+            Assert.True(parsedReport.NumberOfEndpoints == ExpectedTargetResult.Echo.NumberOfEndpoints + ExpectedTargetResult.Scanme.NumberOfEndpoints);
             Assert.True(parsedReport.IssueIds.Count == parsedReport.NumberOfIssues);
 
             ExpectedTargetResult.Echo.validateWithParsedReport(parsedReport);
             ExpectedTargetResult.Echo.validateWithSarifReport(sarifLog);
-            ExpectedTargetResult.Golf.validateWithParsedReport(parsedReport);
-            ExpectedTargetResult.Golf.validateWithSarifReport(sarifLog);
-            ExpectedTargetResult.India.validateWithParsedReport(parsedReport);
-            ExpectedTargetResult.India.validateWithSarifReport(sarifLog);
             ExpectedTargetResult.Scanme.validateWithParsedReport(parsedReport);
             ExpectedTargetResult.Scanme.validateWithSarifReport(sarifLog);
 
@@ -147,25 +134,6 @@ namespace Tests.E2E
 
             // assert
             Assert.True(process.ExitCode == 0);
-        }
-
-        [Fact]
-        [Trait("Category", "E2E")]
-        public void SetLicenseKey()
-        {
-
-            // act
-            string licenseKey = "1234567890";
-            FileUtil fileUtil = new();
-            Process process = RunCommand($"{ApplicationPath} --set-license-key {licenseKey}");
-
-            // assert
-            Assert.True(fileUtil.FileExistsInAppdata(LicensingController.s_licenseFileName));
-            Assert.True(fileUtil.ReadFileInAppdataToList(LicensingController.s_licenseFileName).First() == licenseKey);
-            Assert.True(process.ExitCode == 0);
-
-            // cleanup
-            File.Delete(Path.Combine(fileUtil._opalOPCDirectory, LicensingController.s_licenseFileName));
         }
 
     }

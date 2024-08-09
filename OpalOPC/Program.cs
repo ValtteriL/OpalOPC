@@ -29,14 +29,6 @@ class OpalOPC
             IHost _host = AppConfigurer.ConfigureApplication(options, loggerProvider);
             IWorker worker = _host.Services.GetRequiredService<IWorker>();
 
-            if (options.shouldStoreLicenseAndExit)
-            {
-                // store license
-                ILicensingController licensingController = _host.Services.GetRequiredService<ILicensingController>();
-                await licensingController.StoreLicense(options.licenseKey);
-                return (int)ExitCodes.Success;
-            }
-
             if (options.shouldDiscoverAndExit)
             {
                 // discover targets
