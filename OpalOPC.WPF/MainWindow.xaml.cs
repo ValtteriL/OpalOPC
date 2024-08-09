@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Util;
 
 namespace OpalOPCWPF
 {
@@ -10,17 +9,8 @@ namespace OpalOPCWPF
     {
         public MainWindow()
         {
-            TelemetryUtil.TrackEvent("GUI started");
-            try
-            {
-                DataContext = new ViewModels.MainWindowViewModel();
-                InitializeComponent();
-            }
-            catch (Exception ex)
-            {
-                TelemetryUtil.TrackException(ex);
-                throw;
-            }
+            DataContext = new ViewModels.MainWindowViewModel();
+            InitializeComponent();
         }
 
         private void Navbar_About_Click(object sender, RoutedEventArgs e)

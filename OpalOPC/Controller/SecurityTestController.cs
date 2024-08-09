@@ -46,7 +46,6 @@ namespace Controller
                 catch (Exception e)
                 {
                     string msg = $"Unknown exception scanning {target.ApplicationName}: {e}";
-                    TelemetryUtil.TrackException(e);
                     logger.LogError("{Message}", msg);
 
                     if (target.Servers.Count != 0)

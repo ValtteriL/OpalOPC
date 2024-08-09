@@ -12,8 +12,6 @@ class OpalOPC
 {
     public static async Task<int> Main(string[] args)
     {
-        TelemetryUtil.TrackEvent("CLI started");
-
         try
         {
             using Options options = new Argparser(args).parseArgs();
@@ -47,7 +45,6 @@ class OpalOPC
         }
         catch (Exception ex)
         {
-            TelemetryUtil.TrackException(ex);
             Console.Error.WriteLine(ex.Message);
             return (int)ExitCodes.Error;
         }
