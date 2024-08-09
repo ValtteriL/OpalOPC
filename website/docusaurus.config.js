@@ -217,12 +217,6 @@ const config = {
         ],
       },
     ],
-    [
-      require.resolve('docusaurus-gtm-plugin'),
-      {
-        id: 'GTM-N4NTGPP9', // GTM Container ID
-      }
-    ]
   ],
 };
 
