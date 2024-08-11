@@ -183,7 +183,7 @@ const config = {
         redirects: [
           {
             from: '/how-to-hack-opc-ua-report',
-            to: '/tutorial-how-to-hack-opc-ua.pdf',
+            to: '/docs/tutorials/hack-opc-ua/',
           },
           {
             from: '/how-to-hack-opc-ua',
