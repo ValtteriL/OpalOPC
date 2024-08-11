@@ -7,7 +7,7 @@ slug: usage-cli
 ---
 
 ```bash
-Opal OPC 3.2.0.0 ( https://opalopc.com )
+Opal OPC 5.0.0 ( https://opalopc.com )
 Usage: opalopc [Options] [Target ...]
   -i, --input-file=VALUE     input targets from list of discovery uris
   -o, --output=VALUE         base name for output reports
