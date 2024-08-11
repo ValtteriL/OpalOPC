@@ -12,8 +12,6 @@ class OpalOPC
 {
     public static async Task<int> Main(string[] args)
     {
-        TelemetryUtil.TrackEvent("CLI started");
-
         try
         {
             using Options options = new Argparser(args).parseArgs();
@@ -28,14 +26,6 @@ class OpalOPC
             // configure application
             IHost _host = AppConfigurer.ConfigureApplication(options, loggerProvider);
             IWorker worker = _host.Services.GetRequiredService<IWorker>();
-
-            if (options.shouldStoreLicenseAndExit)
-            {
-                // store license
-                ILicensingController licensingController = _host.Services.GetRequiredService<ILicensingController>();
-                await licensingController.StoreLicense(options.licenseKey);
-                return (int)ExitCodes.Success;
-            }
 
             if (options.shouldDiscoverAndExit)
             {
@@ -55,7 +45,6 @@ class OpalOPC
         }
         catch (Exception ex)
         {
-            TelemetryUtil.TrackException(ex);
             Console.Error.WriteLine(ex.Message);
             return (int)ExitCodes.Error;
         }

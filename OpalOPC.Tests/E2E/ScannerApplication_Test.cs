@@ -1,5 +1,4 @@
-﻿using Controller;
-using Logger;
+﻿using Logger;
 using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,7 +35,6 @@ namespace Tests.E2E
             IWorker worker = _host.Services.GetRequiredService<IWorker>();
 
             // act
-            Environment.SetEnvironmentVariable(LicensingController.s_licenseKeyEnv, LicenseKeys.s_validLicenseKey);
             int exitCode = await worker.Run(options);
 
             Assert.True(exitCode == ExitCodes.Success);
@@ -57,42 +55,5 @@ namespace Tests.E2E
             ExpectedTargetResult.Echo.validateWithSarifReport(sarifLog);
 
         }
-
-        [Theory]
-        [MemberData(nameof(LicenseKeyData))]
-        [Trait("Category", "E2E")]
-        public async void LicenseKeysResultInDifferentExitCodes(string licenseKey, int expectedExitCode)
-        {
-            // arrange
-            Stream htmlOutputStream = new MemoryStream();
-            Stream sarifOutputStream = new MemoryStream();
-            using Options options = new()
-            {
-                HtmlOutputStream = htmlOutputStream,
-                SarifOutputStream = sarifOutputStream,
-                authenticationData = new AuthenticationData(),
-                commandLine = string.Empty,
-            };
-
-            CLILoggerProvider loggerProvider = new(options.logLevel);
-
-            IHost _host = AppConfigurer.ConfigureApplication(options, loggerProvider);
-            IWorker worker = _host.Services.GetRequiredService<IWorker>();
-
-            // act
-            Environment.SetEnvironmentVariable(LicensingController.s_licenseKeyEnv, licenseKey);
-            int exitCode = await worker.Run(options);
-
-            // assert
-            Assert.True(exitCode == expectedExitCode);
-
-        }
-
-        public static IEnumerable<object[]> LicenseKeyData =>
-        [
-            [LicenseKeys.s_validLicenseKey, ExitCodes.Success],
-            [LicenseKeys.s_suspendedLicenseKey, ExitCodes.Error],
-            ["this-is-invalid-license", ExitCodes.Error],
-        ];
     }
 }

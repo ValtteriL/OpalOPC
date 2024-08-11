@@ -19,8 +19,6 @@ namespace Model
         public AuthenticationData authenticationData { get; init; }
         public string commandLine { get; init; }
         public string apiUri { get; set; }
-        public bool shouldStoreLicenseAndExit { get; init; }
-        public string licenseKey { get; init; }
     }
 
     public class Options : IDisposable, IOptions
@@ -39,8 +37,6 @@ namespace Model
         public AuthenticationData authenticationData { get; init; } = new();
         public string commandLine { get; init; } = string.Empty;
         public string apiUri { get; set; } = "https://api.opalopc.com/known-vulnerabilities";
-        public bool shouldStoreLicenseAndExit { get; init; } = false;
-        public string licenseKey { get; init; } = string.Empty;
 
         public void Dispose()
         {

@@ -181,10 +181,9 @@ const config = {
       '@docusaurus/plugin-client-redirects', // https://docusaurus.io/docs/api/plugins/@docusaurus/plugin-client-redirects
       {
         redirects: [
-          // How to pentest OPC UA presentation link to mailchimp landing page
           {
             from: '/how-to-hack-opc-ua-report',
-            to: 'https://mailchi.mp/opalopc/how-to-hack-opc-ua',
+            to: '/tutorial-how-to-hack-opc-ua.pdf',
           },
           {
             from: '/how-to-hack-opc-ua',
@@ -217,12 +216,6 @@ const config = {
         ],
       },
     ],
-    [
-      require.resolve('docusaurus-gtm-plugin'),
-      {
-        id: 'GTM-N4NTGPP9', // GTM Container ID
-      }
-    ]
   ],
 };
 

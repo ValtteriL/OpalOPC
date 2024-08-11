@@ -14,8 +14,6 @@ namespace Controller
     {
         public async Task<IList<Uri>> MulticastDiscoverTargets(int timeoutSeconds)
         {
-            // track event
-            TelemetryUtil.TrackEvent("Network Discovery");
 
             ConcurrentBag<Uri> targetUris = [];
 
@@ -33,18 +31,8 @@ namespace Controller
 
             IList<Uri> discoveredUris = targetUris.Distinct().ToList();
 
-            TelemetryUtil.TrackEvent("Network Discovery finished", GetDiscoveryProperties(discoveredUris));
-
             // return list of unique targetUris
             return discoveredUris;
-        }
-
-        private static Dictionary<string, string> GetDiscoveryProperties(IList<Uri> targetUris)
-        {
-            return new()
-            {
-                { "NumberOfTargetsDiscovered", targetUris.Count.ToString() },
-            };
         }
 
         private class DNSSDDiscoverer(IMDNSUtil mDNSUtil, ILogger<NetworkDiscoveryController> logger)

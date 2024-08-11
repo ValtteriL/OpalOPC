@@ -64,30 +64,6 @@ namespace Tests.Helpers
             issueIds: [10001, 10002, 10004, 10006, 10007, 10008, 10009, 10014, 10015]
         );
 
-        public static readonly ExpectedTargetResult Golf = new(
-            numberOfEndpoints: 1,
-            numberOfErrors: 0,
-            numberOfIssues: 2,
-            numberOfCriticalIssues: 0,
-            numberOfHighIssues: 1,
-            numberOfMediumIssues: 1,
-            numberOfLowIssues: 0,
-            numberOfInfoIssues: 0,
-            issueIds: [10001, 10007, 10014, 10015]
-            );
-
-        public static readonly ExpectedTargetResult India = new(
-            numberOfEndpoints: 1,
-            numberOfErrors: 0,
-            numberOfIssues: 1,
-            numberOfCriticalIssues: 0,
-            numberOfHighIssues: 1,
-            numberOfMediumIssues: 0,
-            numberOfLowIssues: 0,
-            numberOfInfoIssues: 0,
-            issueIds: [10001, 10014, 10015]
-            );
-
         public static readonly ExpectedTargetResult Scanme = new(
             numberOfEndpoints: 1,
             numberOfErrors: 0,

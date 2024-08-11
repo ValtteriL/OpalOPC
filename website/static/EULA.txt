@@ -1,55 +1,16 @@
-END-USER LICENSE AGREEMENT
+OpalOPC - OPC UA Security Scanner
+Copyright (C) 2024 Valtteri Lehtinen <valtteri@shufflingbytes.com>
 
-This End-User License Agreement (EULA) is a legal agreement between you (either as an individual or on behalf of an entity) and Molemmat Oy regarding your use of OpalOPC application, and associated documentation (the "Software"). 
-IF YOU DO NOT AGREE TO ALL OF THE TERMS OF THIS EULA, DO NOT INSTALL, USE OR COPY THE SOFTWARE.
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
 
-1. Summary
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-You must have a license to use this software. The license can be acquired for evaluation purposes, or bought.
-
-This Software automatically communicates with its server to check for updates.
-This Software is provided "as-is" with no warranties, and you agree that Molemmat Oy is not liable for anything you do with it.
-
-2. Agreement
-
-By downloading, installing, using, or copying the Software, you accept and agree to be bound by the terms of this EULA. 
-If you do not agree to all of the terms of this EULA, you may not download, install, use or copy the Software.
-
-3. License
-
-This EULA entitles you to install one copy of the Software as you want, and use the Software for any lawful purpose consistent with this EULA.
-Your license to use the Software is expressly conditioned upon your agreement to all of the terms of this EULA. 
-This software is licensed, not sold.
-
-4. Fees
-You must have a license to use this software. The license can be acquired for evaluation purposes, or bought.
-
-The license is available for trial and for purchase on https://opalopc.com/.
-
-5. Restrictions
-
-(i). When using the Software you must use it in a manner that complies with the applicable laws in the jurisdiction(s) in which you use the Software.
-(ii). You may not sell, resell, rent, lease or exchange the Software for anything of value.
-(iii). You may redistribute the software, but it must include this EULA and you may not repackage or bundle the Software with any other software.
-(iv). You may not remove or alter any proprietary notices or marks on the Software.
-
-6. Privacy Notices
-
-The Software automatically communicates with its server to check for updates and send telemetry.
-If you would like to learn more about the specific information we send, please visit https://opalopc.com/privacy-policy.
-
-7. Intellectual Property Notices
-
-The Software and other intellectual property rights therein are the exclusive property of Molemmat Oy. Molemmat Oy reserves all rights in and to the Software not expressly granted to you in this EULA.
-
-8. Disclaimers and Limitations on Liability
-
-THE SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, AND NO WARRANTY, EITHER EXPRESS OR IMPLIED, IS GIVEN. YOUR USE OF THE SOFTWARE IS AT YOUR SOLE RISK. Molemmat Oy does not warrant that (i) the Software will meet your specific requirements; (ii) the Software is fully compatible with any particular platform; (iii) your use of the Software will be uninterrupted, timely, secure, or error-free; (iv) the results that may be obtained from the use of the Software will be accurate or reliable; (v) the quality of any products, services, information, or other material purchased or obtained by you through the Software will meet your expectations; or (vi) any errors in the Software will be corrected.
-
-YOU EXPRESSLY UNDERSTAND AND AGREE THAT MOLEMMAT OY SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR EXEMPLARY DAMAGES, INCLUDING BUT NOT LIMITED TO, DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA OR OTHER INTANGIBLE LOSSES (EVEN IF MOLEMMAT OY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES) RELATED TO THE SOFTWARE, including, for example: (i) the use or the inability to use the Software; (ii) the cost of procurement of substitute goods and services resulting from any goods, data, information or services purchased or obtained or messages received or transactions entered into through or from the Software; (iii) unauthorized access to or alteration of your transmissions or data; (iv) statements or conduct of any third-party on the Software; (v) or any other matter relating to the Software.
-
-Molemmat Oy reserves the right at any time and from time to time to modify or discontinue, temporarily or permanently, the Software (or any part thereof) with or without notice. Molemmat Oy shall not be liable to you or to any third-party for any modification, price change, suspension or discontinuance of the Software.
-
-9. Contact
-
-info@opalopc.com
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.

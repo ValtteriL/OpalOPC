@@ -16,13 +16,13 @@ import TabItem from '@theme/TabItem';
   <TabItem value="windows" label="Windows" default>
 <a href="https://apps.microsoft.com/detail/OpalOPC/9N89VWR0GK7H?launch=true
 	&mode=mini">
-	<img src="https://get.microsoft.com/images/en-gb%20dark.svg" width="200"/>
+	<img src="/img/get-it-from-ms.svg" width="200"/>
 </a>
   </TabItem>
   <TabItem value="windows-cli" label="Windows (CLI)" default>
 <a href="https://apps.microsoft.com/detail/OpalOPC/9N89VWR0GK7H?launch=true
 	&mode=mini">
-	<img src="https://get.microsoft.com/images/en-gb%20dark.svg" width="200"/>
+	<img src="/img/get-it-from-ms.svg" width="200"/>
 </a>
   </TabItem>
   <TabItem value="linux" label="Linux">
@@ -38,16 +38,6 @@ import TabItem from '@theme/TabItem';
     ```
   </TabItem>
 </Tabs>
-
-## Obtain & Set license key
-
-Obtain a license key by starting [a free trial or purchasing OpalOPC](/#starthere).
-
-Set the license key using the instructions below.
-
-```bash
-opalopc --set-licence-key <license-key>
-```
 
 ## Scan the test target
 

@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using Controller;
-using Tests.Helpers;
 
 namespace Tests.E2E
 {
@@ -15,8 +13,6 @@ namespace Tests.E2E
 
         public WinAppDriverFixture()
         {
-            Environment.SetEnvironmentVariable(LicensingController.s_licenseKeyEnv, LicenseKeys.s_validLicenseKey);
-
             // Start WinAppDriver
             _winAppDriverProcess = StartWinAppDriver();
         }

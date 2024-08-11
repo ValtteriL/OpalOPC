@@ -9,6 +9,10 @@ sidebar_position: 9
 
 OpalOPC is developed and maintained by cybersecurity and data privacy company [Molemmat Oy](https://molemmat.fi/).
 
+## Is it free?
+
+Yes.
+
 ## What kind of tests does OpalOPC run?
 
 What OpalOPC probes in each application is based on plugins. Take a look at [plugins](/docs/category/plugins) to see what kind of checks it does.
@@ -16,17 +20,3 @@ What OpalOPC probes in each application is based on plugins. Take a look at [plu
 ## Can I use the GUI on Linux?
 
 No. The GUI is Windows only.
-
-## How can I manage my subscription?
-
-You can manage your subscription [here](https://billing.stripe.com/p/login/bIY28PeVX5ez2U8288).
-
-## Can I buy on invoice?
-
-Yes. See [here](billing#buying-on-invoice).
-
-## Can I buy one-off license?
-
-## I have more questions! Where do I ask?
-
-Email us at [info@opalopc.com](mailto:info@opalopc.com).
