@@ -14,7 +14,7 @@ tags: [release, 5.0.0]
 
 <!-- truncate -->
 
-We are thrilled to announce the release of OpalOPC 5.0.0, which significantly changes how OpalOPC is developed and used. Embracing collaboration and transparency, OpalOPC is now available under the GPLv2 license, making it completely free and open source. This major update also eliminates telemetry and licensing requirements, ensuring enhanced privacy and ease of use.We believe that as a free tool, OpalOPC will bring the most benefit to our community. 
+We are thrilled to announce the release of OpalOPC 5.0.0, which significantly changes how OpalOPC is developed and used. Embracing collaboration and transparency, OpalOPC is now available under the GPLv2 license, making it completely free and open source. This major update also eliminates telemetry and licensing requirements, ensuring enhanced privacy and ease of use. We believe that as a free tool, OpalOPC will bring the most benefit to our community. 
 
 Join us in celebrating this new chapter as we continue to innovate and improve OpalOPC together!
 
