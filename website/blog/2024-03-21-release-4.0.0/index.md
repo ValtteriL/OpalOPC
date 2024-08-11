@@ -19,7 +19,7 @@ tags: [release, 4.0.0]
 
 The free plan has been discontinued, and all OpalOPC users are now required to have a software license. Our [EULA](https://opalopc.com/EULA.txt) has been updated accordingly.
 
-To obtain a license, either [start a free trial or purchase](/#starthere) OpalOPC. After obtaining, you need to [configure OpalOPC to use the license](/docs/get-started/configure-license-key) before scanning.
+To obtain a license, either [start a free trial or purchase](/#starthere) OpalOPC. After obtaining, you need to configure OpalOPC to use the license before scanning.
 
 ## Semantic Versioning
 
