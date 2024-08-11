@@ -20,3 +20,7 @@ What OpalOPC probes in each application is based on plugins. Take a look at [plu
 ## Can I use the GUI on Linux?
 
 No. The GUI is Windows only.
+
+## Where can I find the source code?
+
+[Here](https://github.com/ValtteriL/OpalOPC).

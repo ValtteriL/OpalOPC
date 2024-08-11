@@ -144,8 +144,8 @@ const config = {
                 to: '/blog',
               },
               {
-                label: 'YouTube',
-                href: 'https://www.youtube.com/playlist?list=PL0CpXbWypOUn3QcYLOMghfV2bh5nGWut6',
+                label: 'GitHub',
+                href: 'https://github.com/ValtteriL/OpalOPC',
               },
             ],
           },
